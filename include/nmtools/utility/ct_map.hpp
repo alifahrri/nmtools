@@ -4,6 +4,7 @@
 #include "nmtools/meta.hpp"
 #include "nmtools/utility/tuple_cat.hpp"
 #include "nmtools/utility/get.hpp"
+#include "nmtools/utility/isequal/isequal.hpp"
 
 namespace nmtools::utility
 {
@@ -17,6 +18,7 @@ namespace nmtools::utility
     struct ct_map
     {
         // TODO: assert keys to be tuple of constant index
+        static_assert( meta::is_constant_index_array_v<keys_t>, "keys must be known at compile time" );
         static_assert( meta::is_tuple_v<keys_t>, "expect keys to be tuple" );
         static_assert( meta::is_tuple_v<values_t>, "expect values to be tuple" );
         static_assert( meta::len_v<keys_t> == meta::len_v<values_t>, "expect keys and values to be same size" );
@@ -32,7 +34,16 @@ namespace nmtools::utility
             , values_(values)
         {}
 
-        constexpr ct_map() {}
+        template <typename other_keys_t, meta::enable_if_t<utils::isequal(meta::to_value_v<keys_t>,meta::to_value_v<other_keys_t>),int> =0 >
+        constexpr ct_map(const other_keys_t&, const values_t& values)
+            : keys_{}
+            , values_(values)
+        {}
+
+        constexpr ct_map()
+            : keys_{}
+            , values_{}
+        {}
 
         static constexpr auto SIZE = meta::len_v<keys_t>;
 

@@ -294,8 +294,31 @@ namespace nmtools::utils::impl
     };
 
     #undef NMTOOLS_DTYPE_TO_STRING_CASE
-
 }
+
+#if __has_include(<fstream>)
+#include <fstream>
+
+namespace nmtools
+{
+    template <typename graph_t>
+    inline auto save_graph(const graph_t& graph, const std::string& filename)
+    {
+        std::ofstream file(filename);
+        file << utils::to_string(graph,utils::Graphviz);
+        return true;
+    }
+
+    inline auto save_graph(const std::string& graph, const std::string& filename)
+    {
+        std::ofstream file(filename);
+        file << graph;
+        return true;
+    }
+}
+
+#endif
+
 #endif // NMTOOLS_HAS_STRING
 
 #endif // NMTOOLS_UTILS_TO_STRING_COMMON_TYPES_HPP

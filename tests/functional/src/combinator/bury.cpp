@@ -349,6 +349,11 @@ TEST_CASE("bury2" * doctest::test_suite("combinator"))
     NMTOOLS_ASSERT_CLOSE( result, expect );
 }
 
+TEST_CASE("bury2" * doctest::test_suite("combinator"))
+{
+    
+}
+
 #if 1
 // crashed at runtime for clang,
 // compile error for gcc:
@@ -374,7 +379,11 @@ TEST_CASE("bury2" * doctest::test_suite("combinator") * doctest::skip())
 
     auto f = fn::subtract * fn::divide * fn::sum[0] * cb::bury2;
 
-    auto result = f (c) (a) (b);
+    // NOTE: broken
+    // auto result = f (c) (a) (b);
+    auto result = f (c,a,b);
+    // TODO: support this
+    // auto result = f * c * a * b;
     // (fn::subtract * fn::divide * fn::reduce_add * cb::bury2) (c) (a) (b)
     // (fn::subtract * fn::divide * fn::reduce_add) (a) (b) (c)
     // (fn::subtract * fn::divide) (fn::reduce_add(a)) (b) (c)

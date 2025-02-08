@@ -35,9 +35,12 @@ namespace nmtools::error
 #define nmtools_null nullptr
 #endif
 
-#if __has_include(<malloc.h>) && not defined(NMTOOLS_UTL_NO_MALLOC)
+// changed detection from malloc to stdlib for apple
+#if __has_include(<stdlib.h>) && not defined(NMTOOLS_UTL_NO_MALLOC)
 
+#if __has_include(<malloc.h>)
 #include <malloc.h>
+#endif
 #include <string.h>
 #include <stdlib.h>
 

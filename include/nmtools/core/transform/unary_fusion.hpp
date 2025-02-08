@@ -34,8 +34,8 @@ namespace nmtools::functional
         return nmtools_tuple{from,to};
     } // find_unary_fusion
 
-    template <typename graph_t>
-    constexpr auto transform_unary_fusion(const graph_t& graph)
+    template <typename graph_t, typename n_repeats_t=meta::ct<1>>
+    constexpr auto transform_unary_fusion(const graph_t& graph, n_repeats_t = n_repeats_t{})
     {
         // TODO: check if graph is fn::compute_graph_t or utility::ct_digraph
         constexpr auto adjacency_result = utility::adjacency_list(decltype(graph.digraph){});
@@ -52,7 +52,14 @@ namespace nmtools::functional
             auto from_ct = meta::ct_v<src_id_map[from]>;
             auto to_ct   = meta::ct_v<src_id_map[to]>;
             auto fused   = graph.nodes(to_ct) * graph.nodes(from_ct);
-            return utility::contracted_edge(graph,nmtools_tuple{from_ct,to_ct},to_ct,fused);
+
+            auto contracted = utility::contracted_edge(graph,nmtools_tuple{from_ct,to_ct},to_ct,fused);
+            constexpr auto n_repeats = n_repeats_t::value;
+            if constexpr ((0 < (nm_index_t)n_repeats-1) || ((nm_index_t)n_repeats < 0)) {
+                return transform_unary_fusion(contracted,meta::ct_v<n_repeats-1>);
+            } else {
+                return contracted;
+            }
         }
     }
 } // namespace nmtools::functional
