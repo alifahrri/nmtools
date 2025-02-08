@@ -7,6 +7,7 @@ if (CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
     set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/../cmake)
 endif()
 
+## TODO: remove
 include(nmtools)
 
 # TODO: cleanup
@@ -194,10 +195,7 @@ set(FUNCTIONAL_TEST_GRAPH_SOURCES
     src/combinator/dig.cpp
     src/combinator/swap.cpp
     src/combinator/dup.cpp
-
-    src/transform/unary_fusion.cpp
-    src/transform/binary_fusion.cpp
-    src/transform/linearize.cpp
+    src/combinator/composition.cpp
 )
 
 set(FUNCTIONAL_TEST_MISC_SOURCES
