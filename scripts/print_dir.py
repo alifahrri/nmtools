@@ -24,5 +24,5 @@ def iterdir(path, depth=0, blacklist=[], make_include=False):
     return "\n".join(map(fn,dir_contents))
 
 rootdir = Path("include/nmtools")
-rootdir_contents = iterdir(rootdir, blacklist=["testing","meta","platform","utl","stl","ref","utility","evaluator","impl","core"], make_include=True)
+rootdir_contents = iterdir(rootdir, blacklist=["testing","meta","platform","utl","stl","ref","utility","evaluator","impl"], make_include=True)
 print(rootdir_contents)
