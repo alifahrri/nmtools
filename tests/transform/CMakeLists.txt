@@ -61,6 +61,7 @@ set(TRANSFORM_TEST_LINEARIZE_SOURCES
     src/linearize/trace.cpp
     src/linearize/tensordot.cpp
     src/linearize/pairwise_distance.cpp
+    src/linearize/bilinear.cpp
 )
 
 set(TRANSFORM_TEST_APPLY_SOURCES
@@ -81,6 +82,7 @@ set(TRANSFORM_TEST_APPLY_SOURCES
     src/apply/trace.cpp
     src/apply/tensordot.cpp
     src/apply/pairwise_distance.cpp
+    src/apply/bilinear.cpp
 )
 
 set(TRANSFORM_TEST_FUSION_SOURCES
