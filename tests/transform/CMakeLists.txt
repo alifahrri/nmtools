@@ -54,6 +54,13 @@ set(TRANSFORM_TEST_LINEARIZE_SOURCES
     src/linearize/layer_norm.cpp
     src/linearize/stddev.cpp
     src/linearize/cosine_similarity.cpp
+    src/linearize/kron.cpp
+    src/linearize/dot.cpp
+    src/linearize/vector_norm.cpp
+    src/linearize/vecdot.cpp
+    src/linearize/trace.cpp
+    src/linearize/tensordot.cpp
+    src/linearize/pairwise_distance.cpp
 )
 
 set(TRANSFORM_TEST_APPLY_SOURCES
@@ -67,6 +74,13 @@ set(TRANSFORM_TEST_APPLY_SOURCES
     src/apply/layer_norm.cpp
     src/apply/stddev.cpp
     src/apply/cosine_similarity.cpp
+    src/apply/kron.cpp
+    src/apply/dot.cpp
+    src/apply/vector_norm.cpp
+    src/apply/vecdot.cpp
+    src/apply/trace.cpp
+    src/apply/tensordot.cpp
+    src/apply/pairwise_distance.cpp
 )
 
 set(TRANSFORM_TEST_FUSION_SOURCES
