@@ -4,6 +4,7 @@
 #include "nmtools/meta.hpp"
 #include "nmtools/ndarray.hpp"
 #include "nmtools/core/functor.hpp"
+#include "nmtools/core/transform/linearize.hpp"
 #include "nmtools/evaluator/kernel_helper.hpp"
 #include "nmtools/exception.hpp"
 #include "nmtools/utility/to_string.hpp"
@@ -517,6 +518,8 @@ namespace nmtools::array::sycl
                 });
             });
 
+            // TODO: support async
+            queue->wait_and_throw();
             this->copy_buffer(output_buffer,output);
         }
 
@@ -524,35 +527,6 @@ namespace nmtools::array::sycl
         auto map_to_device(const functional::functor_t<F,operands_t,attributes_t>& f)
         {
             static_assert( meta::len_v<operands_t> == 0 );
-            #if 0
-            [[maybe_unused]] auto as_static = [](auto attribute){
-                if constexpr (meta::is_dynamic_index_array_v<decltype(attribute)>) {
-                    using element_type = meta::get_element_type_t<decltype(attribute)>;
-                    using result_type  = nmtools_static_vector<element_type,8>;
-                    auto result = result_type{};
-                    result.resize(attribute.size());
-                    for (size_t i=0; i<result.size(); i++) {
-                        at(result,i) = at(attribute,i);
-                    }
-                    return result;
-                } else {
-                    return attribute;
-                }
-            };
-            [[maybe_unused]] auto map_attribute = [=](auto attribute){
-                if constexpr (meta::is_attribute_v<decltype(attribute)>) {
-                    const auto& args = attribute.args();
-                    auto static_args = meta::template_reduce<meta::len_v<decltype(args)>>(
-                        [&](auto init, auto index){
-                            auto static_arg = as_static(nmtools::at(args,index));
-                            return utility::tuple_append(init,static_arg);
-                    }, nmtools_tuple{});
-                    return attribute(static_args);
-                } else {
-                    return as_static(attribute);
-                }
-            };
-            #endif
             if constexpr (meta::is_same_v<attributes_t,meta::empty_attributes_t>) {
                 return f;
             } else {
@@ -594,6 +568,23 @@ namespace nmtools::array::sycl
             auto fn = map_to_device(f);
             using sequence_t = meta::make_index_sequence<meta::len_v<decltype(device_operands)>>;
             this->run_(output,fn,device_operands,sequence_t{});
+        }
+
+        template <typename view_t>
+        auto eval(const view_t& view)
+        {
+            auto graph = functional::linearize(functional::get_compute_graph(unwrap(view)));
+            auto operands = functional::get_operands(graph);
+            auto function = functional::get_function(graph);
+            auto functor  = function.functor;
+
+            using result_t = meta::resolve_optype_t<eval_result_t<>,view_t,none_t>;
+            auto result    = result_t{};
+
+            result.resize(unwrap(shape(view)));
+            this->run(functor,result,operands);
+
+            return result;
         }
     };
 } // namespace nmtools::array::sycl
