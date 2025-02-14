@@ -98,6 +98,15 @@ Then run the test:
 ```
 ctest
 ```
+If there is existing container with name sycl-cuda-dev, you can remove it before build/run:
+```
+docker rm sycl-omp-dev
+```
+Or to re-run (after stopping)
+```
+docker start sycl-omp-dev
+docker exec -it sycl-omp-dev zsh
+```
 
 ## Build & Test `sycl` OpenCL
 
@@ -119,12 +128,39 @@ Then run the test:
 ```
 NMTOOLS_SYCL_DEFAULT_PLATFORM=opencl ./tests/sycl/numeric-tests-sycl-doctest
 ```
+The env `NMTOOLS_SYCL_DEFAULT_PLATFORM` above can be used to select the default device.
+If there is existing container with name sycl-cuda-dev, you can remove it before build/run:
+```
+docker rm sycl-opencl-dev
+```
+Or to re-run (after stopping)
+```
+docker start sycl-opencl-dev
+docker exec -it sycl-opencl-dev zsh
+```
+Latest know working version configuration is:
+```docker
+ENV LLVM_VERSION="18"
+ENV LLVM_SPV_VERSION="v18.1.8"
+ENV POCL_VERSION="v6.0"
+ENV ADAPTIVE_CPP_VERSION="v24.10.0"
+```
+LLVM version 14 and AdaptiveCPP v23.10.0 is know to be broken, other version not tested.
 
 ## Build & Test `sycl` `cuda`
 Targeting cuda backend on sycl, build dev image and run container:
 ```
 docker build . --tag nmtools:sycl-cuda --build-arg toolchain=sycl-clang14-cuda --target build --file docker/sycl-cuda.dockerfile
-docker run -it --name sycl-cuda-dev --volume ${PWD}:/workspace/nmtools --entrypoint zsh nmtools:sycl-cuda
+docker run -it --runtime=nvidia --name sycl-cuda-dev --volume ${PWD}:/workspace/nmtools --entrypoint zsh nmtools:sycl-cuda
+```
+If there is existing container with name sycl-cuda-dev, you can remove it before build/run:
+```
+docker rm sycl-cuda-dev
+```
+Or to re-run (after stopping)
+```
+docker start sycl-cuda-dev
+docker exec -it sycl-cuda-dev zsh
 ```
 Inside the container, build the tests:
 ```
@@ -190,6 +226,16 @@ docker run -it --device /dev/kfd --device /dev/dri --name hip-dev --volume ${PWD
 Inside the container, build the tests:
 ```
 mkdir -p build/hip && cd build/hip && cmake -DCMAKE_TOOLCHAIN_FILE=../../cmake/toolchains/hip.cmake -DNMTOOLS_BUILD_HIP_TESTS=ON ../.. && make -j`nproc` VERBOSE=1
+```
+If there is container naming conflict you can remove then re-run, or just restart.
+```
+docker rm hip-dev
+docker run -it --device /dev/kfd --device /dev/dri --name hip-dev --volume ${PWD}:/workspace/nmtools --entrypoint zsh nmtools:hip
+```
+To restart:
+```
+docker start hip-dev
+docker exec -it hip-dev
 ```
 
 ## Run Interactive Notebook

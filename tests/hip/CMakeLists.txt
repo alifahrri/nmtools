@@ -124,23 +124,33 @@ set(NMTOOLS_HIP_TEST_SOURCES ${NMTOOLS_HIP_TEST_SOURCES}
 
     composition/add_tanh.cpp
     composition/reduce_add_divide.cpp
+
+    array/bilinear.cpp
+    array/conv2d.cpp
+    array/dot.cpp
+    array/kron.cpp
+    array/pairwise_distance.cpp
+    array/softmax.cpp
+    array/stddev.cpp
+    array/tensordot.cpp
+    array/trace.cpp
+    array/var.cpp
+    array/vecdot.cpp
+    array/vector_norm.cpp
 )
 
 ## TODO: support nvcc compilation
 add_executable(${PROJECT_NAME}-doctest tests.cpp ${NMTOOLS_HIP_TEST_SOURCES})
 
 set(NMTOOLS_TEST_HIP_PATH "/usr/local/hip/" CACHE STRING "manually set hip path")
-set(NMTOOLS_TEST_HIP_ARCH "sm_60" CACHE STRING "manually set hip arch")
+set(NMTOOLS_TEST_HIP_ARCH "gfx1103" CACHE STRING "manually set hip arch")
 set(NMTOOLS_TEST_HIP_ARGS "" CACHE STRING "manually set extra clang hip args")
 
 target_compile_options(${PROJECT_NAME}-doctest PRIVATE
     -Wall -Wextra --std=c++17
     # -x hip
-    # --hip-path=${NMTOOLS_TEST_HIP_PATH}
-    # --hip-gpu-arch=${NMTOOLS_TEST_HIP_ARCH} ${NMTOOLS_TEST_HIP_ARGS}
     -Waddress -Wuninitialized
-    # TODO: parametrize this
-    --offload-arch=gfx1103
+    --offload-arch=${NMTOOLS_TEST_HIP_ARCH} ${NMTOOLS_TEST_HIP_ARGS}
 )
 target_link_libraries(${PROJECT_NAME}-doctest PRIVATE dl rt pthread)
 target_link_directories(${PROJECT_NAME}-doctest PRIVATE "${NMTOOLS_TEST_HIP_PATH}/lib64")
