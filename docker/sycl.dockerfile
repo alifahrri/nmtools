@@ -31,8 +31,6 @@ RUN cd $HOME && curl -fsSLO https://raw.githubusercontent.com/romkatv/dotfiles-p
 
 ADD .devcontainer/.zshrc $HOME
 
-from dev as build
-
 WORKDIR /workspace/nmtools
 
 COPY cmake cmake
@@ -45,6 +43,9 @@ COPY nmtoolsConfig.cmake.in nmtoolsConfig.cmake.in
 
 ## install doctest
 COPY scripts/install_doctest.sh scripts/install_doctest.sh
+
+FROM dev as build
+
 RUN bash scripts/install_doctest.sh
 
 RUN apt install -y libclang-dev clang-tools libomp-dev llvm-dev lld libboost-dev libboost-fiber-dev libboost-context-dev
@@ -62,9 +63,10 @@ ARG toolchain=sycl-clang14-omp
 ENV TOOLCHAIN=${toolchain}
 
 # for llvm-spirv & pocl
-ENV LLVM_VERSION="14"
-ENV LLVM_SPV_VERSION="v14.0.0"
-ENV POCL_VERSION="v5.0"
+ENV LLVM_VERSION="18"
+ENV LLVM_SPV_VERSION="v18.1.8"
+ENV POCL_VERSION="v6.0"
+ENV ADAPTIVE_CPP_VERSION="v24.10.0"
 
 # TODO: make the following installation conditional on selected backend
 RUN bash scripts/install_llvm.sh
