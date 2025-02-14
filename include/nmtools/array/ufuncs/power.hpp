@@ -49,6 +49,7 @@ namespace nmtools::view
     {
         template <typename T, typename U>
         NMTOOLS_UFUNC_CONSTEXPR
+        nmtools_func_attribute
         auto operator()(const T& t, const U& u) const
         {
             if constexpr (meta::is_view_v<T> || meta::is_view_v<U>) {
