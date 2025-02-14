@@ -10,6 +10,7 @@ add_compile_options(-W -Wall -Wextra -Werror
     -Wno-deprecated-declarations # acpp error (v24.10.0) with -Werror
     -fopenmp
     --acpp-targets="generic"
+    # TODO: make clang version configurable?
     --acpp-clang=/usr/bin/clang++-18
 )
 add_link_options(
