@@ -8,11 +8,13 @@ add_compile_options(-W -Wall -Wextra -Werror
     -Wno-unknown-cuda-version
     -Wno-deprecated-declarations # acpp error (v24.10.0) with -Werror
     --acpp-targets="cuda:sm_86"
-    --acpp-clang=/usr/bin/clang++
+    # TODO: parametrize this
+    --acpp-clang=/usr/bin/clang++18
 )
 add_link_options(
     --acpp-targets="cuda:sm_86"
-    --acpp-clang=/usr/bin/clang++
+    # TODO: parametrize this
+    --acpp-clang=/usr/bin/clang++18
 )
 set(NMTOOLS_TEST_CUDA_PATH "/usr/local/cuda/" CACHE STRING "manually set cuda path")
 link_directories("${NMTOOLS_TEST_CUDA_PATH}/lib64")
