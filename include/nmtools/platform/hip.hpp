@@ -4,6 +4,7 @@
 #define nmtools_func_attribute __host__ __device__
 
 #if defined(__HIP__) && defined(__HIP_ARCH__)
+// TODO: support stl (on host only)
 // compiling hip kernel, no stl no malloc available
 #define NMTOOLS_DISABLE_STL
 #define NMTOOLS_UTL_NO_MALLOC
@@ -16,7 +17,9 @@
 #define NMTOOLS_TESTING_DISABLE_DYNAMIC_ALLOCATION
 #elif defined(__HIP__)
 // follow cuda
+#ifndef NMTOOLS_DISABLE_STL
 #define NMTOOLS_DISABLE_STL
+#endif
 #endif
 
 #endif // NMTOOLS_PLATFORM_HIP_HPP

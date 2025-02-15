@@ -9,13 +9,13 @@ namespace nmtools::math
 
 #define NMTOOLS_UNARY_MATH_FWD_CUDA_KERNEL(fn) \
     template <typename T> \
-    __device__ auto fn(T t) { return ::fn##f(t); } \
-    __device__ auto fn(double t) { return ::fn(t); }
+    __host__ __device__ auto fn(T t) { return ::fn##f(t); } \
+    __host__ __device__ auto fn(double t) { return ::fn(t); }
 
 #define NMTOOLS_BINARY_MATH_FWD_CUDA_KERNEL(fn) \
     template <typename T, typename U> \
-    __device__ auto fn(T t, U u) { return ::fn##f(t,u); } \
-    __device__ auto fn(double t, double u) { return ::fn(t,u); }
+    __host__ __device__ auto fn(T t, U u) { return ::fn##f(t,u); } \
+    __host__ __device__ auto fn(double t, double u) { return ::fn(t,u); }
 
 #define NMTOOLS_UNARY_MATH_FWD_CUDA_STL(fn) \
     template <typename T> \

@@ -53,7 +53,12 @@ GIT_REPOSITORY=https://github.com/OpenSYCL/OpenSYCL
 # VERSION=v0.9.4
 # DIR=AdaptiveCpp
 # GIT_REPOSITORY=https://github.com/AdaptiveCpp/AdaptiveCpp.git
-VERSION=v23.10.0
+if [[ -z "${ADAPTIVE_CPP_VERSION}" ]]; then
+    VERSION=v23.10.0
+else
+    VERSION=${ADAPTIVE_CPP_VERSION}
+    echo "set AdaptiveCpp version from env: ${VERSION}"
+fi
 
 if [[ -d "$DIR" ]]; then
     echo "$DIR exists. skipping cloning"

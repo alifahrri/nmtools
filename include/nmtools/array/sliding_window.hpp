@@ -383,6 +383,26 @@ namespace nmtools::view
     } // sliding_window
 } // namespace nmtools::view
 
+namespace nmtools::array
+{
+    template <typename...args_t, auto max_dim>
+    struct as_static_t<
+        view::sliding_window_t<args_t...>, max_dim
+    > {
+        using attribute_type = view::sliding_window_t<args_t...>;
+
+        attribute_type attribute;
+
+        auto operator()() const
+        {
+            auto src_shape    = as_static<max_dim>(attribute.src_shape);
+            auto window_shape = as_static<max_dim>(attribute.window_shape);
+            auto axis         = as_static<max_dim>(attribute.axis);
+            return view::sliding_window_indexer(src_shape,window_shape,axis);
+        }
+    };
+} // namespace nmtools::array
+
 #if NMTOOLS_HAS_STRING
 
 namespace nmtools::utils::impl
