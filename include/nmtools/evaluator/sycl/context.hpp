@@ -581,7 +581,9 @@ namespace nmtools::array::sycl
             using result_t = meta::resolve_optype_t<eval_result_t<>,view_t,none_t>;
             auto result    = result_t{};
 
-            result.resize(unwrap(shape(view)));
+            if constexpr (meta::is_resizable_v<result_t>) {
+                result.resize(unwrap(shape(view)));
+            }
             this->run(functor,result,operands);
 
             return result;
