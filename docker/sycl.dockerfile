@@ -86,7 +86,7 @@ RUN mkdir -p build/${TOOLCHAIN} && cd build/${TOOLCHAIN} \
 
 # got weird error on CI
 # LLVM ERROR: Instruction Combining did not reach a fixpoint after 1 iterations
-CMD ["sh", "-c", "/workspace/nmtools/build/${TOOLCHAIN}/tests/sycl/numeric-tests-sycl-doctest", "-tce=bilinear*"]
+CMD ["sh", "-c", "/workspace/nmtools/build/${TOOLCHAIN}/tests/sycl/numeric-tests-sycl-doctest", "-tce=bilinear(case1b)"]
 
 # device:
 # [nmtools sycl] number of sycl devices: 2
