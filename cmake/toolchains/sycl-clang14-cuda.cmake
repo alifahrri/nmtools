@@ -2,6 +2,7 @@ set(CMAKE_C_COMPILER /usr/local/bin/acpp)
 set(CMAKE_CXX_COMPILER /usr/local/bin/acpp)
 
 SET (CMAKE_C_COMPILER_WORKS 1)
+SET (CMAKE_CXX_COMPILER_WORKS 1)
 add_compile_options(-W -Wall -Wextra -Werror
     -Wno-gnu-string-literal-operator-template
     -Wno-unknown-cuda-version
