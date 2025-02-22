@@ -51,6 +51,8 @@ ENV TOOLCHAIN=${toolchain}
 
 FROM build as run
 
+RUN apt install -y build-essential
+
 RUN mkdir -p build/${toolchain} && cd build/${toolchain} \
     && cmake -DCMAKE_TOOLCHAIN_FILE=cmake/toolchains/${toolchain}.cmake \
         -DNMTOOLS_BUILD_META_TESTS=OFF -DNMTOOLS_BUILD_UTL_TESTS=OFF -DNMTOOLS_TEST_ALL=OFF \
