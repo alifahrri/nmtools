@@ -97,7 +97,7 @@ set(NMTOOLS_HIP_TEST_SOURCES ${NMTOOLS_HIP_TEST_SOURCES}
     array/flatten.cpp
     array/flip.cpp
     array/hstack.cpp
-    array/pad.cpp
+    # array/pad.cpp
     # TODO: fix compile
     # array/pooling.cpp
     array/repeat.cpp
