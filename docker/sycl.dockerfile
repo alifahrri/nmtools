@@ -44,9 +44,13 @@ COPY nmtoolsConfig.cmake.in nmtoolsConfig.cmake.in
 ## install doctest
 COPY scripts/install_doctest.sh scripts/install_doctest.sh
 
+RUN bash scripts/install_doctest.sh
+
 FROM dev as build
 
-RUN bash scripts/install_doctest.sh
+WORKDIR /opt/
+COPY scripts scripts
+COPY patch patch
 
 RUN apt install -y libclang-dev clang-tools libomp-dev llvm-dev lld libboost-dev libboost-fiber-dev libboost-context-dev
 
@@ -75,7 +79,11 @@ RUN bash scripts/install_pocl.sh
 
 RUN bash scripts/install_opensycl.sh
 
+WORKDIR /workspace/nmtools
+
 FROM build as run
+
+WORKDIR /workspace/nmtools
 
 RUN mkdir -p build/${TOOLCHAIN} && cd build/${TOOLCHAIN} \
     && cmake -DCMAKE_TOOLCHAIN_FILE=cmake/toolchains/${TOOLCHAIN}.cmake \
