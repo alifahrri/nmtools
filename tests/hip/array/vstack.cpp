@@ -23,13 +23,16 @@ inline auto name##_ls_db = nmtools::cast(name, nmtools::array::kind::ndarray_ls_
 namespace nm = nmtools;
 namespace na = nm::array;
 namespace meta = nm::meta;
+namespace view = nm::view;
 
 #define VSTACK_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
     NMTOOLS_TESTING_USE_CASE( vstack, case_name ) \
     using namespace args; \
-    auto result = nmtools::array::vstack(__VA_ARGS__,na::hip::default_context()); \
+    auto view   = view::vstack(__VA_ARGS__); \
+    auto ctx    = na::hip::default_context(); \
+    auto result = ctx->eval(view); \
     NMTOOLS_ASSERT_EQUAL( nm::shape(result), nm::shape(expect::result) ); \
     NMTOOLS_ASSERT_CLOSE( result, expect::result ); \
 }

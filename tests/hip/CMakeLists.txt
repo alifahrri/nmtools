@@ -113,6 +113,7 @@ set(NMTOOLS_HIP_TEST_SOURCES ${NMTOOLS_HIP_TEST_SOURCES}
     array/zeros.cpp
     array/ones.cpp
     array/full.cpp
+    array/stack.cpp
     array/vstack.cpp
 
     array/sum.cpp

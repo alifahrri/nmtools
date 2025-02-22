@@ -35,8 +35,7 @@ SUBCASE(#case_name) \
     NMTOOLS_ASSERT_CLOSE( result, expect ); \
 }
 
-// TODO: fix compile, caused by refactoring pad to indexing view
-#if 0
+#if 1
 
 static float value = 0.0f;
 
