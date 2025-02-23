@@ -255,7 +255,7 @@ namespace nmtools::functional
                     }
                 } else {
                     auto lhs_node = graph.nodes(lhs_ct);
-                    auto fused = node * lhs_node;
+                    auto fused = node.remove_operand(lhs_ct) * lhs_node;
                     auto g1 = utility::contracted_edge(graph,nmtools_tuple{lhs_ct,to_ct},to_ct,fused);
                     
                     constexpr auto n_repeats = n_repeats_t::value;
