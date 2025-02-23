@@ -136,6 +136,35 @@ namespace nmtools::view
         }
     }; // base_indexer_t
 
+    template <typename indices_t>
+    struct tagged_indices_t
+    {
+        enum Tag {LEFT, RIGHT};
+
+        Tag tag;
+        indices_t indices;
+
+        constexpr tagged_indices_t(Tag tag, const indices_t& indices)
+            : tag(tag)
+            , indices(indices)
+        {}
+    };
+
+    template <typename T>
+    struct is_tagged_indices : meta::false_type {};
+
+    template <typename T>
+    struct is_tagged_indices<tagged_indices_t<T>> : meta::true_type {};
+
+    template <typename T>
+    constexpr inline auto is_tagged_indices_v = is_tagged_indices<T>::value;
+
+    template <typename T>
+    struct is_tagged_indices<const T> : is_tagged_indices<T> {};
+
+    template <typename T>
+    struct is_tagged_indices<T&> : is_tagged_indices<T> {};
+
     template <typename array_t, typename indexer_t>
     struct indexing_t
     {
@@ -218,13 +247,15 @@ namespace nmtools::view
                 (meta::is_index_array_v<src_indices_type> && meta::is_ndarray_v<nocvptr_array_type>)
                 || (meta::is_tuple_v<nocvptr_array_type> && meta::is_either_v<src_indices_type>)
                 || (is_none_v<src_indices_type> && meta::is_num_v<array_type>)
+                || (meta::is_tuple_v<nocvptr_array_type> && is_tagged_indices_v<src_indices_type>)
             );
+
+            using element_t [[maybe_unused]] = meta::get_element_type_t<view::decorator_t<indexing_t,array_t,indexer_t>>;
 
             if constexpr (meta::is_tuple_v<nocvptr_array_type> && meta::is_either_v<src_indices_type>) {
                 using left_t  = meta::get_either_left_t<src_indices_type>;
                 using right_t = meta::get_either_right_t<src_indices_type>;
                 static_assert( meta::len_v<nocvptr_array_type> == 2 );
-                using element_t = meta::get_element_type_t<view::decorator_t<indexing_t,array_t,indexer_t>>;
                 if (auto l_ptr = nmtools::get_if<left_t>(&src_indices)) {
                     const auto& left = nmtools::get<0>(array);
                     return static_cast<element_t>(get_element(left,*l_ptr));
@@ -232,6 +263,14 @@ namespace nmtools::view
                     auto r_ptr = nmtools::get_if<right_t>(&src_indices);
                     const auto& right = nmtools::get<1>(array);
                     return static_cast<element_t>(get_element(right,*r_ptr));
+                }
+            } else if constexpr (meta::is_tuple_v<nocvptr_array_type> && is_tagged_indices_v<src_indices_type>) {
+                if (src_indices.tag == decltype(src_indices)::Tag::LEFT) {
+                    const auto& left = nmtools::get<0>(array);
+                    return static_cast<element_t>(get_element(left,src_indices.indices));
+                } else {
+                    const auto& right = nmtools::get<1>(array);
+                    return static_cast<element_t>(get_element(right,src_indices.indices));
                 }
             } else {
                 return get_element(array,src_indices);
@@ -344,6 +383,24 @@ namespace nmtools::view
             return f(array,args...);
         }
     } // lift_indexing
+
+    template <typename F, typename lhs_t, typename rhs_t, typename...args_t>
+    constexpr auto lift_binary_indexing(F&& f, const lhs_t& lhs, const rhs_t& rhs, const args_t&...args)
+    {
+        if constexpr (meta::is_maybe_v<lhs_t> || meta::is_maybe_v<rhs_t>) {
+            // TODO: recurse to handle maybe<either<...>>
+            using result_t = decltype(f(unwrap(lhs),unwrap(rhs),args...));
+            using return_t = meta::conditional_t<meta::is_maybe_v<result_t>,result_t,nmtools_maybe<result_t>>;
+            return (has_value(lhs) && has_value(rhs)
+                ? return_t{f(unwrap(lhs),unwrap(rhs),args...)}
+                : return_t{meta::Nothing}
+            );
+        }
+        // TODO: handle either type
+        else {
+            return f(lhs,rhs,args...);
+        }
+    }
 } // namespace nmtools::view
 
 namespace nmtools::meta

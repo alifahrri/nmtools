@@ -530,6 +530,9 @@ namespace nmtools::utils::impl
                 node_str += to_string(id);
                 node_str += "[graphviz_record_fieldid_close] ";
                 node_str += to_string(I);
+                node_str += " (";
+                node_str += to_string(id);
+                node_str += ") ";
                 if (I < (N-1)) {
                     node_str += " | ";
                 }

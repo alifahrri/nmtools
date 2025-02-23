@@ -5,6 +5,10 @@
 
 #include "nmtools/index/concatenate.hpp"
 #include "nmtools/utility/shape.hpp"
+#include "nmtools/utility/fwd.hpp"
+#include "nmtools/core/indexing.hpp"
+#include "nmtools/utility/isequal/isequal.hpp"
+#include "nmtools/utility/to_string/to_string.hpp"
 
 namespace nmtools::view
 {
@@ -125,8 +129,185 @@ namespace nmtools::view
             return decorator_t<concatenate_t,lhs_array_t,rhs_array_t,axis_t>{{lhs,rhs,axis}};
         }
     } // concatenate
+
+    template <typename lhs_shape_t, typename rhs_shape_t, typename axis_t, typename lhs_size_t, typename rhs_size_t>
+    struct concatenatev2_t
+        : base_indexer_t<concatenatev2_t<lhs_shape_t,rhs_shape_t,axis_t,lhs_size_t,rhs_size_t>>
+    {
+        using lhs_shape_type = meta::fwd_attribute_t<lhs_shape_t>;
+        using rhs_shape_type = meta::fwd_attribute_t<rhs_shape_t>;
+        using axis_type = meta::fwd_attribute_t<axis_t>;
+        using lhs_size_type  = meta::fwd_attribute_t<lhs_size_t>;
+        using rhs_size_type  = meta::fwd_attribute_t<rhs_size_t>;
+        using src_shape_type = nmtools_tuple<lhs_shape_type,rhs_shape_type>;
+        using dst_shape_type = meta::resolve_optype_t<index::shape_concatenate_t,lhs_shape_type,rhs_shape_type,axis_t,lhs_size_type,rhs_size_type>;
+
+        lhs_shape_type lhs_shape;
+        rhs_shape_type rhs_shape;
+        axis_type axis;
+        lhs_size_type lhs_size;
+        rhs_size_type rhs_size;
+        dst_shape_type dst_shape;
+
+        static constexpr auto n_inputs  = 2;
+        static constexpr auto n_outputs = 1;
+
+        constexpr concatenatev2_t(const lhs_shape_t& lhs_shape, const rhs_shape_t& rhs_shape, const axis_t& axis, lhs_size_t lhs_size, rhs_size_t rhs_size)
+            : lhs_shape(fwd_attribute(lhs_shape))
+            , rhs_shape(fwd_attribute(rhs_shape))
+            , axis(fwd_attribute(axis))
+            , lhs_size(fwd_attribute(lhs_size))
+            , rhs_size(fwd_attribute(rhs_size))
+            , dst_shape(
+                // TODO: use maybe type
+                nmtools::get<1>(
+                    index::shape_concatenate(
+                        lhs_shape
+                        , rhs_shape
+                        , axis
+                        , lhs_size
+                        , rhs_size
+                    )
+                )
+            )
+        {}
+
+        template <typename indices_t>
+        constexpr auto indices(const indices_t& indices) const
+        {
+            auto src_indices = index::concatenate(lhs_shape,rhs_shape,indices,axis);
+            [[maybe_unused]] auto a_flag = nmtools::get<0>(src_indices);
+            [[maybe_unused]] auto b_flag = nmtools::get<1>(src_indices);
+            [[maybe_unused]] auto a_idx  = nmtools::get<2>(src_indices);
+            [[maybe_unused]] auto b_idx  = nmtools::get<3>(src_indices);
+            using a_idx_t = meta::remove_cvref_t<decltype(a_idx)>;
+            using b_idx_t = meta::remove_cvref_t<decltype(b_idx)>;
+            if constexpr (meta::is_same_v<a_idx_t,b_idx_t>) {
+                using result_t = tagged_indices_t<a_idx_t>;
+                if (a_flag) {
+                    auto result = result_t{result_t::Tag::LEFT,a_idx};
+                    return result;
+                } else {
+                    auto result = result_t{result_t::Tag::RIGHT,b_idx};
+                    return result;
+                }
+            } else {
+                using src_indices_t = nmtools_either<a_idx_t,b_idx_t>;
+                if (a_flag) {
+                    return src_indices_t{a_idx};
+                } else {
+                    return src_indices_t{b_idx};
+                }
+            }
+        }
+
+        template <typename...args_t>
+        constexpr auto operator==(concatenatev2_t<args_t...> other) const
+        {
+            return utils::isequal(lhs_shape,other.lhs_shape)
+                && utils::isequal(rhs_shape,other.rhs_shape)
+                && utils::isequal(axis,other.axis)
+            ;
+        }
+    }; // concatenatev2_t
+
+    template <typename lhs_shape_t, typename rhs_shape_t, typename axis_t, typename lhs_size_t, typename rhs_size_t>
+    constexpr auto concatenate_indexer(const lhs_shape_t& lhs_shape, const rhs_shape_t& rhs_shape, const axis_t& axis, lhs_size_t lhs_size, rhs_size_t rhs_size)
+    {
+        if constexpr (meta::is_maybe_v<lhs_shape_t> || meta::is_maybe_v<rhs_shape_t>
+            || meta::is_maybe_v<axis_t> || meta::is_maybe_v<lhs_size_t> || meta::is_maybe_v<rhs_size_t>
+        ) {
+            using result_t = decltype(concatenate_indexer(unwrap(lhs_shape),unwrap(rhs_shape),unwrap(axis),unwrap(lhs_size),unwrap(rhs_size)));
+            using return_t = meta::conditional_t<meta::is_maybe_v<result_t>,result_t,nmtools_maybe<result_t>>;
+            return (has_value(lhs_shape) && has_value(rhs_shape) && has_value(axis) && has_value(lhs_size) && has_value(rhs_size)
+                ? return_t{concatenate_indexer(unwrap(lhs_shape),unwrap(rhs_shape),unwrap(axis),unwrap(lhs_size),unwrap(rhs_size))}
+                : return_t{meta::Nothing}
+            );
+        } else {
+            // TODO: use maybe type
+            auto result = index::shape_concatenate(lhs_shape, rhs_shape, axis, lhs_size, rhs_size);
+            auto dst_shape = nmtools::get<1>(result);
+            if constexpr (meta::is_constant_index_array_v<decltype(dst_shape)>) {
+                return concatenatev2_t{lhs_shape,rhs_shape,axis,lhs_size,rhs_size};
+            } else {
+                using result_t = decltype(concatenatev2_t{lhs_shape,rhs_shape,axis,lhs_size,rhs_size});
+                using return_t = nmtools_maybe<result_t>;
+                auto success = nmtools::get<0>(result);
+                return (success
+                    ? return_t{concatenatev2_t{lhs_shape,rhs_shape,axis,lhs_size,rhs_size}}
+                    : return_t{meta::Nothing}
+                );
+            }
+        }
+    } // concatenate_indexer
+
+    template <typename lhs_t, typename rhs_t, typename axis_t>
+    constexpr auto concatenatev2(const lhs_t& lhs, const rhs_t& rhs, const axis_t& axis)
+    {
+        auto f = [](const auto& lhs, const auto& rhs, const auto& axis){
+            auto lhs_shape = shape<true>(lhs);
+            auto rhs_shape = shape<true>(rhs);
+            auto lhs_size  = size<true>(lhs);
+            auto rhs_size  = size<true>(rhs);
+            auto indexer   = concatenate_indexer(lhs_shape,rhs_shape,axis,lhs_size,rhs_size);
+            auto operands  = pack_operands(lhs,rhs);
+            return indexing(operands,indexer);
+        };
+        return lift_binary_indexing(f,lhs,rhs,axis);
+    } // concatenatev2
 } // namespace nmtools::view
 
+namespace nmtools::array
+{
+    template <typename...args_t, auto max_dim>
+    struct as_static_t<
+        view::concatenatev2_t<args_t...>, max_dim
+    > {
+        using attribute_type = view::concatenatev2_t<args_t...>;
+
+        attribute_type attribute;
+
+        auto operator()() const
+        {
+            auto lhs_shape = as_static<max_dim>(attribute.lhs_shape);
+            auto rhs_shape = as_static<max_dim>(attribute.rhs_shape);
+            auto axis = as_static<max_dim>(attribute.axis);
+            // lhs_size and rhs_size should be integer
+            auto lhs_size = attribute.lhs_size;
+            auto rhs_size = attribute.rhs_size;
+            auto indexer = view::concatenate_indexer(lhs_shape,rhs_shape,axis,lhs_size,rhs_size);
+            return indexer;
+        }
+    };
+}
+
+#if NMTOOLS_HAS_STRING
+
+namespace nmtools::utils::impl
+{
+    template <typename...args_t, auto...fmt_args>
+    struct to_string_t<
+        view::concatenatev2_t<args_t...>, fmt_string_t<fmt_args...>
+    > {
+        using result_type = nmtools_string;
+
+        auto operator()(const view::concatenatev2_t<args_t...>& kwargs)
+        {
+            nmtools_string str;
+            str += "concatenate{";
+            str += ".lhs_shape=";
+            str += to_string(kwargs.lhs_shape,Compact);
+            str += ",.rhs_shape=";
+            str += to_string(kwargs.rhs_shape,Compact);
+            str += ",.axis=";
+            str += to_string(kwargs.axis,Compact);
+            str += "}";
+            return str;
+        }
+    };
+}
+
+#endif // NMTOOLS_HAS_STRING
 namespace nmtools::meta
 {
     /**

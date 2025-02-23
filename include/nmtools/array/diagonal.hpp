@@ -190,12 +190,13 @@ namespace nmtools::meta
 
 namespace nmtools::view
 {
-    template <typename src_shape_t, typename dst_shape_t, typename offset_t, typename axis1_t, typename axis2_t, typename src_size_t>
+    template <typename src_shape_t, typename dst_shape_t, typename offset_t, typename axis1_t, typename axis2_t, typename src_size_t, typename src_dim_t>
     struct diagonal_t
-        : base_indexer_t<diagonal_t<src_shape_t,dst_shape_t,offset_t,axis1_t,axis2_t,src_size_t>>
+        : base_indexer_t<diagonal_t<src_shape_t,dst_shape_t,offset_t,axis1_t,axis2_t,src_size_t,src_dim_t>>
     {
         using src_shape_type = meta::fwd_attribute_t<src_shape_t>;
         using src_size_type  = meta::fwd_attribute_t<src_size_t>;
+        using src_dim_type   = meta::fwd_attribute_t<src_dim_t>;
 
         using dst_shape_type = meta::fwd_attribute_t<dst_shape_t>;
         using dst_size_type  = meta::conditional_t<
@@ -219,6 +220,7 @@ namespace nmtools::view
         const axis2_type     axis2;
         const src_size_type  src_size;
         const dst_size_type  dst_size;
+        const src_dim_type   src_dim;
 
         constexpr diagonal_t(const src_shape_t& src_shape
             , const dst_shape_t& dst_shape
@@ -226,6 +228,7 @@ namespace nmtools::view
             , axis1_t axis1
             , axis2_t axis2
             , src_size_t src_size
+            , src_dim_t src_dim
         )
             : src_shape(fwd_attribute(src_shape))
             , dst_shape(fwd_attribute(dst_shape))
@@ -234,6 +237,7 @@ namespace nmtools::view
             , axis2(axis2)
             , src_size(src_size)
             , dst_size(index::product(dst_shape))
+            , src_dim(src_dim)
         {}
 
         template <typename indices_t>
@@ -264,8 +268,8 @@ namespace nmtools::view
             using n_axis1_t = decltype(n_axis1);
             using n_axis2_t = decltype(n_axis2);
 
-            using result_t = diagonal_t<src_shape_t,dst_shape_t,offset_t,n_axis1_t,n_axis2_t,src_size_t>;
-            return result_t{src_shape,dst_shape,offset,n_axis1,n_axis2,src_size};
+            using result_t = diagonal_t<src_shape_t,dst_shape_t,offset_t,n_axis1_t,n_axis2_t,src_size_t,src_dim_t>;
+            return result_t{src_shape,dst_shape,offset,n_axis1,n_axis2,src_size,src_dim};
         }
     } // diagonal_indexer
 
@@ -279,6 +283,29 @@ namespace nmtools::view
         return indexing(array,indexer);
     } // diagonal
 } // nmtools::view
+
+namespace nmtools::array
+{
+    template <typename...args_t, auto max_dim>
+    struct as_static_t<
+        view::diagonal_t<args_t...>, max_dim
+    > {
+        using attribute_type = view::diagonal_t<args_t...>;
+
+        attribute_type attribute;
+
+        auto operator()() const
+        {
+            auto src_shape = as_static<max_dim>(attribute.src_shape);
+            auto offset    = as_static<max_dim>(attribute.offset);
+            auto axis1     = as_static<max_dim>(attribute.axis1);
+            auto axis2     = as_static<max_dim>(attribute.axis2);
+            auto src_size  = as_static<max_dim>(attribute.src_size);
+            auto src_dim   = as_static<max_dim>(attribute.src_dim);
+            return view::diagonal_indexer(src_shape,offset,axis1,axis2,src_size,src_dim);
+        }
+    }; // as_static_t
+} // namespace nmtools::array
 
 #endif // NMTOOLS_ARRAY_VIEW_DIAGONAL_HPP
 

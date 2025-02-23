@@ -88,6 +88,19 @@ set(NMTOOLS_SYCL_TEST_SOURCES ${NMTOOLS_SYCL_TEST_SOURCES}
     array/cumprod.cpp
     array/mean.cpp
 
+    array/tensordot.cpp
+    array/trace.cpp
+    array/var.cpp
+    array/vecdot.cpp
+    array/vector_norm.cpp
+    array/stddev.cpp
+    array/softmax.cpp
+    array/pairwise_distance.cpp
+    array/kron.cpp
+    array/dot.cpp
+    array/conv2d.cpp
+    array/bilinear.cpp
+
     ## TODO: fix compile on cuda
     # composition/add_tanh.cpp
     # composition/divide_subtract.cpp

@@ -36,8 +36,10 @@ jobs:
   hipsycl-clang14-cuda-docker:
     name: hipsycl-clang14-cuda-docker
     runs-on: ubuntu-20.04
+    ## already single jobs but still OOM :(
+    if: ${{ false }}
     steps:
       - uses: actions/checkout@v2
       - name: build docker
         run: |
-          docker build . --tag nmtools:sycl-clang14-cuda --build-arg BASE=nvidia/cuda:11.8.0-devel-ubuntu22.04 --build-arg cuda_backend=ON --build-arg toolchain=sycl-clang14-cuda --file docker/sycl.dockerfile
+          docker build . --tag nmtools:sycl-clang14-cuda --build-arg BASE=nvidia/cuda:11.8.0-devel-ubuntu22.04 --build-arg cuda_backend=ON --build-arg toolchain=sycl-clang14-cuda --build-arg build_nproc=1 --file docker/sycl.dockerfile

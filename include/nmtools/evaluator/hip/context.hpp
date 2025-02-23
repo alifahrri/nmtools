@@ -3,13 +3,15 @@
 
 #include "nmtools/exception.hpp"
 #include "nmtools/meta.hpp"
+#include "nmtools/core/functor.hpp"
+#include "nmtools/core/transform/linearize.hpp"
 #include "nmtools/evaluator/kernel_helper.hpp"
 #include "nmtools/utility/tuple_cat.hpp"
-#include "nmtools/core/functor.hpp"
 
-#include "hip/hip_runtime.h"
+#include <hip/hip_runtime.h>
 
 #include <memory>
+#include <iostream>
 
 template <auto out_static_dim=0, typename function_t
     , typename out_t, typename out_shape_t, typename out_dim_t
@@ -360,13 +362,288 @@ namespace nmtools::array::hip
             this->run_(output,fn,device_operands,sequence_t{});
             #endif
         }
+
+        template <typename view_t>
+        auto eval(const view_t& view)
+        {
+            auto graph = functional::linearize(functional::get_compute_graph(unwrap(view)));
+            auto operands = functional::get_operands(graph);
+            auto function = functional::get_function(graph);
+            auto functor  = function.functor;
+
+            using result_t = meta::resolve_optype_t<eval_result_t<>,view_t,none_t>;
+            auto result    = result_t{};
+
+            if constexpr (meta::is_resizable_v<result_t>) {
+                result.resize(unwrap(shape(view)));
+            }
+            this->run(functor,result,operands);
+
+            return result;
+        }
     };
+    
+    #ifndef NMTOOLS_HIP_LOG_DEFAULT
+    #define NMTOOLS_HIP_LOG_DEFAULT 1
+    #endif // NMTOOLS_HIP_LOG_DEFAULT
 
     inline auto default_context()
     {
         static std::shared_ptr<context_t> default_context;
         if (!default_context) {
             default_context = std::make_shared<context_t>();
+            auto enable_log = NMTOOLS_HIP_LOG_DEFAULT;
+            if (auto env_log = std::getenv("NMTOOLS_HIP_LOG"))  {
+                enable_log = std::stoi(env_log);
+            }
+            if (enable_log) {
+                int driver_version = 0;
+                int runtime_version = 0;
+                int device_count = 0;
+                hipError_t status{};
+                status = hipDriverGetVersion(&driver_version);
+                if (status != hipSuccess) {
+                    throw hip_exception(status, "hipDriverGetVersion");
+                }
+                // TODO: better logging utilities
+                std::cout << "\033[1;33m[nmtools hip]\033[0m driver version: " << driver_version << "\n";
+                status = hipRuntimeGetVersion(&runtime_version);
+                if (status != hipSuccess) {
+                    throw hip_exception(status, "hipRuntimeGetVersion");
+                }
+                // TODO: better logging utilities
+                std::cout << "\033[1;33m[nmtools hip]\033[0m runtime version: " << runtime_version << "\n";
+                status = hipGetDeviceCount(&device_count);
+                if (status != hipSuccess) {
+                    throw hip_exception(status, "hipGetDeviceCount");
+                }
+                // TODO: better logging utilities
+                std::cout << "\033[1;33m[nmtools hip]\033[0m number of hip devices: " << device_count << "\n";
+                for (nm_size_t i=0; i<(nm_size_t)device_count; i++) {
+                    hipDevice_t device;
+                    status = hipDeviceGet(&device,i);
+                    if (status != hipSuccess) {
+                        throw hip_exception(status, "hipDeviceGet");
+                    }
+                    int major;
+                    int minor;
+                    status = hipDeviceComputeCapability(&major, &minor, device);
+                    if (status != hipSuccess) {
+                        throw hip_exception(status, "hipDeviceComputeCapability");
+                    }
+                    std::cout << "- compute capability: " \
+                        << "major: " << major << " " \
+                        << "minor: " << minor << std::endl;
+                    constexpr auto max_len = 32;
+                    char device_name[max_len];
+                    status = hipDeviceGetName(device_name,max_len,device);
+                    if (status != hipSuccess) {
+                        throw hip_exception(status, "hipDeviceGetName");
+                    }
+                    std::cout << "- device name: " << device_name << std::endl;
+                    size_t bytes;
+                    status = hipDeviceTotalMem(&bytes,device);
+                    if (status != hipSuccess) {
+                        throw hip_exception(status, "hipDeviceTotalMem");
+                    }
+                    std::cout << "- total mem (bytes): " << bytes << std::endl;
+                    int ecc_enabled;
+                    status = hipDeviceGetAttribute(&ecc_enabled,hipDeviceAttributeEccEnabled,device);
+                    if (status != hipSuccess) {
+                        throw hip_exception(status, "hipDeviceGetAttribute(hipDeviceAttributeEccEnabled)");
+                    }
+                    std::cout << "- ecc enabled: " << ecc_enabled << std::endl;
+                    int async_engine_count;
+                    status = hipDeviceGetAttribute(&async_engine_count,hipDeviceAttributeAsyncEngineCount,device);
+                    if (status != hipSuccess) {
+                        throw hip_exception(status, "hipDeviceGetAttribute(hipDeviceAttributeAsyncEngineCount)");
+                    }
+                    std::cout << "- async engine count: " << async_engine_count << std::endl;
+                    int can_map_to_host_mem;
+                    status = hipDeviceGetAttribute(&can_map_to_host_mem,hipDeviceAttributeCanMapHostMemory,device);
+                    if (status != hipSuccess) {
+                        throw hip_exception(status, "hipDeviceGetAttribute(hipDeviceAttributeCanMapHostMemory)");
+                    }
+                    std::cout << "- can map to host memory: " << can_map_to_host_mem << std::endl;
+                    int can_use_host_pointer_for_registered_mem;
+                    status = hipDeviceGetAttribute(&can_use_host_pointer_for_registered_mem,hipDeviceAttributeCanUseHostPointerForRegisteredMem,device);
+                    if (status != hipSuccess) {
+                        throw hip_exception(status, "hipDeviceGetAttribute(hipDeviceAttributeCanUseHostPointerForRegisteredMem)");
+                    }
+                    std::cout << "- can use host pointer for registered memory: " << can_map_to_host_mem << std::endl;
+                    int clock_rate_khz;
+                    status = hipDeviceGetAttribute(&clock_rate_khz,hipDeviceAttributeClockRate,device);
+                    if (status != hipSuccess) {
+                        throw hip_exception(status, "hipDeviceGetAttribute(hipDeviceAttributeClockRate)");
+                    }
+                    std::cout << "- maximum clock (kHz): " << clock_rate_khz << std::endl;
+                    int compute_mode;
+                    status = hipDeviceGetAttribute(&compute_mode,hipDeviceAttributeComputeMode,device);
+                    if (status != hipSuccess) {
+                        throw hip_exception(status, "hipDeviceGetAttribute(hipDeviceAttributeComputeMode)");
+                    }
+                    std::cout << "- compute mode: " << compute_mode << std::endl;
+                    int compute_preemption;
+                    status = hipDeviceGetAttribute(&compute_preemption,hipDeviceAttributeComputePreemptionSupported,device);
+                    if (status != hipSuccess) {
+                        throw hip_exception(status, "hipDeviceGetAttribute(hipDeviceAttributeComputePreemptionSupported)");
+                    }
+                    std::cout << "- compute preemption supported: " << compute_preemption << std::endl;
+                    int concurrent_kernels;
+                    status = hipDeviceGetAttribute(&concurrent_kernels,hipDeviceAttributeConcurrentKernels,device);
+                    if (status != hipSuccess) {
+                        throw hip_exception(status, "hipDeviceGetAttribute(hipDeviceAttributeConcurrentKernels)");
+                    }
+                    std::cout << "- concurrent kernel execution supported: " << concurrent_kernels << std::endl;
+                    int concurrent_managed_access;
+                    status = hipDeviceGetAttribute(&concurrent_managed_access,hipDeviceAttributeConcurrentManagedAccess,device);
+                    if (status != hipSuccess) {
+                        throw hip_exception(status, "hipDeviceGetAttribute(hipDeviceAttributeConcurrentManagedAccess)");
+                    }
+                    std::cout << "- coherent access managed memory concurrently with cpu: " << concurrent_managed_access << std::endl;
+                    int cooperative_launch;
+                    status = hipDeviceGetAttribute(&cooperative_launch,hipDeviceAttributeCooperativeLaunch,device);
+                    if (status != hipSuccess) {
+                        throw hip_exception(status, "hipDeviceGetAttribute(hipDeviceAttributeCooperativeLaunch)");
+                    }
+                    std::cout << "- cooperative launch supported: " << cooperative_launch << std::endl;
+                    int cooperative_device_launch;
+                    status = hipDeviceGetAttribute(&cooperative_device_launch,hipDeviceAttributeCooperativeMultiDeviceLaunch,device);
+                    if (status != hipSuccess) {
+                        throw hip_exception(status, "hipDeviceGetAttribute(hipDeviceAttributeCooperativeMultiDeviceLaunch)");
+                    }
+                    std::cout << "- cooperative device launch supported: " << cooperative_device_launch << std::endl;
+                    int global_l1_cache_support;
+                    status = hipDeviceGetAttribute(&global_l1_cache_support,hipDeviceAttributeGlobalL1CacheSupported,device);
+                    if (status != hipSuccess) {
+                        throw hip_exception(status, "hipDeviceGetAttribute(hipDeviceAttributeGlobalL1CacheSupported)");
+                    }
+                    std::cout << "- caching globals in L1 supported: " << global_l1_cache_support << std::endl;
+                    int host_native_atomic;
+                    status = hipDeviceGetAttribute(&host_native_atomic,hipDeviceAttributeHostNativeAtomicSupported,device);
+                    if (status != hipSuccess) {
+                        throw hip_exception(status, "hipDeviceGetAttribute(hipDeviceAttributeHostNativeAtomicSupported)");
+                    }
+                    std::cout << "- host device operation is native atomic: " << host_native_atomic << std::endl;
+                    int is_igpu;
+                    status = hipDeviceGetAttribute(&is_igpu,hipDeviceAttributeIntegrated,device);
+                    if (status != hipSuccess) {
+                        throw hip_exception(status, "hipDeviceGetAttribute(hipDeviceAttributeIntegrated)");
+                    }
+                    std::cout << "- is integrated GPU: " << is_igpu << std::endl;
+                    int is_multi_gpu_board;
+                    status = hipDeviceGetAttribute(&is_multi_gpu_board,hipDeviceAttributeIsMultiGpuBoard,device);
+                    if (status != hipSuccess) {
+                        throw hip_exception(status, "hipDeviceGetAttribute(hipDeviceAttributeIsMultiGpuBoard)");
+                    }
+                    std::cout << "- is multi GPUs: " << is_multi_gpu_board << std::endl;
+                    int kernel_timeout_limit;
+                    status = hipDeviceGetAttribute(&kernel_timeout_limit,hipDeviceAttributeKernelExecTimeout,device);
+                    if (status != hipSuccess) {
+                        throw hip_exception(status, "hipDeviceGetAttribute(hipDeviceAttributeKernelExecTimeout)");
+                    }
+                    std::cout << "- kernel execution timeout limit: " << kernel_timeout_limit << std::endl;
+                    int l2_cache_size_bytes;
+                    status = hipDeviceGetAttribute(&l2_cache_size_bytes,hipDeviceAttributeL2CacheSize,device);
+                    if (status != hipSuccess) {
+                        throw hip_exception(status, "hipDeviceGetAttribute(hipDeviceAttributeL2CacheSize)");
+                    }
+                    std::cout << "- L2 cache size (bytes): " << l2_cache_size_bytes << std::endl;
+                    int local_l1_cache_support;
+                    status = hipDeviceGetAttribute(&local_l1_cache_support,hipDeviceAttributeLocalL1CacheSupported,device);
+                    if (status != hipSuccess) {
+                        throw hip_exception(status, "hipDeviceGetAttribute(hipDeviceAttributeLocalL1CacheSupported)");
+                    }
+                    std::cout << "- caching locals in L1 supported: " << local_l1_cache_support << std::endl;
+                    int managed_memory_support;
+                    status = hipDeviceGetAttribute(&managed_memory_support,hipDeviceAttributeManagedMemory,device);
+                    if (status != hipSuccess) {
+                        throw hip_exception(status, "hipDeviceGetAttribute(hipDeviceAttributeManagedMemory)");
+                    }
+                    std::cout << "- supports allocating managed memory: " << managed_memory_support << std::endl;
+                    int max_block_size;
+                    status = hipDeviceGetAttribute(&max_block_size,hipDeviceAttributeMaxBlocksPerMultiProcessor,device);
+                    if (status != hipSuccess) {
+                        throw hip_exception(status, "hipDeviceGetAttribute(hipDeviceAttributeMaxBlocksPerMultiProcessor)");
+                    }
+                    std::cout << "- maximum block size per multiprocessors: " << max_block_size << std::endl;
+                    int max_block_dim_x;
+                    status = hipDeviceGetAttribute(&max_block_dim_x,hipDeviceAttributeMaxBlockDimX,device);
+                    if (status != hipSuccess) {
+                        throw hip_exception(status, "hipDeviceGetAttribute(hipDeviceAttributeMaxBlockDimX)");
+                    }
+                    std::cout << "- maximum block size in width (x): " << max_block_dim_x << std::endl;
+                    int max_block_dim_y;
+                    status = hipDeviceGetAttribute(&max_block_dim_y,hipDeviceAttributeMaxBlockDimY,device);
+                    if (status != hipSuccess) {
+                        throw hip_exception(status, "hipDeviceGetAttribute(hipDeviceAttributeMaxBlockDimY)");
+                    }
+                    std::cout << "- maximum block size in height (y): " << max_block_dim_y << std::endl;
+                    int max_block_dim_z;
+                    status = hipDeviceGetAttribute(&max_block_dim_z,hipDeviceAttributeMaxBlockDimZ,device);
+                    if (status != hipSuccess) {
+                        throw hip_exception(status, "hipDeviceGetAttribute(hipDeviceAttributeMaxBlockDimZ)");
+                    }
+                    std::cout << "- maximum block size in depth (z): " << max_block_dim_z << std::endl;
+                    int max_grid_size_x;
+                    status = hipDeviceGetAttribute(&max_grid_size_x,hipDeviceAttributeMaxGridDimX,device);
+                    if (status != hipSuccess) {
+                        throw hip_exception(status, "hipDeviceGetAttribute(hipDeviceAttributeMaxGridDimX)");
+                    }
+                    std::cout << "- maximum grid size in width (x): " << max_grid_size_x << std::endl;
+                    int max_grid_size_y;
+                    status = hipDeviceGetAttribute(&max_grid_size_y,hipDeviceAttributeMaxGridDimY,device);
+                    if (status != hipSuccess) {
+                        throw hip_exception(status, "hipDeviceGetAttribute(hipDeviceAttributeMaxGridDimY)");
+                    }
+                    std::cout << "- maximum grid size in height (y): " << max_grid_size_y << std::endl;
+                    int max_grid_size_z;
+                    status = hipDeviceGetAttribute(&max_grid_size_z,hipDeviceAttributeMaxGridDimZ,device);
+                    if (status != hipSuccess) {
+                        throw hip_exception(status, "hipDeviceGetAttribute(hipDeviceAttributeMaxGridDimZ)");
+                    }
+                    std::cout << "- maximum grid size in depth (z): " << max_grid_size_z << std::endl;
+                    #if 0
+                    // crashed (at least on 780M)
+                    int max_threads_dim;
+                    status = hipDeviceGetAttribute(&max_threads_dim,hipDeviceAttributeMaxThreadsDim,device);
+                    if (status != hipSuccess) {
+                        throw hip_exception(status, "hipDeviceGetAttribute(hipDeviceAttributeMaxThreadsDim)");
+                    }
+                    std::cout << "- maximum dimensionn of a block: " << max_threads_dim << std::endl;
+                    #endif
+                    int max_threads_per_block;
+                    status = hipDeviceGetAttribute(&max_threads_per_block,hipDeviceAttributeMaxThreadsPerBlock,device);
+                    if (status != hipSuccess) {
+                        throw hip_exception(status, "hipDeviceGetAttribute(hipDeviceAttributeMaxThreadsPerBlock)");
+                    }
+                    std::cout << "- maximum threads per block: " << max_threads_per_block << std::endl;
+                    int max_threads_per_multiprocessor;
+                    status = hipDeviceGetAttribute(&max_threads_per_multiprocessor,hipDeviceAttributeMaxThreadsPerMultiProcessor,device);
+                    if (status != hipSuccess) {
+                        throw hip_exception(status, "hipDeviceGetAttribute(hipDeviceAttributeMaxThreadsPerMultiProcessor)");
+                    }
+                    std::cout << "- maximum threads per multiprocessor: " << max_threads_per_multiprocessor << std::endl;
+                    int memory_bus_width;
+                    status = hipDeviceGetAttribute(&memory_bus_width,hipDeviceAttributeMemoryBusWidth,device);
+                    if (status != hipSuccess) {
+                        throw hip_exception(status, "hipDeviceGetAttribute(hipDeviceAttributeMaxThreadsPerMultiProcessor)");
+                    }
+                    std::cout << "- global memory bus width (bits): " << memory_bus_width << std::endl;
+                    int max_memory_clock_khz;
+                    status = hipDeviceGetAttribute(&max_memory_clock_khz,hipDeviceAttributeMemoryClockRate,device);
+                    if (status != hipSuccess) {
+                        throw hip_exception(status, "hipDeviceGetAttribute(hipDeviceAttributeMemoryClockRate)");
+                    }
+                    std::cout << "- maximum memory clock frequency (kHz): " << max_memory_clock_khz << std::endl;
+                    int multiprocessor_count;
+                    status = hipDeviceGetAttribute(&multiprocessor_count,hipDeviceAttributeMultiprocessorCount,device);
+                    if (status != hipSuccess) {
+                        throw hip_exception(status, "hipDeviceGetAttribute(hipDeviceAttributeMultiprocessorCount)");
+                    }
+                    std::cout << "- multiprocessor count: " << multiprocessor_count << std::endl;
+                }
+            }
         }
         return default_context;
     }

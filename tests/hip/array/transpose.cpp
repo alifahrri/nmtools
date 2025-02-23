@@ -23,13 +23,16 @@ inline auto name##_ls_db = nmtools::cast(name, nmtools::array::kind::ndarray_ls_
 namespace nm = nmtools;
 namespace na = nm::array;
 namespace hip = na::hip;
+namespace view = nm::view;
 
 #define TRANSPOSE_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
     NMTOOLS_TESTING_USE_CASE(transpose, case_name); \
     using namespace args; \
-    auto result = na::transpose(__VA_ARGS__, hip::default_context()); \
+    auto ctx    = hip::default_context(); \
+    auto view   = view::transpose(__VA_ARGS__); \
+    auto result = ctx->eval(view); \
     auto expect = na::transpose(__VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( nm::shape(result), nm::shape(expect) ); \
     NMTOOLS_ASSERT_CLOSE( result, expect ); \

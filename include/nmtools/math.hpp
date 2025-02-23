@@ -9,6 +9,8 @@
 #include "nmtools/platform/math/arduino.hpp"
 #elif (defined(__CUDA__))
 #include "nmtools/platform/math/cuda.hpp"
+#elif (defined(__HIP__))
+#include "nmtools/platform/math/hip.hpp"
 #else
 #include "nmtools/platform/math/stl.hpp"
 #endif

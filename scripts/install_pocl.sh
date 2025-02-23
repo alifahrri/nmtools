@@ -53,10 +53,17 @@ fi
 
 cd ${DIR}
 git fetch && git checkout ${POCL_VERSION}
+if [[ -f ../patch/pocl.patch ]]; then
+    echo "found patch for pocl (patch/pocl.patch), applying patch"
+    git apply ../patch/pocl.patch
+    echo "done"
+fi
+
 mkdir -p build && cd build \
     && cmake -DCMAKE_BUILD_TYPE=${POCL_BUILD_TYPE} \
     -DENABLE_TESTS=OFF \
     -DENABLE_CUDA=${POCL_CUDA} \
     -DSPIRV=ON -DLLVM_SPIRV=${LLVM_SPV_PATH} \
     -DCMAKE_INSTALL_PREFIX=/usr .. \
-    && make -j2 && make install
+    -DPOCL_MAX_WORKGROUP_STRING_LENGTH=8192 \
+    && make -j2 VERBOSE=1 && make install
