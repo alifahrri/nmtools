@@ -92,17 +92,20 @@ namespace nmtools::view
     template <typename lhs_t, typename rhs_t>
     constexpr auto vstack(const lhs_t& lhs, const rhs_t& rhs)
     {
+        auto aliased = view::aliased(lhs,rhs);
+        auto a_lhs = nmtools::get<0>(aliased);
+        auto a_rhs = nmtools::get<1>(aliased);
         auto reshaped_lhs = [&](){
-            auto src_shape = shape<true>(lhs);
+            auto src_shape = shape<true>(a_lhs);
             auto dst_shape = index::shape_vstack(src_shape);
-            return view::reshape(lhs,dst_shape);
+            return view::reshape(a_lhs,dst_shape);
         }();
         auto rehsaped_rhs = [&](){
-            auto src_shape = shape<true>(rhs);
+            auto src_shape = shape<true>(a_rhs);
             auto dst_shape = index::shape_vstack(src_shape);
-            return view::reshape(rhs,dst_shape);
+            return view::reshape(a_rhs,dst_shape);
         }();
-        return view::concatenate(
+        return view::concatenatev2(
             reshaped_lhs
             , rehsaped_rhs
             , meta::ct_v<0>

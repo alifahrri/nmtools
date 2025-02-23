@@ -9,9 +9,12 @@ namespace nmtools::view
     template <typename lhs_t, typename rhs_t, typename axis_t=meta::ct<0>>
     constexpr auto stack(const lhs_t& lhs, const rhs_t& rhs, axis_t axis=axis_t{})
     {
-        return view::concatenate(
-              view::expand_dims(lhs,axis)
-            , view::expand_dims(rhs,axis)
+        auto aliased = view::aliased(lhs,rhs);
+        auto a_lhs = nmtools::get<0>(aliased);
+        auto a_rhs = nmtools::get<1>(aliased);
+        return view::concatenatev2(
+              view::expand_dims(a_lhs,axis)
+            , view::expand_dims(a_rhs,axis)
             , axis
         );
     }
