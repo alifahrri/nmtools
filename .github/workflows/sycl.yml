@@ -36,6 +36,8 @@ jobs:
   hipsycl-clang14-cuda-docker:
     name: hipsycl-clang14-cuda-docker
     runs-on: ubuntu-20.04
+    ## already single jobs but still OOM :(
+    if: ${{ false }}
     steps:
       - uses: actions/checkout@v2
       - name: build docker
