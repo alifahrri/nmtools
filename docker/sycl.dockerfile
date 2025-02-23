@@ -85,12 +85,15 @@ FROM build as run
 
 WORKDIR /workspace/nmtools
 
+ARG build_nproc=2
+ENV BUILD_NPROC=${build_nproc}
+
 RUN mkdir -p build/${TOOLCHAIN} && cd build/${TOOLCHAIN} \
     && cmake -DCMAKE_TOOLCHAIN_FILE=cmake/toolchains/${TOOLCHAIN}.cmake \
         -DNMTOOLS_BUILD_META_TESTS=OFF -DNMTOOLS_BUILD_UTL_TESTS=OFF -DNMTOOLS_TEST_ALL=OFF \
         -DNMTOOLS_BUILD_SYCL_TESTS=ON \
         ../.. \
-    && make -j2 VERBOSE=1 numeric-tests-sycl-doctest
+    && make -j${BUILD_NPROC} VERBOSE=1 numeric-tests-sycl-doctest
 
 # got weird error on CI
 # LLVM ERROR: Instruction Combining did not reach a fixpoint after 1 iterations
