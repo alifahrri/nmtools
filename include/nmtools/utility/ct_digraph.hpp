@@ -6,6 +6,8 @@
 #include "nmtools/utility/ct_map.hpp"
 #include "nmtools/utl/static_vector.hpp"
 #include "nmtools/utl/static_queue.hpp"
+#include "nmtools/utl/static_stack.hpp"
+#include "nmtools/index/contains.hpp"
 #include "nmtools/assert.hpp"
 
 namespace nmtools::utility
@@ -148,6 +150,41 @@ namespace nmtools::utility
         }
 
         return result;
+    }
+
+    template <typename adjacency_list_t>
+    constexpr auto has_path(const adjacency_list_t& adj_list, nm_index_t start_node, nm_index_t end_node)
+    {
+        // assume static_vector or array
+        // TODO: check for another type
+        constexpr auto N = meta::bounded_size_v<typename adjacency_list_t::value_type>;
+
+        using visited_t = utl::static_vector<nm_index_t,N>;
+        using stack_t = utl::static_stack<nm_index_t,N*N>; // worst-case is all connected graph
+
+        auto visited = visited_t{};
+        auto stack = stack_t{};
+
+        stack.push(start_node);
+
+        auto has_path = false;
+        while (!stack.empty()) {
+            auto current_node = stack.pop();
+            if (current_node == end_node) {
+                has_path = true;
+                break;
+            }
+            if (!index::contains(visited,current_node)) {
+                visited.push_back(current_node);
+
+                for (auto neighbor : adj_list[current_node]) {
+                    if (!index::contains(visited,neighbor)) {
+                        stack.push(neighbor);
+                    }
+                }
+            }
+        }
+        return has_path;
     }
 
     template <typename nodes_t=nmtools_tuple<>, typename edges_t=nmtools_tuple<>, typename node_data_t=nmtools_tuple<>>
