@@ -129,7 +129,10 @@ set(NMTOOLS_HIP_TEST_SOURCES ${NMTOOLS_HIP_TEST_SOURCES}
     array/bilinear.cpp
     array/conv2d.cpp
     array/dot.cpp
+    array/group_norm.cpp
+    array/instance_norm.cpp
     array/kron.cpp
+    array/layer_norm.cpp
     array/pairwise_distance.cpp
     array/softmax.cpp
     array/stddev.cpp

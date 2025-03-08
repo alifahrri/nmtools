@@ -201,6 +201,7 @@ set(FUNCTIONAL_TEST_GRAPH_SOURCES
 set(FUNCTIONAL_TEST_MISC_SOURCES
     src/misc/ct_map.cpp
     src/misc/ct_digraph.cpp
+    src/misc/has_path.cpp
 )
 
 if (NMTOOLS_FUNCTIONAL_TEST_ALL)

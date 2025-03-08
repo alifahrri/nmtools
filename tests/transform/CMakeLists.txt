@@ -62,6 +62,8 @@ set(TRANSFORM_TEST_LINEARIZE_SOURCES
     src/linearize/tensordot.cpp
     src/linearize/pairwise_distance.cpp
     src/linearize/bilinear.cpp
+    src/linearize/vstack.cpp
+    src/linearize/mean.cpp
 )
 
 set(TRANSFORM_TEST_APPLY_SOURCES
@@ -83,6 +85,7 @@ set(TRANSFORM_TEST_APPLY_SOURCES
     src/apply/tensordot.cpp
     src/apply/pairwise_distance.cpp
     src/apply/bilinear.cpp
+    src/apply/vstack.cpp
 )
 
 set(TRANSFORM_TEST_FUSION_SOURCES

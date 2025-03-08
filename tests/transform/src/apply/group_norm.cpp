@@ -18,7 +18,7 @@ using namespace nmtools::literals;
 
 using nmtools_array, nmtools_tuple, nmtools::unwrap;
 
-#if 0
+#if 1
 TEST_CASE("apply_graph(group_norm)" * doctest::test_suite("transform"))
 {
     auto gen = na::random_engine();
