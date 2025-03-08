@@ -89,10 +89,11 @@ namespace nmtools::view
     template <typename input_t, typename weight_t, typename bias_t, typename epsilon_t=float>
     constexpr auto layer_norm(const input_t& input, const weight_t& weight, const bias_t& bias, epsilon_t epsilon=epsilon_t{1e-5})
     {
-        auto aliased  = view::aliased(input,weight,bias);
+        auto aliased  = view::aliased(input,weight,bias,epsilon);
         auto a_input  = nmtools::get<0>(aliased);
         auto a_weight = nmtools::get<1>(aliased);
         auto a_bias   = nmtools::get<2>(aliased);
+        auto a_epsilon = nmtools::get<3>(aliased);
 
         // assume weight & bias has the same shape
         // TODO: error handling
@@ -107,7 +108,7 @@ namespace nmtools::view
         auto shift = view::subtract(a_input,mean);
 
         auto var  = view::var(a_input,axis,dtype,ddof,keepdims);
-        auto std  = view::sqrt(view::add(var,epsilon));
+        auto std  = view::sqrt(view::add(var,a_epsilon));
         auto norm = view::divide(shift,std);
         return view::add(view::multiply(norm,a_weight),a_bias);
     }
