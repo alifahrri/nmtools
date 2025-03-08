@@ -54,10 +54,10 @@ namespace nmtools::array
                 shape_.push_back(s);
             strides_ = strides();
             numel_   = numel();
-            data.resize(numel_);
+            data_.resize(numel_);
             auto array_view = unwrap(view::flatten(array_ref));
             for (size_t i=0; i<numel_; i++)
-                nmtools::at(data,i) = nmtools::at(array_view,i);
+                nmtools::at(data_,i) = nmtools::at(array_view,i);
         }
 
         dynamic_ndarray() {}
@@ -124,7 +124,7 @@ namespace nmtools::array
         explicit dynamic_ndarray(T (&&a)[Shape1][Shape2][Shape3][Shape4][Shape5][Shape6][Shape7][Shape8][Shape9][Shape10][Shape11]) { init(a); }
         #endif
 
-        data_type data;
+        data_type data_;
         shape_type shape_;
         stride_type strides_;
         size_type numel_;
@@ -188,7 +188,7 @@ namespace nmtools::array
             });
             strides_ = strides();
             numel_   = numel();
-            data.resize(numel_);
+            data_.resize(numel_);
         }
 
         auto resize(const shape_type& shape)
@@ -196,7 +196,7 @@ namespace nmtools::array
             shape_ = shape;
             strides_ = strides();
             numel_   = numel();
-            data.resize(numel_);
+            data_.resize(numel_);
         }
 
         template <typename shape_t>
@@ -209,8 +209,13 @@ namespace nmtools::array
                 shape_.at(i) = ::nmtools::at(shape,i);
             strides_ = strides();
             numel_   = numel();
-            data.resize(numel_);
+            data_.resize(numel_);
         } // resize
+
+        auto data() const
+        {
+            return data_.data();
+        }
 
         /**
          * @brief mutable access to element
@@ -230,7 +235,7 @@ namespace nmtools::array
             };
             assert (dim()==indices.size());
             auto offset = ::nmtools::index::compute_offset(strides_, indices);
-            return data[offset];
+            return data_[offset];
         } // operator()
 
         /**
@@ -251,7 +256,7 @@ namespace nmtools::array
             };
             assert (dim()==indices.size());
             auto offset = ::nmtools::index::compute_offset(strides_, indices);
-            return data[offset];
+            return data_[offset];
         } // operator()
 
         /**
@@ -263,13 +268,13 @@ namespace nmtools::array
         decltype(auto) at(shape_type i) const
         {
             auto offset = ::nmtools::index::compute_offset(strides_, i);
-            return data[offset];
+            return data_[offset];
         } // at
 
         decltype(auto) at(shape_type i)
         {
             auto offset = ::nmtools::index::compute_offset(strides_, i);
-            return data[offset];
+            return data_[offset];
         } // at
 
         template <typename shape_t>
@@ -281,7 +286,7 @@ namespace nmtools::array
             // provided index array (std::vector defined outside) deduced
             // as std::__ndk1::vector
             auto offset = ::nmtools::index::compute_offset(strides_, i);
-            return data[offset];
+            return data_[offset];
         } // at
 
         template <typename shape_t>
@@ -293,7 +298,7 @@ namespace nmtools::array
             // provided index array (std::vector defined outside) deduced
             // as std::__ndk1::vector
             auto offset = ::nmtools::index::compute_offset(strides_, i);
-            return data[offset];
+            return data_[offset];
         } // at
 
         template <typename ndarray_t, typename=meta::enable_if_t<meta::is_ndarray_v<ndarray_t>>>
@@ -494,7 +499,7 @@ namespace nmtools::array
 
         auto flat_rhs = unwrap(view::flatten(rhs));
         for (size_t i=0; i<numel_; i++)
-            nmtools::at(this->data,i) = nmtools::at(flat_rhs,i);
+            nmtools::at(this->data_,i) = nmtools::at(flat_rhs,i);
 
         return *this;
     } // operator=
