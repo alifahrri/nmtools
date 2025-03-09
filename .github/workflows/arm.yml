@@ -25,7 +25,7 @@ jobs:
       - uses: actions/checkout@v2
       - name: setup dockcross
         run: docker run --rm dockcross/${{ matrix.name }} > ./dockcross-${{ matrix.name }}; chmod +x ./dockcross-${{ matrix.name }}
-      - uses: actions/cache@v2
+      - uses: actions/cache@v3
         id: cache
         with:
           path: ./build/${{ matrix.name }}
@@ -50,7 +50,7 @@ jobs:
       - uses: actions/checkout@v2
       - name: setup dockcross
         run: docker run --rm dockcross/${{ matrix.name }} > ./dockcross-${{ matrix.name }}; chmod +x ./dockcross-${{ matrix.name }}
-      - uses: actions/cache@v2
+      - uses: actions/cache@v3
         id: cache
         with:
           path: ./build/${{ matrix.name }}
