@@ -10,7 +10,7 @@
 namespace nmtools::view
 {
     template <typename array_t, typename axis_t=none_t, typename keepdims_t=meta::false_type, typename ord_t=meta::ct<2>>
-    constexpr auto vector_norm(const array_t& array, const axis_t& axis=axis_t{}, keepdims_t keepdims=keepdims_t{}, ord_t ord=ord_t{})
+    constexpr auto vector_norm(const array_t& array, const axis_t& axis=axis_t{}, keepdims_t keepdims=keepdims_t{}, [[maybe_unused]] ord_t ord=ord_t{})
     {
         if constexpr (meta::is_constant_index_v<ord_t>) {
             if constexpr (ord_t::value == 2) {
