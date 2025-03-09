@@ -9,14 +9,26 @@
 
 namespace nmtools::view
 {
-    template <typename array_t, typename axis_t=none_t, typename keepdims_t=meta::false_type, typename ord_t=nm_index_t>
-    constexpr auto vector_norm(const array_t& array, const axis_t& axis=axis_t{}, keepdims_t keepdims=keepdims_t{}, ord_t ord=ord_t{2})
+    template <typename array_t, typename axis_t=none_t, typename keepdims_t=meta::false_type, typename ord_t=meta::ct<2>>
+    constexpr auto vector_norm(const array_t& array, const axis_t& axis=axis_t{}, keepdims_t keepdims=keepdims_t{}, [[maybe_unused]] ord_t ord=ord_t{})
     {
-        auto v1 = view::fabs(array);
-        auto v2 = view::power(v1,ord);
-        auto v3 = view::sum(v2,axis,/*dtype*/None,/*initial*/None,keepdims);
-        auto v4 = view::power(v3,1.f/ord);
-        return v4;
+        if constexpr (meta::is_constant_index_v<ord_t>) {
+            if constexpr (ord_t::value == 2) {
+                auto v1 = view::fabs(array);
+                auto v2 = view::square(v1);
+                auto v3 = view::sum(v2,axis,/*dtype*/None,/*initial*/None,keepdims);
+                auto v4 = view::sqrt(v3);
+                return v4;
+            } else {
+                return view::vector_norm(array,axis,keepdims,ord_t::value);
+            }
+        } else {
+            auto v1 = view::fabs(array);
+            auto v2 = view::power(v1,ord);
+            auto v3 = view::sum(v2,axis,/*dtype*/None,/*initial*/None,keepdims);
+            auto v4 = view::power(v3,1.f/ord);
+            return v4;
+        }
     } // vector_norm
 } // nmtools::view
 

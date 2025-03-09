@@ -129,6 +129,11 @@ Then run the test:
 NMTOOLS_SYCL_DEFAULT_PLATFORM=opencl ./tests/sycl/numeric-tests-sycl-doctest
 ```
 The env `NMTOOLS_SYCL_DEFAULT_PLATFORM` above can be used to select the default device.
+If you know the index of the platform you want to use:
+```
+NMTOOLS_SYCL_DEFAULT_PLATFORM_IDX=1 ./tests/sycl/numeric-tests-sycl-doctest
+```
+
 If there is existing container with name sycl-cuda-dev, you can remove it before build/run:
 ```
 docker rm sycl-opencl-dev
@@ -150,8 +155,8 @@ LLVM version 14 and AdaptiveCPP v23.10.0 is know to be broken, other version not
 ## Build & Test `sycl` `cuda`
 Targeting cuda backend on sycl, build dev image and run container:
 ```
-docker build . --tag nmtools:sycl-cuda --build-arg toolchain=sycl-clang14-cuda --target build --file docker/sycl-cuda.dockerfile
-docker run -it --runtime=nvidia --name sycl-cuda-dev --volume ${PWD}:/workspace/nmtools --entrypoint zsh nmtools:sycl-cuda
+docker build . --tag nmtools:sycl-cuda-dev --target build --build-arg BASE=nvidia/cuda:11.8.0-devel-ubuntu22.04 --build-arg cuda_backend=ON --build-arg toolchain=sycl-clang14-cuda --file docker/sycl.dockerfile
+docker run -it --runtime=nvidia --name sycl-cuda-dev --volume ${PWD}:/workspace/nmtools --entrypoint zsh nmtools:sycl-cuda-dev
 ```
 If there is existing container with name sycl-cuda-dev, you can remove it before build/run:
 ```
@@ -197,18 +202,29 @@ ctest
 Build the image and run docker container:
 ```
 docker build . --tag nmtools:cuda --target dev --file docker/cuda.dockerfile
-docker run -it --name cuda-dev --volume ${PWD}:/workspace/nmtools --entrypoint zsh nmtools:cuda
+docker run -it --runtime=nvidia --name cuda-dev --volume ${PWD}:/workspace/nmtools --entrypoint zsh nmtools:cuda
 ```
+
 Inside the container, build the tests:
 ```
-mkdir -p build/cuda && cd build/cuda \
-    && cmake -DCMAKE_TOOLCHAIN_FILE=cmake/toolchains/clang.cmake \
-        -DNMTOOLS_BUILD_META_TESTS=OFF -DNMTOOLS_BUILD_UTL_TESTS=OFF -DNMTOOLS_TEST_ALL=OFF \
+# using cuda-clang (`clang -x cuda`)
+export TOOLCHAIN=clang
+mkdir -p build/cuda-${TOOLCHAIN} && cd build/cuda-${TOOLCHAIN} \
+    && cmake -DCMAKE_TOOLCHAIN_FILE=cmake/toolchains/${TOOLCHAIN}.cmake \
+        -DNMTOOLS_BUILD_META_TESTS=OFF \
+        -DNMTOOLS_BUILD_UTL_TESTS=OFF \
+        -DNMTOOLS_TEST_ALL=OFF \
         -DNMTOOLS_BUILD_CUDA_TESTS=ON \
         -DNMTOOLS_TEST_CUDA_PATH=/usr/local/cuda \
         -DNMTOOLS_TEST_CUDA_ARCH=sm_80 \
         ../.. \
     && make -j`nproc` VERBOSE=1
+```
+```
+docker run -it --gpus all --device /dev/nvidia0:/dev/nvidia0 \                                           
+  --device /dev/nvidiactl:/dev/nvidiactl \
+  --device /dev/nvidia-uvm:/dev/nvidia-uvm \
+  --device /dev/nvidia-uvm-tools:/dev/nvidia-uvm-tools --name cuda-dev --volume ${PWD}:/workspace/nmtools --entrypoint zsh nmtools:cuda
 ```
 To restart:
 ```
@@ -227,6 +243,12 @@ Inside the container, build the tests:
 ```
 mkdir -p build/hip && cd build/hip && cmake -DCMAKE_TOOLCHAIN_FILE=../../cmake/toolchains/hip.cmake -DNMTOOLS_BUILD_HIP_TESTS=ON ../.. && make -j`nproc` VERBOSE=1
 ```
+After successful build, then you can run the hip-test:
+```
+./tests/hip/numeric-tests-hip-doctest
+```
+![docs/image/hip-test.png](docs/image/hip-test.png)
+
 If there is container naming conflict you can remove then re-run, or just restart.
 ```
 docker rm hip-dev
@@ -235,7 +257,7 @@ docker run -it --device /dev/kfd --device /dev/dri --name hip-dev --volume ${PWD
 To restart:
 ```
 docker start hip-dev
-docker exec -it hip-dev
+docker exec -it hip-dev zsh
 ```
 
 ## Run Interactive Notebook

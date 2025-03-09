@@ -18,8 +18,8 @@ using namespace nmtools::literals;
 
 using nmtools_array, nmtools_tuple, nmtools::unwrap;
 
-// TODO: fix compile on gcc, runtime on clang
-#if 0
+// TODO: fix compile on gcc
+#if 1
 TEST_CASE("apply_graph(var)" * doctest::test_suite("transform"))
 {
     auto gen = na::random_engine();

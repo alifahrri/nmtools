@@ -8,7 +8,7 @@
 // when using platformio arduino, ARDUINO macro is defined
 #ifdef ARDUINO
 #include "nmtools/platform/arduino.hpp"
-#elif defined(__CUDA__)
+#elif defined(__CUDA__) || defined(__NVCC__)
 #include "nmtools/platform/cuda.hpp"
 #elif defined(__HIP__)
 #include "nmtools/platform/hip.hpp"

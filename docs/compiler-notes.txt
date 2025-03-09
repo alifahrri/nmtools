@@ -105,3 +105,6 @@ Documenting various note on behaviour difference between clang & gcc (or with so
 
 1. gcc `for` loop becomes goto in constexpr context (and breaks), works fine on clang
   https://github.com/alifahrri/nmtools/issues/303
+
+1. nvcc failed parsing
+  see notes/README.md

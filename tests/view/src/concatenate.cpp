@@ -32,6 +32,15 @@ SUBCASE(#case_name) \
     NMTOOLS_ASSERT_CLOSE( array_ref, expect::expected ); \
 }
 
+#define CONCATENATEV2_SUBCASE(case_name, lhs, rhs, axis) \
+SUBCASE(#case_name) \
+{ \
+    NMTOOLS_TESTING_USE_CASE(view, concatenate, case_name); \
+    auto array_ref = nmtools::view::concatenatev2( args::lhs, args::rhs, args::axis); \
+    NMTOOLS_ASSERT_EQUAL( nmtools::shape(array_ref), nmtools::shape(expect::expected) ); \
+    NMTOOLS_ASSERT_CLOSE( array_ref, expect::expected ); \
+}
+
 TEST_CASE("concatenate(case1)" * doctest::test_suite("view::concatenate"))
 {
     #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
@@ -39,6 +48,11 @@ TEST_CASE("concatenate(case1)" * doctest::test_suite("view::concatenate"))
     CONCATENATE_SUBCASE(case1, lhs_f, rhs_f, axis);
     CONCATENATE_SUBCASE(case1, lhs_d, rhs_d, axis);
     CONCATENATE_SUBCASE(case1, lhs_h, rhs_h, axis);
+
+    CONCATENATEV2_SUBCASE(case1, lhs_a, rhs_a, axis);
+    CONCATENATEV2_SUBCASE(case1, lhs_f, rhs_f, axis);
+    CONCATENATEV2_SUBCASE(case1, lhs_d, rhs_d, axis);
+    CONCATENATEV2_SUBCASE(case1, lhs_h, rhs_h, axis);
 
     #else
     CONCATENATE_SUBCASE(case1, lhs_cs_fb, rhs_cs_fb, axis);
@@ -151,6 +165,11 @@ TEST_CASE("concatenate(case2)" * doctest::test_suite("view::concatenate"))
     CONCATENATE_SUBCASE(case2, lhs_d, rhs_d, axis);
     CONCATENATE_SUBCASE(case2, lhs_h, rhs_h, axis);
 
+    CONCATENATEV2_SUBCASE(case2, lhs_a, rhs_a, axis);
+    CONCATENATEV2_SUBCASE(case2, lhs_f, rhs_f, axis);
+    CONCATENATEV2_SUBCASE(case2, lhs_d, rhs_d, axis);
+    CONCATENATEV2_SUBCASE(case2, lhs_h, rhs_h, axis);
+
     #else
     CONCATENATE_SUBCASE(case2, lhs_cs_fb, rhs_cs_fb, axis);
     CONCATENATE_SUBCASE(case2, lhs_cs_hb, rhs_cs_hb, axis);
@@ -182,6 +201,11 @@ TEST_CASE("concatenate(case3)" * doctest::test_suite("view::concatenate"))
     CONCATENATE_SUBCASE(case3, lhs_d, rhs_d, axis);
     CONCATENATE_SUBCASE(case3, lhs_h, rhs_h, axis);
 
+    CONCATENATEV2_SUBCASE(case3, lhs_a, rhs_a, axis);
+    CONCATENATEV2_SUBCASE(case3, lhs_f, rhs_f, axis);
+    CONCATENATEV2_SUBCASE(case3, lhs_d, rhs_d, axis);
+    CONCATENATEV2_SUBCASE(case3, lhs_h, rhs_h, axis);
+
     #else
     CONCATENATE_SUBCASE(case3, lhs_cs_fb, rhs_cs_fb, axis);
     CONCATENATE_SUBCASE(case3, lhs_cs_hb, rhs_cs_hb, axis);
@@ -212,6 +236,11 @@ TEST_CASE("concatenate(case4)" * doctest::test_suite("view::concatenate"))
     CONCATENATE_SUBCASE(case4, lhs_f, rhs_f, axis);
     CONCATENATE_SUBCASE(case4, lhs_d, rhs_d, axis);
     CONCATENATE_SUBCASE(case4, lhs_h, rhs_h, axis);
+
+    CONCATENATEV2_SUBCASE(case4, lhs_a, rhs_a, axis);
+    CONCATENATEV2_SUBCASE(case4, lhs_f, rhs_f, axis);
+    CONCATENATEV2_SUBCASE(case4, lhs_d, rhs_d, axis);
+    CONCATENATEV2_SUBCASE(case4, lhs_h, rhs_h, axis);
 
     #else
     CONCATENATE_SUBCASE(case4, lhs_cs_fb, rhs_cs_fb, axis);

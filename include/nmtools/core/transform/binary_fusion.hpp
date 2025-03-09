@@ -36,6 +36,36 @@ namespace nmtools::functional
             if ((predecessors[m_lhs].size() == 0) && (predecessors[m_rhs].size() == 0)) {
                 continue;
             }
+            // here, predecessors (or operands) of node is exactly 2 and those are not inputs
+            // we need extra check that for each those operands' outgoing edges have path to node
+            // quick workaround is direct successors of those edges if m_lhs, m_rhs or node itself
+            // TODO: actually check for paths from predecessors of node's predecssors to node
+            auto all_has_path = true;
+            for (nm_size_t i=0; (i<adjacency_list[m_lhs].size()) && all_has_path; i++) {
+                auto v = adjacency_list[m_lhs][i];
+                auto has_path = utility::has_path(adjacency_list,v,node);
+                all_has_path = all_has_path && has_path;
+            }
+            for (nm_size_t i=0; (i<adjacency_list[m_rhs].size()) && all_has_path; i++) {
+                auto v = adjacency_list[m_rhs][i];
+                auto has_path = utility::has_path(adjacency_list,v,node);
+                all_has_path = all_has_path && has_path;
+            }
+            auto lhs_predecessors = predecessors[m_lhs];
+            for (nm_size_t i=0; (i<lhs_predecessors.size()) && all_has_path; i++) {
+                auto lhs_predecessor = lhs_predecessors[i];
+                auto has_path = utility::has_path(adjacency_list,lhs_predecessor,node);
+                all_has_path = all_has_path && has_path;
+            }
+            auto rhs_predecessors = predecessors[m_rhs];
+            for (nm_size_t i=0; (i<rhs_predecessors.size()) && all_has_path; i++) {
+                auto rhs_predecessor = rhs_predecessors[i];
+                auto has_path = utility::has_path(adjacency_list,rhs_predecessor,node);
+                all_has_path = all_has_path && has_path;
+            }
+            if (!all_has_path) {
+                continue;
+            }
             lhs = m_lhs;
             rhs = m_rhs;
             to = node;
@@ -183,7 +213,10 @@ namespace nmtools::functional
                             if constexpr (index_dup >= 0) {
                                 constexpr auto rhs_arity = meta::len_v<decltype(rhs_node.operands)>;
                                 constexpr auto RHS_ARITY = rhs_arity > 0 ? rhs_arity : 1;
-                                return node * combinator::dig_n<RHS_ARITY> * rhs_node * combinator::bury_n<RHS_ARITY> * combinator::dup * lhs_node;
+                                // no matter how much is the rhs arity, assume the output of rhs node is 1 this 1 is the number we should dig up
+                                // TODO: support node with outupu > 1, such as split
+                                constexpr auto N_DIG = 1;
+                                return node * combinator::dig_n<N_DIG> * rhs_node * combinator::bury_n<RHS_ARITY> * combinator::dup * lhs_node;
                             } else {
                                 return node * combinator::dig1 * rhs_node * combinator::bury1 * lhs_node;
                             }
@@ -206,7 +239,10 @@ namespace nmtools::functional
                             if constexpr (index_dup >= 0) {
                                 constexpr auto lhs_arity = meta::len_v<decltype(lhs_node.operands)>;
                                 constexpr auto LHS_ARITY = lhs_arity > 0 ? lhs_arity : 1;
-                                return node * combinator::dig_n<LHS_ARITY> * lhs_node * combinator::bury_n<LHS_ARITY> * combinator::dup * rhs_node;
+                                // no matter how much is the rhs arity, assume the output of rhs node is 1 this 1 is the number we should dig up
+                                // TODO: support node with outupu > 1, such as split
+                                constexpr auto N_DIG = 1;
+                                return node * combinator::dig_n<N_DIG> * lhs_node * combinator::bury_n<LHS_ARITY> * combinator::dup * rhs_node;
                             } else {
                                 return node * lhs_node * combinator::bury1 * rhs_node;
                             }
