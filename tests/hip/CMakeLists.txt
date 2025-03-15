@@ -92,25 +92,44 @@ set(NMTOOLS_HIP_TEST_SOURCES ${NMTOOLS_HIP_TEST_SOURCES}
     array/atleast_1d.cpp
     array/atleast_2d.cpp
     array/atleast_nd.cpp
+    array/column_stack.cpp
     array/concatenate.cpp
+    # TODO: fix
+    # array/diagflat.cpp
+    array/diagonal.cpp
+    array/dstack.cpp
     array/expand_dims.cpp
+    array/expand.cpp
+    # TODO: fix
+    # array/eye.cpp
     array/flatten.cpp
     array/flip.cpp
+    array/full_like.cpp
     array/hstack.cpp
-    # array/pad.cpp
+    # array/linspace.cpp
+    array/ones_like.cpp
+    array/outer.cpp
+    array/pad.cpp
     # TODO: fix compile
     # array/pooling.cpp
     array/repeat.cpp
     array/reshape.cpp
     array/resize.cpp
+    array/roll.cpp
     array/slice.cpp
+    array/sliding_window.cpp
     array/squeeze.cpp
+    array/swapaxes.cpp
     array/tile.cpp
     array/transpose.cpp
+    # array/tri.cpp
+    array/tril.cpp
+    array/triu.cpp
     array/where.cpp
     array/moveaxis.cpp
     array/arange.cpp
     array/zeros.cpp
+    array/zeros_like.cpp
     array/ones.cpp
     array/full.cpp
     array/stack.cpp
@@ -131,6 +150,7 @@ set(NMTOOLS_HIP_TEST_SOURCES ${NMTOOLS_HIP_TEST_SOURCES}
     array/dot.cpp
     array/group_norm.cpp
     array/instance_norm.cpp
+    array/inner.cpp
     array/kron.cpp
     array/layer_norm.cpp
     array/pairwise_distance.cpp

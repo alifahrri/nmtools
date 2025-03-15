@@ -261,10 +261,11 @@ namespace nmtools::view
         auto wb_shape  = unwrap(shape<true>(weight));
         auto wb_reshape_args = index::group_norm_args_reshape(src_shape,wb_shape);
 
-        auto aliased  = view::aliased(input, weight, bias);
+        auto aliased  = view::aliased(input, weight, bias, epsilon);
         auto a_input  = view::reshape(nmtools::get<0>(aliased),grouped_shape);
         auto a_weight = view::reshape(nmtools::get<1>(aliased),wb_reshape_args);
         auto a_bias   = view::reshape(nmtools::get<2>(aliased),wb_reshape_args);
+        auto a_epsilon = nmtools::get<3>(aliased);
 
         auto axis  = index::group_norm_axis(src_shape);
         auto dtype = None;
@@ -275,7 +276,7 @@ namespace nmtools::view
         auto shift = view::subtract(a_input,mean);
 
         auto var  = view::var(a_input,axis,dtype,ddof,keepdims);
-        auto std  = view::sqrt(view::add(var,epsilon));
+        auto std  = view::sqrt(view::add(var,a_epsilon));
         auto norm = view::divide(shift,std);
         return view::add(view::multiply(view::reshape(norm,src_shape),a_weight),a_bias);
     }

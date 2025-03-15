@@ -255,6 +255,26 @@ namespace nmtools::view
     } // tril
 } // namespace nmtools::view
 
+namespace nmtools::array
+{
+    template <typename...args_t, auto max_dim>
+    struct as_static_t<
+        view::tril_t<args_t...>, max_dim
+    > {
+        using attribute_type = view::tril_t<args_t...>;
+
+        attribute_type attribute;
+
+        auto operator()() const
+        {
+            auto src_shape = as_static<max_dim>(attribute.src_shape);
+            auto k = attribute.k;
+            auto src_size = attribute.src_size;
+            return view::tril_indexer(src_shape,k,src_size);
+        }
+    };
+}
+
 #endif // NMTOOLS_ARRAY_VIEW_TRIL_HPP
 
 #ifndef NMTOOLS_ARRAY_ARRAY_TRIL_HPP

@@ -159,6 +159,50 @@ namespace nmtools::view
     } // tri
 } // nmtools::view
 
+namespace nmtools::array
+{
+    template <typename...args_t, auto max_dim>
+    struct as_static_t<
+        view::tri_t<args_t...>, max_dim
+    > {
+        using attribute_type = view::tri_t<args_t...>;
+
+        attribute_type attribute;
+
+        auto operator()() const
+        {
+            auto dst_shape = as_static<max_dim>(attribute.dst_shape);
+            auto k = attribute.k;
+            return view::tri_t{dst_shape,k};
+        }
+    };
+}
+
+#if NMTOOLS_HAS_STRING
+
+namespace nmtools::utils::impl
+{
+    template <typename...args_t, auto...fmt_args>
+    struct to_string_t<
+        view::tri_t<args_t...>, fmt_string_t<fmt_args...>
+    > {
+        using result_type = nmtools_string;
+
+        auto operator()(const view::tri_t<args_t...>& kwargs) const
+        {
+            nmtools_string str;
+            str += "tri";
+            str += "{";
+            str += ".dst_shape="; str+= to_string(kwargs.dst_shape,Compact);
+            str += ",.k="; str += to_string(kwargs.k,Compact);
+            str += "}";
+            return str;
+        }
+    };
+}
+
+#endif
+
 #endif // NMTOOLS_ARRAY_VIEW_TRI_HPP
 
 #ifndef NMTOOLS_ARRAY_ARRAY_TRI_HPP

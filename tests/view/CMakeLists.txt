@@ -118,6 +118,7 @@ set(ARRAY_VIEW_2_TEST_SOURCES
     src/zeros.cpp
     src/zeros_like.cpp
     src/sliding_window.cpp
+    src/tiling_window.cpp
 )
 set (ARRAY_MATMUL_1_TEST_SOURCES
     src/matmul-1.cpp

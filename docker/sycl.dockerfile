@@ -50,7 +50,6 @@ FROM dev as build
 
 WORKDIR /opt/
 COPY scripts scripts
-COPY patch patch
 
 RUN apt install -y libclang-dev clang-tools libomp-dev llvm-dev lld libboost-dev libboost-fiber-dev libboost-context-dev
 
@@ -70,6 +69,7 @@ ENV TOOLCHAIN=${toolchain}
 ENV LLVM_VERSION="18"
 ENV LLVM_SPV_VERSION="v18.1.8"
 ENV POCL_VERSION="v6.0"
+ENV POCL_COMMIT="5db2a67a1e6cd8af5a76218b657d270edff03d04"
 ENV ADAPTIVE_CPP_VERSION="v24.10.0"
 
 # TODO: make the following installation conditional on selected backend

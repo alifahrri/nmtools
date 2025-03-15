@@ -92,6 +92,7 @@ if (NMTOOLS_INDEX_TEST_ALL)
         src/take_along_axis.cpp
         src/tensordot.cpp
         src/tile.cpp
+        src/tiling_window.cpp
         src/tril.cpp
     )
 endif (NMTOOLS_INDEX_TEST_ALL)

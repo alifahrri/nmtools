@@ -97,7 +97,7 @@ namespace nmtools::array {
         using reference  = value_type&;
         using const_reference = const value_type&;
 
-        data_type data;
+        data_type data_;
 
         /**
          * @brief mutable access to element
@@ -113,7 +113,7 @@ namespace nmtools::array {
         constexpr auto operator()(size_type n, size...ns)
             -> meta::enable_if_t<sizeof...(ns)==sizeof...(ShapeN),reference>
         {
-            return at(data, n, ns...);
+            return at(data_, n, ns...);
         } // operator()
 
         /**
@@ -130,12 +130,12 @@ namespace nmtools::array {
         constexpr auto operator()(size_type n, size...ns) const
             -> meta::enable_if_t<sizeof...(ns)==sizeof...(ShapeN),const_reference>
         {
-            return at(data, n, ns...);
+            return at(data_, n, ns...);
         } // operator()
 
         // constexpr decltype(auto) operator=(this_type&& other)
         // {
-        //     this->data = other.data;
+        //     this->data_ = other.data_;
         //     return *this;
         // }
 
@@ -152,6 +152,22 @@ namespace nmtools::array {
         {
             using nested_t = meta::make_nested_raw_array_t<T,Shape1,ShapeN...>;
             return this->template operator=<nested_t>(nmtools::forward<nested_t>(rhs));
+        }
+
+        constexpr const T* data() const
+        {
+            auto idx = meta::template_reduce<sizeof...(ShapeN)+1>([](auto init,auto){
+                return utility::tuple_append(init,0);
+            },nmtools_tuple{});
+            return &apply_at(data_,idx);
+        }
+
+        constexpr T* data()
+        {
+            auto idx = meta::template_reduce<sizeof...(ShapeN)+1>([](auto init,auto){
+                return utility::tuple_append(init,0);
+            },nmtools_tuple{});
+            return &apply_at(data_,idx);
         }
     }; // struct fixed_ndarray
 
@@ -524,7 +540,7 @@ namespace nmtools::array
         }
 
         auto flat_rhs  = unwrap(view::flatten(nmtools::forward<ndarray_t>(rhs)));
-        auto flat_data = view::mutable_flatten(this->data);
+        auto flat_data = view::mutable_flatten(this->data_);
         constexpr auto n_rhs = meta::fixed_size_v<decltype(flat_rhs)>;
         static_assert (numel_==n_rhs
             , "mismatched shape for fixed_ndarray assignment"
