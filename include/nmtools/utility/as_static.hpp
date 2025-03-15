@@ -36,7 +36,7 @@ namespace nmtools::array
     };
 
     template <auto max_dim=8, typename attribute_t>
-    auto as_static(const attribute_t& attribute)
+    auto as_static(const attribute_t& attribute, meta::ct<max_dim> = meta::ct<max_dim>{})
     {
         auto mapper = as_static_t<attribute_t,max_dim>{attribute};
         return mapper();

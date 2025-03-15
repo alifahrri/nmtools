@@ -122,6 +122,17 @@ namespace nmtools::meta
                     using type = error::FWD_ATTRIBUTE_UNSUPPORTED<T>;
                     return as_value_v<type>;
                 }
+            } else if constexpr (is_tuple_v<T>) {
+                constexpr auto is_valid = meta::template_reduce<len_v<T>>([&](auto init, auto index){
+                    using type_i = at_t<T,decltype(index)::value>;
+                    return init && is_valid_attribute(as_value_v<type_i>);
+                },true);
+                if constexpr (is_valid) {
+                    return as_value_v<T>;
+                } else {
+                    using type = error::FWD_ATTRIBUTE_UNSUPPORTED<T>;
+                    return as_value_v<type>;
+                }
             } else {
                 using type = error::FWD_ATTRIBUTE_UNSUPPORTED<T>;
                 return as_value_v<type>;

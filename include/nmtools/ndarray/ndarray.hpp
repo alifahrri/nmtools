@@ -65,8 +65,8 @@ namespace nmtools::array
                 && (!meta::is_constant_index_array_v<shape_type>)
             , bool>
         {
-            auto sizes_  = index::pack_indices(size,sizes...);
-            auto numel   = index::product(sizes_);
+            const auto sizes_  = index::pack_indices(size,sizes...);
+            const auto numel   = index::product(sizes_);
             // since size may be packed, the proper way to read dim is using len instead of sizes..+1
             auto new_dim = len(sizes_);
             if constexpr (meta::is_resizable_v<shape_type>) {
@@ -121,8 +121,9 @@ namespace nmtools::array
                     at(shape_,index) = at(sizes_,index);
                 });
             } else {
-                for (size_t i=0; i<new_dim; i++) {
-                    at(shape_,i) = at(sizes_,i);
+                for (nm_size_t i=0; i<new_dim; i++) {
+                    const auto si = at(sizes_,i);
+                    at(shape_,i) = si;
                 }
             }
             // NOTE: using operator= directly may cause unusable for constexpr, (e.g. std::tuple)
