@@ -155,8 +155,8 @@ namespace nmtools::index
 
         auto result = result_t {};
 
-        auto src_dim = len(src_shape);
-        auto dst_dim = len(dst_indices);
+        [[maybe_unused]] auto src_dim = len(src_shape);
+        [[maybe_unused]] auto dst_dim = len(dst_indices);
 
         if constexpr (meta::is_resizable_v<result_t>) {
             result.resize(src_dim);
