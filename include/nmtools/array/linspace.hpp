@@ -89,8 +89,8 @@ namespace nmtools::meta
                 using type = nmtools_tuple<num_t>;
                 return as_value_v<type>;
             } else {
-                // TODO: support small vector
-                using type = nmtools_list<nm_size_t>;
+                // linspace results in 1-dim ndarray
+                using type = nmtools_array<nm_size_t,1>;
                 return as_value_v<type>;
             }
         }();
