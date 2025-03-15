@@ -121,6 +121,7 @@ set(NMTOOLS_HIP_TEST_SOURCES ${NMTOOLS_HIP_TEST_SOURCES}
     array/squeeze.cpp
     array/swapaxes.cpp
     array/tile.cpp
+    array/tiling_window.cpp
     array/transpose.cpp
     # array/tri.cpp
     array/tril.cpp

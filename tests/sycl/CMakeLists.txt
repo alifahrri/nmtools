@@ -86,6 +86,7 @@ set(NMTOOLS_SYCL_TEST_SOURCES ${NMTOOLS_SYCL_TEST_SOURCES}
     array/stack.cpp
     array/swapaxes.cpp
     array/tile.cpp
+    array/tiling_window.cpp
     # array/tri.cpp
     array/tril.cpp
     array/triu.cpp
