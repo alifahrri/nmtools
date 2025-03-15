@@ -126,12 +126,12 @@ mkdir -p build/${TOOLCHAIN} && cd build/${TOOLCHAIN} \
 ```
 Then run the test:
 ```
-NMTOOLS_SYCL_DEFAULT_PLATFORM=opencl ./tests/sycl/numeric-tests-sycl-doctest
+NMTOOLS_SYCL_DEFAULT_DEVICE=opencl ./tests/sycl/numeric-tests-sycl-doctest
 ```
-The env `NMTOOLS_SYCL_DEFAULT_PLATFORM` above can be used to select the default device.
+The env `NMTOOLS_SYCL_DEFAULT_DEVICE` above can be used to select the default device.
 If you know the index of the platform you want to use:
 ```
-NMTOOLS_SYCL_DEFAULT_PLATFORM_IDX=1 ./tests/sycl/numeric-tests-sycl-doctest
+NMTOOLS_SYCL_DEFAULT_DEVICE_IDX=1 ./tests/sycl/numeric-tests-sycl-doctest
 ```
 
 If there is existing container with name sycl-cuda-dev, you can remove it before build/run:
@@ -243,6 +243,12 @@ Inside the container, build the tests:
 ```
 mkdir -p build/hip && cd build/hip && cmake -DCMAKE_TOOLCHAIN_FILE=../../cmake/toolchains/hip.cmake -DNMTOOLS_BUILD_HIP_TESTS=ON ../.. && make -j`nproc` VERBOSE=1
 ```
+By default, the test use gfx1103 (Ryzen 8700G) as target, you can specify target arch by adding cmake args `-DNMTOOLS_TEST_HIP_ARCH` as follows:
+```
+mkdir -p build/hip && cd build/hip && cmake -DCMAKE_TOOLCHAIN_FILE=../../cmake/toolchains/hip.cmake -DNMTOOLS_BUILD_HIP_TESTS=ON -DNMTOOLS_TEST_HIP_ARCH="gfx1036,gfx1103" ../.. && make -j`nproc` VERBOSE=1
+```
+where `gfx1036` is iGPU in ryzen 7000/9000 series.
+
 After successful build, then you can run the hip-test:
 ```
 ./tests/hip/numeric-tests-hip-doctest
