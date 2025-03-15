@@ -18,18 +18,25 @@ inline auto name##_ls_db = nmtools::cast(name, nmtools::array::kind::ndarray_ls_
 #include "nmtools/array/pad.hpp"
 #include "nmtools/testing/doctest.hpp"
 #include "nmtools/evaluator/hip.hpp"
+#include "nmtools/array/random.hpp"
 #include "nmtools/testing/data/array/pad.hpp"
 
 namespace nm = nmtools;
-namespace na = nm::array;
-namespace hip = na::hip;
+namespace na = nmtools::array;
+namespace fn = nmtools::functional;
+namespace meta = nm::meta;
+namespace view = nmtools::view;
+
+using nmtools_array;
 
 #define PAD_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
     NMTOOLS_TESTING_USE_CASE(array, pad, case_name); \
     using namespace args; \
-    auto result = na::pad(__VA_ARGS__, hip::default_context()); \
+    auto ctx = na::hip::default_context(); \
+    auto view = view::pad(__VA_ARGS__); \
+    auto result = ctx->eval(view); \
     auto expect = na::pad(__VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( nm::shape(result), nm::shape(expect) ); \
     NMTOOLS_ASSERT_CLOSE( result, expect ); \

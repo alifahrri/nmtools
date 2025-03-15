@@ -64,6 +64,7 @@ set(TRANSFORM_TEST_LINEARIZE_SOURCES
     src/linearize/bilinear.cpp
     src/linearize/vstack.cpp
     src/linearize/mean.cpp
+    src/linearize/tri.cpp
 )
 
 set(TRANSFORM_TEST_APPLY_SOURCES
