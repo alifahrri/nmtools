@@ -89,8 +89,8 @@ namespace nmtools::meta
                 using type = nmtools_tuple<num_t>;
                 return as_value_v<type>;
             } else {
-                // TODO: support small vector
-                using type = nmtools_list<nm_size_t>;
+                // linspace results in 1-dim ndarray
+                using type = nmtools_array<nm_size_t,1>;
                 return as_value_v<type>;
             }
         }();
@@ -240,6 +240,48 @@ namespace nmtools::meta
     > : fixed_size<
         view::decorator_t< view::linspace_t, start_t, stop_t, num_t, endpoint_t, T >
     > {};
+}
+
+#include "nmtools/core/functor.hpp"
+
+namespace nmtools::functional
+{
+    namespace fun
+    {
+        struct linspace_t
+        {
+            template <typename...args_t>
+            constexpr auto operator()(const args_t&...args) const
+            {
+                return view::linspace(args...);
+            }
+        };
+    }
+
+    constexpr auto linspace = functor_t{nullary_fmap_t<fun::linspace_t>{}};
+
+    template <typename...args_t>
+    struct get_function_t<
+        view::decorator_t<
+            view::linspace_t, args_t...
+        >
+    > {
+        using view_type = view::decorator_t<
+            view::linspace_t, args_t...
+        >;
+
+        view_type view;
+
+        constexpr auto operator()() const noexcept
+        {
+            // return linspace[view.attributes()];
+            auto attributes = view.attributes();
+            constexpr auto N = meta::len_v<decltype(attributes)>;
+            return meta::template_reduce<N>([&](auto init, auto I){
+                return init [at(attributes,I)];
+            },linspace);
+        }
+    };
 }
 
 #endif // NMTOOLS_ARRAY_VIEW_LINSPACE_HPP

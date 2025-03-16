@@ -129,6 +129,7 @@ set(ARRAY_EVAL_TEST_SOURCES
     array/take.cpp
     array/tensordot.cpp
     array/tile.cpp
+    array/tiling_window.cpp
     array/trace.cpp
     array/tri.cpp
     array/tril.cpp

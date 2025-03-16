@@ -72,8 +72,8 @@ namespace nmtools::index
                 }();
 
                 if constexpr (meta::is_num_v<window_shape_t> && meta::is_num_v<axis_t>) {
-                    for (size_t i=0; i<src_dim; i++) {
-                        if (i==(size_t)normalized_axis) {
+                    for (nm_size_t i=0; i<src_dim; i++) {
+                        if (i==(nm_size_t)normalized_axis) {
                             auto res_i = at(src_shape,i) - (window_shape-1);
                             at(result,i) = res_i;
                         } else {
@@ -82,31 +82,31 @@ namespace nmtools::index
                     }
                     at(result,src_dim) = window_shape;
                 } else if constexpr (meta::is_num_v<window_shape_t> && is_none_v<axis_t>) {
-                    for (size_t i=0; i<src_dim; i++) {
+                    for (nm_size_t i=0; i<src_dim; i++) {
                         auto res_i = at(src_shape,i) - (window_shape-1);
                         at(result,i) = res_i;
                     }
                     at(result,src_dim) = window_shape;
                 } else if constexpr (is_none_v<axis_t>) {
-                    for (size_t i=0; i<src_dim; i++) {
+                    for (nm_size_t i=0; i<src_dim; i++) {
                         auto res_i = at(src_shape,i) - (at(window_shape,i)-1);
                         at(result,i) = res_i;
                     }
-                    for (size_t i=src_dim; i<dst_dim; i++) {
+                    for (nm_size_t i=src_dim; i<dst_dim; i++) {
                         at(result,i) = at(window_shape,i-src_dim);
                     }
                 } else /* if constexpr (is_index_array_v<axis_t>) */ {
-                    for (size_t i=0; i<src_dim; i++) {
+                    for (nm_size_t i=0; i<src_dim; i++) {
                         auto res_i = at(src_shape,i);
                         at(result,i) = res_i;
                     }
                     // assume len(axis) == len(window_shape)
                     // TODO: check lens
-                    for (size_t i=0; i<len(normalized_axis); i++) {
+                    for (nm_size_t i=0; i<len(normalized_axis); i++) {
                         auto axis_i = at(normalized_axis,i);
                         at(result,axis_i) -= (at(window_shape,i) - 1);
                     }
-                    for (size_t i=src_dim; i<dst_dim; i++) {
+                    for (nm_size_t i=src_dim; i<dst_dim; i++) {
                         at(result,i) = at(window_shape,i-src_dim);
                     }
                 }
@@ -144,17 +144,17 @@ namespace nmtools::index
             result.resize(src_dim);
         }
 
-        for (size_t i=0; i<src_dim; i++) {
+        for (nm_size_t i=0; i<src_dim; i++) {
             at(result,i) = at(indices,i);
         }
 
         if constexpr (is_none_v<axis_t>) {
-            for (size_t i=0; i<win_dim; i++) {
+            for (nm_size_t i=0; i<win_dim; i++) {
                 at(result,i) = at(result,i) + at(indices,i+src_dim);
             }
         } else if constexpr (meta::is_index_array_v<axis_t>) {
             auto axis_dim = len(axis);
-            for (size_t a_i=0; a_i<axis_dim; a_i++) {
+            for (nm_size_t a_i=0; a_i<axis_dim; a_i++) {
                 auto i = at(axis,a_i);
                 at(result,i) = at(result,i) + at(indices,a_i+src_dim);
             }
@@ -162,7 +162,7 @@ namespace nmtools::index
             // at(result,axis) = at(result,axis) + at(indices,axis);
             auto m_axis = nmtools_array{axis};
             auto axis_dim = len(m_axis);
-            for (size_t a_i=0; a_i<axis_dim; a_i++) {
+            for (nm_size_t a_i=0; a_i<axis_dim; a_i++) {
                 auto i = at(m_axis,a_i);
                 at(result,i) = at(result,i) + at(indices,a_i+src_dim);
             }

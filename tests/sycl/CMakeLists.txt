@@ -60,18 +60,36 @@ set(NMTOOLS_SYCL_TEST_SOURCES ${NMTOOLS_SYCL_TEST_SOURCES}
     array/atleast_nd.cpp
     array/broadcast_to.cpp
     array/concatenate.cpp
+    array/column_stack.cpp
+    # array/diagflat.cpp
+    array/diagonal.cpp
+    array/dstack.cpp
     array/expand_dims.cpp
+    array/expand.cpp
+    # array/eye.cpp
     array/flatten.cpp
     array/flip.cpp
+    array/full_like.cpp
     array/hstack.cpp
+    array/inner.cpp
+    array/linspace.cpp
+    array/ones_like.cpp
+    array/outer.cpp
     array/pad.cpp
     array/pooling.cpp
     array/repeat.cpp
     array/reshape.cpp
+    array/roll.cpp
+    array/sliding_window.cpp
     array/slice.cpp
     array/squeeze.cpp
     array/stack.cpp
+    array/swapaxes.cpp
     array/tile.cpp
+    array/tiling_window.cpp
+    # array/tri.cpp
+    array/tril.cpp
+    array/triu.cpp
     array/transpose.cpp
     array/where.cpp
     array/moveaxis.cpp
@@ -80,6 +98,7 @@ set(NMTOOLS_SYCL_TEST_SOURCES ${NMTOOLS_SYCL_TEST_SOURCES}
     array/ones.cpp
     array/vstack.cpp
     array/zeros.cpp
+    array/zeros_like.cpp
 
     array/sum.cpp
     array/cumsum.cpp

@@ -255,6 +255,26 @@ namespace nmtools::view
     } // triu
 } // namespace nmtools::view
 
+namespace nmtools::array
+{
+    template <typename...args_t, auto max_dim>
+    struct as_static_t<
+        view::triu_t<args_t...>, max_dim
+    > {
+        using attribute_type = view::triu_t<args_t...>;
+
+        attribute_type attribute;
+
+        auto operator()() const
+        {
+            auto src_shape = as_static<max_dim>(attribute.src_shape);
+            auto k = attribute.k;
+            auto src_size = attribute.src_size;
+            return view::triu_indexer(src_shape,k,src_size);
+        }
+    };
+}
+
 #endif // NMTOOLS_ARRAY_VIEW_TRIU_HPP
 
 #ifndef NMTOOLS_ARRAY_ARRAY_TRIU_HPP

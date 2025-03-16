@@ -14,6 +14,11 @@ else
     echo "set POCL_VERSION from env"
 fi
 
+if [[ "${POCL_COMMIT}" ]]; then
+    POCL_VERSION="${POCL_COMMIT}"
+    echo "set POCL_VERSION from POCL_COMMIT env"
+fi
+
 if [[ -z "${POCL_BUILD_TYPE}" ]]; then
     POCL_BUILD_TYPE=Release
 else
