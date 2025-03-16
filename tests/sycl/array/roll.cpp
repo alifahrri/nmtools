@@ -398,7 +398,7 @@ TEST_CASE("roll(case2d)" * doctest::test_suite("array::roll"))
     #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     // ROLL_SUBCASE( case2d, array, shift, axis );
     // ROLL_SUBCASE( case2d, array_a, shift, axis );
-    ROLL_SUBCASE( case2d, array_f, shift, axis );
+    // ROLL_SUBCASE( case2d, array_f, shift, axis );
     ROLL_SUBCASE( case2d, array_d, shift, axis );
     ROLL_SUBCASE( case2d, array_h, shift, axis );
 

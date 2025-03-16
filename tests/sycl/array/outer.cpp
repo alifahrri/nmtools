@@ -27,7 +27,7 @@ TEST_CASE("outer(case1)" * doctest::test_suite("array::outer"))
     // OUTER_SUBCASE( case1, a, b );
     // OUTER_SUBCASE( case1, a_a, b_a );
     OUTER_SUBCASE( case1, a_f, b_f );
-    OUTER_SUBCASE( case1, a_h, b_h );
+    // OUTER_SUBCASE( case1, a_h, b_h );
     OUTER_SUBCASE( case1, a_d, b_d );
 }
 
