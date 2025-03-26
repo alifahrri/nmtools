@@ -209,6 +209,127 @@ NMTOOLS_TESTING_DECLARE_CASE(index, shape_sliding_window)
     {
         inline int dst_shape[6] = {1,2,2,2,3,2};
     }
+} // shape_sliding_window
+
+NMTOOLS_TESTING_DECLARE_CASE(index, slice_sliding_window)
+{
+    using namespace literals;
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case14)
+    {
+        inline int src_shape[1] = {6};
+        inline int window_shape = 3;
+        inline auto axis = None;
+        inline int stride = 2;
+
+        inline auto src_shape_ct = nmtools_tuple{6_ct};
+        inline auto window_shape_ct = 3_ct;
+        inline auto stride_ct = 2_ct;
+
+        NMTOOLS_CAST_INDEX_ARRAYS(src_shape)
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case14)
+    {
+        inline auto expected = nmtools_tuple{
+            nmtools_tuple{None,None,2}
+            , nmtools_tuple{None,None,1}
+        };
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case15)
+    {
+        inline int src_shape[2] = {3,4};
+        inline int window_shape[2] = {2,2};
+        inline auto axis = None;
+        inline int stride[2] = {2,2};
+
+        inline auto src_shape_ct = nmtools_tuple{3_ct,4_ct};
+        inline auto window_shape_ct = nmtools_tuple{2_ct,2_ct};
+        inline auto stride_ct = nmtools_tuple{2_ct,2_ct};
+
+        NMTOOLS_CAST_INDEX_ARRAYS(src_shape)
+        NMTOOLS_CAST_INDEX_ARRAYS(window_shape)
+        NMTOOLS_CAST_INDEX_ARRAYS(stride)
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case15)
+    {
+        inline auto expected = nmtools_tuple{
+            nmtools_tuple{None,None,2},
+            nmtools_tuple{None,None,2},
+            nmtools_tuple{None,None,1},
+            nmtools_tuple{None,None,1},
+        };
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case15b)
+    {
+        inline int src_shape[2] = {3,4};
+        inline int window_shape[2] = {2,2};
+        inline auto axis = None;
+        inline int stride[2] = {2,2};
+
+        inline auto src_shape_ct = nmtools_tuple{3_ct,4_ct};
+        inline auto window_shape_ct = nmtools_tuple{2_ct,2_ct};
+        inline auto stride_ct = 2_ct;
+
+        NMTOOLS_CAST_INDEX_ARRAYS(src_shape)
+        NMTOOLS_CAST_INDEX_ARRAYS(window_shape)
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case15b)
+    {
+        inline auto expected = nmtools_tuple{
+            nmtools_tuple{None,None,2},
+            nmtools_tuple{None,None,2},
+            nmtools_tuple{None,None,1},
+            nmtools_tuple{None,None,1},
+        };
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case16)
+    {
+        inline int src_shape[2] = {3,4};
+        inline int window_shape = 3;
+        inline int axis = 0;
+        inline int stride = 2;
+
+        inline auto src_shape_ct = nmtools_tuple{3_ct,4_ct};
+        inline auto window_shape_ct = 3_ct;
+        inline auto axis_ct = 0_ct;
+        inline auto stride_ct = 2_ct;
+
+        NMTOOLS_CAST_INDEX_ARRAYS(src_shape)
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case16)
+    {
+        inline auto expected = nmtools_tuple{
+            nmtools_tuple{None,None,2},
+            nmtools_tuple{None,None,1},
+            nmtools_tuple{None,None,1},
+        };
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case24)
+    {
+        inline int src_shape[3] = {1,5,4};
+        inline int window_shape = 3;
+        inline int axis = -1;
+        inline int stride = 2;
+
+        inline auto window_shape_ct = 3_ct;
+        inline auto axis_ct = meta::ct_v<-1>;
+        inline auto stride_ct = 2_ct;
+
+        NMTOOLS_CAST_INDEX_ARRAYS(src_shape)
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case24)
+    {
+        inline auto expected = nmtools_tuple{
+            nmtools_tuple{None,None,1},
+            nmtools_tuple{None,None,1},
+            nmtools_tuple{None,None,2},
+            nmtools_tuple{None,None,1},
+        };
+    }
 }
 
 NMTOOLS_TESTING_DECLARE_CASE(index, sliding_window)
@@ -1258,6 +1379,6 @@ NMTOOLS_TESTING_DECLARE_CASE(index, sliding_window)
     {
         inline int expected[2] = {2,3};
     }
-}
+} // sliding_window
 
 #endif // NMTOOLS_TESTING_DATA_INDEX_SLIDING_WINDOW_HPP
