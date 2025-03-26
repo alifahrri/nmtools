@@ -11,6 +11,7 @@ Cheatsheet for development build and tests.
 1. [Build & Test `hip`](#build--test-hip)
 1. [Build & Test (Ubuntu20.04)](#build--test-ubuntu2004)
 1. [Run Interactive Notebook](#run-interactive-notebook)
+1. [Run clang-repl](#run-clang-repl)
 
 ## Basic Building & Testing (CPU)
 
@@ -221,7 +222,7 @@ mkdir -p build/cuda-${TOOLCHAIN} && cd build/cuda-${TOOLCHAIN} \
     && make -j`nproc` VERBOSE=1
 ```
 ```
-docker run -it --gpus all --device /dev/nvidia0:/dev/nvidia0 \                                           
+docker run -it --runtime=nvidia --device /dev/nvidia0:/dev/nvidia0 \                                           
   --device /dev/nvidiactl:/dev/nvidiactl \
   --device /dev/nvidia-uvm:/dev/nvidia-uvm \
   --device /dev/nvidia-uvm-tools:/dev/nvidia-uvm-tools --name cuda-dev --volume ${PWD}:/workspace/nmtools --entrypoint zsh nmtools:cuda
@@ -291,4 +292,37 @@ docker exec -it cling zsh
 Inside the docker container, run jupyter-lab:
 ```
 jupyter-lab --allow-root
+```
+
+## Run Clang-Repl
+
+Sometimes when you try to build the xeus-cling env it's broken, use clang-repl to run interactively.
+
+Build the image:
+```
+docker build -t clang-repl -f ./docker/clang-repl.dockerfile .
+```
+Run
+```
+docker run -it --name clang-repl clang-repl zsh
+```
+Then, inside the container, run clang-repl:
+```
+/llvm-project/build/bin/clang-repl --Xcc="-I/workspace/include/" -Xcc="-Wno-gnu-string-literal-operator-template"
+```
+![clang-repl.png](docs/image/clang-repl.png)
+To re-run stopped container
+```
+docker start clang-repl
+docker exec -it clang-repl zsh
+```
+
+## Setup `distcc`
+Build distcc server:
+```
+docker build --build-arg ubuntu_base=22.04 -t distcc-server -f docker/distcc.dockerfile .
+```
+Run distcc server (from your build server):
+```
+docker run -d -p 3632:3632 -p 5201:5201 --name distcc-server1 distcc-server --jobs 16
 ```
