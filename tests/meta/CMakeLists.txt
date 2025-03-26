@@ -138,7 +138,7 @@ add_test(
 
 # omg
 if ((NOT EMSCRIPTEN) AND (NOT ANDROID))
-    target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_17)
+    target_compile_options(${PROJECT_NAME} PRIVATE -std=c++17)
     if (doctest_FOUND)
         target_link_libraries(${PROJECT_NAME} PRIVATE doctest::doctest)
     endif()
