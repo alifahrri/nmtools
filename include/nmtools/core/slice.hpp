@@ -70,16 +70,26 @@ namespace nmtools::view
     template <typename src_shape_t, typename src_size_t, typename slices_t>
     constexpr auto slicer(const src_shape_t& src_shape, const slices_t& slices, const src_size_t& src_size)
     {
-        auto m_dst_shape = index::apply_shape_slice(src_shape,slices);
-        if constexpr (meta::is_maybe_v<decltype(m_dst_shape)>) {
-            using result_t = decltype(slice_t{unwrap(src_shape),unwrap(slices),unwrap(src_size)});
-            using return_t = nmtools_maybe<result_t>;
-            return (has_value(m_dst_shape)
-                ? return_t{result_t{unwrap(src_shape),unwrap(slices),unwrap(src_size)}}
+        if constexpr (meta::is_maybe_v<src_shape_t> || meta::is_maybe_v<slices_t> || meta::is_maybe_v<src_size_t>) {
+            using result_t = decltype(slicer(unwrap(src_shape),unwrap(slices),unwrap(src_size)));
+            using return_t = meta::conditional_t<meta::is_maybe_v<result_t>,result_t,nmtools_maybe<result_t>>;
+            return (has_value(src_shape) && has_value(slices) && unwrap(src_size)
+                ? return_t{slicer(unwrap(src_shape),unwrap(slices),unwrap(src_size))}
                 : return_t{meta::Nothing}
             );
         } else {
-            return slice_t{unwrap(src_shape),unwrap(slices),unwrap(src_size)};
+            // TODO: avoid recomputation of dst_shape inside slice_t
+            auto m_dst_shape = index::apply_shape_slice(src_shape,slices);
+            if constexpr (meta::is_maybe_v<decltype(m_dst_shape)>) {
+                using result_t = decltype(slice_t{unwrap(src_shape),unwrap(slices),unwrap(src_size)});
+                using return_t = nmtools_maybe<result_t>;
+                return (has_value(m_dst_shape)
+                    ? return_t{result_t{unwrap(src_shape),unwrap(slices),unwrap(src_size)}}
+                    : return_t{meta::Nothing}
+                );
+            } else {
+                return slice_t{unwrap(src_shape),unwrap(slices),unwrap(src_size)};
+            }
         }
     }
 
