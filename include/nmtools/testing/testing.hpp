@@ -5,8 +5,12 @@
 #include "nmtools/utility/isclose.hpp"
 #include "nmtools/utility/isequal.hpp"
 #include "nmtools/utility/apply_isequal.hpp"
+#include "nmtools/utility/unwrap.hpp"
 #include "nmtools/testing/string.hpp"
 #include "nmtools/testing/array_cast.hpp"
+#include "nmtools/array/ufuncs/greater.hpp"
+#include "nmtools/array/ufuncs/fabs.hpp"
+#include "nmtools/array/ufuncs/subtract.hpp"
 
 using nmtools::utils::isclose;
 using nmtools::utils::isequal;
@@ -33,6 +37,9 @@ auto var_name = nmtools::testing::cast<T>(var<value_type_##var_name>);
  */
 #define STRINGIFY(array) \
 nmtools::utils::to_string(array)
+
+#define STRINGIFY_COLOR(array,color) \
+nmtools::utils::to_string_color(array,color)
 
 #ifndef NMTOOLS_TESTING_PRECISION
 #define NMTOOLS_TESTING_PRECISION (1e-6)
@@ -89,6 +96,21 @@ nmtools::utils::to_string(array)
     NMTOOLS_CHECK_MESSAGE( result_, message ); \
 }
 
+#define NMTOOLS_ASSERT_CLOSE_COLORIZED(result,expect) \
+{ \
+    auto result_ = isclose(result,expect,NMTOOLS_TESTING_PRECISION); \
+    auto color   = nmtools::view::greater(nmtools::view::fabs(nmtools::view::subtract(result,expect)),NMTOOLS_TESTING_PRECISION); \
+    auto result_typename = NMTOOLS_TESTING_GET_TYPENAME(decltype(result)); \
+    auto expect_typename = NMTOOLS_TESTING_GET_TYPENAME(decltype(expect)); \
+    std::string message {}; \
+    message = message + \
+        + "\n\tActual " + "\033[0;90m<" + result_typename + ">\033[0m:\n" \
+        + STRINGIFY_COLOR(result,nmtools::unwrap(color)) \
+        + "\n\tExpected " + "\033[0;90m<" + expect_typename + ">\033[0m:\n" \
+        + STRINGIFY_COLOR(expect,nmtools::unwrap(color)) \
+    ; \
+    NMTOOLS_CHECK_MESSAGE( result_, message ); \
+}
 /**
  * @brief implementation of doctest assert macro with message
  * 

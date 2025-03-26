@@ -66,7 +66,8 @@ namespace nmtools::utils::impl
         using formatter_t = fmt_string_t<tab,space,comma,open_bracket,close_bracket,show_types>;
         using result_type = nmtools_string;
 
-        auto operator()(const T& array) const noexcept
+        template <typename color_t=none_t>
+        auto operator()(const T& array, [[maybe_unused]] const color_t& color=color_t{}) const noexcept
         {
             nmtools_string str;
             using ::nmtools::index::ndindex;
@@ -150,6 +151,17 @@ namespace nmtools::utils::impl
                     // TODO: support tuple for apply_at
                     auto a = apply_at(array, idx);
 
+                    [[maybe_unused]]
+                    auto c = [&](){
+                        // assume same shape
+                        // TODO: handle error
+                        if constexpr (!is_none_v<color_t>) {
+                            return apply_at(color, idx);
+                        } else {
+                            return None;
+                        }
+                    }();
+
                     // check if we should print open bracket
                     // only add open bracket up to axis n
                     // that is equal to zero, starting from last axis
@@ -161,7 +173,17 @@ namespace nmtools::utils::impl
                     }
 
                     str += tab;
+                    if constexpr (!is_none_v<color_t>) {
+                        if (static_cast<bool>(c)) {
+                            str += "\033[41;97m";
+                        }
+                    }
                     str += to_string(a,formatter_t{});
+                    if constexpr (!is_none_v<color_t>) {
+                        if (static_cast<bool>(c)) {
+                            str += "\033[0m";
+                        }
+                    }
                     if (at(idx,dim-1)!=(last_dim-1)) {
                         str += comma;
                     }
@@ -294,6 +316,23 @@ namespace nmtools::utils::impl
     };
 
     #undef NMTOOLS_DTYPE_TO_STRING_CASE
+}
+
+namespace nmtools::utils
+{
+    template <typename T, typename color_t, typename formatter_t>
+    auto to_string_color(const T& array, const color_t& color, formatter_t) -> nmtools_string
+    {
+        auto to_string_impl = impl::to_string_t<T,formatter_t>{};
+        return to_string_impl(array,color);
+    }
+
+    template <typename T, typename color_t>
+    auto to_string_color(const T& array, const color_t& color) -> nmtools_string
+    {
+        auto to_string_impl = impl::to_string_t<T,fmt_string_t<>>{};
+        return to_string_impl(array,color);
+    }
 }
 
 #if __has_include(<fstream>)
