@@ -28,7 +28,7 @@ SUBCASE(#case_name) \
     using namespace args; \
     auto result = nmtools::view::sliding_window(__VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( nmtools::shape(result), nmtools::shape(expect::expected) ); \
-    NMTOOLS_ASSERT_CLOSE( result, expect::expected ); \
+    NMTOOLS_ASSERT_CLOSE_COLORIZED( result, expect::expected ); \
 }
 
 TEST_CASE("sliding_window(case1)" * doctest::test_suite("view::sliding_window"))
@@ -515,5 +515,307 @@ TEST_CASE("sliding_window(case13)" * doctest::test_suite("view::sliding_window")
     SLIDING_WINDOW_SUBCASE( case13, x_ls_fb, window_shape, axis );
     SLIDING_WINDOW_SUBCASE( case13, x_ls_hb, window_shape, axis );
     SLIDING_WINDOW_SUBCASE( case13, x_ls_db, window_shape, axis );
+    #endif
+}
+
+TEST_CASE("sliding_window(case14)" * doctest::test_suite("view::sliding_window"))
+{
+    SLIDING_WINDOW_SUBCASE( case14, x, window_shape, axis, stride );
+    SLIDING_WINDOW_SUBCASE( case14, x_a, window_shape, axis, stride );
+    SLIDING_WINDOW_SUBCASE( case14, x_f, window_shape, axis, stride );
+    SLIDING_WINDOW_SUBCASE( case14, x_h, window_shape, axis, stride );
+    SLIDING_WINDOW_SUBCASE( case14, x_d, window_shape, axis, stride );
+
+    #if defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
+    #endif
+}
+
+TEST_CASE("sliding_window(case15)" * doctest::test_suite("view::sliding_window"))
+{
+    SLIDING_WINDOW_SUBCASE( case15, x, window_shape, axis, stride );
+    SLIDING_WINDOW_SUBCASE( case15, x_a, window_shape, axis, stride );
+    SLIDING_WINDOW_SUBCASE( case15, x_f, window_shape, axis, stride );
+    SLIDING_WINDOW_SUBCASE( case15, x_h, window_shape, axis, stride );
+    SLIDING_WINDOW_SUBCASE( case15, x_d, window_shape, axis, stride );
+
+    #if defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
+    #endif
+}
+
+TEST_CASE("sliding_window(case15b)" * doctest::test_suite("view::sliding_window"))
+{
+    SLIDING_WINDOW_SUBCASE( case15b, x, window_shape, axis, stride );
+    SLIDING_WINDOW_SUBCASE( case15b, x_a, window_shape, axis, stride );
+    SLIDING_WINDOW_SUBCASE( case15b, x_f, window_shape, axis, stride );
+    SLIDING_WINDOW_SUBCASE( case15b, x_h, window_shape, axis, stride );
+    SLIDING_WINDOW_SUBCASE( case15b, x_d, window_shape, axis, stride );
+
+    #if defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
+    #endif
+}
+
+TEST_CASE("sliding_window(case16)" * doctest::test_suite("view::sliding_window"))
+{
+    SLIDING_WINDOW_SUBCASE( case16, x, window_shape, axis, stride );
+    SLIDING_WINDOW_SUBCASE( case16, x_a, window_shape, axis, stride );
+    SLIDING_WINDOW_SUBCASE( case16, x_f, window_shape, axis, stride );
+    SLIDING_WINDOW_SUBCASE( case16, x_h, window_shape, axis, stride );
+    SLIDING_WINDOW_SUBCASE( case16, x_d, window_shape, axis, stride );
+
+    #if defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
+    #endif
+}
+
+#if 1
+TEST_CASE("sliding_window(case17)" * doctest::test_suite("view::sliding_window"))
+{
+    SLIDING_WINDOW_SUBCASE( case17, x, window_shape, axis, stride );
+    SLIDING_WINDOW_SUBCASE( case17, x_a, window_shape, axis, stride );
+    SLIDING_WINDOW_SUBCASE( case17, x_f, window_shape, axis, stride );
+    SLIDING_WINDOW_SUBCASE( case17, x_h, window_shape, axis, stride );
+    SLIDING_WINDOW_SUBCASE( case17, x_d, window_shape, axis, stride );
+
+    #if defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
+    #endif
+}
+#endif
+
+TEST_CASE("sliding_window(case18)" * doctest::test_suite("view::sliding_window"))
+{
+    SLIDING_WINDOW_SUBCASE( case18, x, window_shape, axis, stride );
+    SLIDING_WINDOW_SUBCASE( case18, x_a, window_shape, axis, stride );
+    SLIDING_WINDOW_SUBCASE( case18, x_f, window_shape, axis, stride );
+    SLIDING_WINDOW_SUBCASE( case18, x_h, window_shape, axis, stride );
+    SLIDING_WINDOW_SUBCASE( case18, x_d, window_shape, axis, stride );
+
+    #if defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
+    #endif
+}
+
+TEST_CASE("sliding_window(case19)" * doctest::test_suite("view::sliding_window"))
+{
+    SLIDING_WINDOW_SUBCASE( case19, x, window_shape, axis, stride );
+    SLIDING_WINDOW_SUBCASE( case19, x_a, window_shape, axis, stride );
+    SLIDING_WINDOW_SUBCASE( case19, x_f, window_shape, axis, stride );
+    SLIDING_WINDOW_SUBCASE( case19, x_h, window_shape, axis, stride );
+    SLIDING_WINDOW_SUBCASE( case19, x_d, window_shape, axis, stride );
+
+    #if defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
+    #endif
+}
+
+TEST_CASE("sliding_window(case19b)" * doctest::test_suite("view::sliding_window"))
+{
+    SLIDING_WINDOW_SUBCASE( case19b, x, window_shape, axis, stride );
+    SLIDING_WINDOW_SUBCASE( case19b, x_a, window_shape, axis, stride );
+    SLIDING_WINDOW_SUBCASE( case19b, x_f, window_shape, axis, stride );
+    SLIDING_WINDOW_SUBCASE( case19b, x_h, window_shape, axis, stride );
+    SLIDING_WINDOW_SUBCASE( case19b, x_d, window_shape, axis, stride );
+
+    #if defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
+    #endif
+}
+
+TEST_CASE("sliding_window(case20)" * doctest::test_suite("view::sliding_window"))
+{
+    SLIDING_WINDOW_SUBCASE( case20, x, window_shape, axis, stride );
+    SLIDING_WINDOW_SUBCASE( case20, x_a, window_shape, axis, stride );
+    SLIDING_WINDOW_SUBCASE( case20, x_f, window_shape, axis, stride );
+    SLIDING_WINDOW_SUBCASE( case20, x_h, window_shape, axis, stride );
+    SLIDING_WINDOW_SUBCASE( case20, x_d, window_shape, axis, stride );
+
+    #if defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
+    #endif
+}
+
+TEST_CASE("sliding_window(case21)" * doctest::test_suite("view::sliding_window"))
+{
+    SLIDING_WINDOW_SUBCASE( case21, x, window_shape, axis, stride );
+    SLIDING_WINDOW_SUBCASE( case21, x_a, window_shape, axis, stride );
+    SLIDING_WINDOW_SUBCASE( case21, x_f, window_shape, axis, stride );
+    SLIDING_WINDOW_SUBCASE( case21, x_h, window_shape, axis, stride );
+    SLIDING_WINDOW_SUBCASE( case21, x_d, window_shape, axis, stride );
+
+    #if defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
+    #endif
+}
+
+TEST_CASE("sliding_window(case22)" * doctest::test_suite("view::sliding_window"))
+{
+    SLIDING_WINDOW_SUBCASE( case22, x, window_shape, axis, stride );
+    SLIDING_WINDOW_SUBCASE( case22, x_a, window_shape, axis, stride );
+    SLIDING_WINDOW_SUBCASE( case22, x_f, window_shape, axis, stride );
+    SLIDING_WINDOW_SUBCASE( case22, x_h, window_shape, axis, stride );
+    SLIDING_WINDOW_SUBCASE( case22, x_d, window_shape, axis, stride );
+
+    #if defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
+    #endif
+}
+
+TEST_CASE("sliding_window(case23)" * doctest::test_suite("view::sliding_window"))
+{
+    SLIDING_WINDOW_SUBCASE( case23, x, window_shape, axis, stride );
+    SLIDING_WINDOW_SUBCASE( case23, x_a, window_shape, axis, stride );
+    SLIDING_WINDOW_SUBCASE( case23, x_f, window_shape, axis, stride );
+    SLIDING_WINDOW_SUBCASE( case23, x_h, window_shape, axis, stride );
+    SLIDING_WINDOW_SUBCASE( case23, x_d, window_shape, axis, stride );
+
+    #if defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
+    #endif
+}
+
+TEST_CASE("sliding_window(case24)" * doctest::test_suite("view::sliding_window"))
+{
+    SLIDING_WINDOW_SUBCASE( case24, x, window_shape, axis, stride );
+    SLIDING_WINDOW_SUBCASE( case24, x_a, window_shape, axis, stride );
+    SLIDING_WINDOW_SUBCASE( case24, x_f, window_shape, axis, stride );
+    SLIDING_WINDOW_SUBCASE( case24, x_h, window_shape, axis, stride );
+    SLIDING_WINDOW_SUBCASE( case24, x_d, window_shape, axis, stride );
+
+    #if defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
+    #endif
+}
+
+TEST_CASE("sliding_window(case25)" * doctest::test_suite("view::sliding_window"))
+{
+    SLIDING_WINDOW_SUBCASE( case25, x, window_shape, axis, stride );
+    SLIDING_WINDOW_SUBCASE( case25, x_a, window_shape, axis, stride );
+    SLIDING_WINDOW_SUBCASE( case25, x_f, window_shape, axis, stride );
+    SLIDING_WINDOW_SUBCASE( case25, x_h, window_shape, axis, stride );
+    SLIDING_WINDOW_SUBCASE( case25, x_d, window_shape, axis, stride );
+
+    #if defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
+    #endif
+}
+
+TEST_CASE("sliding_window(case26)" * doctest::test_suite("view::sliding_window"))
+{
+    SLIDING_WINDOW_SUBCASE( case26, x, window_shape, axis, stride );
+    SLIDING_WINDOW_SUBCASE( case26, x_a, window_shape, axis, stride );
+    SLIDING_WINDOW_SUBCASE( case26, x_f, window_shape, axis, stride );
+    SLIDING_WINDOW_SUBCASE( case26, x_h, window_shape, axis, stride );
+    SLIDING_WINDOW_SUBCASE( case26, x_d, window_shape, axis, stride );
+
+    #if defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
+    #endif
+}
+
+TEST_CASE("sliding_window(case27)" * doctest::test_suite("view::sliding_window"))
+{
+    SLIDING_WINDOW_SUBCASE( case27, x, window_shape, axis, stride );
+    SLIDING_WINDOW_SUBCASE( case27, x_a, window_shape, axis, stride );
+    SLIDING_WINDOW_SUBCASE( case27, x_f, window_shape, axis, stride );
+    SLIDING_WINDOW_SUBCASE( case27, x_h, window_shape, axis, stride );
+    SLIDING_WINDOW_SUBCASE( case27, x_d, window_shape, axis, stride );
+
+    #if defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
+    #endif
+}
+
+TEST_CASE("sliding_window(case28)" * doctest::test_suite("view::sliding_window"))
+{
+    SLIDING_WINDOW_SUBCASE( case28, x, window_shape, axis, stride );
+    SLIDING_WINDOW_SUBCASE( case28, x_a, window_shape, axis, stride );
+    SLIDING_WINDOW_SUBCASE( case28, x_f, window_shape, axis, stride );
+    SLIDING_WINDOW_SUBCASE( case28, x_h, window_shape, axis, stride );
+    SLIDING_WINDOW_SUBCASE( case28, x_d, window_shape, axis, stride );
+
+    #if defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
+    #endif
+}
+
+TEST_CASE("sliding_window(case29)" * doctest::test_suite("view::sliding_window"))
+{
+    SLIDING_WINDOW_SUBCASE( case29, x, window_shape, axis, stride );
+    SLIDING_WINDOW_SUBCASE( case29, x_a, window_shape, axis, stride );
+    SLIDING_WINDOW_SUBCASE( case29, x_f, window_shape, axis, stride );
+    SLIDING_WINDOW_SUBCASE( case29, x_h, window_shape, axis, stride );
+    SLIDING_WINDOW_SUBCASE( case29, x_d, window_shape, axis, stride );
+
+    #if defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
+    #endif
+}
+
+TEST_CASE("sliding_window(case30)" * doctest::test_suite("view::sliding_window"))
+{
+    SLIDING_WINDOW_SUBCASE( case30, x, window_shape, axis, stride );
+    SLIDING_WINDOW_SUBCASE( case30, x_a, window_shape, axis, stride );
+    SLIDING_WINDOW_SUBCASE( case30, x_f, window_shape, axis, stride );
+    SLIDING_WINDOW_SUBCASE( case30, x_h, window_shape, axis, stride );
+    SLIDING_WINDOW_SUBCASE( case30, x_d, window_shape, axis, stride );
+
+    #if defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
+    #endif
+}
+
+TEST_CASE("sliding_window(case31)" * doctest::test_suite("view::sliding_window"))
+{
+    SLIDING_WINDOW_SUBCASE( case31, x, window_shape, axis, stride );
+    SLIDING_WINDOW_SUBCASE( case31, x_a, window_shape, axis, stride );
+    SLIDING_WINDOW_SUBCASE( case31, x_f, window_shape, axis, stride );
+    SLIDING_WINDOW_SUBCASE( case31, x_h, window_shape, axis, stride );
+    SLIDING_WINDOW_SUBCASE( case31, x_d, window_shape, axis, stride );
+
+    #if defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
+    #endif
+}
+
+TEST_CASE("sliding_window(case32)" * doctest::test_suite("view::sliding_window"))
+{
+    SLIDING_WINDOW_SUBCASE( case32, x, window_shape, axis, stride );
+    SLIDING_WINDOW_SUBCASE( case32, x_a, window_shape, axis, stride );
+    SLIDING_WINDOW_SUBCASE( case32, x_f, window_shape, axis, stride );
+    SLIDING_WINDOW_SUBCASE( case32, x_h, window_shape, axis, stride );
+    SLIDING_WINDOW_SUBCASE( case32, x_d, window_shape, axis, stride );
+
+    #if defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
+    #endif
+}
+
+TEST_CASE("sliding_window(case33)" * doctest::test_suite("view::sliding_window"))
+{
+    SLIDING_WINDOW_SUBCASE( case33, x, window_shape, axis, stride );
+    SLIDING_WINDOW_SUBCASE( case33, x_a, window_shape, axis, stride );
+    SLIDING_WINDOW_SUBCASE( case33, x_f, window_shape, axis, stride );
+    SLIDING_WINDOW_SUBCASE( case33, x_h, window_shape, axis, stride );
+    SLIDING_WINDOW_SUBCASE( case33, x_d, window_shape, axis, stride );
+
+    #if defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
+    #endif
+}
+
+TEST_CASE("sliding_window(case34)" * doctest::test_suite("view::sliding_window"))
+{
+    SLIDING_WINDOW_SUBCASE( case34, x, window_shape, axis, stride );
+    SLIDING_WINDOW_SUBCASE( case34, x_a, window_shape, axis, stride );
+    SLIDING_WINDOW_SUBCASE( case34, x_f, window_shape, axis, stride );
+    SLIDING_WINDOW_SUBCASE( case34, x_h, window_shape, axis, stride );
+    SLIDING_WINDOW_SUBCASE( case34, x_d, window_shape, axis, stride );
+
+    #if defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
+    #endif
+}
+
+TEST_CASE("sliding_window(case35)" * doctest::test_suite("view::sliding_window"))
+{
+    SLIDING_WINDOW_SUBCASE( case35, x, window_shape, axis, stride );
+    SLIDING_WINDOW_SUBCASE( case35, x_a, window_shape, axis, stride );
+    SLIDING_WINDOW_SUBCASE( case35, x_f, window_shape, axis, stride );
+    SLIDING_WINDOW_SUBCASE( case35, x_h, window_shape, axis, stride );
+    SLIDING_WINDOW_SUBCASE( case35, x_d, window_shape, axis, stride );
+
+    #if defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
+    #endif
+}
+
+TEST_CASE("sliding_window(case36)" * doctest::test_suite("view::sliding_window"))
+{
+    SLIDING_WINDOW_SUBCASE( case36, x, window_shape, axis, stride );
+    SLIDING_WINDOW_SUBCASE( case36, x_a, window_shape, axis, stride );
+    SLIDING_WINDOW_SUBCASE( case36, x_f, window_shape, axis, stride );
+    SLIDING_WINDOW_SUBCASE( case36, x_h, window_shape, axis, stride );
+    SLIDING_WINDOW_SUBCASE( case36, x_d, window_shape, axis, stride );
+
+    #if defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     #endif
 }

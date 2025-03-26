@@ -10,7 +10,7 @@ if [[ ! -d ~/miniconda3/bin/activate ]]; then
 
     conda init --all
 
-    conda create -n cling -c conda-forge cmake xeus-zmq cling nlohmann_json=3.11.2 cppzmq xtl pugixml doctest cpp-argparse jupyterlab -y
+    conda create -n cling -c conda-forge cmake xeus-zmq cling=1.0 nlohmann_json=3.11.2 cppzmq xtl pugixml doctest cpp-argparse jupyterlab -y
     source activate cling
     # conda install xeus-cling jupyter -c conda-forge -y
 

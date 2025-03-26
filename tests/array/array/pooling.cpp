@@ -24,35 +24,12 @@ inline auto name##_ls_db = nmtools::cast(name, nmtools::array::kind::ndarray_ls_
 namespace nm = nmtools;
 namespace na = nm::array;
 
-#define RUN_max_pool2d_impl(...) \
-nm::array::max_pool2d(__VA_ARGS__);
-
-#ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
-#include "nmtools/testing/benchmarks/bench.hpp"
-using nm::benchmarks::TrackedBench;
-// create immediately invoked lambda
-// that packs max_pool2d fn to callable lambda
-#define RUN_max_pool2d(case_name, ...) \
-[](auto&&...args){ \
-    auto title = std::string("max_pool2d-") + #case_name; \
-    auto name  = nm::testing::make_func_args("", args...); \
-    auto fn    = [&](){ \
-        return RUN_max_pool2d_impl(args...); \
-    }; \
-    return TrackedBench::run(title, name, fn); \
-}(__VA_ARGS__);
-#else
-// run normally without benchmarking, ignore case_name
-#define RUN_max_pool2d(case_name, ...) \
-RUN_max_pool2d_impl(__VA_ARGS__);
-#endif // NMTOOLS_TESTING_ENABLE_BENCHMARKS
-
 #define MAX_POOL2D_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
     NMTOOLS_TESTING_USE_CASE(array, max_pool2d, case_name); \
     using namespace args; \
-    auto result = RUN_max_pool2d(case_name, __VA_ARGS__); \
+    auto result = na::max_pool2d(__VA_ARGS__); \
     NMTOOLS_ASSERT_CLOSE( result, expect::result ); \
 }
 
@@ -366,35 +343,12 @@ TEST_CASE("max_pool2d(case10)" * doctest::test_suite("array::max_pool2d"))
     #endif
 }
 
-#define RUN_avg_pool2d_impl(...) \
-nm::array::avg_pool2d(__VA_ARGS__);
-
-#ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
-#include "nmtools/testing/benchmarks/bench.hpp"
-using nm::benchmarks::TrackedBench;
-// create immediately invoked lambda
-// that packs avg_pool2d fn to callable lambda
-#define RUN_avg_pool2d(case_name, ...) \
-[](auto&&...args){ \
-    auto title = std::string("avg_pool2d-") + #case_name; \
-    auto name  = nm::testing::make_func_args("", args...); \
-    auto fn    = [&](){ \
-        return RUN_avg_pool2d_impl(args...); \
-    }; \
-    return TrackedBench::run(title, name, fn); \
-}(__VA_ARGS__);
-#else
-// run normally without benchmarking, ignore case_name
-#define RUN_avg_pool2d(case_name, ...) \
-RUN_avg_pool2d_impl(__VA_ARGS__);
-#endif // NMTOOLS_TESTING_ENABLE_BENCHMARKS
-
 #define AVG_POOL2D_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
     NMTOOLS_TESTING_USE_CASE(array, avg_pool2d, case_name); \
     using namespace args; \
-    auto result = RUN_avg_pool2d(case_name, __VA_ARGS__); \
+    auto result = na::avg_pool2d(__VA_ARGS__); \
     NMTOOLS_ASSERT_CLOSE( result, expect::result ); \
 }
 

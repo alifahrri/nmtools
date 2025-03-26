@@ -62,7 +62,6 @@
 #include "nmtools/array/take_along_axis.hpp"
 #include "nmtools/array/atleast_nd.hpp"
 #include "nmtools/array/var.hpp"
-#include "nmtools/array/index.hpp"
 #include "nmtools/array/linear.hpp"
 #include "nmtools/array/bilinear.hpp"
 #include "nmtools/array/kron.hpp"
