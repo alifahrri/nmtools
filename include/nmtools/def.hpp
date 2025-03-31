@@ -48,7 +48,7 @@ namespace nmtools
     using bool_t    = uint8_t;
 }
 
-#endif
+#endif // __has_include(<stddef.h>)
 
 namespace nmtools
 {
