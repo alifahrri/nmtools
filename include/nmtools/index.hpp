@@ -44,7 +44,6 @@
 #include "nmtools/index/insert_index.hpp"
 #include "nmtools/index/resize.hpp"
 #include "nmtools/index/arange.hpp"
-#include "nmtools/index/pooling.hpp"
 #include "nmtools/index/cumsum.hpp"
 #include "nmtools/index/sum.hpp"
 #include "nmtools/index/tile.hpp"

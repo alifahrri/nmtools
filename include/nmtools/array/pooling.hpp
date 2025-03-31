@@ -1,7 +1,6 @@
 #ifndef NMTOOLS_ARRAY_VIEW_POOLING_HPP
 #define NMTOOLS_ARRAY_VIEW_POOLING_HPP
 
-#include "nmtools/index/pooling.hpp"
 #include "nmtools/index/product.hpp"
 #include "nmtools/core/decorator.hpp"
 #include "nmtools/array/pad.hpp"
@@ -71,103 +70,6 @@ namespace nmtools::index
             return result;
         }
     } // pool_pad
-
-    template <typename src_shape_t, typename kernel_size_t, typename stride_t, typename ceil_mode_t=meta::false_type>
-    constexpr auto pool_slice(const src_shape_t& src_shape, const kernel_size_t& kernel_size, const stride_t& stride, ceil_mode_t ceil_mode=ceil_mode_t{})
-    {
-        [[maybe_unused]]
-        auto m_kernel_size = [&](){
-            if constexpr (meta::is_index_v<kernel_size_t>) {
-                return nmtools_tuple{kernel_size,kernel_size};
-            } else {
-                using m_kernel_size_t = nmtools_array<nm_size_t,2>;
-                return m_kernel_size_t{
-                    static_cast<nm_size_t>(at(kernel_size,meta::ct_v<0>))
-                    , static_cast<nm_size_t>(at(kernel_size,meta::ct_v<1>))
-                };
-            }
-        }();
-        [[maybe_unused]]
-        auto m_stride = [&](){
-            if constexpr (is_none_v<stride_t>) {
-                return m_kernel_size;
-            } else if constexpr (meta::is_index_v<stride_t>) {
-                return nmtools_tuple{stride,stride};
-            } else {
-                using m_stride_t = nmtools_array<nm_size_t,2>;
-                return m_stride_t{
-                    static_cast<nm_size_t>(at(stride,meta::ct_v<0>))
-                    , static_cast<nm_size_t>(at(stride,meta::ct_v<1>))
-                };
-            }
-        }();
-        [[maybe_unused]]
-        auto remainders = [&](){
-            using remainders_t = nmtools_array<nm_size_t,2>;
-            return remainders_t{
-                static_cast<nm_size_t>(at(src_shape,meta::ct_v<-2>) % at(m_kernel_size,0))
-                , static_cast<nm_size_t>(at(src_shape,meta::ct_v<-1>) % at(m_kernel_size,1))
-            };
-        }();
-
-        using result_t = nmtools_tuple<ellipsis_t,nmtools_tuple<none_t,none_t,nm_size_t>,nmtools_tuple<none_t,none_t,nm_size_t>>;
-        auto result = result_t {};
-
-        nmtools::get<1>(result) = nmtools_tuple{None,None,at(m_stride,meta::ct_v<0>)};
-        nmtools::get<2>(result) = nmtools_tuple{None,None,at(m_stride,meta::ct_v<1>)};
-        if (ceil_mode) {
-            if (at(m_kernel_size,0) * at(m_stride,0) >= at(src_shape,meta::ct_v<-2>)) {
-                nmtools::get<1>(result) = nmtools_tuple{None,None,1};
-            }
-            if (at(m_kernel_size,1) * at(m_stride,1) >= at(src_shape,meta::ct_v<-1>)) {
-                nmtools::get<2>(result) = nmtools_tuple{None,None,1};
-            }
-        }
-        return result;
-    } // pool_slice
-    
-    struct slice_poolnd_t {};
-
-    template <typename nd_t, typename src_shape_t, typename kernel_size_t, typename stride_t, typename ceil_mode_t>
-    constexpr auto slice_poolnd(nd_t, const src_shape_t& src_shape, const kernel_size_t& kernel_size, const stride_t& stride, ceil_mode_t ceil_mode=ceil_mode_t{})
-    {
-        using result_t = meta::resolve_optype_t<slice_poolnd_t,nd_t,src_shape_t,kernel_size_t,stride_t,ceil_mode_t>;
-
-        auto result = result_t {};
-
-        if constexpr (!meta::is_constant_index_array_v<result_t>
-            && !meta::is_fail_v<result_t>
-        ) {
-            auto src_dim = len(src_shape);
-            auto kernel_dim = len(kernel_size);
-
-            if constexpr (meta::is_resizable_v<result_t>) {
-                result.resize(kernel_dim);
-            }
-
-            for (nm_size_t i=0; i<(nm_size_t)kernel_dim; i++) {
-                at(result,i) = 1;
-            }
-
-            constexpr auto N = nd_t::value;
-            auto axis = meta::template_reduce<N>([](auto init, auto index){
-                constexpr auto I = decltype(index)::value;
-                return utility::tuple_append(init,meta::ct_v<-(N-I)>);
-            },nmtools_tuple{});
-
-            for (nm_size_t i=0; i<(nm_size_t)N; i++) {
-                auto ai = at(axis,i);
-                if (ceil_mode) {
-                    auto d = at(src_shape,ai) / at(kernel_size,i);
-                    at(result,i) = d;
-                } else {
-                    at(result,i) = at(stride,i);
-                }
-            }
-        }
-
-        return result;
-    }
 } // namespace nmtools::index
 
 namespace nmtools::meta
