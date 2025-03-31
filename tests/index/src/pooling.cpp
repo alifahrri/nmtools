@@ -1,4 +1,5 @@
 #include "nmtools/index/pooling.hpp"
+#include "nmtools/array/pooling.hpp"
 #include "nmtools/meta.hpp"
 #include "nmtools/testing/doctest.hpp"
 #include "nmtools/utility/apply_isequal.hpp"
@@ -9,35 +10,12 @@
 namespace nm = nmtools;
 namespace na = nm::array;
 
-#define RUN_shape_pool2d_impl(...) \
-nm::index::shape_pool2d(__VA_ARGS__);
-
-#ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
-#include "nmtools/testing/benchmarks/bench.hpp"
-using nm::benchmarks::TrackedBench;
-// create immediately invoked lambda
-// that packs shape_pool2d fn to callable lambda
-#define RUN_shape_pool2d(case_name, ...) \
-[](auto&&...args){ \
-    auto title = std::string("shape_pool2d-") + #case_name; \
-    auto name  = nm::testing::make_func_args("", args...); \
-    auto fn    = [&](){ \
-        return RUN_shape_pool2d_impl(args...); \
-    }; \
-    return TrackedBench::run(title, name, fn); \
-}(__VA_ARGS__);
-#else
-// run normally without benchmarking, ignore case_name
-#define RUN_shape_pool2d(case_name, ...) \
-RUN_shape_pool2d_impl(__VA_ARGS__);
-#endif // NMTOOLS_TESTING_ENABLE_BENCHMARKS
-
 #define SHAPE_POOL2D_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
     NMTOOLS_TESTING_USE_CASE(index, shape_pool2d, case_name); \
     using namespace args; \
-    auto result = RUN_shape_pool2d(case_name, __VA_ARGS__); \
+    auto result = nmtools::index::shape_pool2d(__VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( result, expect::result ); \
 }
 
@@ -46,8 +24,116 @@ SUBCASE(#case_name) \
 { \
     NMTOOLS_TESTING_USE_CASE(index, constexpr_shape_pool2d, case_name); \
     using namespace args; \
-    constexpr auto result = RUN_shape_pool2d_impl(__VA_ARGS__); \
+    constexpr auto result = nmtools::index::shape_pool2d(__VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( result, expect::result ); \
+}
+
+#define POOL_PAD_SUBCASE(case_name, ...) \
+SUBCASE(#case_name) \
+{ \
+    NMTOOLS_TESTING_USE_CASE(index, pool_pad, case_name); \
+    using namespace args; \
+    auto result = nmtools::index::pool_pad(__VA_ARGS__); \
+    NMTOOLS_ASSERT_EQUAL( result, expect::expected ); \
+}
+
+TEST_CASE("pool_pad(case1)" * doctest::test_suite("index::pool_pad"))
+{
+    POOL_PAD_SUBCASE( case1, src_shape, kernel_size, stride );
+    POOL_PAD_SUBCASE( case1, src_shape_a, kernel_size_a, stride_a );
+    POOL_PAD_SUBCASE( case1, src_shape_f, kernel_size_f, stride_f );
+    POOL_PAD_SUBCASE( case1, src_shape_h, kernel_size_h, stride_h );
+    POOL_PAD_SUBCASE( case1, src_shape_v, kernel_size_v, stride_v );
+}
+
+TEST_CASE("pool_pad(case1b)" * doctest::test_suite("index::pool_pad"))
+{
+    POOL_PAD_SUBCASE( case1b, src_shape, kernel_size, stride );
+    POOL_PAD_SUBCASE( case1b, src_shape_a, kernel_size_a, stride_a );
+    POOL_PAD_SUBCASE( case1b, src_shape_f, kernel_size_f, stride_f );
+    POOL_PAD_SUBCASE( case1b, src_shape_h, kernel_size_h, stride_h );
+    POOL_PAD_SUBCASE( case1b, src_shape_v, kernel_size_v, stride_v );
+}
+
+TEST_CASE("pool_pad(case1c)" * doctest::test_suite("index::pool_pad"))
+{
+    POOL_PAD_SUBCASE( case1c, src_shape, kernel_size, stride );
+    POOL_PAD_SUBCASE( case1c, src_shape_a, kernel_size_a, stride_a );
+    POOL_PAD_SUBCASE( case1c, src_shape_f, kernel_size_f, stride_f );
+    POOL_PAD_SUBCASE( case1c, src_shape_h, kernel_size_h, stride_h );
+    POOL_PAD_SUBCASE( case1c, src_shape_v, kernel_size_v, stride_v );
+}
+
+TEST_CASE("pool_pad(case2)" * doctest::test_suite("index::pool_pad"))
+{
+    POOL_PAD_SUBCASE( case2, src_shape, kernel_size, stride );
+    POOL_PAD_SUBCASE( case2, src_shape_a, kernel_size_a, stride_a );
+    POOL_PAD_SUBCASE( case2, src_shape_f, kernel_size_f, stride_f );
+    POOL_PAD_SUBCASE( case2, src_shape_h, kernel_size_h, stride_h );
+    POOL_PAD_SUBCASE( case2, src_shape_v, kernel_size_v, stride_v );
+}
+
+TEST_CASE("pool_pad(case3)" * doctest::test_suite("index::pool_pad"))
+{
+    POOL_PAD_SUBCASE( case3, src_shape, kernel_size, stride );
+    POOL_PAD_SUBCASE( case3, src_shape_a, kernel_size_a, stride_a );
+    POOL_PAD_SUBCASE( case3, src_shape_f, kernel_size_f, stride_f );
+    POOL_PAD_SUBCASE( case3, src_shape_h, kernel_size_h, stride_h );
+    POOL_PAD_SUBCASE( case3, src_shape_v, kernel_size_v, stride_v );
+}
+
+TEST_CASE("pool_pad(case4)" * doctest::test_suite("index::pool_pad"))
+{
+    POOL_PAD_SUBCASE( case4, src_shape, kernel_size, stride );
+    POOL_PAD_SUBCASE( case4, src_shape_a, kernel_size_a, stride_a );
+    POOL_PAD_SUBCASE( case4, src_shape_f, kernel_size_f, stride_f );
+    POOL_PAD_SUBCASE( case4, src_shape_h, kernel_size_h, stride_h );
+    POOL_PAD_SUBCASE( case4, src_shape_v, kernel_size_v, stride_v );
+}
+
+TEST_CASE("pool_pad(case10)" * doctest::test_suite("index::pool_pad"))
+{
+    POOL_PAD_SUBCASE( case10, src_shape, kernel_size, stride );
+    POOL_PAD_SUBCASE( case10, src_shape_a, kernel_size_a, stride_a );
+    POOL_PAD_SUBCASE( case10, src_shape_f, kernel_size_f, stride_f );
+    POOL_PAD_SUBCASE( case10, src_shape_h, kernel_size_h, stride_h );
+    POOL_PAD_SUBCASE( case10, src_shape_v, kernel_size_v, stride_v );
+}
+
+TEST_CASE("pool_pad(case10b)" * doctest::test_suite("index::pool_pad"))
+{
+    POOL_PAD_SUBCASE( case10b, src_shape, kernel_size, stride );
+    POOL_PAD_SUBCASE( case10b, src_shape_a, kernel_size_a, stride_a );
+    POOL_PAD_SUBCASE( case10b, src_shape_f, kernel_size_f, stride_f );
+    POOL_PAD_SUBCASE( case10b, src_shape_h, kernel_size_h, stride_h );
+    POOL_PAD_SUBCASE( case10b, src_shape_v, kernel_size_v, stride_v );
+}
+
+TEST_CASE("pool_pad(case10c)" * doctest::test_suite("index::pool_pad"))
+{
+    POOL_PAD_SUBCASE( case10c, src_shape, kernel_size, stride );
+    POOL_PAD_SUBCASE( case10c, src_shape_a, kernel_size_a, stride_a );
+    POOL_PAD_SUBCASE( case10c, src_shape_f, kernel_size_f, stride_f );
+    POOL_PAD_SUBCASE( case10c, src_shape_h, kernel_size_h, stride_h );
+    POOL_PAD_SUBCASE( case10c, src_shape_v, kernel_size_v, stride_v );
+}
+
+TEST_CASE("pool_pad(case11)" * doctest::test_suite("index::pool_pad"))
+{
+    POOL_PAD_SUBCASE( case11, src_shape, kernel_size, stride );
+    POOL_PAD_SUBCASE( case11, src_shape_a, kernel_size_a, stride_a );
+    POOL_PAD_SUBCASE( case11, src_shape_f, kernel_size_f, stride_f );
+    POOL_PAD_SUBCASE( case11, src_shape_h, kernel_size_h, stride_h );
+    POOL_PAD_SUBCASE( case11, src_shape_v, kernel_size_v, stride_v );
+}
+
+TEST_CASE("pool_pad(case12)" * doctest::test_suite("index::pool_pad"))
+{
+    POOL_PAD_SUBCASE( case12, src_shape, kernel_size, stride );
+    POOL_PAD_SUBCASE( case12, src_shape_a, kernel_size_a, stride_a );
+    POOL_PAD_SUBCASE( case12, src_shape_f, kernel_size_f, stride_f );
+    POOL_PAD_SUBCASE( case12, src_shape_h, kernel_size_h, stride_h );
+    POOL_PAD_SUBCASE( case12, src_shape_v, kernel_size_v, stride_v );
 }
 
 TEST_CASE("shape_pool2d(case1)" * doctest::test_suite("index"))
