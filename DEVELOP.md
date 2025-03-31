@@ -12,6 +12,7 @@ Cheatsheet for development build and tests.
 1. [Build & Test (Ubuntu20.04)](#build--test-ubuntu2004)
 1. [Run Interactive Notebook](#run-interactive-notebook)
 1. [Run clang-repl](#run-clang-repl)
+1. [Build with ditstcc](#setup-distcc)
 
 ## Basic Building & Testing (CPU)
 
@@ -324,5 +325,19 @@ docker build --build-arg ubuntu_base=22.04 -t distcc-server -f docker/distcc.doc
 ```
 Run distcc server (from your build server):
 ```
-docker run -d -p 3632:3632 -p 5201:5201 --name distcc-server1 distcc-server --jobs 16
+docker run -d -p 3632:3632 -p 5201:5201 --name distcc-server1 distcc-server --jobs 24
+```
+From client machine:
+```
+mkdir -p build/distcc-clang
+cd build/distcc-clang
+cmake -DCMAKE_TOOLCHAIN_FILE=cmake/toolchains/distcc-clang.cmake ../..
+ccmake ../.. # optional to select which tests to be built
+```
+build:
+```
+export DISTCC_VERBOSE=0
+export DISTCC_PAUSE_TIME_MSEC=10
+export DISTCC_HOSTS="192.168.1.11/24,lzo localhost/32,lzo"
+clear && make -j56 VERBOSE=1 all
 ```
