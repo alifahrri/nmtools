@@ -4,6 +4,7 @@
 #include "nmtools/index/pooling.hpp"
 #include "nmtools/index/product.hpp"
 #include "nmtools/core/decorator.hpp"
+#include "nmtools/array/pad.hpp"
 #include "nmtools/array/slice.hpp"
 #include "nmtools/core/ufunc.hpp"
 #include "nmtools/array/mean.hpp"
@@ -11,10 +12,66 @@
 #include "nmtools/array/tiling_window.hpp"
 #include "nmtools/array/sliding_window.hpp"
 #include "nmtools/utility/shape.hpp"
+#include "nmtools/platform/math/constexpr.hpp"
 #include "nmtools/meta.hpp"
 
 namespace nmtools::index
 {
+    struct pool_pad_t {};
+
+    template <typename src_shape_t, typename kernel_size_t, typename stride_t>
+    constexpr auto pool_pad(const src_shape_t& src_shape, const kernel_size_t& kernel_size, const stride_t& stride)
+    {
+        if constexpr (meta::is_maybe_v<src_shape_t>
+            || meta::is_maybe_v<kernel_size_t>
+            || meta::is_maybe_v<stride_t>
+        ) {
+            using result_t = decltype(pool_pad(unwrap(src_shape),unwrap(kernel_size),unwrap(stride)));
+            using return_t = meta::conditional_t<meta::is_maybe_v<result_t>,result_t,nmtools_maybe<result_t>>;
+            return (has_value(src_shape) && has_value(kernel_size) && has_value(stride)
+                ? return_t{pool_pad(unwrap(src_shape),unwrap(kernel_size),unwrap(stride))}
+                : return_t{meta::Nothing}
+            );
+        } else {
+            using result_t = meta::resolve_optype_t<pool_pad_t,src_shape_t,kernel_size_t,stride_t>;
+
+            auto result = result_t {};
+
+            if constexpr (!meta::is_constant_index_array_v<result_t>
+                && !meta::is_constant_index_array_v<result_t>
+            ) {
+                auto src_dim = len(src_shape);
+                auto kernel_dim = len(kernel_size);
+
+                if constexpr (meta::is_resizable_v<result_t>) {
+                    result.resize(src_dim,2);
+                }
+
+                for (nm_size_t i=0; i<src_dim; i++) {
+                    apply_at(result,nmtools_tuple{i,0}) = 0;
+                }
+                for (nm_size_t i=0; i<(nm_size_t)(src_dim-kernel_dim); i++) {
+                    apply_at(result,nmtools_tuple{i,1}) = 0;
+                }
+                auto kd = (src_dim-kernel_dim);
+                for (nm_size_t i=0; i<(nm_size_t)kernel_dim; i++) {
+                    nm_index_t src_i = at(src_shape,i+kd);
+                    nm_index_t stride_i = at(stride,i);
+                    nm_index_t kernel_i = at(kernel_size,i);
+                    float idx = float(src_i - kernel_i) / stride_i;
+                    nm_index_t ceil_idx = math::constexpr_ceil(idx);
+                    nm_index_t floor_idx = math::constexpr_floor(idx);
+                    nm_index_t f_idx = ((ceil_idx * stride_i) < src_i ? ceil_idx : floor_idx);
+                    nm_index_t pad_i = f_idx * stride_i + kernel_i - src_i;
+                    // when stride i is 1, all element can be covered by window, so no need to pad
+                    apply_at(result,nmtools_tuple{i+kd,1}) = (pad_i > 0 ? pad_i : 0);
+                }
+            }
+
+            return result;
+        }
+    } // pool_pad
+
     template <typename src_shape_t, typename kernel_size_t, typename stride_t, typename ceil_mode_t=meta::false_type>
     constexpr auto pool_slice(const src_shape_t& src_shape, const kernel_size_t& kernel_size, const stride_t& stride, ceil_mode_t ceil_mode=ceil_mode_t{})
     {
@@ -111,284 +168,121 @@ namespace nmtools::index
 
         return result;
     }
+} // namespace nmtools::index
+
+namespace nmtools::meta
+{
+    namespace error
+    {
+        template <typename...>
+        struct POOL_PAD_UNSUPPORTED : detail::fail_t {};
+    }
+
+    template <typename src_shape_t, typename kernel_size_t, typename stride_t>
+    struct resolve_optype<
+        void, index::pool_pad_t, src_shape_t, kernel_size_t, stride_t
+    > {
+        static constexpr auto vtype = [](){
+            if constexpr (!is_index_array_v<src_shape_t>
+                || !is_index_array_v<kernel_size_t>
+                || !is_index_array_v<stride_t>
+            ) {
+                using type = error::POOL_PAD_UNSUPPORTED<src_shape_t,kernel_size_t,stride_t>;
+                return as_value_v<type>;
+            } else {
+                constexpr auto SRC_DIM = len_v<src_shape_t>;
+                [[maybe_unused]]
+                constexpr auto SRC_B_DIM = bounded_size_v<src_shape_t>;
+                if constexpr (SRC_DIM > 0) {
+                    constexpr auto DST_SIZE = SRC_DIM * 2;
+                    using buffer_t = nmtools_array<nm_size_t,DST_SIZE>;
+                    using shape_buffer_t = nmtools_tuple<ct<SRC_DIM>,ct<2>>;
+                    using type = array::ndarray_t<buffer_t,shape_buffer_t>;
+                    return as_value_v<type>;
+                } else if constexpr (!is_fail_v<decltype(SRC_B_DIM)>) {
+                    constexpr auto DST_B_SIZE = SRC_B_DIM * 2;
+                    using buffer_t = nmtools_static_vector<nm_size_t,DST_B_SIZE>;
+                    // doesn't support mixed shape yet
+                    // TODO: support mixed shape
+                    using shape_buffer_t = nmtools_array<nm_size_t,2>;
+                    using type = array::ndarray_t<buffer_t,shape_buffer_t>;
+                    return as_value_v<type>;
+                } else {
+                    // TODO: support small vector
+                    using buffer_t = nmtools_list<nm_size_t>;
+                    using shape_buffer_t = nmtools_array<nm_size_t,2>;
+                    using type = array::ndarray_t<buffer_t,shape_buffer_t>;
+                    return as_value_v<type>;
+                }
+            }
+        }();
+        using type = type_t<decltype(vtype)>;
+    };
 }
 
 namespace nmtools::view
 {
-    /**
-     * @brief Pool2D view implementation
-     * 
-     * @tparam reducer_t 
-     * @tparam array_t 
-     * @tparam kernel_size_t 
-     * @tparam stride_t 
-     * @tparam ceil_mode_t 
-     */
-    template <typename reducer_t, typename array_t, typename kernel_size_t, typename stride_t, typename ceil_mode_t>
-    struct pool2d_t
+    template <typename array_t, typename kernel_size_t, typename stride_t=none_t, typename ceil_mode_t=meta::false_type>
+    constexpr auto max_pool2d(const array_t& array, const kernel_size_t& kernel_size, const stride_t& stride=stride_t{}, [[maybe_unused]] ceil_mode_t ceil_mode=ceil_mode_t{})
     {
-        // must remove address space to handle error: field may not be qualified with an address space
-        using reducer_type     = meta::remove_address_space_t<reducer_t>; // assume by value, copyable
-        using array_type       = resolve_array_type_t<array_t>;
-        using kernel_size_type = resolve_attribute_type_t<kernel_size_t>;
-        using stride_type      = resolve_attribute_type_t<stride_t>;
-        using ceil_mode_type   = resolve_attribute_type_t<ceil_mode_t>;
-        using src_shape_type   = decltype(nmtools::shape(meta::declval<array_t>()));
-        using dst_shape_type   = meta::resolve_optype_t<index::shape_pool2d_t,src_shape_type,kernel_size_t,stride_t,ceil_mode_t>;
-
-        reducer_type     op;
-        array_type       array;
-        kernel_size_type kernel_size;
-        stride_type      stride;
-        ceil_mode_type   ceil_mode;
-        src_shape_type   src_shape;
-        dst_shape_type   dst_shape;
-
-        constexpr pool2d_t(const reducer_t& op, const array_t& array, const kernel_size_t& kernel_size, const stride_t& stride, ceil_mode_t ceil_mode)
-            : op(op), array(initialize<array_type>(array))
-            , kernel_size(init_attribute<kernel_size_type>(kernel_size))
-            , stride(init_attribute<stride_type>(stride))
-            , ceil_mode(init_attribute<ceil_mode_type>(ceil_mode))
-            , src_shape(nmtools::shape(array))
-            , dst_shape(index::shape_pool2d(src_shape,kernel_size,stride,ceil_mode))
-        {}
-
-        constexpr auto operands() const noexcept
-        {
-            return nmtools_tuple<array_type>{array};
-        }
-
-        constexpr auto dim() const
-        {
-            return len(dst_shape);
-        }
-
-        constexpr auto shape() const
-        {
-            return dst_shape;
-        }
-
-        template <typename...size_types>
-        constexpr auto operator()(const size_types...indices) const
-        {
-            auto indices_ = pack_indices(indices...);
-
-            auto slices = index::slice_pool2d(indices_,src_shape,kernel_size,stride,ceil_mode);
-            if constexpr (meta::is_pointer_v<array_type>) {
-                auto sliced = view::apply_slice(*array,slices);
-                return op(sliced);
+        auto src_shape = shape<true>(array);
+        auto axis = nmtools_tuple{meta::ct_v<-2>,meta::ct_v<-1>};
+        if constexpr (!meta::is_constant_index_v<ceil_mode_t>) {
+            using left_t = decltype(view::max_pool2d(array,kernel_size,stride,True));
+            using right_t = decltype(view::max_pool2d(array,kernel_size,stride,False));
+            using result_t = nmtools_either<left_t,right_t>;
+            if (ceil_mode) {
+                return result_t{view::max_pool2d(array,kernel_size,stride,True)};
             } else {
-                auto sliced = view::apply_slice(array,slices);
-                return op(sliced);
+                return result_t{view::max_pool2d(array,kernel_size,stride,False)};
             }
-        } // operator()
-    }; // pool2d_t
+        } else {
+            if constexpr (!ceil_mode_t::value) {
+                auto tiled   = view::sliding_window(array,kernel_size,axis,stride);
+                auto reduced = view::reduce_maximum(tiled,axis);
+                return reduced;
+            } else {
+                using T = meta::get_element_type_t<array_t>;
 
-    struct max_reducer_t
-    {
-        template <typename sliced_t>
-        constexpr auto operator()(const sliced_t& sliced) const
-        {
-            #if defined(NMTOOLS_OPENCL_BUILD_KERNELS)
-            // #if 0
-            using element_type = meta::get_element_type_t<sliced_t>;
-            auto flat_slice = flatten(sliced);
-            nm_size_t n = size(flat_slice);
-            auto result = (element_type)nmtools::at(flat_slice,(nm_index_t)0);
-            for (nm_size_t i=1; i<n; i++) {
-                auto element_i = (element_type)nmtools::at(flat_slice,(nm_index_t)i);
-                result = (result > element_i ? result : element_i);
+                auto pad_width = index::pool_pad(src_shape,kernel_size,stride);
+                auto padded    = view::pad(array,pad_width,meta::numeric_limits<T>::min());
+                auto tiled     = view::sliding_window(padded,kernel_size,axis,stride);
+                auto reduced   = view::reduce_maximum(tiled,axis);
+                return reduced;
             }
-            return result;
-            #else // NMTOOLS_OPENCL_BUILD_KERNELS
-            return reduce_maximum(sliced,None,None,False);
-            #endif // NMTOOLS_OPENCL_BUILD_KERNELS
-        };
-    };
-
-    struct avg_reducer_t
-    {
-        // TODO: fix value_type inference
-        using value_type = float;
-
-        template <typename sliced_t>
-        constexpr auto operator()(const sliced_t& sliced) const
-        {
-            return view::mean(sliced,None,None,False);
-        };
-    };
-
-    // TODO: implement padding
-    // TODO: implement dilation
-    /**
-     * @brief Generic pool2d operation
-     * 
-     * @tparam reducer_t 
-     * @tparam array_t 
-     * @tparam kernel_size_t 
-     * @tparam stride_t 
-     * @tparam ceil_mode_t 
-     * @param reducer       Callable on a slice
-     * @param array 
-     * @param kernel_size 
-     * @param stride 
-     * @param ceil_mode 
-     * @return constexpr auto 
-     */
-    template <typename reducer_t, typename array_t, typename kernel_size_t, typename stride_t, typename ceil_mode_t>
-    nmtools_view_attribute
-    constexpr auto pool2d(const reducer_t& reducer, const array_t& array, const kernel_size_t& kernel_size, const stride_t& stride, ceil_mode_t ceil_mode)
-    {
-        using view_t = decorator_t<pool2d_t, reducer_t, array_t, kernel_size_t, stride_t, ceil_mode_t>;
-        return view_t{{reducer, array, kernel_size, stride, ceil_mode}};
-    }
-
-    // TODO: implement padding
-    // TODO: implement dilation
-    /**
-     * @brief Construct a pool2d view with max operation.
-     * 
-     * @tparam array_t 
-     * @tparam kernel_size_t 
-     * @tparam stride_t 
-     * @tparam ceil_mode_t 
-     * @param array         input array
-     * @param kernel_size   the size of the window of pooling op
-     * @param stride        the stride of the window
-     * @param ceil_mode 
-     * @return constexpr auto 
-     */
-    template <typename array_t, typename kernel_size_t, typename stride_t, typename ceil_mode_t=meta::false_type>
-    nmtools_view_attribute
-    constexpr auto max_pool2d(const array_t& array, const kernel_size_t& kernel_size, const stride_t& stride, ceil_mode_t ceil_mode=ceil_mode_t{})
-    {
-        return view::pool2d(max_reducer_t{},array,kernel_size,stride,ceil_mode);
-    }
-
-    // TODO: implement padding
-    // TODO: implement dilation
-    /**
-     * @brief Construct a pool2d view with average op.
-     * 
-     * @tparam array_t 
-     * @tparam kernel_size_t 
-     * @tparam stride_t 
-     * @tparam ceil_mode_t 
-     * @param array         input array
-     * @param kernel_size   size of pooling region
-     * @param stride        stride of pooling operation
-     * @param ceil_mode 
-     * @return constexpr auto 
-     */
-    template <typename array_t, typename kernel_size_t, typename stride_t, typename ceil_mode_t>
-    nmtools_view_attribute
-    constexpr auto avg_pool2d(const array_t& array, const kernel_size_t& kernel_size, const stride_t& stride, ceil_mode_t ceil_mode)
-    {
-        return view::pool2d(avg_reducer_t{},array,kernel_size,stride,ceil_mode);
-    }
-
-    template <typename array_t, typename kernel_size_t, typename stride_t, typename ceil_mode_t=meta::false_type>
-    constexpr auto max_pool2dv2(const array_t& array, const kernel_size_t& kernel_size, const stride_t& stride, ceil_mode_t=ceil_mode_t{})
-    {
-        auto src_shape = shape<true>(array);
-        auto axis = nmtools_tuple{meta::ct_v<-2>,meta::ct_v<-1>};
-        auto tiled = view::sliding_window(array,kernel_size,axis);
-        auto reduced = view::reduce_maximum(tiled,axis);
-        // constexpr auto ceil_mode = ceil_mode_t::value;
-        // if constexpr (!ceil_mode) {
-            auto slice_args = index::pool_slice(src_shape,kernel_size,stride,ceil_mode_t{});
-            return view::apply_slice(reduced,slice_args);
-        // } else {
-        //     return reduced;
-        // }
-    }
-
-    template <typename array_t, typename kernel_size_t, typename stride_t, typename ceil_mode_t=meta::false_type>
-    constexpr auto avg_pool2dv2(const array_t& array, const kernel_size_t& kernel_size, const stride_t& stride, ceil_mode_t=ceil_mode_t{})
-    {
-        auto src_shape = shape<true>(array);
-        auto axis = nmtools_tuple{meta::ct_v<-2>,meta::ct_v<-1>};
-        auto tiled = view::sliding_window(array,kernel_size,axis);
-        auto reduced = view::mean(tiled,axis);
-        // constexpr auto ceil_mode = ceil_mode_t::value;
-        // if constexpr (!ceil_mode) {
-            auto slice_args = index::pool_slice(src_shape,kernel_size,stride,ceil_mode_t{});
-            return view::apply_slice(reduced,slice_args);
-        // } else {
-        //     return reduced;
-        // }
+        }
     }
 
     template <typename array_t, typename kernel_size_t, typename stride_t=none_t, typename ceil_mode_t=meta::false_type>
-    constexpr auto pool2d(const array_t& array, const kernel_size_t& kernel_size, [[maybe_unused]] const stride_t& stride=stride_t{}, [[maybe_unused]] ceil_mode_t ceil_mode=ceil_mode_t{})
+    constexpr auto avg_pool2d(const array_t& array, const kernel_size_t& kernel_size, const stride_t& stride=stride_t{}, [[maybe_unused]] ceil_mode_t ceil_mode=ceil_mode_t{})
     {
+        auto src_shape = shape<true>(array);
         auto axis = nmtools_tuple{meta::ct_v<-2>,meta::ct_v<-1>};
-        if constexpr (is_none_v<stride_t>) {
-            auto tiled = view::sliding_window(array,kernel_size,axis,kernel_size);
-            return tiled;
+        if constexpr (!meta::is_constant_index_v<ceil_mode_t>) {
+            using left_t = decltype(view::avg_pool2d(array,kernel_size,stride,True));
+            using right_t = decltype(view::avg_pool2d(array,kernel_size,stride,False));
+            using result_t = nmtools_either<left_t,right_t>;
+            if (ceil_mode) {
+                return result_t{view::avg_pool2d(array,kernel_size,stride,True)};
+            } else {
+                return result_t{view::avg_pool2d(array,kernel_size,stride,False)};
+            }
         } else {
-            auto tiled = view::sliding_window(array,kernel_size,axis,stride);
-            return tiled;
+            if constexpr (!ceil_mode_t::value) {
+                auto tiled   = view::sliding_window(array,kernel_size,axis,stride);
+                auto reduced = view::mean(tiled,axis);
+                return reduced;
+            } else {
+                auto pad_width = index::pool_pad(src_shape,kernel_size,stride);
+                auto padded    = view::pad(array,pad_width,0);
+                auto tiled     = view::sliding_window(padded,kernel_size,axis,stride);
+                // TODO: generate divisor
+                auto reduced = view::mean(tiled,axis);
+                return reduced;
+            }
         }
     }
 } // namespace nmtools::view
-
-namespace nmtools::meta
-{
-    template <typename reducer_t, typename array_t, typename kernel_size_t, typename stride_t, typename ceil_mode_t>
-    struct fixed_size<
-        view::decorator_t< view::pool2d_t, reducer_t, array_t, kernel_size_t, stride_t, ceil_mode_t>
-    >
-    {
-        using view_type  = view::pool2d_t< reducer_t, array_t, kernel_size_t, stride_t, ceil_mode_t>;
-        using shape_type = typename view_type::dst_shape_type;
-
-        static constexpr auto value = [](){
-            // the size can only be known if shape is constant, since
-            // kernel size, stride, and ceil mode change the resulting shape
-            if constexpr (is_constant_index_array_v<shape_type>) {
-                return index::product(shape_type{});
-            } else {
-                return error::FIXED_SIZE_UNSUPPORTED<view_type>{};
-            }
-        }();
-    }; // fixed_size
-
-    template <typename reducer_t, typename array_t, typename kernel_size_t, typename stride_t, typename ceil_mode_t>
-    struct bounded_size<
-        view::decorator_t< view::pool2d_t, reducer_t, array_t, kernel_size_t, stride_t, ceil_mode_t>
-    > : fixed_size<
-        view::decorator_t< view::pool2d_t, reducer_t, array_t, kernel_size_t, stride_t, ceil_mode_t>
-    > {};
-
-    template <typename reducer_t, typename array_t, typename kernel_size_t, typename stride_t, typename ceil_mode_t>
-    struct is_ndarray<
-        view::decorator_t< view::pool2d_t, reducer_t, array_t, kernel_size_t, stride_t, ceil_mode_t>
-    >
-    {
-        static constexpr auto value = is_ndarray_v<array_t>;
-    }; // is_ndarray
-
-    template <typename reducer_t, typename array_t, typename kernel_size_t, typename stride_t, typename ceil_mode_t>
-    struct get_element_type<
-        view::decorator_t< view::pool2d_t, reducer_t, array_t, kernel_size_t, stride_t, ceil_mode_t>
-    >
-    {
-        static inline constexpr auto vtype = [](){
-            // TODO: use element_type instead of value_type!
-            if  constexpr (has_value_type_v<reducer_t>) {
-                using type = typename reducer_t::value_type;
-                return as_value_v<type>;
-            } else {
-                using type = get_element_type_t<array_t>;
-                return as_value_v<type>;
-            }
-        }();
-        using type = type_t<decltype(vtype)>;
-    }; // is_ndarray
-
-    // TODO: fix compile-time shape inference
-} // namespace nmtools::meta
 
 #endif // NMTOOLS_ARRAY_VIEW_POOLING_HPP
 
@@ -423,30 +317,6 @@ namespace nmtools::functional
     constexpr inline auto avg_pool2d = functor_t{unary_fmap_t<fun::avg_pool2d_t>{}};
 
     constexpr inline auto max_pool2d = functor_t{unary_fmap_t<fun::max_pool2d_t>{}};
-
-    template <typename reducer_t, typename...args_t>
-    struct get_function_t<
-        view::decorator_t<
-            view::pool2d_t, reducer_t, args_t...
-        >
-    >
-    {
-        using view_type = view::decorator_t<
-            view::pool2d_t, reducer_t, args_t...
-        >;
-
-        view_type view;
-
-        constexpr auto operator()() const noexcept
-        {
-            if constexpr (meta::is_same_v<reducer_t, view::max_reducer_t>) {
-                return max_pool2d[view.kernel_size][view.stride][view.ceil_mode];
-            } else {
-                return avg_pool2d[view.kernel_size][view.stride][view.ceil_mode];
-            }
-        }
-    };
-
 } // namespace nmtools::functional
 
 #endif // NMTOOLS_ARRAY_FUNCTIONAL_POOLING_HPP
