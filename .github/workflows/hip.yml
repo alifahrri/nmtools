@@ -22,10 +22,10 @@ jobs:
         run: bash scripts/download_doctest_header.sh -d include/
       - name: build
         # some people decided that breaking compatibility is a good idea
-        # so we add -DCMAKE_POLICY_VERSION_MINIMUM=3.0 here
+        # so we add -DCMAKE_POLICY_VERSION_MINIMUM=3.5 here
         run: |
           cmake --version
           export PATH=$PATH:/opt/rocm/bin/
           mkdir -p build/hip && cd build/hip
-          cmake -DCMAKE_POLICY_VERSION_MINIMUM=3.0 -DCMAKE_TOOLCHAIN_FILE=../../cmake/toolchains/hip.cmake -DNMTOOLS_BUILD_HIP_TESTS=ON ../..
+          cmake -DCMAKE_POLICY_VERSION_MINIMUM=3.5 -DCMAKE_TOOLCHAIN_FILE=../../cmake/toolchains/hip.cmake -DNMTOOLS_BUILD_HIP_TESTS=ON ../..
           make -j2
