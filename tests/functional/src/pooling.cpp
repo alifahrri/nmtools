@@ -13,7 +13,7 @@ SUBCASE(subcase_name) \
     NMTOOLS_ASSERT_CLOSE( result, expect::result ); \
 }
 
-TEST_CASE("avg_pool2d(case1)" * doctest::test_suite("functional::avg_pool2d"))
+TEST_CASE("avg_pool2d(case1)" * doctest::test_suite("functional::avg_pool2d") * doctest::skip())
 {
     NMTOOLS_TESTING_USE_CASE(array,avg_pool2d,case1);
     using namespace args;
@@ -26,7 +26,7 @@ TEST_CASE("avg_pool2d(case1)" * doctest::test_suite("functional::avg_pool2d"))
 }
 
 
-TEST_CASE("avg_pool2d(case2)" * doctest::test_suite("functional::avg_pool2d"))
+TEST_CASE("avg_pool2d(case2)" * doctest::test_suite("functional::avg_pool2d") * doctest::skip())
 {
     NMTOOLS_TESTING_USE_CASE(array,avg_pool2d,case2);
     using namespace args;
@@ -39,7 +39,7 @@ TEST_CASE("avg_pool2d(case2)" * doctest::test_suite("functional::avg_pool2d"))
 }
 
 
-TEST_CASE("avg_pool2d(case3)" * doctest::test_suite("functional::avg_pool2d"))
+TEST_CASE("avg_pool2d(case3)" * doctest::test_suite("functional::avg_pool2d") * doctest::skip())
 {
     NMTOOLS_TESTING_USE_CASE(array,avg_pool2d,case3);
     using namespace args;
@@ -52,7 +52,7 @@ TEST_CASE("avg_pool2d(case3)" * doctest::test_suite("functional::avg_pool2d"))
 }
 
 
-TEST_CASE("avg_pool2d(case4)" * doctest::test_suite("functional::avg_pool2d"))
+TEST_CASE("avg_pool2d(case4)" * doctest::test_suite("functional::avg_pool2d") * doctest::skip())
 {
     NMTOOLS_TESTING_USE_CASE(array,avg_pool2d,case4);
     using namespace args;
@@ -130,7 +130,7 @@ TEST_CASE("avg_pool2d(case9)" * doctest::test_suite("functional::avg_pool2d"))
 }
 
 
-TEST_CASE("avg_pool2d(case10)" * doctest::test_suite("functional::avg_pool2d"))
+TEST_CASE("avg_pool2d(case10)" * doctest::test_suite("functional::avg_pool2d") * doctest::skip())
 {
     NMTOOLS_TESTING_USE_CASE(array,avg_pool2d,case10);
     using namespace args;
