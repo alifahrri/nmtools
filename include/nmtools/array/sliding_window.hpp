@@ -219,6 +219,7 @@ namespace nmtools::index
         auto result = result_t {};
 
         auto src_dim = len(src_shape);
+        [[maybe_unused]]
         auto res_dim = src_dim;
 
         if constexpr (is_none_v<axis_t> && meta::is_index_v<stride_t>) {
