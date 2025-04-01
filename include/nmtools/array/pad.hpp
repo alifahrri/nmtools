@@ -18,7 +18,12 @@ namespace nmtools::index
     constexpr auto parse_pad_width(const pad_width_t& pad_width)
     {
         if constexpr (meta::is_maybe_v<pad_width_t>) {
-
+            using result_t = decltype(parse_pad_width(unwrap(pad_width)));
+            using return_t = meta::conditional_t<meta::is_maybe_v<result_t>,result_t,nmtools_maybe<result_t>>;
+            return (has_value(pad_width)
+                ? return_t(parse_pad_width(unwrap(pad_width)))
+                : return_t(meta::Nothing)
+            );
         } else {
             using result_t = meta::resolve_optype_t<parse_pad_width_t,pad_width_t>;
 
@@ -28,6 +33,7 @@ namespace nmtools::index
                 && !meta::is_fail_v<result_t>
             ) {
                 const auto pad_shape = shape(pad_width);
+                [[maybe_unused]]
                 const auto pad_size = nmtools::size(pad_width);
 
                 if constexpr (meta::is_resizable_v<result_t>) {
