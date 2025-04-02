@@ -127,7 +127,6 @@ namespace nmtools::view
     template <typename array_t, typename kernel_size_t, typename stride_t=none_t, typename ceil_mode_t=meta::false_type>
     constexpr auto max_pool2d(const array_t& array, const kernel_size_t& kernel_size, const stride_t& stride=stride_t{}, [[maybe_unused]] ceil_mode_t ceil_mode=ceil_mode_t{})
     {
-        auto axis = nmtools_tuple{meta::ct_v<-2>,meta::ct_v<-1>};
         if constexpr (!meta::is_constant_index_v<ceil_mode_t>) {
             using left_t = decltype(view::max_pool2d(array,kernel_size,stride,True));
             using right_t = decltype(view::max_pool2d(array,kernel_size,stride,False));
@@ -138,6 +137,7 @@ namespace nmtools::view
                 return result_t{view::max_pool2d(array,kernel_size,stride,False)};
             }
         } else {
+            auto axis = nmtools_tuple{meta::ct_v<-2>,meta::ct_v<-1>};
             if constexpr (!ceil_mode_t::value) {
                 auto tiled   = view::sliding_window(array,kernel_size,axis,stride);
                 auto reduced = view::reduce_maximum(tiled,axis);
@@ -158,8 +158,6 @@ namespace nmtools::view
     template <typename array_t, typename kernel_size_t, typename stride_t=none_t, typename ceil_mode_t=meta::false_type>
     constexpr auto avg_pool2d(const array_t& array, const kernel_size_t& kernel_size, const stride_t& stride=stride_t{}, [[maybe_unused]] ceil_mode_t ceil_mode=ceil_mode_t{})
     {
-        auto src_shape = shape<true>(array);
-        auto axis = nmtools_tuple{meta::ct_v<-2>,meta::ct_v<-1>};
         if constexpr (!meta::is_constant_index_v<ceil_mode_t>) {
             using left_t = decltype(view::avg_pool2d(array,kernel_size,stride,True));
             using right_t = decltype(view::avg_pool2d(array,kernel_size,stride,False));
@@ -170,11 +168,13 @@ namespace nmtools::view
                 return result_t{view::avg_pool2d(array,kernel_size,stride,False)};
             }
         } else {
+            auto axis = nmtools_tuple{meta::ct_v<-2>,meta::ct_v<-1>};
             if constexpr (!ceil_mode_t::value) {
                 auto tiled   = view::sliding_window(array,kernel_size,axis,stride);
                 auto reduced = view::mean(tiled,axis);
                 return reduced;
             } else {
+                auto src_shape = shape<true>(array);
                 auto pad_width = index::pool_pad(src_shape,kernel_size,stride);
                 auto padded    = view::pad(array,pad_width,0);
                 auto tiled     = view::sliding_window(padded,kernel_size,axis,stride);
