@@ -22,7 +22,7 @@ namespace nmtools::index
         using common_t = meta::type_t<meta::promote_index<size_type,size_types...>>;
         if constexpr (meta::is_integral_v<common_t>) {
             using array_t = nmtools_array<common_t,1+sizeof...(indices)>;
-            return array_t{index_,indices...};
+            return array_t{static_cast<common_t>(index_),static_cast<common_t>(indices)...};
         } else /* if constexpr (meta::is_index_array_v<size_type>) */ {
             static_assert (sizeof...(indices)==0
                 , "unsupported indices for pack"

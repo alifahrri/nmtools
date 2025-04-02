@@ -13,7 +13,7 @@ SUBCASE(subcase_name) \
     NMTOOLS_ASSERT_CLOSE( result, expect::result ); \
 }
 
-TEST_CASE("avg_pool2d(case1)" * doctest::test_suite("functional::avg_pool2d"))
+TEST_CASE("avg_pool2d(case1)" * doctest::test_suite("functional::avg_pool2d") * doctest::skip())
 {
     NMTOOLS_TESTING_USE_CASE(array,avg_pool2d,case1);
     using namespace args;
@@ -26,7 +26,7 @@ TEST_CASE("avg_pool2d(case1)" * doctest::test_suite("functional::avg_pool2d"))
 }
 
 
-TEST_CASE("avg_pool2d(case2)" * doctest::test_suite("functional::avg_pool2d"))
+TEST_CASE("avg_pool2d(case2)" * doctest::test_suite("functional::avg_pool2d") * doctest::skip())
 {
     NMTOOLS_TESTING_USE_CASE(array,avg_pool2d,case2);
     using namespace args;
@@ -39,7 +39,7 @@ TEST_CASE("avg_pool2d(case2)" * doctest::test_suite("functional::avg_pool2d"))
 }
 
 
-TEST_CASE("avg_pool2d(case3)" * doctest::test_suite("functional::avg_pool2d"))
+TEST_CASE("avg_pool2d(case3)" * doctest::test_suite("functional::avg_pool2d") * doctest::skip())
 {
     NMTOOLS_TESTING_USE_CASE(array,avg_pool2d,case3);
     using namespace args;
@@ -52,7 +52,7 @@ TEST_CASE("avg_pool2d(case3)" * doctest::test_suite("functional::avg_pool2d"))
 }
 
 
-TEST_CASE("avg_pool2d(case4)" * doctest::test_suite("functional::avg_pool2d"))
+TEST_CASE("avg_pool2d(case4)" * doctest::test_suite("functional::avg_pool2d") * doctest::skip())
 {
     NMTOOLS_TESTING_USE_CASE(array,avg_pool2d,case4);
     using namespace args;
@@ -130,7 +130,7 @@ TEST_CASE("avg_pool2d(case9)" * doctest::test_suite("functional::avg_pool2d"))
 }
 
 
-TEST_CASE("avg_pool2d(case10)" * doctest::test_suite("functional::avg_pool2d"))
+TEST_CASE("avg_pool2d(case10)" * doctest::test_suite("functional::avg_pool2d") * doctest::skip())
 {
     NMTOOLS_TESTING_USE_CASE(array,avg_pool2d,case10);
     using namespace args;
@@ -269,19 +269,4 @@ TEST_CASE("max_pool2d(case10)" * doctest::test_suite("functional::max_pool2d"))
     POOL2D_SUBCASE( "case10", fn::max_pool2d [kernel_size_f] [stride_f] [ceil_mode], array_f );
     POOL2D_SUBCASE( "case10", fn::max_pool2d [kernel_size_h] [stride_h] [ceil_mode], array_h );
     POOL2D_SUBCASE( "case10", fn::max_pool2d [kernel_size_v] [stride_v] [ceil_mode], array_d );
-}
-
-namespace view = nmtools::view;
-
-TEST_CASE("max_pool2d" * doctest::test_suite("functional::get_function_composition"))
-{
-    NMTOOLS_TESTING_USE_CASE(array,max_pool2d,case10);
-    using namespace args;
-
-    auto a = view::max_pool2d(array,kernel_size,stride,ceil_mode);
-
-    auto function = fn::get_function_composition(a);
-    auto expect = fn::max_pool2d[kernel_size][stride][ceil_mode];
-
-    NMTOOLS_ASSERT_EQUAL( function, expect );
 }

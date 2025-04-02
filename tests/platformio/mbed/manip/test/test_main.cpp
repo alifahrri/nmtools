@@ -182,11 +182,11 @@ void test_repeat()
 void test_pad()
 {
     NMTOOLS_TESTING_USE_CASE(array, pad);
-    NMTOOLS_PIO_SUBCASE( case1, result, view::pad, array, pad_width );
-    NMTOOLS_PIO_SUBCASE( case2, result, view::pad, array, pad_width );
-    NMTOOLS_PIO_SUBCASE( case3, result, view::pad, array, pad_width );
-    NMTOOLS_PIO_SUBCASE( case4, result, view::pad, array, pad_width );
-    NMTOOLS_PIO_SUBCASE( case5, result, view::pad, array, pad_width );
+    NMTOOLS_PIO_SUBCASE( case1, result, view::pad2, array, pads );
+    NMTOOLS_PIO_SUBCASE( case2, result, view::pad2, array, pads );
+    NMTOOLS_PIO_SUBCASE( case3, result, view::pad2, array, pads );
+    NMTOOLS_PIO_SUBCASE( case4, result, view::pad2, array, pads );
+    NMTOOLS_PIO_SUBCASE( case5, result, view::pad2, array, pads );
 }
 
 void test_ones()

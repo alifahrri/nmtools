@@ -44,6 +44,7 @@ option(NMTOOLS_TRANSFORM_TEST_LINEARIZE "test all graph linearizer modules"    O
 option(NMTOOLS_TRANSFORM_TEST_APPLY     "test all graph apply modules"         OFF)
 
 set(TRANSFORM_TEST_LINEARIZE_SOURCES
+    src/linearize/avg_pool2d.cpp
     src/linearize/batch_norm.cpp
     src/linearize/conv2d.cpp
     src/linearize/group_norm.cpp
@@ -55,6 +56,7 @@ set(TRANSFORM_TEST_LINEARIZE_SOURCES
     src/linearize/stddev.cpp
     src/linearize/cosine_similarity.cpp
     src/linearize/kron.cpp
+    src/linearize/max_pool2d.cpp
     src/linearize/dot.cpp
     src/linearize/vector_norm.cpp
     src/linearize/vecdot.cpp
@@ -68,6 +70,7 @@ set(TRANSFORM_TEST_LINEARIZE_SOURCES
 )
 
 set(TRANSFORM_TEST_APPLY_SOURCES
+    src/apply/avg_pool2d.cpp
     src/apply/batch_norm.cpp
     src/apply/conv2d.cpp
     src/apply/group_norm.cpp
@@ -76,6 +79,7 @@ set(TRANSFORM_TEST_APPLY_SOURCES
     src/apply/softmax.cpp
     src/apply/var.cpp
     src/apply/layer_norm.cpp
+    src/apply/max_pool2d.cpp
     src/apply/stddev.cpp
     src/apply/cosine_similarity.cpp
     src/apply/kron.cpp

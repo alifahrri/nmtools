@@ -21,82 +21,75 @@ inline auto name##_ls_db = nmtools::cast(name, nmtools::array::kind::ndarray_ls_
 #include "nmtools/testing/data/array/pad.hpp"
 #include "nmtools/testing/doctest.hpp"
 
-#define RUN_pad_impl(...) \
-nmtools::view::pad(__VA_ARGS__);
-
-#ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
-#include "nmtools/testing/benchmarks/bench.hpp"
-using nm::benchmarks::TrackedBench;
-// create immediately invoked lambda
-// that packs pad fn to callable lambda
-#define RUN_pad(case_name, ...) \
-[](auto&&...args){ \
-    auto title = std::string("view::pad-") + #case_name; \
-    auto name  = nm::testing::make_func_args("", args...); \
-    auto fn    = [&](){ \
-        return RUN_pad_impl(args...); \
-    }; \
-    return TrackedBench::run(title, name, fn); \
-}(__VA_ARGS__);
-#else
-// run normally without benchmarking, ignore case_name
-#define RUN_pad(case_name, ...) \
-RUN_pad_impl(__VA_ARGS__);
-#endif // NMTOOLS_TESTING_ENABLE_BENCHMARKS
+#define PAD2_SUBCASE(case_name, ...) \
+SUBCASE(#case_name) \
+{ \
+    NMTOOLS_TESTING_USE_CASE(array, pad, case_name); \
+    using namespace args; \
+    auto result = nmtools::view::pad2(__VA_ARGS__); \
+    NMTOOLS_ASSERT_EQUAL( result, expect::result ); \
+}
 
 #define PAD_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
     NMTOOLS_TESTING_USE_CASE(array, pad, case_name); \
     using namespace args; \
-    auto result = RUN_pad(case_name, __VA_ARGS__); \
-    NMTOOLS_ASSERT_EQUAL( nmtools::shape(result), nmtools::shape(expect::result) ); \
+    auto result = nmtools::view::pad(__VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( result, expect::result ); \
 }
 
-static_assert( nmtools::meta::is_ndarray_v<int[3][2]> );
-
-TEST_CASE("pad(case1)" * doctest::test_suite("view::pad"))
+TEST_CASE("pad(case1)" * doctest::test_suite("view::pad2"))
 {
     #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
+    PAD2_SUBCASE( case1, array, pads );
+    PAD2_SUBCASE( case1, array_a, pads_a );
+    PAD2_SUBCASE( case1, array_f, pads_f );
+    PAD2_SUBCASE( case1, array_h, pads_h );
+    PAD2_SUBCASE( case1, array_d, pads_a );
+
     PAD_SUBCASE( case1, array, pad_width );
     PAD_SUBCASE( case1, array_a, pad_width_a );
     PAD_SUBCASE( case1, array_f, pad_width_f );
     PAD_SUBCASE( case1, array_h, pad_width_h );
     PAD_SUBCASE( case1, array_d, pad_width_a );
 
-    {
-        constexpr auto shape_ = nmtools::meta::fixed_shape_v<int[3][2]>;
-        static_assert( nmtools::utils::isequal(shape_,nmtools_array{3,2}) );
-        // static_assert( nmtools::utils::isequal(shape_,nmtools_array{2,3}) );
-    }
-    {
-        constexpr auto shape_ = nmtools::meta::fixed_shape_v<int[3][2][1]>;
-        static_assert( nmtools::utils::isequal(shape_,nmtools_array{3,2,1}) );
-        // static_assert( nmtools::utils::isequal(shape_,nmtools_array{1,2,3}) );
-    }
-    {
-        constexpr auto shape_ = nmtools::meta::fixed_shape_v<int[4][3][2][1]>;
-        static_assert( nmtools::utils::isequal(shape_,nmtools_array{4,3,2,1}) );
-        // static_assert( nmtools::utils::isequal(shape_,nmtools_array{1,2,3,4}) );
-    }
-
     #else
+    PAD2_SUBCASE( case1, array_cs_fb, pads_a );
+    PAD2_SUBCASE( case1, array_cs_hb, pads_a );
+    PAD2_SUBCASE( case1, array_cs_db, pads_a );
+
     PAD_SUBCASE( case1, array_cs_fb, pad_width_a );
     PAD_SUBCASE( case1, array_cs_hb, pad_width_a );
     PAD_SUBCASE( case1, array_cs_db, pad_width_a );
+
+    PAD2_SUBCASE( case1, array_fs_fb, pads_a );
+    PAD2_SUBCASE( case1, array_fs_hb, pads_a );
+    PAD2_SUBCASE( case1, array_fs_db, pads_a );
 
     PAD_SUBCASE( case1, array_fs_fb, pad_width_a );
     PAD_SUBCASE( case1, array_fs_hb, pad_width_a );
     PAD_SUBCASE( case1, array_fs_db, pad_width_a );
 
+    PAD2_SUBCASE( case1, array_hs_fb, pads_a );
+    PAD2_SUBCASE( case1, array_hs_hb, pads_a );
+    PAD2_SUBCASE( case1, array_hs_db, pads_a );
+
     PAD_SUBCASE( case1, array_hs_fb, pad_width_a );
     PAD_SUBCASE( case1, array_hs_hb, pad_width_a );
     PAD_SUBCASE( case1, array_hs_db, pad_width_a );
 
+    PAD2_SUBCASE( case1, array_ds_fb, pads_a );
+    PAD2_SUBCASE( case1, array_ds_hb, pads_a );
+    PAD2_SUBCASE( case1, array_ds_db, pads_a );
+
     PAD_SUBCASE( case1, array_ds_fb, pad_width_a );
     PAD_SUBCASE( case1, array_ds_hb, pad_width_a );
     PAD_SUBCASE( case1, array_ds_db, pad_width_a );
+
+    PAD2_SUBCASE( case1, array_ls_fb, pads_a );
+    PAD2_SUBCASE( case1, array_ls_hb, pads_a );
+    PAD2_SUBCASE( case1, array_ls_db, pads_a );
 
     PAD_SUBCASE( case1, array_ls_fb, pad_width_a );
     PAD_SUBCASE( case1, array_ls_hb, pad_width_a );
@@ -104,9 +97,15 @@ TEST_CASE("pad(case1)" * doctest::test_suite("view::pad"))
     #endif
 }
 
-TEST_CASE("pad(case2)" * doctest::test_suite("view::pad"))
+TEST_CASE("pad(case2)" * doctest::test_suite("view::pad2"))
 {
     #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
+    PAD2_SUBCASE( case2, array, pads );
+    PAD2_SUBCASE( case2, array_a, pads_a );
+    PAD2_SUBCASE( case2, array_f, pads_f );
+    PAD2_SUBCASE( case2, array_h, pads_h );
+    PAD2_SUBCASE( case2, array_d, pads_a );
+
     PAD_SUBCASE( case2, array, pad_width );
     PAD_SUBCASE( case2, array_a, pad_width_a );
     PAD_SUBCASE( case2, array_f, pad_width_f );
@@ -114,31 +113,49 @@ TEST_CASE("pad(case2)" * doctest::test_suite("view::pad"))
     PAD_SUBCASE( case2, array_d, pad_width_a );
 
     #else
+    PAD2_SUBCASE( case2, array_cs_fb, pads_a );
+    PAD2_SUBCASE( case2, array_cs_hb, pads_a );
+    PAD2_SUBCASE( case2, array_cs_db, pads_a );
+
     PAD_SUBCASE( case2, array_cs_fb, pad_width_a );
     PAD_SUBCASE( case2, array_cs_hb, pad_width_a );
     PAD_SUBCASE( case2, array_cs_db, pad_width_a );
+
+    PAD2_SUBCASE( case2, array_fs_fb, pads_a );
+    PAD2_SUBCASE( case2, array_fs_hb, pads_a );
+    PAD2_SUBCASE( case2, array_fs_db, pads_a );
 
     PAD_SUBCASE( case2, array_fs_fb, pad_width_a );
     PAD_SUBCASE( case2, array_fs_hb, pad_width_a );
     PAD_SUBCASE( case2, array_fs_db, pad_width_a );
 
+    PAD2_SUBCASE( case2, array_hs_fb, pads_a );
+    PAD2_SUBCASE( case2, array_hs_hb, pads_a );
+    PAD2_SUBCASE( case2, array_hs_db, pads_a );
+
     PAD_SUBCASE( case2, array_hs_fb, pad_width_a );
     PAD_SUBCASE( case2, array_hs_hb, pad_width_a );
     PAD_SUBCASE( case2, array_hs_db, pad_width_a );
 
+    PAD2_SUBCASE( case2, array_ds_fb, pads_a );
+    PAD2_SUBCASE( case2, array_ds_hb, pads_a );
+    PAD2_SUBCASE( case2, array_ds_db, pads_a );
+
     PAD_SUBCASE( case2, array_ds_fb, pad_width_a );
     PAD_SUBCASE( case2, array_ds_hb, pad_width_a );
     PAD_SUBCASE( case2, array_ds_db, pad_width_a );
-
-    PAD_SUBCASE( case2, array_ls_fb, pad_width_a );
-    PAD_SUBCASE( case2, array_ls_hb, pad_width_a );
-    PAD_SUBCASE( case2, array_ls_db, pad_width_a );
     #endif
 }
 
-TEST_CASE("pad(case3)" * doctest::test_suite("view::pad"))
+TEST_CASE("pad(case3)" * doctest::test_suite("view::pad2"))
 {
     #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
+    PAD2_SUBCASE( case3, array, pads );
+    PAD2_SUBCASE( case3, array_a, pads_a );
+    PAD2_SUBCASE( case3, array_f, pads_f );
+    PAD2_SUBCASE( case3, array_h, pads_h );
+    PAD2_SUBCASE( case3, array_d, pads_a );
+
     PAD_SUBCASE( case3, array, pad_width );
     PAD_SUBCASE( case3, array_a, pad_width_a );
     PAD_SUBCASE( case3, array_f, pad_width_f );
@@ -146,31 +163,49 @@ TEST_CASE("pad(case3)" * doctest::test_suite("view::pad"))
     PAD_SUBCASE( case3, array_d, pad_width_a );
 
     #else
+    PAD2_SUBCASE( case3, array_cs_fb, pads_a );
+    PAD2_SUBCASE( case3, array_cs_hb, pads_a );
+    PAD2_SUBCASE( case3, array_cs_db, pads_a );
+
     PAD_SUBCASE( case3, array_cs_fb, pad_width_a );
     PAD_SUBCASE( case3, array_cs_hb, pad_width_a );
     PAD_SUBCASE( case3, array_cs_db, pad_width_a );
+
+    PAD2_SUBCASE( case3, array_fs_fb, pads_a );
+    PAD2_SUBCASE( case3, array_fs_hb, pads_a );
+    PAD2_SUBCASE( case3, array_fs_db, pads_a );
 
     PAD_SUBCASE( case3, array_fs_fb, pad_width_a );
     PAD_SUBCASE( case3, array_fs_hb, pad_width_a );
     PAD_SUBCASE( case3, array_fs_db, pad_width_a );
 
+    PAD2_SUBCASE( case3, array_hs_fb, pads_a );
+    PAD2_SUBCASE( case3, array_hs_hb, pads_a );
+    PAD2_SUBCASE( case3, array_hs_db, pads_a );
+
     PAD_SUBCASE( case3, array_hs_fb, pad_width_a );
     PAD_SUBCASE( case3, array_hs_hb, pad_width_a );
     PAD_SUBCASE( case3, array_hs_db, pad_width_a );
 
+    PAD2_SUBCASE( case3, array_ds_fb, pads_a );
+    PAD2_SUBCASE( case3, array_ds_hb, pads_a );
+    PAD2_SUBCASE( case3, array_ds_db, pads_a );
+
     PAD_SUBCASE( case3, array_ds_fb, pad_width_a );
     PAD_SUBCASE( case3, array_ds_hb, pad_width_a );
     PAD_SUBCASE( case3, array_ds_db, pad_width_a );
-
-    PAD_SUBCASE( case3, array_ls_fb, pad_width_a );
-    PAD_SUBCASE( case3, array_ls_hb, pad_width_a );
-    PAD_SUBCASE( case3, array_ls_db, pad_width_a );
     #endif
 }
 
-TEST_CASE("pad(case4)" * doctest::test_suite("view::pad"))
+TEST_CASE("pad(case4)" * doctest::test_suite("view::pad2"))
 {
     #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
+    PAD2_SUBCASE( case4, array, pads );
+    PAD2_SUBCASE( case4, array_a, pads_a );
+    PAD2_SUBCASE( case4, array_f, pads_f );
+    PAD2_SUBCASE( case4, array_h, pads_h );
+    PAD2_SUBCASE( case4, array_d, pads_a );
+
     PAD_SUBCASE( case4, array, pad_width );
     PAD_SUBCASE( case4, array_a, pad_width_a );
     PAD_SUBCASE( case4, array_f, pad_width_f );
@@ -178,31 +213,49 @@ TEST_CASE("pad(case4)" * doctest::test_suite("view::pad"))
     PAD_SUBCASE( case4, array_d, pad_width_a );
 
     #else
+    PAD2_SUBCASE( case4, array_cs_fb, pads_a );
+    PAD2_SUBCASE( case4, array_cs_hb, pads_a );
+    PAD2_SUBCASE( case4, array_cs_db, pads_a );
+
     PAD_SUBCASE( case4, array_cs_fb, pad_width_a );
     PAD_SUBCASE( case4, array_cs_hb, pad_width_a );
     PAD_SUBCASE( case4, array_cs_db, pad_width_a );
+
+    PAD2_SUBCASE( case4, array_fs_fb, pads_a );
+    PAD2_SUBCASE( case4, array_fs_hb, pads_a );
+    PAD2_SUBCASE( case4, array_fs_db, pads_a );
 
     PAD_SUBCASE( case4, array_fs_fb, pad_width_a );
     PAD_SUBCASE( case4, array_fs_hb, pad_width_a );
     PAD_SUBCASE( case4, array_fs_db, pad_width_a );
 
+    PAD2_SUBCASE( case4, array_hs_fb, pads_a );
+    PAD2_SUBCASE( case4, array_hs_hb, pads_a );
+    PAD2_SUBCASE( case4, array_hs_db, pads_a );
+
     PAD_SUBCASE( case4, array_hs_fb, pad_width_a );
     PAD_SUBCASE( case4, array_hs_hb, pad_width_a );
     PAD_SUBCASE( case4, array_hs_db, pad_width_a );
 
+    PAD2_SUBCASE( case4, array_ds_fb, pads_a );
+    PAD2_SUBCASE( case4, array_ds_hb, pads_a );
+    PAD2_SUBCASE( case4, array_ds_db, pads_a );
+
     PAD_SUBCASE( case4, array_ds_fb, pad_width_a );
     PAD_SUBCASE( case4, array_ds_hb, pad_width_a );
     PAD_SUBCASE( case4, array_ds_db, pad_width_a );
-
-    PAD_SUBCASE( case4, array_ls_fb, pad_width_a );
-    PAD_SUBCASE( case4, array_ls_hb, pad_width_a );
-    PAD_SUBCASE( case4, array_ls_db, pad_width_a );
     #endif
 }
 
-TEST_CASE("pad(case5)" * doctest::test_suite("view::pad"))
+TEST_CASE("pad(case5)" * doctest::test_suite("view::pad2"))
 {
     #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
+    PAD2_SUBCASE( case5, array, pads );
+    PAD2_SUBCASE( case5, array_a, pads_a );
+    PAD2_SUBCASE( case5, array_f, pads_f );
+    PAD2_SUBCASE( case5, array_h, pads_h );
+    PAD2_SUBCASE( case5, array_d, pads_a );
+
     PAD_SUBCASE( case5, array, pad_width );
     PAD_SUBCASE( case5, array_a, pad_width_a );
     PAD_SUBCASE( case5, array_f, pad_width_f );
@@ -210,24 +263,36 @@ TEST_CASE("pad(case5)" * doctest::test_suite("view::pad"))
     PAD_SUBCASE( case5, array_d, pad_width_a );
 
     #else
+    PAD2_SUBCASE( case5, array_cs_fb, pads_a );
+    PAD2_SUBCASE( case5, array_cs_hb, pads_a );
+    PAD2_SUBCASE( case5, array_cs_db, pads_a );
+
     PAD_SUBCASE( case5, array_cs_fb, pad_width_a );
     PAD_SUBCASE( case5, array_cs_hb, pad_width_a );
     PAD_SUBCASE( case5, array_cs_db, pad_width_a );
+
+    PAD2_SUBCASE( case5, array_fs_fb, pads_a );
+    PAD2_SUBCASE( case5, array_fs_hb, pads_a );
+    PAD2_SUBCASE( case5, array_fs_db, pads_a );
 
     PAD_SUBCASE( case5, array_fs_fb, pad_width_a );
     PAD_SUBCASE( case5, array_fs_hb, pad_width_a );
     PAD_SUBCASE( case5, array_fs_db, pad_width_a );
 
+    PAD2_SUBCASE( case5, array_hs_fb, pads_a );
+    PAD2_SUBCASE( case5, array_hs_hb, pads_a );
+    PAD2_SUBCASE( case5, array_hs_db, pads_a );
+
     PAD_SUBCASE( case5, array_hs_fb, pad_width_a );
     PAD_SUBCASE( case5, array_hs_hb, pad_width_a );
     PAD_SUBCASE( case5, array_hs_db, pad_width_a );
 
+    PAD2_SUBCASE( case5, array_ds_fb, pads_a );
+    PAD2_SUBCASE( case5, array_ds_hb, pads_a );
+    PAD2_SUBCASE( case5, array_ds_db, pads_a );
+
     PAD_SUBCASE( case5, array_ds_fb, pad_width_a );
     PAD_SUBCASE( case5, array_ds_hb, pad_width_a );
     PAD_SUBCASE( case5, array_ds_db, pad_width_a );
-
-    PAD_SUBCASE( case5, array_ls_fb, pad_width_a );
-    PAD_SUBCASE( case5, array_ls_hb, pad_width_a );
-    PAD_SUBCASE( case5, array_ls_db, pad_width_a );
     #endif
 }

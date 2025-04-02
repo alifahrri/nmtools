@@ -227,6 +227,9 @@ jobs:
       matrix:
         include:
           - name: linux-x64
+    ## OOM
+    ## TODO: fix
+    if: ${{ false }}
     steps:
       - uses: actions/checkout@v2
       - name: setup dockcross

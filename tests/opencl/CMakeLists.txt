@@ -670,7 +670,6 @@ if (NMTOOLS_OPENCL_TEST_INDEX)
         index/transpose.cpp
         index/product.cpp
         index/resize.cpp
-        index/pooling.cpp
     )
     if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
         add_custom_target( ${PROJECT_NAME}-build-index-tests

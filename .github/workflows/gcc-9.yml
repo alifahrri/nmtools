@@ -24,7 +24,7 @@ jobs:
       - name: setup doctest
         run: bash scripts/download_doctest_header.sh -d include/
       - name: build
-        run: mkdir -p build/ && cd build/ && cmake .. && make -j1 VERBOSE=1
+        run: cmake --version && mkdir -p build/ && cd build/ && cmake -DCMAKE_POLICY_VERSION_MINIMUM=3.5 .. && make -j1 VERBOSE=1
       - name: run tests
         run: |
           build/tests/array/numeric-tests-doctest
@@ -46,7 +46,7 @@ jobs:
       - name: setup doctest
         run: bash scripts/download_doctest_header.sh -d include/
       - name: build
-        run: mkdir -p build/ && cd build/ && cmake -DNMTOOLS_TEST_ALL=OFF -DNMTOOLS_BUILD_INDEX_TESTS=ON .. && make -j1 VERBOSE=1 numeric-tests-index-doctest
+        run: cmake --version && mkdir -p build/ && cd build/ && cmake -DCMAKE_POLICY_VERSION_MINIMUM=3.5 -DNMTOOLS_TEST_ALL=OFF -DNMTOOLS_BUILD_INDEX_TESTS=ON .. && make -j1 VERBOSE=1 numeric-tests-index-doctest
       - name: run tests
         run: |
           build/tests/index/numeric-tests-index-doctest
@@ -64,7 +64,7 @@ jobs:
       - name: setup doctest
         run: bash scripts/download_doctest_header.sh -d include/
       - name: build
-        run: mkdir -p build/ && cd build/ && cmake -DNMTOOLS_BUILD_CONSTEXPR_TESTS=ON -DNMTOOLS_BUILD_META_TESTS=OFF -DNMTOOLS_BUILD_UTL_TESTS=OFF -DNMTOOLS_TEST_ALL=OFF -DNMTOOLS_TEST_ARRAY_EVAL=ON .. && make -j1 VERBOSE=1
+        run: mkdir -p build/ && cd build/ && cmake -DCMAKE_POLICY_VERSION_MINIMUM=3.5 -DNMTOOLS_BUILD_CONSTEXPR_TESTS=ON -DNMTOOLS_BUILD_META_TESTS=OFF -DNMTOOLS_BUILD_UTL_TESTS=OFF -DNMTOOLS_TEST_ALL=OFF -DNMTOOLS_TEST_ARRAY_EVAL=ON .. && make -j1 VERBOSE=1
       - name: run tests
         run: |
           build/tests/array/numeric-tests-doctest
@@ -84,7 +84,7 @@ jobs:
       - name: setup doctest
         run: bash scripts/download_doctest_header.sh -d include/
       - name: build
-        run: mkdir -p build/ && cd build/ && cmake -DNMTOOLS_BUILD_CONSTEXPR_TESTS=ON -DNMTOOLS_BUILD_META_TESTS=OFF -DNMTOOLS_BUILD_UTL_TESTS=OFF -DNMTOOLS_TEST_ALL=OFF -DNMTOOLS_TEST_ARRAY_EVAL=ON -DNMTOOLS_TESTING_GENERIC_NDARRAY=ON -DNMTOOLS_TESTING_NOSTL=OFF .. && make -j1 VERBOSE=1
+        run: mkdir -p build/ && cd build/ && cmake -DCMAKE_POLICY_VERSION_MINIMUM=3.5 -DNMTOOLS_BUILD_CONSTEXPR_TESTS=ON -DNMTOOLS_BUILD_META_TESTS=OFF -DNMTOOLS_BUILD_UTL_TESTS=OFF -DNMTOOLS_TEST_ALL=OFF -DNMTOOLS_TEST_ARRAY_EVAL=ON -DNMTOOLS_TESTING_GENERIC_NDARRAY=ON -DNMTOOLS_TESTING_NOSTL=OFF .. && make -j1 VERBOSE=1
       - name: run tests
         run: |
           build/tests/array/numeric-tests-doctest
@@ -104,7 +104,7 @@ jobs:
       - name: setup doctest
         run: bash scripts/download_doctest_header.sh -d include/
       - name: build
-        run: mkdir -p build/ && cd build/ && cmake -DNMTOOLS_BUILD_CONSTEXPR_TESTS=ON -DNMTOOLS_BUILD_META_TESTS=OFF -DNMTOOLS_BUILD_UTL_TESTS=OFF -DNMTOOLS_TEST_ALL=OFF -DNMTOOLS_TEST_ARRAY_EVAL=ON -DNMTOOLS_TESTING_GENERIC_NDARRAY=ON -DNMTOOLS_TESTING_NOSTL=ON .. && make -j1 VERBOSE=1
+        run: mkdir -p build/ && cd build/ && cmake -DCMAKE_POLICY_VERSION_MINIMUM=3.5 -DNMTOOLS_BUILD_CONSTEXPR_TESTS=ON -DNMTOOLS_BUILD_META_TESTS=OFF -DNMTOOLS_BUILD_UTL_TESTS=OFF -DNMTOOLS_TEST_ALL=OFF -DNMTOOLS_TEST_ARRAY_EVAL=ON -DNMTOOLS_TESTING_GENERIC_NDARRAY=ON -DNMTOOLS_TESTING_NOSTL=ON .. && make -j1 VERBOSE=1
       - name: run tests
         run: |
           build/tests/array/numeric-tests-doctest

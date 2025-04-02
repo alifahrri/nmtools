@@ -33,7 +33,7 @@ kernel void nmtools_cl_kernel_name(out_type,inp_type) \
     auto input     = na::create_array(inp_ptr,inp_shape_ptr,inp_dim);           \
     auto output    = na::create_mutable_array(out_ptr,out_shape_ptr,out_dim);   \
     auto pad_width = na::create_vector(pad_width_ptr,pad_size);                 \
-    auto padded    = view::pad(input,pad_width,pad_value);                      \
+    auto padded    = view::pad2(input,pad_width,pad_value);                      \
     opencl::assign_array(output,padded);                                        \
 }
 

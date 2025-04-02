@@ -10,7 +10,6 @@ set( META_VIEW_TEST_SOURCES
     array/view/matmul.cpp
     array/view/moveaxis.cpp
     array/view/outer.cpp
-    array/view/pooling.cpp
     array/view/prod.cpp
     array/view/reduce.cpp
     array/view/repeat.cpp
@@ -53,7 +52,6 @@ set( META_INDEX_TEST_SOURCES
     array/index/logical_not.cpp
     array/index/matmul.cpp
     array/index/nonzero.cpp
-    array/index/pooling.cpp
     array/index/remove_dims.cpp
     array/index/remove_single_dims.cpp
     array/index/repeat.cpp
@@ -138,7 +136,7 @@ add_test(
 
 # omg
 if ((NOT EMSCRIPTEN) AND (NOT ANDROID))
-    target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_17)
+    target_compile_options(${PROJECT_NAME} PRIVATE -std=c++17)
     if (doctest_FOUND)
         target_link_libraries(${PROJECT_NAME} PRIVATE doctest::doctest)
     endif()

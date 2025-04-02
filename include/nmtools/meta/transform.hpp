@@ -25,6 +25,7 @@
 #include "nmtools/meta/bits/transform/make_unsigned.hpp"
 #include "nmtools/meta/bits/transform/max_value.hpp"
 #include "nmtools/meta/bits/transform/min_value.hpp"
+#include "nmtools/meta/bits/transform/numeric_limits.hpp"
 #include "nmtools/meta/bits/transform/promote_index.hpp"
 #include "nmtools/meta/bits/transform/promote_types.hpp"
 #include "nmtools/meta/bits/transform/remove_address_space.hpp"

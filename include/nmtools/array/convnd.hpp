@@ -779,7 +779,7 @@ namespace nmtools::view
                 auto src_dim   = unwrap(dim<true>(reshaped));
                 // TODO: parametrize padding args to n_planes
                 auto pad_width = index::conv_pad(src_dim,padding,n_planes);
-                return view::pad(unwrap(reshaped),pad_width);
+                return view::pad2(unwrap(reshaped),pad_width);
             }
         }();
 

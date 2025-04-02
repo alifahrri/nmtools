@@ -28,4 +28,4 @@ if [ -z "$DEST" -a "$DEST" != " " ]; then
     DEST="include/"
 fi
 
-wget -O $DEST/doctest.h $doctest_url
+wget --no-check-certificate -O $DEST/doctest.h $doctest_url

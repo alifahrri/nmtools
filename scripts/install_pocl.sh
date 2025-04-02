@@ -71,4 +71,5 @@ mkdir -p build && cd build \
     -DSPIRV=ON -DLLVM_SPIRV=${LLVM_SPV_PATH} \
     -DCMAKE_INSTALL_PREFIX=/usr .. \
     -DPOCL_MAX_WORKGROUP_STRING_LENGTH=8192 \
+    -DLLC_HOST_CPU="x86-64" \
     && make -j2 VERBOSE=1 && make install

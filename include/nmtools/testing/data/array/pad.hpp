@@ -19,9 +19,14 @@ NMTOOLS_TESTING_DECLARE_CASE(array, pad)
             {2,3},
             {4,5},
         };
-        inline int pad_width[4] = {0,2,0,0};
+        inline int pads[4] = {0,2,0,0};
+        inline int pad_width[2][2] = {
+            {0,0},
+            {2,0},
+        };
         NMTOOLS_CAST_ARRAYS(array);
-        NMTOOLS_CAST_INDEX_ARRAYS(pad_width);
+        NMTOOLS_CAST_INDEX_ARRAYS(pads);
+        NMTOOLS_CAST_ARRAYS(pad_width);
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case1)
     {
@@ -39,9 +44,14 @@ NMTOOLS_TESTING_DECLARE_CASE(array, pad)
             {2,3},
             {4,5},
         };
-        inline int pad_width[4] = {0,2,0,2};
+        inline int pads[4] = {0,2,0,2};
+        inline int pad_width[2][2] = {
+            {0,0},
+            {2,2},
+        };
         NMTOOLS_CAST_ARRAYS(array);
-        NMTOOLS_CAST_INDEX_ARRAYS(pad_width);
+        NMTOOLS_CAST_INDEX_ARRAYS(pads);
+        NMTOOLS_CAST_ARRAYS(pad_width);
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case2)
     {
@@ -59,9 +69,14 @@ NMTOOLS_TESTING_DECLARE_CASE(array, pad)
             {2,3},
             {4,5},
         };
-        inline int pad_width[4] = {1,2,0,2};
+        inline int pads[4] = {1,2,0,2};
+        inline int pad_width[2][2] = {
+            {1,0},
+            {2,2},
+        };
         NMTOOLS_CAST_ARRAYS(array);
-        NMTOOLS_CAST_INDEX_ARRAYS(pad_width);
+        NMTOOLS_CAST_INDEX_ARRAYS(pads);
+        NMTOOLS_CAST_ARRAYS(pad_width);
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case3)
     {
@@ -80,9 +95,14 @@ NMTOOLS_TESTING_DECLARE_CASE(array, pad)
             {2,3},
             {4,5},
         };
-        inline int pad_width[4] = {1,2,3,2};
+        inline int pads[4] = {1,2,3,2};
+        inline int pad_width[2][2] = {
+            {1,3},
+            {2,2},
+        };
         NMTOOLS_CAST_ARRAYS(array);
-        NMTOOLS_CAST_INDEX_ARRAYS(pad_width);
+        NMTOOLS_CAST_INDEX_ARRAYS(pads);
+        NMTOOLS_CAST_ARRAYS(pad_width);
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case4)
     {
@@ -111,9 +131,15 @@ NMTOOLS_TESTING_DECLARE_CASE(array, pad)
                 {10,11},
             }
         };
-        inline int pad_width[6] = {0,1,1,2,0,1};
+        inline int pads[6] = {0,1,1,2,0,1};
+        inline int pad_width[3][2] = {
+            {0,2},
+            {1,0},
+            {1,1},
+        };
         NMTOOLS_CAST_ARRAYS(array);
-        NMTOOLS_CAST_INDEX_ARRAYS(pad_width);
+        NMTOOLS_CAST_INDEX_ARRAYS(pads);
+        NMTOOLS_CAST_ARRAYS(pad_width);
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case5)
     {

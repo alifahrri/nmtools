@@ -25,7 +25,7 @@ namespace nmtools::utl
 
         constexpr auto& top() const noexcept
         {
-            auto idx = size_-1;
+            auto idx = (nm_index_t)size_-1;
             idx = (idx >= 0 ? idx : 0);
             return buffer_[idx];
         }

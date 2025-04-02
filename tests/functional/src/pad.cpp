@@ -14,31 +14,31 @@ SUBCASE(subcase_name) \
 }
 
 
-TEST_CASE("pad(case1)" * doctest::test_suite("functional::pad"))
+TEST_CASE("pad2(case1)" * doctest::test_suite("functional::pad2"))
 {
     NMTOOLS_TESTING_USE_CASE(array, pad, case1);
     using namespace args;
 
-    FUNCTIONAL_SUBCASE( "case1", fn::pad[pad_width], array );
-    FUNCTIONAL_SUBCASE( "case1", fn::pad[pad_width_a], array_a );
-    FUNCTIONAL_SUBCASE( "case1", fn::pad[pad_width_f], array_f );
-    FUNCTIONAL_SUBCASE( "case1", fn::pad[pad_width_h], array_h );
-    FUNCTIONAL_SUBCASE( "case1", fn::pad[pad_width_v], array_d );
+    FUNCTIONAL_SUBCASE( "case1", fn::pad2[pads], array );
+    FUNCTIONAL_SUBCASE( "case1", fn::pad2[pads_a], array_a );
+    FUNCTIONAL_SUBCASE( "case1", fn::pad2[pads_f], array_f );
+    FUNCTIONAL_SUBCASE( "case1", fn::pad2[pads_h], array_h );
+    FUNCTIONAL_SUBCASE( "case1", fn::pad2[pads_v], array_d );
 }
 
 namespace view = nmtools::view;
 
-TEST_CASE("pad" * doctest::test_suite("functional::get_function_composition") * doctest::may_fail())
+TEST_CASE("pad2" * doctest::test_suite("functional::get_function_composition") * doctest::may_fail())
 {
     NMTOOLS_TESTING_USE_CASE(array,pad,case1);
     using namespace args;
 
     auto pad_value = 0.0f;
 
-    auto a = view::pad(array,pad_width);
+    auto a = view::pad2(array,pads);
 
     auto function = fn::get_function_composition(a);
-    auto expect = fn::pad[pad_width][pad_value];
+    auto expect = fn::pad2[pads][pad_value];
 
     NMTOOLS_ASSERT_EQUAL( function, expect );
 }

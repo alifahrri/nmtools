@@ -21,9 +21,9 @@ NMTOOLS_TESTING_DECLARE_CASE(array, constexpr_pad)
             {2,3},
             {4,5},
         };
-        constexpr inline int pad_width[4] = {0,2,0,0};
-        constexpr inline auto pad_width_ct = nmtools_tuple{0_ct,2_ct,0_ct,0_ct};
-        constexpr inline auto pad_width_cl = to_clipped(pad_width_ct);
+        constexpr inline int pads[4] = {0,2,0,0};
+        constexpr inline auto pads_ct = nmtools_tuple{0_ct,2_ct,0_ct,0_ct};
+        constexpr inline auto pads_cl = to_clipped(pads_ct);
         NMTOOLS_CONSTEXPR_CAST_ARRAYS(array);
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case1)
@@ -42,9 +42,9 @@ NMTOOLS_TESTING_DECLARE_CASE(array, constexpr_pad)
             {2,3},
             {4,5},
         };
-        constexpr inline int pad_width[4] = {0,2,0,2};
-        constexpr inline auto pad_width_ct = nmtools_tuple{0_ct,2_ct,0_ct,2_ct};
-        constexpr inline auto pad_width_cl = to_clipped(pad_width_ct);
+        constexpr inline int pads[4] = {0,2,0,2};
+        constexpr inline auto pads_ct = nmtools_tuple{0_ct,2_ct,0_ct,2_ct};
+        constexpr inline auto pads_cl = to_clipped(pads_ct);
         NMTOOLS_CONSTEXPR_CAST_ARRAYS(array);
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case2)
@@ -63,9 +63,9 @@ NMTOOLS_TESTING_DECLARE_CASE(array, constexpr_pad)
             {2,3},
             {4,5},
         };
-        constexpr inline int pad_width[4] = {1,2,0,2};
-        constexpr inline auto pad_width_ct = nmtools_tuple{1_ct,2_ct,0_ct,2_ct};
-        constexpr inline auto pad_width_cl = to_clipped(pad_width_ct);
+        constexpr inline int pads[4] = {1,2,0,2};
+        constexpr inline auto pads_ct = nmtools_tuple{1_ct,2_ct,0_ct,2_ct};
+        constexpr inline auto pads_cl = to_clipped(pads_ct);
         NMTOOLS_CONSTEXPR_CAST_ARRAYS(array);
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case3)
@@ -85,9 +85,9 @@ NMTOOLS_TESTING_DECLARE_CASE(array, constexpr_pad)
             {2,3},
             {4,5},
         };
-        constexpr inline int pad_width[4] = {1,2,3,2};
-        constexpr inline auto pad_width_ct = nmtools_tuple{1_ct,2_ct,3_ct,2_ct};
-        constexpr inline auto pad_width_cl = to_clipped(pad_width_ct);
+        constexpr inline int pads[4] = {1,2,3,2};
+        constexpr inline auto pads_ct = nmtools_tuple{1_ct,2_ct,3_ct,2_ct};
+        constexpr inline auto pads_cl = to_clipped(pads_ct);
         NMTOOLS_CONSTEXPR_CAST_ARRAYS(array);
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case4)
@@ -117,9 +117,9 @@ NMTOOLS_TESTING_DECLARE_CASE(array, constexpr_pad)
                 {10,11},
             }
         };
-        constexpr inline int pad_width[6] = {0,1,1,2,0,1};
-        constexpr inline auto pad_width_ct = nmtools_tuple{0_ct,1_ct,1_ct,2_ct,0_ct,1_ct};
-        constexpr inline auto pad_width_cl = to_clipped(pad_width_ct);
+        constexpr inline int pads[6] = {0,1,1,2,0,1};
+        constexpr inline auto pads_ct = nmtools_tuple{0_ct,1_ct,1_ct,2_ct,0_ct,1_ct};
+        constexpr inline auto pads_cl = to_clipped(pads_ct);
         NMTOOLS_CONSTEXPR_CAST_ARRAYS(array);
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case5)
