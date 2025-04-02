@@ -305,11 +305,11 @@ docker build -t clang-repl -f ./docker/clang-repl.dockerfile .
 ```
 Run
 ```
-docker run -it --name clang-repl clang-repl zsh
+docker run -it --name clang-repl -v ${PWD}:/workspace/ clang-repl zsh
 ```
 Then, inside the container, run clang-repl:
 ```
-/llvm-project/build/bin/clang-repl --Xcc="-I/workspace/include/" -Xcc="-Wno-gnu-string-literal-operator-template"
+/opt/llvm-project/build/bin/clang-repl --Xcc="-I/workspace/include/" -Xcc="-Wno-gnu-string-literal-operator-template"
 ```
 ![clang-repl.png](docs/image/clang-repl.png)
 To re-run stopped container
