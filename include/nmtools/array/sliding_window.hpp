@@ -378,6 +378,7 @@ namespace nmtools::index
             [[maybe_unused]] auto stride_dim = len(m_stride);
 
             // here assume stride_dim == window_dim
+            [[maybe_unused]]
             auto res_dim = src_dim + window_dim;
 
             if constexpr (meta::is_resizable_v<result_t>) {
