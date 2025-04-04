@@ -1789,6 +1789,247 @@ NMTOOLS_TESTING_DECLARE_CASE(array, sliding_window)
             }
         };
     }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case38)
+    {
+        inline int x[1][1][7][7] = {
+            {
+                {
+                    { 0,  1,  2,  3,  4,  5,  6},
+                    { 7,  8,  9, 10, 11, 12, 13},
+                    {14, 15, 16, 17, 18, 19, 20},
+                    {21, 22, 23, 24, 25, 26, 27},
+                    {28, 29, 30, 31, 32, 33, 34},
+                    {35, 36, 37, 38, 39, 40, 41},
+                    {42, 43, 44, 45, 46, 47, 48}
+                }
+            }
+        };
+        inline int window_shape[2] = {3, 3};
+        inline int axis[2]         = {-2, -1};
+        inline int stride[2]       = {2, 2};
+        inline int dilation[2]     = {2,2};
+        // inline int kernel_size[2] = {3,3};
+        // inline int stride[2] = {2,2};
+        // inline auto ceil_mode = True;
+        NMTOOLS_CAST_ARRAYS(x)
+        NMTOOLS_CAST_INDEX_ARRAYS(window_shape)
+        NMTOOLS_CAST_INDEX_ARRAYS(axis)
+        NMTOOLS_CAST_INDEX_ARRAYS(stride)
+        NMTOOLS_CAST_INDEX_ARRAYS(dilation)
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case38)
+    {
+        inline int expected[1][1][2][2][3][3] = {
+            {
+                {
+                    {
+                        {
+                            { 0, 2, 4},
+                            {14,16,18},
+                            {28,30,32},
+                        },
+                        {
+                            { 2, 4, 6},
+                            {16,18,20},
+                            {30,32,34},
+                        },
+                    },
+                    {
+                        {
+                            {14,16,18},
+                            {28,30,32},
+                            {42,44,46},
+                        },
+                        {
+                            {16,18,20},
+                            {30,32,34},
+                            {44,46,48},
+                        },
+                    },
+                }
+            }
+        };
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case39)
+    {
+        inline int x[1][1][7][7] = {
+            {
+                {
+                    { 0,  1,  2,  3,  4,  5,  6},
+                    { 7,  8,  9, 10, 11, 12, 13},
+                    {14, 15, 16, 17, 18, 19, 20},
+                    {21, 22, 23, 24, 25, 26, 27},
+                    {28, 29, 30, 31, 32, 33, 34},
+                    {35, 36, 37, 38, 39, 40, 41},
+                    {42, 43, 44, 45, 46, 47, 48}
+                }
+            }
+        };
+        inline int window_shape[2] = { 3, 3};
+        inline int axis[2]         = {-2,-1};
+        inline int stride[2]       = { 1, 1};
+        inline int dilation[2]     = { 2, 2};
+        // inline int kernel_size[2] = {3,3};
+        // inline int stride[2] = {2,2};
+        // inline auto ceil_mode = True;
+        NMTOOLS_CAST_ARRAYS(x)
+        NMTOOLS_CAST_INDEX_ARRAYS(window_shape)
+        NMTOOLS_CAST_INDEX_ARRAYS(axis)
+        NMTOOLS_CAST_INDEX_ARRAYS(stride)
+        NMTOOLS_CAST_INDEX_ARRAYS(dilation)
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case39)
+    {
+        inline int expected[1][1][3][3][3][3] = {
+            {
+                {
+                    {
+                        {
+                            { 0, 2, 4},
+                            {14,16,18},
+                            {28,30,32},
+                        },
+                        {
+                            { 1, 3, 5},
+                            {15,17,19},
+                            {29,31,33},
+                        },
+                        {
+                            { 2, 4, 6},
+                            {16,18,20},
+                            {30,32,34},
+                        },
+                    },
+                    {
+                        {
+                            { 7, 9,11},
+                            {21,23,25},
+                            {35,37,39},
+                        },
+                        {
+                            { 8,10,12},
+                            {22,24,26},
+                            {36,38,40},
+                        },
+                        {
+                            { 9,11,13},
+                            {23,25,27},
+                            {37,39,41},
+                        },
+                    },
+                    {
+                        {
+                            {14,16,18},
+                            {28,30,32},
+                            {42,44,46},
+                        },
+                        {
+                            {15,17,19},
+                            {29,31,33},
+                            {43,45,47},
+                        },
+                        {
+                            {16,18,20},
+                            {30,32,34},
+                            {44,46,48},
+                        },
+                    },
+                }
+            }
+        };
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case40)
+    {
+        inline int x[1][1][7][7] = {
+            {
+                {
+                    { 0,  1,  2,  3,  4,  5,  6},
+                    { 7,  8,  9, 10, 11, 12, 13},
+                    {14, 15, 16, 17, 18, 19, 20},
+                    {21, 22, 23, 24, 25, 26, 27},
+                    {28, 29, 30, 31, 32, 33, 34},
+                    {35, 36, 37, 38, 39, 40, 41},
+                    {42, 43, 44, 45, 46, 47, 48}
+                }
+            }
+        };
+        inline int window_shape[2] = {3, 3};
+        inline int axis[2]         = {-2, -1};
+        inline int stride[2]       = {1, 1};
+        inline int dilation[2]     = {3,3};
+        // inline int kernel_size[2] = {3,3};
+        // inline int stride[2] = {2,2};
+        // inline auto ceil_mode = True;
+        NMTOOLS_CAST_ARRAYS(x)
+        NMTOOLS_CAST_INDEX_ARRAYS(window_shape)
+        NMTOOLS_CAST_INDEX_ARRAYS(axis)
+        NMTOOLS_CAST_INDEX_ARRAYS(stride)
+        NMTOOLS_CAST_INDEX_ARRAYS(dilation)
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case40)
+    {
+        inline int expected[1][1][1][1][3][3] = {
+            {
+                {
+                    {
+                        {
+                            { 0, 3, 6},
+                            {21,24,27},
+                            {42,45,48},
+                        },
+                    },
+                }
+            }
+        };
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case41)
+    {
+        inline int x[1][1][7][7] = {
+            {
+                {
+                    { 0,  1,  2,  3,  4,  5,  6},
+                    { 7,  8,  9, 10, 11, 12, 13},
+                    {14, 15, 16, 17, 18, 19, 20},
+                    {21, 22, 23, 24, 25, 26, 27},
+                    {28, 29, 30, 31, 32, 33, 34},
+                    {35, 36, 37, 38, 39, 40, 41},
+                    {42, 43, 44, 45, 46, 47, 48}
+                }
+            }
+        };
+        inline int window_shape[2] = {3, 3};
+        inline int axis[2]         = {-2, -1};
+        inline int stride[2]       = {2, 2};
+        inline int dilation[2]     = {3,3};
+        // inline int kernel_size[2] = {3,3};
+        // inline int stride[2] = {2,2};
+        // inline auto ceil_mode = True;
+        NMTOOLS_CAST_ARRAYS(x)
+        NMTOOLS_CAST_INDEX_ARRAYS(window_shape)
+        NMTOOLS_CAST_INDEX_ARRAYS(axis)
+        NMTOOLS_CAST_INDEX_ARRAYS(stride)
+        NMTOOLS_CAST_INDEX_ARRAYS(dilation)
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case41)
+    {
+        inline int expected[1][1][1][1][3][3] = {
+            {
+                {
+                    {
+                        {
+                            { 0, 3, 6},
+                            {31,24,27},
+                            {42,45,48},
+                        },
+                    },
+                }
+            }
+        };
+    }
 }
 
 #endif // NMTOOLS_TESTING_DATA_ARRAY_SLIDING_WINDOW_HPP

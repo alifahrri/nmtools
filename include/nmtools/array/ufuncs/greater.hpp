@@ -11,7 +11,8 @@ namespace nmtools::view::fun
         template <typename T, typename U>
         constexpr auto operator()(const T& t, const U& u) const
         {
-            return t > u;
+            using common_t = meta::common_type_t<T,U>;
+            return static_cast<common_t>(t) > static_cast<common_t>(u);
         } // operator()
     }; // greater
 }

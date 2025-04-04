@@ -72,7 +72,7 @@ nmtools::utils::to_string_color(array,color)
  */
 #define NMTOOLS_ASSERT_CLOSE_DOCTEST(result,expect) \
 { \
-    auto result_ = isclose(result,expect,NMTOOLS_TESTING_PRECISION); \
+    auto result_ = nmtools::utils::isclose(result,expect,NMTOOLS_TESTING_PRECISION); \
     auto result_typename = NMTOOLS_TESTING_GET_TYPENAME(decltype(result)); \
     auto expect_typename = NMTOOLS_TESTING_GET_TYPENAME(decltype(expect)); \
     std::string message {}; \
@@ -87,7 +87,7 @@ nmtools::utils::to_string_color(array,color)
 
 #define NMTOOLS_STATIC_ASSERT_CLOSE_DOCTEST(result,expect) \
 { \
-    constexpr auto result_ = isclose(result,expect,NMTOOLS_TESTING_PRECISION); \
+    constexpr auto result_ = nmtools::utils::isclose(result,expect,NMTOOLS_TESTING_PRECISION); \
     std::string message {}; \
     message = message + \
         + "\n\tActual  : " + STRINGIFY(result)  \
@@ -98,7 +98,7 @@ nmtools::utils::to_string_color(array,color)
 
 #define NMTOOLS_ASSERT_CLOSE_COLORIZED(result,expect) \
 { \
-    auto result_ = isclose(result,expect,NMTOOLS_TESTING_PRECISION); \
+    auto result_ = nmtools::utils::isclose(result,expect,NMTOOLS_TESTING_PRECISION); \
     auto color   = nmtools::view::greater(nmtools::view::fabs(nmtools::view::subtract(result,expect)),NMTOOLS_TESTING_PRECISION); \
     auto result_typename = NMTOOLS_TESTING_GET_TYPENAME(decltype(result)); \
     auto expect_typename = NMTOOLS_TESTING_GET_TYPENAME(decltype(expect)); \
@@ -125,13 +125,13 @@ nmtools::utils::to_string_color(array,color)
         + "\n\tExpected " + "\033[0;90m(" + expect_typename + ")\033[0m:\n" \
         + STRINGIFY(expect) \
     ; \
-    CHECK_MESSAGE(isequal(result,expect), \
+    CHECK_MESSAGE(nmtools::utils::isequal(result,expect), \
         message \
     ); \
 }
 
 #define NMTOOLS_ASSERT_NOT_EQUAL_DOCTEST(result,expect) \
-CHECK_MESSAGE(!isequal(result,expect), \
+CHECK_MESSAGE(!nmtools::utils::isequal(result,expect), \
     (   \
         std::string{} \
         + "\n\tActual  : " + STRINGIFY(result) \
@@ -141,12 +141,28 @@ CHECK_MESSAGE(!isequal(result,expect), \
 
 #define NMTOOLS_STATIC_ASSERT_EQUAL_DOCTEST(result,expect) \
 { \
-    [[maybe_unused]] constexpr auto result_ = isequal(result,expect); \
+    [[maybe_unused]] constexpr auto result_ = nmtools::utils::isequal(result,expect); \
     std::string message {}; \
     message = message + \
         + "\n\tActual  : " + STRINGIFY(result)  \
         + "\n\tExpected: " + STRINGIFY(expect); \
     NMTOOLS_STATIC_ASSERT( result_ ); \
+    NMTOOLS_CHECK_MESSAGE( result_, message ); \
+}
+
+#define NMTOOLS_ASSERT_EQUAL_COLORIZED(result,expect) \
+{ \
+    auto result_ = nmtools::utils::isequal(result,expect); \
+    auto color   = nmtools::array::greater(nmtools::array::subtract(result,expect),0); \
+    auto result_typename = NMTOOLS_TESTING_GET_TYPENAME(decltype(result)); \
+    auto expect_typename = NMTOOLS_TESTING_GET_TYPENAME(decltype(expect)); \
+    std::string message {}; \
+    message = message + \
+        + "\n\tActual " + "\033[0;90m<" + result_typename + ">\033[0m:\n" \
+        + STRINGIFY_COLOR(result,nmtools::unwrap(color)) \
+        + "\n\tExpected " + "\033[0;90m<" + expect_typename + ">\033[0m:\n" \
+        + STRINGIFY_COLOR(expect,nmtools::unwrap(color)) \
+    ; \
     NMTOOLS_CHECK_MESSAGE( result_, message ); \
 }
 
@@ -205,7 +221,7 @@ NMTOOLS_TESTING_LOG_TYPEINFO_IMPL( \
 #define NMTOOLS_TESTING_CONSTEXPR_ISCLOSE_TEST(func, expect, ...) \
 { \
     constexpr auto result = func(__VA_ARGS__); \
-    static_assert(isclose(result,expect,NMTOOLS_TESTING_PRECISION)); \
+    static_assert(nmtools::utils::isclose(result,expect,NMTOOLS_TESTING_PRECISION)); \
     /* TODO: check return type! */ \
 } \
 
@@ -242,7 +258,7 @@ NMTOOLS_TESTING_LOG_TYPEINFO_IMPL( \
 #define NMTOOLS_TESTING_CONSTEXPR_ISEQUAL_TEST(func, expect, ...) \
 { \
     constexpr auto result = func(__VA_ARGS__); \
-    static_assert(isequal(result,expect)); \
+    static_assert(nmtools::utils::isequal(result,expect)); \
     /* TODO: check return type! */ \
 } \
 
@@ -283,7 +299,7 @@ nmtools::testing::make_func_args(#func,NMTOOLS_TESTING_RESULT_TYPE(func,__VA_ARG
     }   \
 }   \
 
-// @todo add subcase for isequal
+// @todo add subcase for nmtools::utils::isequal
 
 // TODO: remove
 /**

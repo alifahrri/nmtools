@@ -211,7 +211,7 @@ NMTOOLS_TESTING_DECLARE_CASE(index, shape_sliding_window)
     }
 } // shape_sliding_window
 
-NMTOOLS_TESTING_DECLARE_CASE(index, slice_sliding_window)
+NMTOOLS_TESTING_DECLARE_CASE(index, stride_slice_sliding_window)
 {
     using namespace literals;
 
@@ -328,6 +328,30 @@ NMTOOLS_TESTING_DECLARE_CASE(index, slice_sliding_window)
             nmtools_tuple{None,None,1},
             nmtools_tuple{None,None,2},
             nmtools_tuple{None,None,1},
+        };
+    }
+}
+
+NMTOOLS_TESTING_DECLARE_CASE(index, dilation_slice_sliding_window)
+{
+    NMTOOLS_TESTING_DECLARE_ARGS(case38)
+    {
+        inline int src_shape[4] = {1,1,7,7};
+        inline int window_shape[2] = {3,3};
+        inline int dilation[2] = {2,2};
+        NMTOOLS_CAST_INDEX_ARRAYS(src_shape)
+        NMTOOLS_CAST_INDEX_ARRAYS(window_shape)
+        NMTOOLS_CAST_INDEX_ARRAYS(dilation)
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case38)
+    {
+        inline auto expected = nmtools_tuple{
+            nmtools_tuple{None,None,1},
+            nmtools_tuple{None,None,1},
+            nmtools_tuple{None,None,1},
+            nmtools_tuple{None,None,1},
+            nmtools_tuple{None,None,2},
+            nmtools_tuple{None,None,2},
         };
     }
 }

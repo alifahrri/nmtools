@@ -28,7 +28,7 @@ TEST_CASE("linearize(avg_pool2d)" * doctest::test_suite("transfomr"))
     auto stride = array{2,2};
     auto ceil_mode = nm::False;
 
-    auto res = view::avg_pool2d(input,kernel_size,stride,ceil_mode);
+    auto res = view::avg_pool2d(input,kernel_size,stride,nm::None,ceil_mode);
 
     auto graph = fn::get_compute_graph(unwrap(res));
 

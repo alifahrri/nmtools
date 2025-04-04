@@ -14,4 +14,6 @@ using namespace nmtools::literals;
 
 using nmtools_array, nmtools_tuple, nm::utils::to_string, nm::unwrap;
 
+using nmtools::None, nmtools::Ellipsis;
+
 #endif // NMTOOLS_PLATFORM_REPL_PRELUDE_HPP
