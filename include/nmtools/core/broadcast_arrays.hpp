@@ -29,10 +29,10 @@ namespace nmtools::view
         auto bcast_size  = index::broadcast_size(bcast_shape,size<true>(nmtools::get<Is>(arrays))...);
         if constexpr (meta::is_maybe_v<decltype(bcast_shape)>) {
             // avoid tuple<maybe<...>...> because not usable in constexpr evaluation
-            using bcast_shape_t = meta::get_maybe_type_t<decltype(bcast_shape)>;
-            using bcast_size_t  = meta::get_maybe_type_t<decltype(bcast_size)>;
+            using bcast_shape_t = decltype(unwrap(bcast_shape));
+            using bcast_size_t  = decltype(unwrap(bcast_size));
             using result_t = nmtools_tuple<decltype(unwrap(view::broadcast_to(nmtools::get<Is>(arrays),meta::declval<bcast_shape_t>(),meta::declval<bcast_size_t>())))...>;
-            using return_t = nmtools_maybe<result_t>;
+            using return_t = meta::conditional_t<meta::is_maybe_v<result_t>,result_t,nmtools_maybe<result_t>>;
             return (static_cast<bool>(bcast_shape)
                 ? return_t{nmtools_tuple{unwrap(view::broadcast_to(nmtools::get<Is>(arrays),*bcast_shape,*bcast_size))...}}
                 : return_t{meta::Nothing}
