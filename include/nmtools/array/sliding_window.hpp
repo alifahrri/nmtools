@@ -11,6 +11,78 @@
 
 namespace nmtools::index
 {
+    struct window_shape_sliding_window_t {};
+
+    template <typename window_shape_t
+        , typename dilation_t=none_t>
+    constexpr auto window_shape_sliding_window(
+        [[maybe_unused]] const window_shape_t& window_shape
+        , [[maybe_unused]] const dilation_t& dilation=dilation_t{})
+    {
+        if constexpr (meta::is_maybe_v<window_shape_t>
+            || meta::is_maybe_v<dilation_t>
+        ) {
+            using result_t = decltype(window_shape_sliding_window(unwrap(window_shape)
+                , unwrap(dilation)));
+            using return_t = meta::conditional_t<
+                meta::is_maybe_v<result_t>
+                , result_t
+                , nmtools_maybe<result_t>>;
+            
+            return (has_shape(window_shape) && has_shape(dilation)
+                ? return_t{window_shape_sliding_window(unwrap(window_shape)
+                    , unwrap(dilation))}
+                : return_t{meta::Nothing}
+            );
+        } else {
+            using result_t = meta::resolve_optype_t<window_shape_sliding_window_t
+                , window_shape_t
+                , dilation_t>;
+            
+            auto result = result_t {};
+
+            if constexpr (!meta::is_constant_index_array_v<result_t>
+                && !meta::is_constant_index_v<result_t>
+                && !meta::is_fail_v<result_t>
+            ) {
+                if constexpr (meta::is_index_v<result_t>) {
+                    result = window_shape;
+                    if constexpr (!is_none_v<dilation_t>) {
+                        result += dilation;
+                    }
+                } else {
+                    auto window_dim = len(window_shape);
+
+                    if constexpr (meta::is_resizable_v<result_t>) {
+                        result.resize(window_dim);
+                    }
+
+                    for (nm_size_t i=0; i<(nm_size_t)window_dim; i++) {
+                        if constexpr (meta::is_index_v<window_shape_t>) {
+                            at(result,i) = window_shape;
+                        } else {
+                            at(result,i) = at(window_shape,i);
+                        }
+                    }
+
+                    if constexpr (meta::is_index_v<dilation_t>) {
+                        for (nm_size_t i=0; i<(nm_size_t)window_dim; i++) {
+                            at(result,i) += (dilation - 1) * 2;
+                        }
+                    } else if constexpr (meta::is_index_array_v<dilation_t>) {
+                        // assume same dim
+                        // TODO: check for dim, handle error
+                        for (nm_size_t i=0; i<(nm_size_t)window_dim; i++) {
+                            at(result,i) += (at(dilation,i) - 1) * 2;
+                        }
+                    }
+                }
+            }
+            
+            return result;
+        }
+    } // window_shape_sliding_window
+
     struct shape_sliding_window_t {};
 
     template <typename src_shape_t
@@ -315,13 +387,13 @@ namespace nmtools::index
         return return_t{result};
     }
 
-    struct slice_sliding_window_t {};
+    struct stride_slice_sliding_window_t {};
 
     template <typename src_shape_t
         , typename window_shape_t
         , typename axis_t
         , typename stride_t>
-    constexpr auto slice_sliding_window(const src_shape_t& src_shape
+    constexpr auto stride_slice_sliding_window(const src_shape_t& src_shape
         , const window_shape_t& window_shape
         , const axis_t& axis
         , const stride_t& stride)
@@ -331,7 +403,7 @@ namespace nmtools::index
             || meta::is_maybe_v<axis_t>
             || meta::is_maybe_v<stride_t>
         ) {
-            using result_t = decltype(slice_sliding_window(
+            using result_t = decltype(stride_slice_sliding_window(
                 unwrap(src_shape)
                 , unwrap(window_shape)
                 , unwrap(axis)
@@ -342,7 +414,7 @@ namespace nmtools::index
                     && has_value(window_shape)
                     && has_value(axis)
                     && has_value(stride)
-                ? return_t{slice_sliding_window(
+                ? return_t{stride_slice_sliding_window(
                     unwrap(src_shape)
                     , unwrap(window_shape)
                     , unwrap(axis)
@@ -351,7 +423,7 @@ namespace nmtools::index
                 : return_t{meta::Nothing}
             );
         } else {
-            using result_t = meta::resolve_optype_t<slice_sliding_window_t
+            using result_t = meta::resolve_optype_t<stride_slice_sliding_window_t
                 , src_shape_t
                 , window_shape_t
                 , axis_t
@@ -391,13 +463,76 @@ namespace nmtools::index
 
             return return_t{result};
         }
-    }
+    } // stride_slice_sliding_window
+
+    struct dilation_slice_sliding_window_t {};
+
+    template <typename src_shape_t
+        , typename window_shape_t
+        , typename dilation_t
+    >
+    constexpr auto dilation_slice_sliding_window(const src_shape_t& src_shape
+        , const window_shape_t& window_shape
+        , const dilation_t& dilation)
+    {
+        if constexpr (meta::is_maybe_v<src_shape_t>
+            || meta::is_maybe_v<window_shape_t>
+            || meta::is_maybe_v<dilation_t>
+        ) {
+            using result_t = decltype(dilation_slice_sliding_window(unwrap(src_shape)
+                , unwrap(window_shape)
+                , unwrap(dilation)));
+            using return_t = meta::conditional_t<meta::is_maybe_v<result_t>,result_t,nmtools_maybe<result_t>>;
+
+            return (has_value(src_shape)
+                && has_value(window_shape)
+                && has_value(dilation)
+                ? return_t{dilation_slice_sliding_window(unwrap(src_shape)
+                    , unwrap(window_shape)
+                    , unwrap(dilation))}
+                : return_t{meta::Nothing}
+            );
+        } else {
+            using result_t = meta::resolve_optype_t<dilation_slice_sliding_window_t,src_shape_t,window_shape_t,dilation_t>;
+
+            auto result = result_t {};
+
+            auto src_dim = len(src_shape);
+            auto window_dim = len(window_shape);
+
+            auto dst_dim = src_dim + window_dim;
+
+            if constexpr (meta::is_resizable_v<result_t>) {
+                result.resize(dst_dim);
+            }
+
+            for (nm_size_t i=0; i<(nm_size_t)src_dim; i++) {
+                at(result,i) = nmtools_tuple{None,None,1};
+            }
+            for (nm_size_t i=src_dim; i<(nm_size_t)dst_dim; i++) {
+                if constexpr (meta::is_index_v<dilation_t>) {
+                    at(result,i) = nmtools_tuple{
+                        None, None, (nm_size_t)dilation
+                    };
+                } else {
+                    at(result,i) = nmtools_tuple{
+                        None, None, (nm_size_t)at(dilation,i-src_dim)
+                    };
+                }
+            }
+
+            return result;
+        }
+    } // dilation_slice_sliding_window
 } // namespace nmtools::index
 
 namespace nmtools::meta
 {
     namespace error
     {
+        template<typename...>
+        struct WINDOW_SHAPE_SLIDING_WINDOW_UNSUPPORTED : detail::fail_t {};
+
         template<typename...>
         struct SHAPE_SLIDING_WINDOW_UNSUPPORTED : detail::fail_t {};
 
@@ -409,7 +544,61 @@ namespace nmtools::meta
 
         template<typename...>
         struct NORMALIZE_SLIDING_WINDOW_STRIDE_UNSUPPORTED : detail::fail_t {};
+
+        template<typename...>
+        struct DILATION_SLICE_SLIDING_WINDOW_UNSUPPORTED : detail::fail_t {};
     }
+
+    template <typename window_shape_t, typename dilation_t>
+    struct resolve_optype<
+        void, index::window_shape_sliding_window_t, window_shape_t, dilation_t
+    > {
+        static constexpr auto vtype = [](){
+            if constexpr (!(is_index_v<window_shape_t> || is_index_array_v<window_shape_t>)
+                || !(is_none_v<dilation_t> || is_index_v<dilation_t> || is_index_array_v<dilation_t>)
+            ) {
+                using type = error::WINDOW_SHAPE_SLIDING_WINDOW_UNSUPPORTED<window_shape_t,dilation_t>;
+                return as_value_v<type>;
+            } else if constexpr ((is_constant_index_array_v<window_shape_t> || is_constant_index_v<window_shape_t>)
+                && (is_constant_index_array_v<dilation_t> || is_none_v<dilation_t> || is_constant_index_v<dilation_t>)
+            ) {
+                constexpr auto window_shape = to_value_v<window_shape_t>;
+                constexpr auto dilation = to_value_v<dilation_t>;
+                constexpr auto result = index::window_shape_sliding_window(window_shape,dilation);
+                if constexpr (is_index_v<decltype(result)>) {
+                    return as_value_v<ct<(nm_size_t)result>>;
+                } else {
+                    // TODO: propagate error handling to caller
+                    using nmtools::at, nmtools::len;
+                    return template_reduce<len(result)>([&](auto init, auto index){
+                        using init_t = type_t<decltype(init)>;
+                        constexpr auto result_i = at(result,decltype(index)::value);
+                        using type = append_type_t<init_t,ct<(nm_size_t)result_i>>;
+                        return as_value_v<type>;
+                    },as_value_v<nmtools_tuple<>>);
+                }
+            } else if constexpr (is_index_v<window_shape_t>) {
+                using type = nm_size_t;
+                return as_value_v<type>;
+            } else {
+                constexpr auto WINDOW_DIM = len_v<window_shape_t>;
+                [[maybe_unused]]
+                constexpr auto WINDOW_B_DIM = bounded_size_v<window_shape_t>;
+                if constexpr (WINDOW_DIM > 0) {
+                    using type = nmtools_array<nm_size_t,WINDOW_DIM>;
+                    return as_value_v<type>;
+                } else if constexpr (!is_fail_v<decltype(WINDOW_B_DIM)>) {
+                    using type = nmtools_static_vector<nm_size_t,WINDOW_B_DIM>;
+                    return as_value_v<type>;
+                } else {
+                    // TODO: support small vector
+                    using type = nmtools_list<nm_size_t>;
+                    return as_value_v<type>;
+                }
+            }
+        }();
+        using type = type_t<decltype(vtype)>;
+    };
 
     template <typename src_shape_t, typename window_shape_t, typename axis_t>
     struct resolve_optype<
@@ -660,7 +849,7 @@ namespace nmtools::meta
 
     template <typename src_shape_t, typename window_shape_t, typename axis_t, typename stride_t>
     struct resolve_optype<
-        void, index::slice_sliding_window_t, src_shape_t, window_shape_t, axis_t, stride_t
+        void, index::stride_slice_sliding_window_t, src_shape_t, window_shape_t, axis_t, stride_t
     > {
         static constexpr auto vtype = [](){
             if constexpr (
@@ -691,6 +880,43 @@ namespace nmtools::meta
                     return as_value_v<type>;
                 } else if constexpr (!is_fail_v<decltype(SRC_B_DIM)> && !is_fail_v<decltype(WINDOW_B_DIM)>) {
                     using type = nmtools_static_vector<slice_t,SRC_B_DIM+WINDOW_B_DIM>;
+                    return as_value_v<type>;
+                } else {
+                    // TODO: support small vector
+                    using type = nmtools_list<slice_t>;
+                    return as_value_v<type>;
+                }
+            }
+        }();
+        using type = type_t<decltype(vtype)>;
+    };
+
+    template <typename src_shape_t, typename window_shape_t, typename dilation_t>
+    struct resolve_optype<
+        void, index::dilation_slice_sliding_window_t, src_shape_t, window_shape_t, dilation_t
+    > {
+        static constexpr auto vtype = [](){
+            if constexpr (!is_index_array_v<src_shape_t>
+                || !(is_index_array_v<window_shape_t> || is_index_v<window_shape_t>)
+                || !(is_index_array_v<dilation_t> || is_index_v<dilation_t>)
+            ) {
+                using type = error::DILATION_SLICE_SLIDING_WINDOW_UNSUPPORTED<src_shape_t,window_shape_t,dilation_t>;
+                return as_value_v<type>;
+            } else {
+                constexpr auto SRC_DIM = len_v<src_shape_t>;
+                constexpr auto WINDOW_DIM = len_v<window_shape_t>;
+                [[maybe_unused]]
+                constexpr auto SRC_B_DIM = bounded_size_v<src_shape_t>;
+                [[maybe_unused]]
+                constexpr auto WINDOW_B_DIM = bounded_size_v<window_shape_t>;
+                using slice_t = nmtools_tuple<none_t,none_t,nm_size_t>;
+                if constexpr ((SRC_DIM > 0) && (WINDOW_DIM > 0)) {
+                    constexpr auto DST_DIM = SRC_DIM + WINDOW_DIM;
+                    using type = nmtools_array<slice_t,DST_DIM>;
+                    return as_value_v<type>;
+                } else if constexpr (!is_fail_v<decltype(SRC_B_DIM)> && !is_fail_v<decltype(WINDOW_B_DIM)>) {
+                    constexpr auto DST_B_DIM = SRC_B_DIM + WINDOW_B_DIM;
+                    using type = nmtools_static_vector<slice_t,DST_B_DIM>;
                     return as_value_v<type>;
                 } else {
                     // TODO: support small vector
@@ -795,23 +1021,36 @@ namespace nmtools::view
         }
     } // sliding_window_indexer
 
-    template <typename array_t, typename window_shape_t, typename axis_t=none_t, typename stride_t=none_t>
+    template <typename array_t, typename window_shape_t, typename axis_t=none_t, typename stride_t=none_t, typename dilation_t=none_t>
     constexpr auto sliding_window(const array_t& array
-        , const window_shape_t& window_shape, const axis_t& axis=axis_t{}, const stride_t& stride=stride_t{})
+        , const window_shape_t& window_shape, const axis_t& axis=axis_t{}, const stride_t& stride=stride_t{}, const dilation_t& dilation=dilation_t{})
     {
         auto f = [](const auto& array, const auto& window_shape, const auto& axis){
             auto src_shape = shape<true>(array);
             auto indexer   = sliding_window_indexer(src_shape,window_shape,axis);
             return indexing(array,indexer);
         };
-        auto window = lift_indexing(f,array,window_shape,axis);
-        if constexpr (is_none_v<stride_t>) {
-            return window;
-        } else {
-            auto src_shape = shape<true>(array);
-            auto slice_args = index::slice_sliding_window(src_shape,window_shape,axis,stride);
-            return view::apply_slice(window,slice_args);
-        }
+        auto m_window_shape = index::window_shape_sliding_window(window_shape,dilation);
+        auto window = lift_indexing(f,array,m_window_shape,axis);
+        auto strided = [&](){
+            if constexpr (is_none_v<stride_t>) {
+                return window;
+            } else {
+                auto src_shape = shape<true>(array);
+                auto slice_args = index::stride_slice_sliding_window(src_shape,m_window_shape,axis,stride);
+                return view::apply_slice(window,slice_args);
+            }
+        }();
+        auto dilated = [&](){
+            if constexpr (is_none_v<dilation_t>) {
+                return strided;
+            } else {
+                auto src_shape = shape<true>(array);
+                auto slice_args = index::dilation_slice_sliding_window(src_shape,window_shape,dilation);
+                return view::apply_slice(strided,slice_args);
+            }
+        }();
+        return dilated;
     } // sliding_window
 } // namespace nmtools::view
 
