@@ -18,21 +18,34 @@ namespace nmtools::index
 {
     struct pool_pad_t {};
 
-    template <typename src_shape_t, typename kernel_size_t, typename stride_t>
-    constexpr auto pool_pad(const src_shape_t& src_shape, const kernel_size_t& kernel_size, const stride_t& stride)
+    template <typename src_shape_t, typename kernel_size_t, typename stride_t, typename dilation_t=none_t>
+    constexpr auto pool_pad(const src_shape_t& src_shape
+        , const kernel_size_t& kernel_size
+        , const stride_t& stride
+        , [[maybe_unused]] const dilation_t& dilation=dilation_t{})
     {
         if constexpr (meta::is_maybe_v<src_shape_t>
             || meta::is_maybe_v<kernel_size_t>
             || meta::is_maybe_v<stride_t>
+            || meta::is_maybe_v<dilation_t>
         ) {
-            using result_t = decltype(pool_pad(unwrap(src_shape),unwrap(kernel_size),unwrap(stride)));
+            using result_t = decltype(pool_pad(unwrap(src_shape)
+                , unwrap(kernel_size)
+                , unwrap(stride))
+                , unwrap(dilation));
             using return_t = meta::conditional_t<meta::is_maybe_v<result_t>,result_t,nmtools_maybe<result_t>>;
-            return (has_value(src_shape) && has_value(kernel_size) && has_value(stride)
-                ? return_t{pool_pad(unwrap(src_shape),unwrap(kernel_size),unwrap(stride))}
+            return (has_value(src_shape)
+                && has_value(kernel_size)
+                && has_value(stride)
+                && has_value(dilation)
+                ? return_t{pool_pad(unwrap(src_shape)
+                    , unwrap(kernel_size)
+                    , unwrap(stride))
+                    , unwrap(dilation)}
                 : return_t{meta::Nothing}
             );
         } else {
-            using result_t = meta::resolve_optype_t<pool_pad_t,src_shape_t,kernel_size_t,stride_t>;
+            using result_t = meta::resolve_optype_t<pool_pad_t,src_shape_t,kernel_size_t,stride_t,dilation_t>;
 
             auto result = result_t {};
 
@@ -55,7 +68,13 @@ namespace nmtools::index
                 auto kd = (src_dim-kernel_dim);
                 for (nm_size_t i=0; i<(nm_size_t)kernel_dim; i++) {
                     nm_index_t src_i = at(src_shape,i+kd);
-                    nm_index_t stride_i = at(stride,i);
+                    nm_index_t stride_i = [&](){
+                        if constexpr (meta::is_index_v<stride_t>) {
+                            return stride;
+                        } else {
+                            return at(stride,i);
+                        }
+                    }();
                     nm_index_t kernel_i = at(kernel_size,i);
                     float idx = float(src_i - kernel_i) / stride_i;
                     nm_index_t ceil_idx = math::constexpr_ceil(idx);
@@ -80,14 +99,15 @@ namespace nmtools::meta
         struct POOL_PAD_UNSUPPORTED : detail::fail_t {};
     }
 
-    template <typename src_shape_t, typename kernel_size_t, typename stride_t>
+    template <typename src_shape_t, typename kernel_size_t, typename stride_t, typename dilation_t>
     struct resolve_optype<
-        void, index::pool_pad_t, src_shape_t, kernel_size_t, stride_t
+        void, index::pool_pad_t, src_shape_t, kernel_size_t, stride_t, dilation_t
     > {
         static constexpr auto vtype = [](){
             if constexpr (!is_index_array_v<src_shape_t>
                 || !is_index_array_v<kernel_size_t>
-                || !is_index_array_v<stride_t>
+                || !(is_index_array_v<stride_t> || is_index_v<stride_t>)
+                || !(is_none_v<dilation_t> || is_index_v<dilation_t> || is_index_array_v<dilation_t>)
             ) {
                 using type = error::POOL_PAD_UNSUPPORTED<src_shape_t,kernel_size_t,stride_t>;
                 return as_value_v<type>;
@@ -124,48 +144,64 @@ namespace nmtools::meta
 
 namespace nmtools::view
 {
-    template <typename array_t, typename kernel_size_t, typename stride_t=none_t, typename ceil_mode_t=meta::false_type>
-    constexpr auto max_pool2d(const array_t& array, const kernel_size_t& kernel_size, const stride_t& stride=stride_t{}, [[maybe_unused]] ceil_mode_t ceil_mode=ceil_mode_t{})
+    template <typename array_t
+        , typename kernel_size_t
+        , typename stride_t=none_t
+        , typename dilation_t=none_t
+        , typename ceil_mode_t=meta::false_type>
+    constexpr auto max_pool2d(const array_t& array
+        , const kernel_size_t& kernel_size
+        , const stride_t& stride=stride_t{}
+        , [[maybe_unused]] const dilation_t& dilation=dilation_t{}
+        , [[maybe_unused]] ceil_mode_t ceil_mode=ceil_mode_t{})
     {
         if constexpr (!meta::is_constant_index_v<ceil_mode_t>) {
-            using left_t = decltype(view::max_pool2d(array,kernel_size,stride,True));
-            using right_t = decltype(view::max_pool2d(array,kernel_size,stride,False));
+            using left_t = decltype(view::max_pool2d(array,kernel_size,stride,dilation,True));
+            using right_t = decltype(view::max_pool2d(array,kernel_size,stride,dilation,False));
             using result_t = nmtools_either<left_t,right_t>;
             if (ceil_mode) {
-                return result_t{view::max_pool2d(array,kernel_size,stride,True)};
+                return result_t{view::max_pool2d(array,kernel_size,stride,dilation,True)};
             } else {
-                return result_t{view::max_pool2d(array,kernel_size,stride,False)};
+                return result_t{view::max_pool2d(array,kernel_size,stride,dilation,False)};
             }
         } else {
             auto axis = nmtools_tuple{meta::ct_v<-2>,meta::ct_v<-1>};
             if constexpr (!ceil_mode_t::value) {
-                auto tiled   = view::sliding_window(array,kernel_size,axis,stride);
+                auto tiled   = view::sliding_window(array,kernel_size,axis,stride,dilation);
                 auto reduced = view::reduce_maximum(tiled,axis);
                 return reduced;
             } else {
                 auto src_shape = shape<true>(array);
                 using T = meta::get_element_type_t<array_t>;
 
-                auto pad_width = index::pool_pad(src_shape,kernel_size,stride);
+                auto pad_width = index::pool_pad(src_shape,kernel_size,stride,dilation);
                 auto padded    = view::pad(array,pad_width,meta::numeric_limits<T>::min());
-                auto tiled     = view::sliding_window(padded,kernel_size,axis,stride);
+                auto tiled     = view::sliding_window(padded,kernel_size,axis,stride,dilation);
                 auto reduced   = view::reduce_maximum(tiled,axis);
                 return reduced;
             }
         }
     }
 
-    template <typename array_t, typename kernel_size_t, typename stride_t=none_t, typename ceil_mode_t=meta::false_type>
-    constexpr auto avg_pool2d(const array_t& array, const kernel_size_t& kernel_size, const stride_t& stride=stride_t{}, [[maybe_unused]] ceil_mode_t ceil_mode=ceil_mode_t{})
+    template <typename array_t
+        , typename kernel_size_t
+        , typename stride_t=none_t
+        , typename dilation_t=none_t
+        , typename ceil_mode_t=meta::false_type>
+    constexpr auto avg_pool2d(const array_t& array
+        , const kernel_size_t& kernel_size
+        , const stride_t& stride=stride_t{}
+        , [[maybe_unused]] const dilation_t& dilation=dilation_t{}
+        , [[maybe_unused]] ceil_mode_t ceil_mode=ceil_mode_t{})
     {
         if constexpr (!meta::is_constant_index_v<ceil_mode_t>) {
-            using left_t = decltype(view::avg_pool2d(array,kernel_size,stride,True));
-            using right_t = decltype(view::avg_pool2d(array,kernel_size,stride,False));
+            using left_t = decltype(view::avg_pool2d(array,kernel_size,stride,dilation,True));
+            using right_t = decltype(view::avg_pool2d(array,kernel_size,stride,dilation,False));
             using result_t = nmtools_either<left_t,right_t>;
             if (ceil_mode) {
-                return result_t{view::avg_pool2d(array,kernel_size,stride,True)};
+                return result_t{view::avg_pool2d(array,kernel_size,stride,dilation,True)};
             } else {
-                return result_t{view::avg_pool2d(array,kernel_size,stride,False)};
+                return result_t{view::avg_pool2d(array,kernel_size,stride,dilation,False)};
             }
         } else {
             auto axis = nmtools_tuple{meta::ct_v<-2>,meta::ct_v<-1>};
@@ -250,12 +286,24 @@ namespace nmtools::array
      * @param output        optional output
      * @return constexpr auto 
      */
-    template <typename output_t=none_t, typename context_t=none_t, typename resolver_t=eval_result_t<>,
-        typename array_t, typename kernel_size_t, typename stride_t, typename ceil_mode_t=meta::false_type>
-    constexpr auto max_pool2d(const array_t& array, const kernel_size_t& kernel_size, const stride_t& stride, ceil_mode_t ceil_mode=ceil_mode_t{},
-        context_t&& context=context_t{}, output_t&& output=output_t{},meta::as_value<resolver_t> resolver=meta::as_value_v<resolver_t>)
+    template <typename output_t=none_t
+        , typename context_t=none_t
+        , typename resolver_t=eval_result_t<>
+        , typename array_t
+        , typename kernel_size_t
+        , typename stride_t=none_t
+        , typename dilation_t=none_t
+        , typename ceil_mode_t=meta::false_type>
+    constexpr auto max_pool2d(const array_t& array
+        , const kernel_size_t& kernel_size
+        , const stride_t& stride=stride_t{}
+        , const dilation_t& dilation=dilation_t{}
+        , ceil_mode_t ceil_mode=ceil_mode_t{}
+        , context_t&& context=context_t{}
+        , output_t&& output=output_t{}
+        , meta::as_value<resolver_t> resolver=meta::as_value_v<resolver_t>)
     {
-        auto pool = view::max_pool2d(array,kernel_size,stride,ceil_mode);
+        auto pool = view::max_pool2d(array,kernel_size,stride,dilation,ceil_mode);
         return eval(pool
             ,nmtools::forward<context_t>(context)
             ,nmtools::forward<output_t>(output)
@@ -282,12 +330,24 @@ namespace nmtools::array
      * @param output        optional output
      * @return constexpr auto 
      */
-    template <typename output_t=none_t, typename context_t=none_t, typename resolver_t=eval_result_t<>,
-        typename array_t, typename kernel_size_t, typename stride_t, typename ceil_mode_t>
-    constexpr auto avg_pool2d(const array_t& array, const kernel_size_t& kernel_size, const stride_t& stride, ceil_mode_t ceil_mode,
-        context_t&& context=context_t{}, output_t&& output=output_t{},meta::as_value<resolver_t> resolver=meta::as_value_v<resolver_t>)
+    template <typename output_t=none_t
+        , typename context_t=none_t
+        , typename resolver_t=eval_result_t<>
+        , typename array_t
+        , typename kernel_size_t
+        , typename stride_t=none_t
+        , typename dilation_t=none_t
+        , typename ceil_mode_t=meta::false_type>
+    constexpr auto avg_pool2d(const array_t& array
+        , const kernel_size_t& kernel_size
+        , const stride_t& stride=stride_t{}
+        , const dilation_t& dilation=dilation_t{}
+        , ceil_mode_t ceil_mode=ceil_mode_t{}
+        , context_t&& context=context_t{}
+        , output_t&& output=output_t{}
+        , meta::as_value<resolver_t> resolver=meta::as_value_v<resolver_t>)
     {
-        auto pool = view::avg_pool2d(array,kernel_size,stride,ceil_mode);
+        auto pool = view::avg_pool2d(array,kernel_size,stride,dilation,ceil_mode);
         return eval(pool
             ,nmtools::forward<context_t>(context)
             ,nmtools::forward<output_t>(output)
