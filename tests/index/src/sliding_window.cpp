@@ -14,9 +14,9 @@ SUBCASE(#case_name) \
 #define SLICE_SLIDING_WINDOW_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_USE_CASE(index,slice_sliding_window,case_name); \
+    NMTOOLS_TESTING_USE_CASE(index,stride_slice_sliding_window,case_name); \
     using namespace args; \
-    auto result = nmtools::index::slice_sliding_window(__VA_ARGS__); \
+    auto result = nmtools::index::stride_slice_sliding_window(__VA_ARGS__); \
     NMTOOLS_ASSERT_APPLY_EQUAL( result, expect::expected ); \
 }
 
@@ -149,7 +149,7 @@ TEST_CASE("shape_sliding_window(case10)" * doctest::test_suite("index::shape_sli
     SHAPE_SLIDING_WINDOW_SUBCASE( case10, src_shape_cl, window_shape_cl, axis_cl );
 }
 
-TEST_CASE("slice_sliding_window(case14)" * doctest::test_suite("index::slice_sliding_window"))
+TEST_CASE("stride_slice_sliding_window(case14)" * doctest::test_suite("index::stride_slice_sliding_window"))
 {
     SLICE_SLIDING_WINDOW_SUBCASE( case14, src_shape, window_shape, axis, stride );
     SLICE_SLIDING_WINDOW_SUBCASE( case14, src_shape_a, window_shape, axis, stride );
@@ -158,7 +158,7 @@ TEST_CASE("slice_sliding_window(case14)" * doctest::test_suite("index::slice_sli
     SLICE_SLIDING_WINDOW_SUBCASE( case14, src_shape_v, window_shape, axis, stride );
 }
 
-TEST_CASE("slice_sliding_window(case15)" * doctest::test_suite("index::slice_sliding_window"))
+TEST_CASE("stride_slice_sliding_window(case15)" * doctest::test_suite("index::stride_slice_sliding_window"))
 {
     SLICE_SLIDING_WINDOW_SUBCASE( case15, src_shape, window_shape, axis, stride );
     SLICE_SLIDING_WINDOW_SUBCASE( case15, src_shape_a, window_shape, axis, stride );
@@ -167,7 +167,7 @@ TEST_CASE("slice_sliding_window(case15)" * doctest::test_suite("index::slice_sli
     SLICE_SLIDING_WINDOW_SUBCASE( case15, src_shape_v, window_shape, axis, stride );
 }
 
-TEST_CASE("slice_sliding_window(case15b)" * doctest::test_suite("index::slice_sliding_window"))
+TEST_CASE("stride_slice_sliding_window(case15b)" * doctest::test_suite("index::stride_slice_sliding_window"))
 {
     SLICE_SLIDING_WINDOW_SUBCASE( case15b, src_shape, window_shape, axis, stride );
     SLICE_SLIDING_WINDOW_SUBCASE( case15b, src_shape_a, window_shape, axis, stride );
@@ -176,7 +176,7 @@ TEST_CASE("slice_sliding_window(case15b)" * doctest::test_suite("index::slice_sl
     SLICE_SLIDING_WINDOW_SUBCASE( case15b, src_shape_v, window_shape, axis, stride );
 }
 
-TEST_CASE("slice_sliding_window(case16)" * doctest::test_suite("index::slice_sliding_window"))
+TEST_CASE("stride_slice_sliding_window(case16)" * doctest::test_suite("index::stride_slice_sliding_window"))
 {
     SLICE_SLIDING_WINDOW_SUBCASE( case16, src_shape, window_shape, axis, stride );
     SLICE_SLIDING_WINDOW_SUBCASE( case16, src_shape_a, window_shape, axis, stride );
@@ -185,7 +185,7 @@ TEST_CASE("slice_sliding_window(case16)" * doctest::test_suite("index::slice_sli
     SLICE_SLIDING_WINDOW_SUBCASE( case16, src_shape_v, window_shape, axis, stride );
 }
 
-TEST_CASE("slice_sliding_window(case24)" * doctest::test_suite("index::slice_sliding_window"))
+TEST_CASE("stride_slice_sliding_window(case24)" * doctest::test_suite("index::stride_slice_sliding_window"))
 {
     SLICE_SLIDING_WINDOW_SUBCASE( case24, src_shape, window_shape, axis, stride );
     SLICE_SLIDING_WINDOW_SUBCASE( case24, src_shape_a, window_shape, axis, stride );

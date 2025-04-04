@@ -26,7 +26,7 @@ namespace nmtools::impl
     {
         constexpr auto operator()([[maybe_unused]] const T& a) const noexcept
         {
-            [[maybe_unused]] auto LEN = meta::len_v<T>;
+            [[maybe_unused]] constexpr auto LEN = meta::len_v<T>;
             if constexpr (meta::has_shape_v<T>) {
                 auto shape = a.shape();
                 return nmtools::at(shape,meta::ct_v<0>);
