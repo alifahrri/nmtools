@@ -46,603 +46,603 @@ SUBCASE(#case_name) \
 }
 
 // TODO: fix for sycl kernel (opencl/cuda), remove free/malloc in kernel code
-TEST_CASE("max_pool2d(case1)" * doctest::test_suite("array::max_pool2d") * doctest::skip())
+TEST_CASE("max_pool2d(case1)" * doctest::test_suite("array::max_pool2d"))
 {
-    // MAX_POOL2D_SUBCASE(case1, array, kernel_size, stride, ceil_mode);
-    // MAX_POOL2D_SUBCASE(case1, array_a, kernel_size, stride, ceil_mode);
-    // MAX_POOL2D_SUBCASE(case1, array_f, kernel_size, stride, ceil_mode);
-    // MAX_POOL2D_SUBCASE(case1, array_h, kernel_size, stride, ceil_mode);
-    // MAX_POOL2D_SUBCASE(case1, array_d, kernel_size, stride, ceil_mode);
+    // MAX_POOL2D_SUBCASE(case1, array, kernel_size, stride, padding, dilation, ceil_mode);
+    // MAX_POOL2D_SUBCASE(case1, array_a, kernel_size, stride, padding, dilation, ceil_mode);
+    // MAX_POOL2D_SUBCASE(case1, array_f, kernel_size, stride, padding, dilation, ceil_mode);
+    // MAX_POOL2D_SUBCASE(case1, array_h, kernel_size, stride, padding, dilation, ceil_mode);
+    // MAX_POOL2D_SUBCASE(case1, array_d, kernel_size, stride, padding, dilation, ceil_mode);
 
-    // MAX_POOL2D_SUBCASE(case1, array_cs_fb, kernel_size, stride, ceil_mode);
-    // MAX_POOL2D_SUBCASE(case1, array_cs_hb, kernel_size, stride, ceil_mode);
-    // MAX_POOL2D_SUBCASE(case1, array_cs_db, kernel_size, stride, ceil_mode);
+    // MAX_POOL2D_SUBCASE(case1, array_cs_fb, kernel_size, stride, padding, dilation, ceil_mode);
+    // MAX_POOL2D_SUBCASE(case1, array_cs_hb, kernel_size, stride, padding, dilation, ceil_mode);
+    // MAX_POOL2D_SUBCASE(case1, array_cs_db, kernel_size, stride, padding, dilation, ceil_mode);
 
-    MAX_POOL2D_SUBCASE(case1, array_fs_fb, kernel_size, stride, ceil_mode);
-    MAX_POOL2D_SUBCASE(case1, array_fs_hb, kernel_size, stride, ceil_mode);
-    MAX_POOL2D_SUBCASE(case1, array_fs_db, kernel_size, stride, ceil_mode);
+    MAX_POOL2D_SUBCASE(case1, array_fs_fb, kernel_size, stride, padding, dilation, ceil_mode);
+    MAX_POOL2D_SUBCASE(case1, array_fs_hb, kernel_size, stride, padding, dilation, ceil_mode);
+    MAX_POOL2D_SUBCASE(case1, array_fs_db, kernel_size, stride, padding, dilation, ceil_mode);
 
-    MAX_POOL2D_SUBCASE(case1, array_hs_fb, kernel_size, stride, ceil_mode);
-    MAX_POOL2D_SUBCASE(case1, array_hs_hb, kernel_size, stride, ceil_mode);
-    MAX_POOL2D_SUBCASE(case1, array_hs_db, kernel_size, stride, ceil_mode);
+    MAX_POOL2D_SUBCASE(case1, array_hs_fb, kernel_size, stride, padding, dilation, ceil_mode);
+    MAX_POOL2D_SUBCASE(case1, array_hs_hb, kernel_size, stride, padding, dilation, ceil_mode);
+    MAX_POOL2D_SUBCASE(case1, array_hs_db, kernel_size, stride, padding, dilation, ceil_mode);
 
-    MAX_POOL2D_SUBCASE(case1, array_ds_fb, kernel_size, stride, ceil_mode);
-    MAX_POOL2D_SUBCASE(case1, array_ds_hb, kernel_size, stride, ceil_mode);
-    MAX_POOL2D_SUBCASE(case1, array_ds_db, kernel_size, stride, ceil_mode);
+    MAX_POOL2D_SUBCASE(case1, array_ds_fb, kernel_size, stride, padding, dilation, ceil_mode);
+    MAX_POOL2D_SUBCASE(case1, array_ds_hb, kernel_size, stride, padding, dilation, ceil_mode);
+    MAX_POOL2D_SUBCASE(case1, array_ds_db, kernel_size, stride, padding, dilation, ceil_mode);
 
-    // MAX_POOL2D_SUBCASE(case1, array_ls_fb, kernel_size, stride, ceil_mode);
-    // MAX_POOL2D_SUBCASE(case1, array_ls_hb, kernel_size, stride, ceil_mode);
-    // MAX_POOL2D_SUBCASE(case1, array_ls_db, kernel_size, stride, ceil_mode);
+    // MAX_POOL2D_SUBCASE(case1, array_ls_fb, kernel_size, stride, padding, dilation, ceil_mode);
+    // MAX_POOL2D_SUBCASE(case1, array_ls_hb, kernel_size, stride, padding, dilation, ceil_mode);
+    // MAX_POOL2D_SUBCASE(case1, array_ls_db, kernel_size, stride, padding, dilation, ceil_mode);
 }
 
 // TODO: fix for sycl kernel (opencl/cuda), remove free/malloc in kernel code
-TEST_CASE("max_pool2d(case2)" * doctest::test_suite("array::max_pool2d") * doctest::skip())
+TEST_CASE("max_pool2d(case2)" * doctest::test_suite("array::max_pool2d"))
 {
-    // MAX_POOL2D_SUBCASE(case2, array, kernel_size, stride, ceil_mode);
-    // MAX_POOL2D_SUBCASE(case2, array_a, kernel_size, stride, ceil_mode);
-    // MAX_POOL2D_SUBCASE(case2, array_f, kernel_size, stride, ceil_mode);
-    // MAX_POOL2D_SUBCASE(case2, array_h, kernel_size, stride, ceil_mode);
-    // MAX_POOL2D_SUBCASE(case2, array_d, kernel_size, stride, ceil_mode);
+    // MAX_POOL2D_SUBCASE(case2, array, kernel_size, stride, padding, dilation, ceil_mode);
+    // MAX_POOL2D_SUBCASE(case2, array_a, kernel_size, stride, padding, dilation, ceil_mode);
+    // MAX_POOL2D_SUBCASE(case2, array_f, kernel_size, stride, padding, dilation, ceil_mode);
+    // MAX_POOL2D_SUBCASE(case2, array_h, kernel_size, stride, padding, dilation, ceil_mode);
+    // MAX_POOL2D_SUBCASE(case2, array_d, kernel_size, stride, padding, dilation, ceil_mode);
 
-    // MAX_POOL2D_SUBCASE(case2, array_cs_fb, kernel_size, stride, ceil_mode);
-    // MAX_POOL2D_SUBCASE(case2, array_cs_hb, kernel_size, stride, ceil_mode);
-    // MAX_POOL2D_SUBCASE(case2, array_cs_db, kernel_size, stride, ceil_mode);
+    // MAX_POOL2D_SUBCASE(case2, array_cs_fb, kernel_size, stride, padding, dilation, ceil_mode);
+    // MAX_POOL2D_SUBCASE(case2, array_cs_hb, kernel_size, stride, padding, dilation, ceil_mode);
+    // MAX_POOL2D_SUBCASE(case2, array_cs_db, kernel_size, stride, padding, dilation, ceil_mode);
 
-    MAX_POOL2D_SUBCASE(case2, array_fs_fb, kernel_size, stride, ceil_mode);
-    MAX_POOL2D_SUBCASE(case2, array_fs_hb, kernel_size, stride, ceil_mode);
-    MAX_POOL2D_SUBCASE(case2, array_fs_db, kernel_size, stride, ceil_mode);
+    MAX_POOL2D_SUBCASE(case2, array_fs_fb, kernel_size, stride, padding, dilation, ceil_mode);
+    MAX_POOL2D_SUBCASE(case2, array_fs_hb, kernel_size, stride, padding, dilation, ceil_mode);
+    MAX_POOL2D_SUBCASE(case2, array_fs_db, kernel_size, stride, padding, dilation, ceil_mode);
 
-    MAX_POOL2D_SUBCASE(case2, array_hs_fb, kernel_size, stride, ceil_mode);
-    MAX_POOL2D_SUBCASE(case2, array_hs_hb, kernel_size, stride, ceil_mode);
-    MAX_POOL2D_SUBCASE(case2, array_hs_db, kernel_size, stride, ceil_mode);
+    MAX_POOL2D_SUBCASE(case2, array_hs_fb, kernel_size, stride, padding, dilation, ceil_mode);
+    MAX_POOL2D_SUBCASE(case2, array_hs_hb, kernel_size, stride, padding, dilation, ceil_mode);
+    MAX_POOL2D_SUBCASE(case2, array_hs_db, kernel_size, stride, padding, dilation, ceil_mode);
 
-    MAX_POOL2D_SUBCASE(case2, array_ds_fb, kernel_size, stride, ceil_mode);
-    MAX_POOL2D_SUBCASE(case2, array_ds_hb, kernel_size, stride, ceil_mode);
-    MAX_POOL2D_SUBCASE(case2, array_ds_db, kernel_size, stride, ceil_mode);
+    MAX_POOL2D_SUBCASE(case2, array_ds_fb, kernel_size, stride, padding, dilation, ceil_mode);
+    MAX_POOL2D_SUBCASE(case2, array_ds_hb, kernel_size, stride, padding, dilation, ceil_mode);
+    MAX_POOL2D_SUBCASE(case2, array_ds_db, kernel_size, stride, padding, dilation, ceil_mode);
 
-    // MAX_POOL2D_SUBCASE(case2, array_ls_fb, kernel_size, stride, ceil_mode);
-    // MAX_POOL2D_SUBCASE(case2, array_ls_hb, kernel_size, stride, ceil_mode);
-    // MAX_POOL2D_SUBCASE(case2, array_ls_db, kernel_size, stride, ceil_mode);
+    // MAX_POOL2D_SUBCASE(case2, array_ls_fb, kernel_size, stride, padding, dilation, ceil_mode);
+    // MAX_POOL2D_SUBCASE(case2, array_ls_hb, kernel_size, stride, padding, dilation, ceil_mode);
+    // MAX_POOL2D_SUBCASE(case2, array_ls_db, kernel_size, stride, padding, dilation, ceil_mode);
 }
 
 // TODO: fix for sycl kernel (opencl/cuda), remove free/malloc in kernel code
-TEST_CASE("max_pool2d(case3)" * doctest::test_suite("array::max_pool2d") * doctest::skip())
+TEST_CASE("max_pool2d(case3)" * doctest::test_suite("array::max_pool2d"))
 {
-    // MAX_POOL2D_SUBCASE(case3, array, kernel_size, stride, ceil_mode);
-    // MAX_POOL2D_SUBCASE(case3, array_a, kernel_size, stride, ceil_mode);
-    // MAX_POOL2D_SUBCASE(case3, array_f, kernel_size, stride, ceil_mode);
-    // MAX_POOL2D_SUBCASE(case3, array_h, kernel_size, stride, ceil_mode);
-    // MAX_POOL2D_SUBCASE(case3, array_d, kernel_size, stride, ceil_mode);
+    // MAX_POOL2D_SUBCASE(case3, array, kernel_size, stride, padding, dilation, ceil_mode);
+    // MAX_POOL2D_SUBCASE(case3, array_a, kernel_size, stride, padding, dilation, ceil_mode);
+    // MAX_POOL2D_SUBCASE(case3, array_f, kernel_size, stride, padding, dilation, ceil_mode);
+    // MAX_POOL2D_SUBCASE(case3, array_h, kernel_size, stride, padding, dilation, ceil_mode);
+    // MAX_POOL2D_SUBCASE(case3, array_d, kernel_size, stride, padding, dilation, ceil_mode);
 
-    // MAX_POOL2D_SUBCASE(case3, array_cs_fb, kernel_size, stride, ceil_mode);
-    // MAX_POOL2D_SUBCASE(case3, array_cs_hb, kernel_size, stride, ceil_mode);
-    // MAX_POOL2D_SUBCASE(case3, array_cs_db, kernel_size, stride, ceil_mode);
+    // MAX_POOL2D_SUBCASE(case3, array_cs_fb, kernel_size, stride, padding, dilation, ceil_mode);
+    // MAX_POOL2D_SUBCASE(case3, array_cs_hb, kernel_size, stride, padding, dilation, ceil_mode);
+    // MAX_POOL2D_SUBCASE(case3, array_cs_db, kernel_size, stride, padding, dilation, ceil_mode);
 
-    MAX_POOL2D_SUBCASE(case3, array_fs_fb, kernel_size, stride, ceil_mode);
-    MAX_POOL2D_SUBCASE(case3, array_fs_hb, kernel_size, stride, ceil_mode);
-    MAX_POOL2D_SUBCASE(case3, array_fs_db, kernel_size, stride, ceil_mode);
+    MAX_POOL2D_SUBCASE(case3, array_fs_fb, kernel_size, stride, padding, dilation, ceil_mode);
+    MAX_POOL2D_SUBCASE(case3, array_fs_hb, kernel_size, stride, padding, dilation, ceil_mode);
+    MAX_POOL2D_SUBCASE(case3, array_fs_db, kernel_size, stride, padding, dilation, ceil_mode);
 
-    MAX_POOL2D_SUBCASE(case3, array_hs_fb, kernel_size, stride, ceil_mode);
-    MAX_POOL2D_SUBCASE(case3, array_hs_hb, kernel_size, stride, ceil_mode);
-    MAX_POOL2D_SUBCASE(case3, array_hs_db, kernel_size, stride, ceil_mode);
+    MAX_POOL2D_SUBCASE(case3, array_hs_fb, kernel_size, stride, padding, dilation, ceil_mode);
+    MAX_POOL2D_SUBCASE(case3, array_hs_hb, kernel_size, stride, padding, dilation, ceil_mode);
+    MAX_POOL2D_SUBCASE(case3, array_hs_db, kernel_size, stride, padding, dilation, ceil_mode);
 
-    MAX_POOL2D_SUBCASE(case3, array_ds_fb, kernel_size, stride, ceil_mode);
-    MAX_POOL2D_SUBCASE(case3, array_ds_hb, kernel_size, stride, ceil_mode);
-    MAX_POOL2D_SUBCASE(case3, array_ds_db, kernel_size, stride, ceil_mode);
+    MAX_POOL2D_SUBCASE(case3, array_ds_fb, kernel_size, stride, padding, dilation, ceil_mode);
+    MAX_POOL2D_SUBCASE(case3, array_ds_hb, kernel_size, stride, padding, dilation, ceil_mode);
+    MAX_POOL2D_SUBCASE(case3, array_ds_db, kernel_size, stride, padding, dilation, ceil_mode);
 
-    // MAX_POOL2D_SUBCASE(case3, array_ls_fb, kernel_size, stride, ceil_mode);
-    // MAX_POOL2D_SUBCASE(case3, array_ls_hb, kernel_size, stride, ceil_mode);
-    // MAX_POOL2D_SUBCASE(case3, array_ls_db, kernel_size, stride, ceil_mode);
+    // MAX_POOL2D_SUBCASE(case3, array_ls_fb, kernel_size, stride, padding, dilation, ceil_mode);
+    // MAX_POOL2D_SUBCASE(case3, array_ls_hb, kernel_size, stride, padding, dilation, ceil_mode);
+    // MAX_POOL2D_SUBCASE(case3, array_ls_db, kernel_size, stride, padding, dilation, ceil_mode);
 }
 
 // TODO: fix for sycl kernel (opencl/cuda), remove free/malloc in kernel code
-TEST_CASE("max_pool2d(case4)" * doctest::test_suite("array::max_pool2d") * doctest::skip())
+TEST_CASE("max_pool2d(case4)" * doctest::test_suite("array::max_pool2d"))
 {
-    // MAX_POOL2D_SUBCASE(case4, array, kernel_size, stride, ceil_mode);
-    // MAX_POOL2D_SUBCASE(case4, array_a, kernel_size, stride, ceil_mode);
-    // MAX_POOL2D_SUBCASE(case4, array_f, kernel_size, stride, ceil_mode);
-    // MAX_POOL2D_SUBCASE(case4, array_h, kernel_size, stride, ceil_mode);
-    // MAX_POOL2D_SUBCASE(case4, array_d, kernel_size, stride, ceil_mode);
+    // MAX_POOL2D_SUBCASE(case4, array, kernel_size, stride, padding, dilation, ceil_mode);
+    // MAX_POOL2D_SUBCASE(case4, array_a, kernel_size, stride, padding, dilation, ceil_mode);
+    // MAX_POOL2D_SUBCASE(case4, array_f, kernel_size, stride, padding, dilation, ceil_mode);
+    // MAX_POOL2D_SUBCASE(case4, array_h, kernel_size, stride, padding, dilation, ceil_mode);
+    // MAX_POOL2D_SUBCASE(case4, array_d, kernel_size, stride, padding, dilation, ceil_mode);
 
-    // MAX_POOL2D_SUBCASE(case4, array_cs_fb, kernel_size, stride, ceil_mode);
-    // MAX_POOL2D_SUBCASE(case4, array_cs_hb, kernel_size, stride, ceil_mode);
-    // MAX_POOL2D_SUBCASE(case4, array_cs_db, kernel_size, stride, ceil_mode);
+    // MAX_POOL2D_SUBCASE(case4, array_cs_fb, kernel_size, stride, padding, dilation, ceil_mode);
+    // MAX_POOL2D_SUBCASE(case4, array_cs_hb, kernel_size, stride, padding, dilation, ceil_mode);
+    // MAX_POOL2D_SUBCASE(case4, array_cs_db, kernel_size, stride, padding, dilation, ceil_mode);
 
-    MAX_POOL2D_SUBCASE(case4, array_fs_fb, kernel_size, stride, ceil_mode);
-    MAX_POOL2D_SUBCASE(case4, array_fs_hb, kernel_size, stride, ceil_mode);
-    MAX_POOL2D_SUBCASE(case4, array_fs_db, kernel_size, stride, ceil_mode);
+    MAX_POOL2D_SUBCASE(case4, array_fs_fb, kernel_size, stride, padding, dilation, ceil_mode);
+    MAX_POOL2D_SUBCASE(case4, array_fs_hb, kernel_size, stride, padding, dilation, ceil_mode);
+    MAX_POOL2D_SUBCASE(case4, array_fs_db, kernel_size, stride, padding, dilation, ceil_mode);
 
-    MAX_POOL2D_SUBCASE(case4, array_hs_fb, kernel_size, stride, ceil_mode);
-    MAX_POOL2D_SUBCASE(case4, array_hs_hb, kernel_size, stride, ceil_mode);
-    MAX_POOL2D_SUBCASE(case4, array_hs_db, kernel_size, stride, ceil_mode);
+    MAX_POOL2D_SUBCASE(case4, array_hs_fb, kernel_size, stride, padding, dilation, ceil_mode);
+    MAX_POOL2D_SUBCASE(case4, array_hs_hb, kernel_size, stride, padding, dilation, ceil_mode);
+    MAX_POOL2D_SUBCASE(case4, array_hs_db, kernel_size, stride, padding, dilation, ceil_mode);
 
-    MAX_POOL2D_SUBCASE(case4, array_ds_fb, kernel_size, stride, ceil_mode);
-    MAX_POOL2D_SUBCASE(case4, array_ds_hb, kernel_size, stride, ceil_mode);
-    MAX_POOL2D_SUBCASE(case4, array_ds_db, kernel_size, stride, ceil_mode);
+    MAX_POOL2D_SUBCASE(case4, array_ds_fb, kernel_size, stride, padding, dilation, ceil_mode);
+    MAX_POOL2D_SUBCASE(case4, array_ds_hb, kernel_size, stride, padding, dilation, ceil_mode);
+    MAX_POOL2D_SUBCASE(case4, array_ds_db, kernel_size, stride, padding, dilation, ceil_mode);
 
-    // MAX_POOL2D_SUBCASE(case4, array_ls_fb, kernel_size, stride, ceil_mode);
-    // MAX_POOL2D_SUBCASE(case4, array_ls_hb, kernel_size, stride, ceil_mode);
-    // MAX_POOL2D_SUBCASE(case4, array_ls_db, kernel_size, stride, ceil_mode);
+    // MAX_POOL2D_SUBCASE(case4, array_ls_fb, kernel_size, stride, padding, dilation, ceil_mode);
+    // MAX_POOL2D_SUBCASE(case4, array_ls_hb, kernel_size, stride, padding, dilation, ceil_mode);
+    // MAX_POOL2D_SUBCASE(case4, array_ls_db, kernel_size, stride, padding, dilation, ceil_mode);
 }
 
 // TODO: fix for sycl kernel (opencl/cuda), remove free/malloc in kernel code
-TEST_CASE("max_pool2d(case5)" * doctest::test_suite("array::max_pool2d") * doctest::skip())
+TEST_CASE("max_pool2d(case5)" * doctest::test_suite("array::max_pool2d"))
 {
-    // MAX_POOL2D_SUBCASE(case5, array, kernel_size, stride, ceil_mode);
-    // MAX_POOL2D_SUBCASE(case5, array_a, kernel_size, stride, ceil_mode);
-    // MAX_POOL2D_SUBCASE(case5, array_f, kernel_size, stride, ceil_mode);
-    // MAX_POOL2D_SUBCASE(case5, array_h, kernel_size, stride, ceil_mode);
-    // MAX_POOL2D_SUBCASE(case5, array_d, kernel_size, stride, ceil_mode);
+    // MAX_POOL2D_SUBCASE(case5, array, kernel_size, stride, padding, dilation, ceil_mode);
+    // MAX_POOL2D_SUBCASE(case5, array_a, kernel_size, stride, padding, dilation, ceil_mode);
+    // MAX_POOL2D_SUBCASE(case5, array_f, kernel_size, stride, padding, dilation, ceil_mode);
+    // MAX_POOL2D_SUBCASE(case5, array_h, kernel_size, stride, padding, dilation, ceil_mode);
+    // MAX_POOL2D_SUBCASE(case5, array_d, kernel_size, stride, padding, dilation, ceil_mode);
 
-    // MAX_POOL2D_SUBCASE(case5, array_cs_fb, kernel_size, stride, ceil_mode);
-    // MAX_POOL2D_SUBCASE(case5, array_cs_hb, kernel_size, stride, ceil_mode);
-    // MAX_POOL2D_SUBCASE(case5, array_cs_db, kernel_size, stride, ceil_mode);
+    // MAX_POOL2D_SUBCASE(case5, array_cs_fb, kernel_size, stride, padding, dilation, ceil_mode);
+    // MAX_POOL2D_SUBCASE(case5, array_cs_hb, kernel_size, stride, padding, dilation, ceil_mode);
+    // MAX_POOL2D_SUBCASE(case5, array_cs_db, kernel_size, stride, padding, dilation, ceil_mode);
 
-    MAX_POOL2D_SUBCASE(case5, array_fs_fb, kernel_size, stride, ceil_mode);
-    MAX_POOL2D_SUBCASE(case5, array_fs_hb, kernel_size, stride, ceil_mode);
-    MAX_POOL2D_SUBCASE(case5, array_fs_db, kernel_size, stride, ceil_mode);
+    MAX_POOL2D_SUBCASE(case5, array_fs_fb, kernel_size, stride, padding, dilation, ceil_mode);
+    MAX_POOL2D_SUBCASE(case5, array_fs_hb, kernel_size, stride, padding, dilation, ceil_mode);
+    MAX_POOL2D_SUBCASE(case5, array_fs_db, kernel_size, stride, padding, dilation, ceil_mode);
 
-    MAX_POOL2D_SUBCASE(case5, array_hs_fb, kernel_size, stride, ceil_mode);
-    MAX_POOL2D_SUBCASE(case5, array_hs_hb, kernel_size, stride, ceil_mode);
-    MAX_POOL2D_SUBCASE(case5, array_hs_db, kernel_size, stride, ceil_mode);
+    MAX_POOL2D_SUBCASE(case5, array_hs_fb, kernel_size, stride, padding, dilation, ceil_mode);
+    MAX_POOL2D_SUBCASE(case5, array_hs_hb, kernel_size, stride, padding, dilation, ceil_mode);
+    MAX_POOL2D_SUBCASE(case5, array_hs_db, kernel_size, stride, padding, dilation, ceil_mode);
 
-    MAX_POOL2D_SUBCASE(case5, array_ds_fb, kernel_size, stride, ceil_mode);
-    MAX_POOL2D_SUBCASE(case5, array_ds_hb, kernel_size, stride, ceil_mode);
-    MAX_POOL2D_SUBCASE(case5, array_ds_db, kernel_size, stride, ceil_mode);
+    MAX_POOL2D_SUBCASE(case5, array_ds_fb, kernel_size, stride, padding, dilation, ceil_mode);
+    MAX_POOL2D_SUBCASE(case5, array_ds_hb, kernel_size, stride, padding, dilation, ceil_mode);
+    MAX_POOL2D_SUBCASE(case5, array_ds_db, kernel_size, stride, padding, dilation, ceil_mode);
 
-    // MAX_POOL2D_SUBCASE(case5, array_ls_fb, kernel_size, stride, ceil_mode);
-    // MAX_POOL2D_SUBCASE(case5, array_ls_hb, kernel_size, stride, ceil_mode);
-    // MAX_POOL2D_SUBCASE(case5, array_ls_db, kernel_size, stride, ceil_mode);
+    // MAX_POOL2D_SUBCASE(case5, array_ls_fb, kernel_size, stride, padding, dilation, ceil_mode);
+    // MAX_POOL2D_SUBCASE(case5, array_ls_hb, kernel_size, stride, padding, dilation, ceil_mode);
+    // MAX_POOL2D_SUBCASE(case5, array_ls_db, kernel_size, stride, padding, dilation, ceil_mode);
 }
 
 // TODO: fix for sycl kernel (opencl/cuda), remove free/malloc in kernel code
-TEST_CASE("max_pool2d(case6)" * doctest::test_suite("array::max_pool2d") * doctest::skip())
+TEST_CASE("max_pool2d(case6)" * doctest::test_suite("array::max_pool2d"))
 {
-    // MAX_POOL2D_SUBCASE(case6, array, kernel_size, stride, ceil_mode);
-    // MAX_POOL2D_SUBCASE(case6, array_a, kernel_size, stride, ceil_mode);
-    // MAX_POOL2D_SUBCASE(case6, array_f, kernel_size, stride, ceil_mode);
-    // MAX_POOL2D_SUBCASE(case6, array_h, kernel_size, stride, ceil_mode);
-    // MAX_POOL2D_SUBCASE(case6, array_d, kernel_size, stride, ceil_mode);
+    // MAX_POOL2D_SUBCASE(case6, array, kernel_size, stride, padding, dilation, ceil_mode);
+    // MAX_POOL2D_SUBCASE(case6, array_a, kernel_size, stride, padding, dilation, ceil_mode);
+    // MAX_POOL2D_SUBCASE(case6, array_f, kernel_size, stride, padding, dilation, ceil_mode);
+    // MAX_POOL2D_SUBCASE(case6, array_h, kernel_size, stride, padding, dilation, ceil_mode);
+    // MAX_POOL2D_SUBCASE(case6, array_d, kernel_size, stride, padding, dilation, ceil_mode);
 
-    // MAX_POOL2D_SUBCASE(case6, array_cs_fb, kernel_size, stride, ceil_mode);
-    // MAX_POOL2D_SUBCASE(case6, array_cs_hb, kernel_size, stride, ceil_mode);
-    // MAX_POOL2D_SUBCASE(case6, array_cs_db, kernel_size, stride, ceil_mode);
+    // MAX_POOL2D_SUBCASE(case6, array_cs_fb, kernel_size, stride, padding, dilation, ceil_mode);
+    // MAX_POOL2D_SUBCASE(case6, array_cs_hb, kernel_size, stride, padding, dilation, ceil_mode);
+    // MAX_POOL2D_SUBCASE(case6, array_cs_db, kernel_size, stride, padding, dilation, ceil_mode);
 
-    MAX_POOL2D_SUBCASE(case6, array_fs_fb, kernel_size, stride, ceil_mode);
-    MAX_POOL2D_SUBCASE(case6, array_fs_hb, kernel_size, stride, ceil_mode);
-    MAX_POOL2D_SUBCASE(case6, array_fs_db, kernel_size, stride, ceil_mode);
+    MAX_POOL2D_SUBCASE(case6, array_fs_fb, kernel_size, stride, padding, dilation, ceil_mode);
+    MAX_POOL2D_SUBCASE(case6, array_fs_hb, kernel_size, stride, padding, dilation, ceil_mode);
+    MAX_POOL2D_SUBCASE(case6, array_fs_db, kernel_size, stride, padding, dilation, ceil_mode);
 
-    MAX_POOL2D_SUBCASE(case6, array_hs_fb, kernel_size, stride, ceil_mode);
-    MAX_POOL2D_SUBCASE(case6, array_hs_hb, kernel_size, stride, ceil_mode);
-    MAX_POOL2D_SUBCASE(case6, array_hs_db, kernel_size, stride, ceil_mode);
+    MAX_POOL2D_SUBCASE(case6, array_hs_fb, kernel_size, stride, padding, dilation, ceil_mode);
+    MAX_POOL2D_SUBCASE(case6, array_hs_hb, kernel_size, stride, padding, dilation, ceil_mode);
+    MAX_POOL2D_SUBCASE(case6, array_hs_db, kernel_size, stride, padding, dilation, ceil_mode);
 
-    MAX_POOL2D_SUBCASE(case6, array_ds_fb, kernel_size, stride, ceil_mode);
-    MAX_POOL2D_SUBCASE(case6, array_ds_hb, kernel_size, stride, ceil_mode);
-    MAX_POOL2D_SUBCASE(case6, array_ds_db, kernel_size, stride, ceil_mode);
+    MAX_POOL2D_SUBCASE(case6, array_ds_fb, kernel_size, stride, padding, dilation, ceil_mode);
+    MAX_POOL2D_SUBCASE(case6, array_ds_hb, kernel_size, stride, padding, dilation, ceil_mode);
+    MAX_POOL2D_SUBCASE(case6, array_ds_db, kernel_size, stride, padding, dilation, ceil_mode);
 
-    // MAX_POOL2D_SUBCASE(case6, array_ls_fb, kernel_size, stride, ceil_mode);
-    // MAX_POOL2D_SUBCASE(case6, array_ls_hb, kernel_size, stride, ceil_mode);
-    // MAX_POOL2D_SUBCASE(case6, array_ls_db, kernel_size, stride, ceil_mode);
+    // MAX_POOL2D_SUBCASE(case6, array_ls_fb, kernel_size, stride, padding, dilation, ceil_mode);
+    // MAX_POOL2D_SUBCASE(case6, array_ls_hb, kernel_size, stride, padding, dilation, ceil_mode);
+    // MAX_POOL2D_SUBCASE(case6, array_ls_db, kernel_size, stride, padding, dilation, ceil_mode);
 }
 
 // TODO: fix for sycl kernel (opencl/cuda), remove free/malloc in kernel code
-TEST_CASE("max_pool2d(case7)" * doctest::test_suite("array::max_pool2d") * doctest::skip())
+TEST_CASE("max_pool2d(case7)" * doctest::test_suite("array::max_pool2d"))
 {
-    // MAX_POOL2D_SUBCASE(case7, array, kernel_size, stride, ceil_mode);
-    // MAX_POOL2D_SUBCASE(case7, array_a, kernel_size, stride, ceil_mode);
-    // MAX_POOL2D_SUBCASE(case7, array_f, kernel_size, stride, ceil_mode);
-    // MAX_POOL2D_SUBCASE(case7, array_h, kernel_size, stride, ceil_mode);
-    // MAX_POOL2D_SUBCASE(case7, array_d, kernel_size, stride, ceil_mode);
+    // MAX_POOL2D_SUBCASE(case7, array, kernel_size, stride, padding, dilation, ceil_mode);
+    // MAX_POOL2D_SUBCASE(case7, array_a, kernel_size, stride, padding, dilation, ceil_mode);
+    // MAX_POOL2D_SUBCASE(case7, array_f, kernel_size, stride, padding, dilation, ceil_mode);
+    // MAX_POOL2D_SUBCASE(case7, array_h, kernel_size, stride, padding, dilation, ceil_mode);
+    // MAX_POOL2D_SUBCASE(case7, array_d, kernel_size, stride, padding, dilation, ceil_mode);
 
-    // MAX_POOL2D_SUBCASE(case7, array_cs_fb, kernel_size, stride, ceil_mode);
-    // MAX_POOL2D_SUBCASE(case7, array_cs_hb, kernel_size, stride, ceil_mode);
-    // MAX_POOL2D_SUBCASE(case7, array_cs_db, kernel_size, stride, ceil_mode);
+    // MAX_POOL2D_SUBCASE(case7, array_cs_fb, kernel_size, stride, padding, dilation, ceil_mode);
+    // MAX_POOL2D_SUBCASE(case7, array_cs_hb, kernel_size, stride, padding, dilation, ceil_mode);
+    // MAX_POOL2D_SUBCASE(case7, array_cs_db, kernel_size, stride, padding, dilation, ceil_mode);
 
-    MAX_POOL2D_SUBCASE(case7, array_fs_fb, kernel_size, stride, ceil_mode);
-    MAX_POOL2D_SUBCASE(case7, array_fs_hb, kernel_size, stride, ceil_mode);
-    MAX_POOL2D_SUBCASE(case7, array_fs_db, kernel_size, stride, ceil_mode);
+    MAX_POOL2D_SUBCASE(case7, array_fs_fb, kernel_size, stride, padding, dilation, ceil_mode);
+    MAX_POOL2D_SUBCASE(case7, array_fs_hb, kernel_size, stride, padding, dilation, ceil_mode);
+    MAX_POOL2D_SUBCASE(case7, array_fs_db, kernel_size, stride, padding, dilation, ceil_mode);
 
-    MAX_POOL2D_SUBCASE(case7, array_hs_fb, kernel_size, stride, ceil_mode);
-    MAX_POOL2D_SUBCASE(case7, array_hs_hb, kernel_size, stride, ceil_mode);
-    MAX_POOL2D_SUBCASE(case7, array_hs_db, kernel_size, stride, ceil_mode);
+    MAX_POOL2D_SUBCASE(case7, array_hs_fb, kernel_size, stride, padding, dilation, ceil_mode);
+    MAX_POOL2D_SUBCASE(case7, array_hs_hb, kernel_size, stride, padding, dilation, ceil_mode);
+    MAX_POOL2D_SUBCASE(case7, array_hs_db, kernel_size, stride, padding, dilation, ceil_mode);
 
-    MAX_POOL2D_SUBCASE(case7, array_ds_fb, kernel_size, stride, ceil_mode);
-    MAX_POOL2D_SUBCASE(case7, array_ds_hb, kernel_size, stride, ceil_mode);
-    MAX_POOL2D_SUBCASE(case7, array_ds_db, kernel_size, stride, ceil_mode);
+    MAX_POOL2D_SUBCASE(case7, array_ds_fb, kernel_size, stride, padding, dilation, ceil_mode);
+    MAX_POOL2D_SUBCASE(case7, array_ds_hb, kernel_size, stride, padding, dilation, ceil_mode);
+    MAX_POOL2D_SUBCASE(case7, array_ds_db, kernel_size, stride, padding, dilation, ceil_mode);
 
-    // MAX_POOL2D_SUBCASE(case7, array_ls_fb, kernel_size, stride, ceil_mode);
-    // MAX_POOL2D_SUBCASE(case7, array_ls_hb, kernel_size, stride, ceil_mode);
-    // MAX_POOL2D_SUBCASE(case7, array_ls_db, kernel_size, stride, ceil_mode);
+    // MAX_POOL2D_SUBCASE(case7, array_ls_fb, kernel_size, stride, padding, dilation, ceil_mode);
+    // MAX_POOL2D_SUBCASE(case7, array_ls_hb, kernel_size, stride, padding, dilation, ceil_mode);
+    // MAX_POOL2D_SUBCASE(case7, array_ls_db, kernel_size, stride, padding, dilation, ceil_mode);
 }
 
 // TODO: fix for sycl kernel (opencl/cuda), remove free/malloc in kernel code
-TEST_CASE("max_pool2d(case8)" * doctest::test_suite("array::max_pool2d") * doctest::skip())
+TEST_CASE("max_pool2d(case8)" * doctest::test_suite("array::max_pool2d"))
 {
-    // MAX_POOL2D_SUBCASE(case8, array, kernel_size, stride, ceil_mode);
-    // MAX_POOL2D_SUBCASE(case8, array_a, kernel_size, stride, ceil_mode);
-    // MAX_POOL2D_SUBCASE(case8, array_f, kernel_size, stride, ceil_mode);
-    // MAX_POOL2D_SUBCASE(case8, array_h, kernel_size, stride, ceil_mode);
-    // MAX_POOL2D_SUBCASE(case8, array_d, kernel_size, stride, ceil_mode);
+    // MAX_POOL2D_SUBCASE(case8, array, kernel_size, stride, padding, dilation, ceil_mode);
+    // MAX_POOL2D_SUBCASE(case8, array_a, kernel_size, stride, padding, dilation, ceil_mode);
+    // MAX_POOL2D_SUBCASE(case8, array_f, kernel_size, stride, padding, dilation, ceil_mode);
+    // MAX_POOL2D_SUBCASE(case8, array_h, kernel_size, stride, padding, dilation, ceil_mode);
+    // MAX_POOL2D_SUBCASE(case8, array_d, kernel_size, stride, padding, dilation, ceil_mode);
 
-    // MAX_POOL2D_SUBCASE(case8, array_cs_fb, kernel_size, stride, ceil_mode);
-    // MAX_POOL2D_SUBCASE(case8, array_cs_hb, kernel_size, stride, ceil_mode);
-    // MAX_POOL2D_SUBCASE(case8, array_cs_db, kernel_size, stride, ceil_mode);
+    // MAX_POOL2D_SUBCASE(case8, array_cs_fb, kernel_size, stride, padding, dilation, ceil_mode);
+    // MAX_POOL2D_SUBCASE(case8, array_cs_hb, kernel_size, stride, padding, dilation, ceil_mode);
+    // MAX_POOL2D_SUBCASE(case8, array_cs_db, kernel_size, stride, padding, dilation, ceil_mode);
 
-    MAX_POOL2D_SUBCASE(case8, array_fs_fb, kernel_size, stride, ceil_mode);
-    MAX_POOL2D_SUBCASE(case8, array_fs_hb, kernel_size, stride, ceil_mode);
-    MAX_POOL2D_SUBCASE(case8, array_fs_db, kernel_size, stride, ceil_mode);
+    MAX_POOL2D_SUBCASE(case8, array_fs_fb, kernel_size, stride, padding, dilation, ceil_mode);
+    MAX_POOL2D_SUBCASE(case8, array_fs_hb, kernel_size, stride, padding, dilation, ceil_mode);
+    MAX_POOL2D_SUBCASE(case8, array_fs_db, kernel_size, stride, padding, dilation, ceil_mode);
 
-    MAX_POOL2D_SUBCASE(case8, array_hs_fb, kernel_size, stride, ceil_mode);
-    MAX_POOL2D_SUBCASE(case8, array_hs_hb, kernel_size, stride, ceil_mode);
-    MAX_POOL2D_SUBCASE(case8, array_hs_db, kernel_size, stride, ceil_mode);
+    MAX_POOL2D_SUBCASE(case8, array_hs_fb, kernel_size, stride, padding, dilation, ceil_mode);
+    MAX_POOL2D_SUBCASE(case8, array_hs_hb, kernel_size, stride, padding, dilation, ceil_mode);
+    MAX_POOL2D_SUBCASE(case8, array_hs_db, kernel_size, stride, padding, dilation, ceil_mode);
 
-    MAX_POOL2D_SUBCASE(case8, array_ds_fb, kernel_size, stride, ceil_mode);
-    MAX_POOL2D_SUBCASE(case8, array_ds_hb, kernel_size, stride, ceil_mode);
-    MAX_POOL2D_SUBCASE(case8, array_ds_db, kernel_size, stride, ceil_mode);
+    MAX_POOL2D_SUBCASE(case8, array_ds_fb, kernel_size, stride, padding, dilation, ceil_mode);
+    MAX_POOL2D_SUBCASE(case8, array_ds_hb, kernel_size, stride, padding, dilation, ceil_mode);
+    MAX_POOL2D_SUBCASE(case8, array_ds_db, kernel_size, stride, padding, dilation, ceil_mode);
 
-    // MAX_POOL2D_SUBCASE(case8, array_ls_fb, kernel_size, stride, ceil_mode);
-    // MAX_POOL2D_SUBCASE(case8, array_ls_hb, kernel_size, stride, ceil_mode);
-    // MAX_POOL2D_SUBCASE(case8, array_ls_db, kernel_size, stride, ceil_mode);
+    // MAX_POOL2D_SUBCASE(case8, array_ls_fb, kernel_size, stride, padding, dilation, ceil_mode);
+    // MAX_POOL2D_SUBCASE(case8, array_ls_hb, kernel_size, stride, padding, dilation, ceil_mode);
+    // MAX_POOL2D_SUBCASE(case8, array_ls_db, kernel_size, stride, padding, dilation, ceil_mode);
 }
 
 // TODO: fix for sycl kernel (opencl/cuda), remove free/malloc in kernel code
-TEST_CASE("max_pool2d(case9)" * doctest::test_suite("array::max_pool2d") * doctest::skip())
+TEST_CASE("max_pool2d(case9)" * doctest::test_suite("array::max_pool2d"))
 {
-    // MAX_POOL2D_SUBCASE(case9, array, kernel_size, stride, ceil_mode);
-    // MAX_POOL2D_SUBCASE(case9, array_a, kernel_size, stride, ceil_mode);
-    // MAX_POOL2D_SUBCASE(case9, array_f, kernel_size, stride, ceil_mode);
-    // MAX_POOL2D_SUBCASE(case9, array_h, kernel_size, stride, ceil_mode);
-    // MAX_POOL2D_SUBCASE(case9, array_d, kernel_size, stride, ceil_mode);
+    // MAX_POOL2D_SUBCASE(case9, array, kernel_size, stride, padding, dilation, ceil_mode);
+    // MAX_POOL2D_SUBCASE(case9, array_a, kernel_size, stride, padding, dilation, ceil_mode);
+    // MAX_POOL2D_SUBCASE(case9, array_f, kernel_size, stride, padding, dilation, ceil_mode);
+    // MAX_POOL2D_SUBCASE(case9, array_h, kernel_size, stride, padding, dilation, ceil_mode);
+    // MAX_POOL2D_SUBCASE(case9, array_d, kernel_size, stride, padding, dilation, ceil_mode);
 
-    // MAX_POOL2D_SUBCASE(case9, array_cs_fb, kernel_size, stride, ceil_mode);
-    // MAX_POOL2D_SUBCASE(case9, array_cs_hb, kernel_size, stride, ceil_mode);
-    // MAX_POOL2D_SUBCASE(case9, array_cs_db, kernel_size, stride, ceil_mode);
+    // MAX_POOL2D_SUBCASE(case9, array_cs_fb, kernel_size, stride, padding, dilation, ceil_mode);
+    // MAX_POOL2D_SUBCASE(case9, array_cs_hb, kernel_size, stride, padding, dilation, ceil_mode);
+    // MAX_POOL2D_SUBCASE(case9, array_cs_db, kernel_size, stride, padding, dilation, ceil_mode);
 
-    MAX_POOL2D_SUBCASE(case9, array_fs_fb, kernel_size, stride, ceil_mode);
-    MAX_POOL2D_SUBCASE(case9, array_fs_hb, kernel_size, stride, ceil_mode);
-    MAX_POOL2D_SUBCASE(case9, array_fs_db, kernel_size, stride, ceil_mode);
+    MAX_POOL2D_SUBCASE(case9, array_fs_fb, kernel_size, stride, padding, dilation, ceil_mode);
+    MAX_POOL2D_SUBCASE(case9, array_fs_hb, kernel_size, stride, padding, dilation, ceil_mode);
+    MAX_POOL2D_SUBCASE(case9, array_fs_db, kernel_size, stride, padding, dilation, ceil_mode);
 
-    MAX_POOL2D_SUBCASE(case9, array_hs_fb, kernel_size, stride, ceil_mode);
-    MAX_POOL2D_SUBCASE(case9, array_hs_hb, kernel_size, stride, ceil_mode);
-    MAX_POOL2D_SUBCASE(case9, array_hs_db, kernel_size, stride, ceil_mode);
+    MAX_POOL2D_SUBCASE(case9, array_hs_fb, kernel_size, stride, padding, dilation, ceil_mode);
+    MAX_POOL2D_SUBCASE(case9, array_hs_hb, kernel_size, stride, padding, dilation, ceil_mode);
+    MAX_POOL2D_SUBCASE(case9, array_hs_db, kernel_size, stride, padding, dilation, ceil_mode);
 
-    MAX_POOL2D_SUBCASE(case9, array_ds_fb, kernel_size, stride, ceil_mode);
-    MAX_POOL2D_SUBCASE(case9, array_ds_hb, kernel_size, stride, ceil_mode);
-    MAX_POOL2D_SUBCASE(case9, array_ds_db, kernel_size, stride, ceil_mode);
+    MAX_POOL2D_SUBCASE(case9, array_ds_fb, kernel_size, stride, padding, dilation, ceil_mode);
+    MAX_POOL2D_SUBCASE(case9, array_ds_hb, kernel_size, stride, padding, dilation, ceil_mode);
+    MAX_POOL2D_SUBCASE(case9, array_ds_db, kernel_size, stride, padding, dilation, ceil_mode);
 
-    // MAX_POOL2D_SUBCASE(case9, array_ls_fb, kernel_size, stride, ceil_mode);
-    // MAX_POOL2D_SUBCASE(case9, array_ls_hb, kernel_size, stride, ceil_mode);
-    // MAX_POOL2D_SUBCASE(case9, array_ls_db, kernel_size, stride, ceil_mode);
+    // MAX_POOL2D_SUBCASE(case9, array_ls_fb, kernel_size, stride, padding, dilation, ceil_mode);
+    // MAX_POOL2D_SUBCASE(case9, array_ls_hb, kernel_size, stride, padding, dilation, ceil_mode);
+    // MAX_POOL2D_SUBCASE(case9, array_ls_db, kernel_size, stride, padding, dilation, ceil_mode);
 }
 
 // TODO: fix for sycl kernel (opencl/cuda), remove free/malloc in kernel code
-TEST_CASE("max_pool2d(case10)" * doctest::test_suite("array::max_pool2d") * doctest::skip())
+TEST_CASE("max_pool2d(case10)" * doctest::test_suite("array::max_pool2d"))
 {
-    // MAX_POOL2D_SUBCASE(case10, array, kernel_size, stride, ceil_mode);
-    // MAX_POOL2D_SUBCASE(case10, array_a, kernel_size, stride, ceil_mode);
-    // MAX_POOL2D_SUBCASE(case10, array_f, kernel_size, stride, ceil_mode);
-    // MAX_POOL2D_SUBCASE(case10, array_h, kernel_size, stride, ceil_mode);
-    // MAX_POOL2D_SUBCASE(case10, array_d, kernel_size, stride, ceil_mode);
+    // MAX_POOL2D_SUBCASE(case10, array, kernel_size, stride, padding, dilation, ceil_mode);
+    // MAX_POOL2D_SUBCASE(case10, array_a, kernel_size, stride, padding, dilation, ceil_mode);
+    // MAX_POOL2D_SUBCASE(case10, array_f, kernel_size, stride, padding, dilation, ceil_mode);
+    // MAX_POOL2D_SUBCASE(case10, array_h, kernel_size, stride, padding, dilation, ceil_mode);
+    // MAX_POOL2D_SUBCASE(case10, array_d, kernel_size, stride, padding, dilation, ceil_mode);
 
-    // MAX_POOL2D_SUBCASE(case10, array_cs_fb, kernel_size, stride, ceil_mode);
-    // MAX_POOL2D_SUBCASE(case10, array_cs_hb, kernel_size, stride, ceil_mode);
-    // MAX_POOL2D_SUBCASE(case10, array_cs_db, kernel_size, stride, ceil_mode);
+    // MAX_POOL2D_SUBCASE(case10, array_cs_fb, kernel_size, stride, padding, dilation, ceil_mode);
+    // MAX_POOL2D_SUBCASE(case10, array_cs_hb, kernel_size, stride, padding, dilation, ceil_mode);
+    // MAX_POOL2D_SUBCASE(case10, array_cs_db, kernel_size, stride, padding, dilation, ceil_mode);
 
-    MAX_POOL2D_SUBCASE(case10, array_fs_fb, kernel_size, stride, ceil_mode);
-    MAX_POOL2D_SUBCASE(case10, array_fs_hb, kernel_size, stride, ceil_mode);
-    MAX_POOL2D_SUBCASE(case10, array_fs_db, kernel_size, stride, ceil_mode);
+    MAX_POOL2D_SUBCASE(case10, array_fs_fb, kernel_size, stride, padding, dilation, ceil_mode);
+    MAX_POOL2D_SUBCASE(case10, array_fs_hb, kernel_size, stride, padding, dilation, ceil_mode);
+    MAX_POOL2D_SUBCASE(case10, array_fs_db, kernel_size, stride, padding, dilation, ceil_mode);
 
-    MAX_POOL2D_SUBCASE(case10, array_hs_fb, kernel_size, stride, ceil_mode);
-    MAX_POOL2D_SUBCASE(case10, array_hs_hb, kernel_size, stride, ceil_mode);
-    MAX_POOL2D_SUBCASE(case10, array_hs_db, kernel_size, stride, ceil_mode);
+    MAX_POOL2D_SUBCASE(case10, array_hs_fb, kernel_size, stride, padding, dilation, ceil_mode);
+    MAX_POOL2D_SUBCASE(case10, array_hs_hb, kernel_size, stride, padding, dilation, ceil_mode);
+    MAX_POOL2D_SUBCASE(case10, array_hs_db, kernel_size, stride, padding, dilation, ceil_mode);
 
-    MAX_POOL2D_SUBCASE(case10, array_ds_fb, kernel_size, stride, ceil_mode);
-    MAX_POOL2D_SUBCASE(case10, array_ds_hb, kernel_size, stride, ceil_mode);
-    MAX_POOL2D_SUBCASE(case10, array_ds_db, kernel_size, stride, ceil_mode);
+    MAX_POOL2D_SUBCASE(case10, array_ds_fb, kernel_size, stride, padding, dilation, ceil_mode);
+    MAX_POOL2D_SUBCASE(case10, array_ds_hb, kernel_size, stride, padding, dilation, ceil_mode);
+    MAX_POOL2D_SUBCASE(case10, array_ds_db, kernel_size, stride, padding, dilation, ceil_mode);
 
-    // MAX_POOL2D_SUBCASE(case10, array_ls_fb, kernel_size, stride, ceil_mode);
-    // MAX_POOL2D_SUBCASE(case10, array_ls_hb, kernel_size, stride, ceil_mode);
-    // MAX_POOL2D_SUBCASE(case10, array_ls_db, kernel_size, stride, ceil_mode);
+    // MAX_POOL2D_SUBCASE(case10, array_ls_fb, kernel_size, stride, padding, dilation, ceil_mode);
+    // MAX_POOL2D_SUBCASE(case10, array_ls_hb, kernel_size, stride, padding, dilation, ceil_mode);
+    // MAX_POOL2D_SUBCASE(case10, array_ls_db, kernel_size, stride, padding, dilation, ceil_mode);
 }
 
 //////////////////////////////////////////////////////////////////////////////////
 
 // TODO: fix for sycl kernel (opencl/cuda), remove free/malloc in kernel code
-TEST_CASE("avg_pool2d(case1)" * doctest::test_suite("array::avg_pool2d") * doctest::skip())
+TEST_CASE("avg_pool2d(case1)" * doctest::test_suite("array::avg_pool2d"))
 {
-    // AVG_POOL2D_SUBCASE(case1, array, kernel_size, stride, ceil_mode);
-    // AVG_POOL2D_SUBCASE(case1, array_a, kernel_size, stride, ceil_mode);
-    // AVG_POOL2D_SUBCASE(case1, array_f, kernel_size, stride, ceil_mode);
-    // AVG_POOL2D_SUBCASE(case1, array_h, kernel_size, stride, ceil_mode);
-    // AVG_POOL2D_SUBCASE(case1, array_d, kernel_size, stride, ceil_mode);
+    // AVG_POOL2D_SUBCASE(case1, array, kernel_size, stride, padding, dilation, ceil_mode);
+    // AVG_POOL2D_SUBCASE(case1, array_a, kernel_size, stride, padding, dilation, ceil_mode);
+    // AVG_POOL2D_SUBCASE(case1, array_f, kernel_size, stride, padding, dilation, ceil_mode);
+    // AVG_POOL2D_SUBCASE(case1, array_h, kernel_size, stride, padding, dilation, ceil_mode);
+    // AVG_POOL2D_SUBCASE(case1, array_d, kernel_size, stride, padding, dilation, ceil_mode);
 
-    // AVG_POOL2D_SUBCASE(case1, array_cs_fb, kernel_size, stride, ceil_mode);
-    // AVG_POOL2D_SUBCASE(case1, array_cs_hb, kernel_size, stride, ceil_mode);
-    // AVG_POOL2D_SUBCASE(case1, array_cs_db, kernel_size, stride, ceil_mode);
+    // AVG_POOL2D_SUBCASE(case1, array_cs_fb, kernel_size, stride, padding, dilation, ceil_mode);
+    // AVG_POOL2D_SUBCASE(case1, array_cs_hb, kernel_size, stride, padding, dilation, ceil_mode);
+    // AVG_POOL2D_SUBCASE(case1, array_cs_db, kernel_size, stride, padding, dilation, ceil_mode);
 
-    AVG_POOL2D_SUBCASE(case1, array_fs_fb, kernel_size, stride, ceil_mode);
-    AVG_POOL2D_SUBCASE(case1, array_fs_hb, kernel_size, stride, ceil_mode);
-    AVG_POOL2D_SUBCASE(case1, array_fs_db, kernel_size, stride, ceil_mode);
+    AVG_POOL2D_SUBCASE(case1, array_fs_fb, kernel_size, stride, padding, dilation, ceil_mode);
+    AVG_POOL2D_SUBCASE(case1, array_fs_hb, kernel_size, stride, padding, dilation, ceil_mode);
+    AVG_POOL2D_SUBCASE(case1, array_fs_db, kernel_size, stride, padding, dilation, ceil_mode);
 
-    AVG_POOL2D_SUBCASE(case1, array_hs_fb, kernel_size, stride, ceil_mode);
-    AVG_POOL2D_SUBCASE(case1, array_hs_hb, kernel_size, stride, ceil_mode);
-    AVG_POOL2D_SUBCASE(case1, array_hs_db, kernel_size, stride, ceil_mode);
+    AVG_POOL2D_SUBCASE(case1, array_hs_fb, kernel_size, stride, padding, dilation, ceil_mode);
+    AVG_POOL2D_SUBCASE(case1, array_hs_hb, kernel_size, stride, padding, dilation, ceil_mode);
+    AVG_POOL2D_SUBCASE(case1, array_hs_db, kernel_size, stride, padding, dilation, ceil_mode);
 
-    AVG_POOL2D_SUBCASE(case1, array_ds_fb, kernel_size, stride, ceil_mode);
-    AVG_POOL2D_SUBCASE(case1, array_ds_hb, kernel_size, stride, ceil_mode);
-    AVG_POOL2D_SUBCASE(case1, array_ds_db, kernel_size, stride, ceil_mode);
+    AVG_POOL2D_SUBCASE(case1, array_ds_fb, kernel_size, stride, padding, dilation, ceil_mode);
+    AVG_POOL2D_SUBCASE(case1, array_ds_hb, kernel_size, stride, padding, dilation, ceil_mode);
+    AVG_POOL2D_SUBCASE(case1, array_ds_db, kernel_size, stride, padding, dilation, ceil_mode);
 
-    // AVG_POOL2D_SUBCASE(case1, array_ls_fb, kernel_size, stride, ceil_mode);
-    // AVG_POOL2D_SUBCASE(case1, array_ls_hb, kernel_size, stride, ceil_mode);
-    // AVG_POOL2D_SUBCASE(case1, array_ls_db, kernel_size, stride, ceil_mode);
+    // AVG_POOL2D_SUBCASE(case1, array_ls_fb, kernel_size, stride, padding, dilation, ceil_mode);
+    // AVG_POOL2D_SUBCASE(case1, array_ls_hb, kernel_size, stride, padding, dilation, ceil_mode);
+    // AVG_POOL2D_SUBCASE(case1, array_ls_db, kernel_size, stride, padding, dilation, ceil_mode);
 }
 
 // TODO: fix for sycl kernel (opencl/cuda), remove free/malloc in kernel code
-TEST_CASE("avg_pool2d(case2)" * doctest::test_suite("array::avg_pool2d") * doctest::skip())
+TEST_CASE("avg_pool2d(case2)" * doctest::test_suite("array::avg_pool2d"))
 {
-    // AVG_POOL2D_SUBCASE(case2, array, kernel_size, stride, ceil_mode);
-    // AVG_POOL2D_SUBCASE(case2, array_a, kernel_size, stride, ceil_mode);
-    // AVG_POOL2D_SUBCASE(case2, array_f, kernel_size, stride, ceil_mode);
-    // AVG_POOL2D_SUBCASE(case2, array_h, kernel_size, stride, ceil_mode);
-    // AVG_POOL2D_SUBCASE(case2, array_d, kernel_size, stride, ceil_mode);
+    // AVG_POOL2D_SUBCASE(case2, array, kernel_size, stride, padding, dilation, ceil_mode);
+    // AVG_POOL2D_SUBCASE(case2, array_a, kernel_size, stride, padding, dilation, ceil_mode);
+    // AVG_POOL2D_SUBCASE(case2, array_f, kernel_size, stride, padding, dilation, ceil_mode);
+    // AVG_POOL2D_SUBCASE(case2, array_h, kernel_size, stride, padding, dilation, ceil_mode);
+    // AVG_POOL2D_SUBCASE(case2, array_d, kernel_size, stride, padding, dilation, ceil_mode);
 
-    // AVG_POOL2D_SUBCASE(case2, array_cs_fb, kernel_size, stride, ceil_mode);
-    // AVG_POOL2D_SUBCASE(case2, array_cs_hb, kernel_size, stride, ceil_mode);
-    // AVG_POOL2D_SUBCASE(case2, array_cs_db, kernel_size, stride, ceil_mode);
+    // AVG_POOL2D_SUBCASE(case2, array_cs_fb, kernel_size, stride, padding, dilation, ceil_mode);
+    // AVG_POOL2D_SUBCASE(case2, array_cs_hb, kernel_size, stride, padding, dilation, ceil_mode);
+    // AVG_POOL2D_SUBCASE(case2, array_cs_db, kernel_size, stride, padding, dilation, ceil_mode);
 
-    AVG_POOL2D_SUBCASE(case2, array_fs_fb, kernel_size, stride, ceil_mode);
-    AVG_POOL2D_SUBCASE(case2, array_fs_hb, kernel_size, stride, ceil_mode);
-    AVG_POOL2D_SUBCASE(case2, array_fs_db, kernel_size, stride, ceil_mode);
+    AVG_POOL2D_SUBCASE(case2, array_fs_fb, kernel_size, stride, padding, dilation, ceil_mode);
+    AVG_POOL2D_SUBCASE(case2, array_fs_hb, kernel_size, stride, padding, dilation, ceil_mode);
+    AVG_POOL2D_SUBCASE(case2, array_fs_db, kernel_size, stride, padding, dilation, ceil_mode);
 
-    AVG_POOL2D_SUBCASE(case2, array_hs_fb, kernel_size, stride, ceil_mode);
-    AVG_POOL2D_SUBCASE(case2, array_hs_hb, kernel_size, stride, ceil_mode);
-    AVG_POOL2D_SUBCASE(case2, array_hs_db, kernel_size, stride, ceil_mode);
+    AVG_POOL2D_SUBCASE(case2, array_hs_fb, kernel_size, stride, padding, dilation, ceil_mode);
+    AVG_POOL2D_SUBCASE(case2, array_hs_hb, kernel_size, stride, padding, dilation, ceil_mode);
+    AVG_POOL2D_SUBCASE(case2, array_hs_db, kernel_size, stride, padding, dilation, ceil_mode);
 
-    AVG_POOL2D_SUBCASE(case2, array_ds_fb, kernel_size, stride, ceil_mode);
-    AVG_POOL2D_SUBCASE(case2, array_ds_hb, kernel_size, stride, ceil_mode);
-    AVG_POOL2D_SUBCASE(case2, array_ds_db, kernel_size, stride, ceil_mode);
+    AVG_POOL2D_SUBCASE(case2, array_ds_fb, kernel_size, stride, padding, dilation, ceil_mode);
+    AVG_POOL2D_SUBCASE(case2, array_ds_hb, kernel_size, stride, padding, dilation, ceil_mode);
+    AVG_POOL2D_SUBCASE(case2, array_ds_db, kernel_size, stride, padding, dilation, ceil_mode);
 
-    // AVG_POOL2D_SUBCASE(case2, array_ls_fb, kernel_size, stride, ceil_mode);
-    // AVG_POOL2D_SUBCASE(case2, array_ls_hb, kernel_size, stride, ceil_mode);
-    // AVG_POOL2D_SUBCASE(case2, array_ls_db, kernel_size, stride, ceil_mode);
+    // AVG_POOL2D_SUBCASE(case2, array_ls_fb, kernel_size, stride, padding, dilation, ceil_mode);
+    // AVG_POOL2D_SUBCASE(case2, array_ls_hb, kernel_size, stride, padding, dilation, ceil_mode);
+    // AVG_POOL2D_SUBCASE(case2, array_ls_db, kernel_size, stride, padding, dilation, ceil_mode);
 }
 
 // TODO: fix for sycl kernel (opencl/cuda), remove free/malloc in kernel code
-TEST_CASE("avg_pool2d(case3)" * doctest::test_suite("array::avg_pool2d") * doctest::skip())
+TEST_CASE("avg_pool2d(case3)" * doctest::test_suite("array::avg_pool2d"))
 {
-    // AVG_POOL2D_SUBCASE(case3, array, kernel_size, stride, ceil_mode);
-    // AVG_POOL2D_SUBCASE(case3, array_a, kernel_size, stride, ceil_mode);
-    // AVG_POOL2D_SUBCASE(case3, array_f, kernel_size, stride, ceil_mode);
-    // AVG_POOL2D_SUBCASE(case3, array_h, kernel_size, stride, ceil_mode);
-    // AVG_POOL2D_SUBCASE(case3, array_d, kernel_size, stride, ceil_mode);
+    // AVG_POOL2D_SUBCASE(case3, array, kernel_size, stride, padding, dilation, ceil_mode);
+    // AVG_POOL2D_SUBCASE(case3, array_a, kernel_size, stride, padding, dilation, ceil_mode);
+    // AVG_POOL2D_SUBCASE(case3, array_f, kernel_size, stride, padding, dilation, ceil_mode);
+    // AVG_POOL2D_SUBCASE(case3, array_h, kernel_size, stride, padding, dilation, ceil_mode);
+    // AVG_POOL2D_SUBCASE(case3, array_d, kernel_size, stride, padding, dilation, ceil_mode);
 
-    // AVG_POOL2D_SUBCASE(case3, array_cs_fb, kernel_size, stride, ceil_mode);
-    // AVG_POOL2D_SUBCASE(case3, array_cs_hb, kernel_size, stride, ceil_mode);
-    // AVG_POOL2D_SUBCASE(case3, array_cs_db, kernel_size, stride, ceil_mode);
+    // AVG_POOL2D_SUBCASE(case3, array_cs_fb, kernel_size, stride, padding, dilation, ceil_mode);
+    // AVG_POOL2D_SUBCASE(case3, array_cs_hb, kernel_size, stride, padding, dilation, ceil_mode);
+    // AVG_POOL2D_SUBCASE(case3, array_cs_db, kernel_size, stride, padding, dilation, ceil_mode);
 
-    AVG_POOL2D_SUBCASE(case3, array_fs_fb, kernel_size, stride, ceil_mode);
-    AVG_POOL2D_SUBCASE(case3, array_fs_hb, kernel_size, stride, ceil_mode);
-    AVG_POOL2D_SUBCASE(case3, array_fs_db, kernel_size, stride, ceil_mode);
+    AVG_POOL2D_SUBCASE(case3, array_fs_fb, kernel_size, stride, padding, dilation, ceil_mode);
+    AVG_POOL2D_SUBCASE(case3, array_fs_hb, kernel_size, stride, padding, dilation, ceil_mode);
+    AVG_POOL2D_SUBCASE(case3, array_fs_db, kernel_size, stride, padding, dilation, ceil_mode);
 
-    AVG_POOL2D_SUBCASE(case3, array_hs_fb, kernel_size, stride, ceil_mode);
-    AVG_POOL2D_SUBCASE(case3, array_hs_hb, kernel_size, stride, ceil_mode);
-    AVG_POOL2D_SUBCASE(case3, array_hs_db, kernel_size, stride, ceil_mode);
+    AVG_POOL2D_SUBCASE(case3, array_hs_fb, kernel_size, stride, padding, dilation, ceil_mode);
+    AVG_POOL2D_SUBCASE(case3, array_hs_hb, kernel_size, stride, padding, dilation, ceil_mode);
+    AVG_POOL2D_SUBCASE(case3, array_hs_db, kernel_size, stride, padding, dilation, ceil_mode);
 
-    AVG_POOL2D_SUBCASE(case3, array_ds_fb, kernel_size, stride, ceil_mode);
-    AVG_POOL2D_SUBCASE(case3, array_ds_hb, kernel_size, stride, ceil_mode);
-    AVG_POOL2D_SUBCASE(case3, array_ds_db, kernel_size, stride, ceil_mode);
+    AVG_POOL2D_SUBCASE(case3, array_ds_fb, kernel_size, stride, padding, dilation, ceil_mode);
+    AVG_POOL2D_SUBCASE(case3, array_ds_hb, kernel_size, stride, padding, dilation, ceil_mode);
+    AVG_POOL2D_SUBCASE(case3, array_ds_db, kernel_size, stride, padding, dilation, ceil_mode);
 
-    // AVG_POOL2D_SUBCASE(case3, array_ls_fb, kernel_size, stride, ceil_mode);
-    // AVG_POOL2D_SUBCASE(case3, array_ls_hb, kernel_size, stride, ceil_mode);
-    // AVG_POOL2D_SUBCASE(case3, array_ls_db, kernel_size, stride, ceil_mode);
+    // AVG_POOL2D_SUBCASE(case3, array_ls_fb, kernel_size, stride, padding, dilation, ceil_mode);
+    // AVG_POOL2D_SUBCASE(case3, array_ls_hb, kernel_size, stride, padding, dilation, ceil_mode);
+    // AVG_POOL2D_SUBCASE(case3, array_ls_db, kernel_size, stride, padding, dilation, ceil_mode);
 }
 
 // TODO: fix for sycl kernel (opencl/cuda), remove free/malloc in kernel code
-TEST_CASE("avg_pool2d(case4)" * doctest::test_suite("array::avg_pool2d") * doctest::skip())
+TEST_CASE("avg_pool2d(case4)" * doctest::test_suite("array::avg_pool2d"))
 {
-    // AVG_POOL2D_SUBCASE(case4, array, kernel_size, stride, ceil_mode);
-    // AVG_POOL2D_SUBCASE(case4, array_a, kernel_size, stride, ceil_mode);
-    // AVG_POOL2D_SUBCASE(case4, array_f, kernel_size, stride, ceil_mode);
-    // AVG_POOL2D_SUBCASE(case4, array_h, kernel_size, stride, ceil_mode);
-    // AVG_POOL2D_SUBCASE(case4, array_d, kernel_size, stride, ceil_mode);
+    // AVG_POOL2D_SUBCASE(case4, array, kernel_size, stride, padding, dilation, ceil_mode);
+    // AVG_POOL2D_SUBCASE(case4, array_a, kernel_size, stride, padding, dilation, ceil_mode);
+    // AVG_POOL2D_SUBCASE(case4, array_f, kernel_size, stride, padding, dilation, ceil_mode);
+    // AVG_POOL2D_SUBCASE(case4, array_h, kernel_size, stride, padding, dilation, ceil_mode);
+    // AVG_POOL2D_SUBCASE(case4, array_d, kernel_size, stride, padding, dilation, ceil_mode);
 
-    // AVG_POOL2D_SUBCASE(case4, array_cs_fb, kernel_size, stride, ceil_mode);
-    // AVG_POOL2D_SUBCASE(case4, array_cs_hb, kernel_size, stride, ceil_mode);
-    // AVG_POOL2D_SUBCASE(case4, array_cs_db, kernel_size, stride, ceil_mode);
+    // AVG_POOL2D_SUBCASE(case4, array_cs_fb, kernel_size, stride, padding, dilation, ceil_mode);
+    // AVG_POOL2D_SUBCASE(case4, array_cs_hb, kernel_size, stride, padding, dilation, ceil_mode);
+    // AVG_POOL2D_SUBCASE(case4, array_cs_db, kernel_size, stride, padding, dilation, ceil_mode);
 
-    AVG_POOL2D_SUBCASE(case4, array_fs_fb, kernel_size, stride, ceil_mode);
-    AVG_POOL2D_SUBCASE(case4, array_fs_hb, kernel_size, stride, ceil_mode);
-    AVG_POOL2D_SUBCASE(case4, array_fs_db, kernel_size, stride, ceil_mode);
+    AVG_POOL2D_SUBCASE(case4, array_fs_fb, kernel_size, stride, padding, dilation, ceil_mode);
+    AVG_POOL2D_SUBCASE(case4, array_fs_hb, kernel_size, stride, padding, dilation, ceil_mode);
+    AVG_POOL2D_SUBCASE(case4, array_fs_db, kernel_size, stride, padding, dilation, ceil_mode);
 
-    AVG_POOL2D_SUBCASE(case4, array_hs_fb, kernel_size, stride, ceil_mode);
-    AVG_POOL2D_SUBCASE(case4, array_hs_hb, kernel_size, stride, ceil_mode);
-    AVG_POOL2D_SUBCASE(case4, array_hs_db, kernel_size, stride, ceil_mode);
+    AVG_POOL2D_SUBCASE(case4, array_hs_fb, kernel_size, stride, padding, dilation, ceil_mode);
+    AVG_POOL2D_SUBCASE(case4, array_hs_hb, kernel_size, stride, padding, dilation, ceil_mode);
+    AVG_POOL2D_SUBCASE(case4, array_hs_db, kernel_size, stride, padding, dilation, ceil_mode);
 
-    AVG_POOL2D_SUBCASE(case4, array_ds_fb, kernel_size, stride, ceil_mode);
-    AVG_POOL2D_SUBCASE(case4, array_ds_hb, kernel_size, stride, ceil_mode);
-    AVG_POOL2D_SUBCASE(case4, array_ds_db, kernel_size, stride, ceil_mode);
+    AVG_POOL2D_SUBCASE(case4, array_ds_fb, kernel_size, stride, padding, dilation, ceil_mode);
+    AVG_POOL2D_SUBCASE(case4, array_ds_hb, kernel_size, stride, padding, dilation, ceil_mode);
+    AVG_POOL2D_SUBCASE(case4, array_ds_db, kernel_size, stride, padding, dilation, ceil_mode);
 
-    // AVG_POOL2D_SUBCASE(case4, array_ls_fb, kernel_size, stride, ceil_mode);
-    // AVG_POOL2D_SUBCASE(case4, array_ls_hb, kernel_size, stride, ceil_mode);
-    // AVG_POOL2D_SUBCASE(case4, array_ls_db, kernel_size, stride, ceil_mode);
+    // AVG_POOL2D_SUBCASE(case4, array_ls_fb, kernel_size, stride, padding, dilation, ceil_mode);
+    // AVG_POOL2D_SUBCASE(case4, array_ls_hb, kernel_size, stride, padding, dilation, ceil_mode);
+    // AVG_POOL2D_SUBCASE(case4, array_ls_db, kernel_size, stride, padding, dilation, ceil_mode);
 }
 
 // TODO: fix for sycl kernel (opencl/cuda), remove free/malloc in kernel code
-TEST_CASE("avg_pool2d(case5)" * doctest::test_suite("array::avg_pool2d") * doctest::skip())
+TEST_CASE("avg_pool2d(case5)" * doctest::test_suite("array::avg_pool2d"))
 {
-    // AVG_POOL2D_SUBCASE(case5, array, kernel_size, stride, ceil_mode);
-    // AVG_POOL2D_SUBCASE(case5, array_a, kernel_size, stride, ceil_mode);
-    // AVG_POOL2D_SUBCASE(case5, array_f, kernel_size, stride, ceil_mode);
-    // AVG_POOL2D_SUBCASE(case5, array_h, kernel_size, stride, ceil_mode);
-    // AVG_POOL2D_SUBCASE(case5, array_d, kernel_size, stride, ceil_mode);
+    // AVG_POOL2D_SUBCASE(case5, array, kernel_size, stride, padding, dilation, ceil_mode);
+    // AVG_POOL2D_SUBCASE(case5, array_a, kernel_size, stride, padding, dilation, ceil_mode);
+    // AVG_POOL2D_SUBCASE(case5, array_f, kernel_size, stride, padding, dilation, ceil_mode);
+    // AVG_POOL2D_SUBCASE(case5, array_h, kernel_size, stride, padding, dilation, ceil_mode);
+    // AVG_POOL2D_SUBCASE(case5, array_d, kernel_size, stride, padding, dilation, ceil_mode);
 
-    // AVG_POOL2D_SUBCASE(case5, array_cs_fb, kernel_size, stride, ceil_mode);
-    // AVG_POOL2D_SUBCASE(case5, array_cs_hb, kernel_size, stride, ceil_mode);
-    // AVG_POOL2D_SUBCASE(case5, array_cs_db, kernel_size, stride, ceil_mode);
+    // AVG_POOL2D_SUBCASE(case5, array_cs_fb, kernel_size, stride, padding, dilation, ceil_mode);
+    // AVG_POOL2D_SUBCASE(case5, array_cs_hb, kernel_size, stride, padding, dilation, ceil_mode);
+    // AVG_POOL2D_SUBCASE(case5, array_cs_db, kernel_size, stride, padding, dilation, ceil_mode);
 
-    AVG_POOL2D_SUBCASE(case5, array_fs_fb, kernel_size, stride, ceil_mode);
-    AVG_POOL2D_SUBCASE(case5, array_fs_hb, kernel_size, stride, ceil_mode);
-    AVG_POOL2D_SUBCASE(case5, array_fs_db, kernel_size, stride, ceil_mode);
+    AVG_POOL2D_SUBCASE(case5, array_fs_fb, kernel_size, stride, padding, dilation, ceil_mode);
+    AVG_POOL2D_SUBCASE(case5, array_fs_hb, kernel_size, stride, padding, dilation, ceil_mode);
+    AVG_POOL2D_SUBCASE(case5, array_fs_db, kernel_size, stride, padding, dilation, ceil_mode);
 
-    AVG_POOL2D_SUBCASE(case5, array_hs_fb, kernel_size, stride, ceil_mode);
-    AVG_POOL2D_SUBCASE(case5, array_hs_hb, kernel_size, stride, ceil_mode);
-    AVG_POOL2D_SUBCASE(case5, array_hs_db, kernel_size, stride, ceil_mode);
+    AVG_POOL2D_SUBCASE(case5, array_hs_fb, kernel_size, stride, padding, dilation, ceil_mode);
+    AVG_POOL2D_SUBCASE(case5, array_hs_hb, kernel_size, stride, padding, dilation, ceil_mode);
+    AVG_POOL2D_SUBCASE(case5, array_hs_db, kernel_size, stride, padding, dilation, ceil_mode);
 
-    AVG_POOL2D_SUBCASE(case5, array_ds_fb, kernel_size, stride, ceil_mode);
-    AVG_POOL2D_SUBCASE(case5, array_ds_hb, kernel_size, stride, ceil_mode);
-    AVG_POOL2D_SUBCASE(case5, array_ds_db, kernel_size, stride, ceil_mode);
+    AVG_POOL2D_SUBCASE(case5, array_ds_fb, kernel_size, stride, padding, dilation, ceil_mode);
+    AVG_POOL2D_SUBCASE(case5, array_ds_hb, kernel_size, stride, padding, dilation, ceil_mode);
+    AVG_POOL2D_SUBCASE(case5, array_ds_db, kernel_size, stride, padding, dilation, ceil_mode);
 
-    // AVG_POOL2D_SUBCASE(case5, array_ls_fb, kernel_size, stride, ceil_mode);
-    // AVG_POOL2D_SUBCASE(case5, array_ls_hb, kernel_size, stride, ceil_mode);
-    // AVG_POOL2D_SUBCASE(case5, array_ls_db, kernel_size, stride, ceil_mode);
+    // AVG_POOL2D_SUBCASE(case5, array_ls_fb, kernel_size, stride, padding, dilation, ceil_mode);
+    // AVG_POOL2D_SUBCASE(case5, array_ls_hb, kernel_size, stride, padding, dilation, ceil_mode);
+    // AVG_POOL2D_SUBCASE(case5, array_ls_db, kernel_size, stride, padding, dilation, ceil_mode);
 }
 
 // TODO: fix for sycl kernel (opencl/cuda), remove free/malloc in kernel code
-TEST_CASE("avg_pool2d(case6)" * doctest::test_suite("array::avg_pool2d") * doctest::skip())
+TEST_CASE("avg_pool2d(case6)" * doctest::test_suite("array::avg_pool2d"))
 {
-    // AVG_POOL2D_SUBCASE(case6, array, kernel_size, stride, ceil_mode);
-    // AVG_POOL2D_SUBCASE(case6, array_a, kernel_size, stride, ceil_mode);
-    // AVG_POOL2D_SUBCASE(case6, array_f, kernel_size, stride, ceil_mode);
-    // AVG_POOL2D_SUBCASE(case6, array_h, kernel_size, stride, ceil_mode);
-    // AVG_POOL2D_SUBCASE(case6, array_d, kernel_size, stride, ceil_mode);
+    // AVG_POOL2D_SUBCASE(case6, array, kernel_size, stride, padding, dilation, ceil_mode);
+    // AVG_POOL2D_SUBCASE(case6, array_a, kernel_size, stride, padding, dilation, ceil_mode);
+    // AVG_POOL2D_SUBCASE(case6, array_f, kernel_size, stride, padding, dilation, ceil_mode);
+    // AVG_POOL2D_SUBCASE(case6, array_h, kernel_size, stride, padding, dilation, ceil_mode);
+    // AVG_POOL2D_SUBCASE(case6, array_d, kernel_size, stride, padding, dilation, ceil_mode);
 
-    // AVG_POOL2D_SUBCASE(case6, array_cs_fb, kernel_size, stride, ceil_mode);
-    // AVG_POOL2D_SUBCASE(case6, array_cs_hb, kernel_size, stride, ceil_mode);
-    // AVG_POOL2D_SUBCASE(case6, array_cs_db, kernel_size, stride, ceil_mode);
+    // AVG_POOL2D_SUBCASE(case6, array_cs_fb, kernel_size, stride, padding, dilation, ceil_mode);
+    // AVG_POOL2D_SUBCASE(case6, array_cs_hb, kernel_size, stride, padding, dilation, ceil_mode);
+    // AVG_POOL2D_SUBCASE(case6, array_cs_db, kernel_size, stride, padding, dilation, ceil_mode);
 
-    AVG_POOL2D_SUBCASE(case6, array_fs_fb, kernel_size, stride, ceil_mode);
-    AVG_POOL2D_SUBCASE(case6, array_fs_hb, kernel_size, stride, ceil_mode);
-    AVG_POOL2D_SUBCASE(case6, array_fs_db, kernel_size, stride, ceil_mode);
+    AVG_POOL2D_SUBCASE(case6, array_fs_fb, kernel_size, stride, padding, dilation, ceil_mode);
+    AVG_POOL2D_SUBCASE(case6, array_fs_hb, kernel_size, stride, padding, dilation, ceil_mode);
+    AVG_POOL2D_SUBCASE(case6, array_fs_db, kernel_size, stride, padding, dilation, ceil_mode);
 
-    AVG_POOL2D_SUBCASE(case6, array_hs_fb, kernel_size, stride, ceil_mode);
-    AVG_POOL2D_SUBCASE(case6, array_hs_hb, kernel_size, stride, ceil_mode);
-    AVG_POOL2D_SUBCASE(case6, array_hs_db, kernel_size, stride, ceil_mode);
+    AVG_POOL2D_SUBCASE(case6, array_hs_fb, kernel_size, stride, padding, dilation, ceil_mode);
+    AVG_POOL2D_SUBCASE(case6, array_hs_hb, kernel_size, stride, padding, dilation, ceil_mode);
+    AVG_POOL2D_SUBCASE(case6, array_hs_db, kernel_size, stride, padding, dilation, ceil_mode);
 
-    AVG_POOL2D_SUBCASE(case6, array_ds_fb, kernel_size, stride, ceil_mode);
-    AVG_POOL2D_SUBCASE(case6, array_ds_hb, kernel_size, stride, ceil_mode);
-    AVG_POOL2D_SUBCASE(case6, array_ds_db, kernel_size, stride, ceil_mode);
+    AVG_POOL2D_SUBCASE(case6, array_ds_fb, kernel_size, stride, padding, dilation, ceil_mode);
+    AVG_POOL2D_SUBCASE(case6, array_ds_hb, kernel_size, stride, padding, dilation, ceil_mode);
+    AVG_POOL2D_SUBCASE(case6, array_ds_db, kernel_size, stride, padding, dilation, ceil_mode);
 
-    // AVG_POOL2D_SUBCASE(case6, array_ls_fb, kernel_size, stride, ceil_mode);
-    // AVG_POOL2D_SUBCASE(case6, array_ls_hb, kernel_size, stride, ceil_mode);
-    // AVG_POOL2D_SUBCASE(case6, array_ls_db, kernel_size, stride, ceil_mode);
+    // AVG_POOL2D_SUBCASE(case6, array_ls_fb, kernel_size, stride, padding, dilation, ceil_mode);
+    // AVG_POOL2D_SUBCASE(case6, array_ls_hb, kernel_size, stride, padding, dilation, ceil_mode);
+    // AVG_POOL2D_SUBCASE(case6, array_ls_db, kernel_size, stride, padding, dilation, ceil_mode);
 }
 
 // TODO: fix for sycl kernel (opencl/cuda), remove free/malloc in kernel code
-TEST_CASE("avg_pool2d(case7)" * doctest::test_suite("array::avg_pool2d") * doctest::skip())
+TEST_CASE("avg_pool2d(case7)" * doctest::test_suite("array::avg_pool2d"))
 {
-    // AVG_POOL2D_SUBCASE(case7, array, kernel_size, stride, ceil_mode);
-    // AVG_POOL2D_SUBCASE(case7, array_a, kernel_size, stride, ceil_mode);
-    // AVG_POOL2D_SUBCASE(case7, array_f, kernel_size, stride, ceil_mode);
-    // AVG_POOL2D_SUBCASE(case7, array_h, kernel_size, stride, ceil_mode);
-    // AVG_POOL2D_SUBCASE(case7, array_d, kernel_size, stride, ceil_mode);
+    // AVG_POOL2D_SUBCASE(case7, array, kernel_size, stride, padding, dilation, ceil_mode);
+    // AVG_POOL2D_SUBCASE(case7, array_a, kernel_size, stride, padding, dilation, ceil_mode);
+    // AVG_POOL2D_SUBCASE(case7, array_f, kernel_size, stride, padding, dilation, ceil_mode);
+    // AVG_POOL2D_SUBCASE(case7, array_h, kernel_size, stride, padding, dilation, ceil_mode);
+    // AVG_POOL2D_SUBCASE(case7, array_d, kernel_size, stride, padding, dilation, ceil_mode);
 
-    // AVG_POOL2D_SUBCASE(case7, array_cs_fb, kernel_size, stride, ceil_mode);
-    // AVG_POOL2D_SUBCASE(case7, array_cs_hb, kernel_size, stride, ceil_mode);
-    // AVG_POOL2D_SUBCASE(case7, array_cs_db, kernel_size, stride, ceil_mode);
+    // AVG_POOL2D_SUBCASE(case7, array_cs_fb, kernel_size, stride, padding, dilation, ceil_mode);
+    // AVG_POOL2D_SUBCASE(case7, array_cs_hb, kernel_size, stride, padding, dilation, ceil_mode);
+    // AVG_POOL2D_SUBCASE(case7, array_cs_db, kernel_size, stride, padding, dilation, ceil_mode);
 
-    AVG_POOL2D_SUBCASE(case7, array_fs_fb, kernel_size, stride, ceil_mode);
-    AVG_POOL2D_SUBCASE(case7, array_fs_hb, kernel_size, stride, ceil_mode);
-    AVG_POOL2D_SUBCASE(case7, array_fs_db, kernel_size, stride, ceil_mode);
+    AVG_POOL2D_SUBCASE(case7, array_fs_fb, kernel_size, stride, padding, dilation, ceil_mode);
+    AVG_POOL2D_SUBCASE(case7, array_fs_hb, kernel_size, stride, padding, dilation, ceil_mode);
+    AVG_POOL2D_SUBCASE(case7, array_fs_db, kernel_size, stride, padding, dilation, ceil_mode);
 
-    AVG_POOL2D_SUBCASE(case7, array_hs_fb, kernel_size, stride, ceil_mode);
-    AVG_POOL2D_SUBCASE(case7, array_hs_hb, kernel_size, stride, ceil_mode);
-    AVG_POOL2D_SUBCASE(case7, array_hs_db, kernel_size, stride, ceil_mode);
+    AVG_POOL2D_SUBCASE(case7, array_hs_fb, kernel_size, stride, padding, dilation, ceil_mode);
+    AVG_POOL2D_SUBCASE(case7, array_hs_hb, kernel_size, stride, padding, dilation, ceil_mode);
+    AVG_POOL2D_SUBCASE(case7, array_hs_db, kernel_size, stride, padding, dilation, ceil_mode);
 
-    AVG_POOL2D_SUBCASE(case7, array_ds_fb, kernel_size, stride, ceil_mode);
-    AVG_POOL2D_SUBCASE(case7, array_ds_hb, kernel_size, stride, ceil_mode);
-    AVG_POOL2D_SUBCASE(case7, array_ds_db, kernel_size, stride, ceil_mode);
+    AVG_POOL2D_SUBCASE(case7, array_ds_fb, kernel_size, stride, padding, dilation, ceil_mode);
+    AVG_POOL2D_SUBCASE(case7, array_ds_hb, kernel_size, stride, padding, dilation, ceil_mode);
+    AVG_POOL2D_SUBCASE(case7, array_ds_db, kernel_size, stride, padding, dilation, ceil_mode);
 
-    // AVG_POOL2D_SUBCASE(case7, array_ls_fb, kernel_size, stride, ceil_mode);
-    // AVG_POOL2D_SUBCASE(case7, array_ls_hb, kernel_size, stride, ceil_mode);
-    // AVG_POOL2D_SUBCASE(case7, array_ls_db, kernel_size, stride, ceil_mode);
+    // AVG_POOL2D_SUBCASE(case7, array_ls_fb, kernel_size, stride, padding, dilation, ceil_mode);
+    // AVG_POOL2D_SUBCASE(case7, array_ls_hb, kernel_size, stride, padding, dilation, ceil_mode);
+    // AVG_POOL2D_SUBCASE(case7, array_ls_db, kernel_size, stride, padding, dilation, ceil_mode);
 }
 
 // TODO: fix for sycl kernel (opencl/cuda), remove free/malloc in kernel code
-TEST_CASE("avg_pool2d(case8)" * doctest::test_suite("array::avg_pool2d") * doctest::skip())
+TEST_CASE("avg_pool2d(case8)" * doctest::test_suite("array::avg_pool2d"))
 {
-    // AVG_POOL2D_SUBCASE(case8, array, kernel_size, stride, ceil_mode);
-    // AVG_POOL2D_SUBCASE(case8, array_a, kernel_size, stride, ceil_mode);
-    // AVG_POOL2D_SUBCASE(case8, array_f, kernel_size, stride, ceil_mode);
-    // AVG_POOL2D_SUBCASE(case8, array_h, kernel_size, stride, ceil_mode);
-    // AVG_POOL2D_SUBCASE(case8, array_d, kernel_size, stride, ceil_mode);
+    // AVG_POOL2D_SUBCASE(case8, array, kernel_size, stride, padding, dilation, ceil_mode);
+    // AVG_POOL2D_SUBCASE(case8, array_a, kernel_size, stride, padding, dilation, ceil_mode);
+    // AVG_POOL2D_SUBCASE(case8, array_f, kernel_size, stride, padding, dilation, ceil_mode);
+    // AVG_POOL2D_SUBCASE(case8, array_h, kernel_size, stride, padding, dilation, ceil_mode);
+    // AVG_POOL2D_SUBCASE(case8, array_d, kernel_size, stride, padding, dilation, ceil_mode);
 
-    // AVG_POOL2D_SUBCASE(case8, array_cs_fb, kernel_size, stride, ceil_mode);
-    // AVG_POOL2D_SUBCASE(case8, array_cs_hb, kernel_size, stride, ceil_mode);
-    // AVG_POOL2D_SUBCASE(case8, array_cs_db, kernel_size, stride, ceil_mode);
+    // AVG_POOL2D_SUBCASE(case8, array_cs_fb, kernel_size, stride, padding, dilation, ceil_mode);
+    // AVG_POOL2D_SUBCASE(case8, array_cs_hb, kernel_size, stride, padding, dilation, ceil_mode);
+    // AVG_POOL2D_SUBCASE(case8, array_cs_db, kernel_size, stride, padding, dilation, ceil_mode);
 
-    AVG_POOL2D_SUBCASE(case8, array_fs_fb, kernel_size, stride, ceil_mode);
-    AVG_POOL2D_SUBCASE(case8, array_fs_hb, kernel_size, stride, ceil_mode);
-    AVG_POOL2D_SUBCASE(case8, array_fs_db, kernel_size, stride, ceil_mode);
+    AVG_POOL2D_SUBCASE(case8, array_fs_fb, kernel_size, stride, padding, dilation, ceil_mode);
+    AVG_POOL2D_SUBCASE(case8, array_fs_hb, kernel_size, stride, padding, dilation, ceil_mode);
+    AVG_POOL2D_SUBCASE(case8, array_fs_db, kernel_size, stride, padding, dilation, ceil_mode);
 
-    AVG_POOL2D_SUBCASE(case8, array_hs_fb, kernel_size, stride, ceil_mode);
-    AVG_POOL2D_SUBCASE(case8, array_hs_hb, kernel_size, stride, ceil_mode);
-    AVG_POOL2D_SUBCASE(case8, array_hs_db, kernel_size, stride, ceil_mode);
+    AVG_POOL2D_SUBCASE(case8, array_hs_fb, kernel_size, stride, padding, dilation, ceil_mode);
+    AVG_POOL2D_SUBCASE(case8, array_hs_hb, kernel_size, stride, padding, dilation, ceil_mode);
+    AVG_POOL2D_SUBCASE(case8, array_hs_db, kernel_size, stride, padding, dilation, ceil_mode);
 
-    AVG_POOL2D_SUBCASE(case8, array_ds_fb, kernel_size, stride, ceil_mode);
-    AVG_POOL2D_SUBCASE(case8, array_ds_hb, kernel_size, stride, ceil_mode);
-    AVG_POOL2D_SUBCASE(case8, array_ds_db, kernel_size, stride, ceil_mode);
+    AVG_POOL2D_SUBCASE(case8, array_ds_fb, kernel_size, stride, padding, dilation, ceil_mode);
+    AVG_POOL2D_SUBCASE(case8, array_ds_hb, kernel_size, stride, padding, dilation, ceil_mode);
+    AVG_POOL2D_SUBCASE(case8, array_ds_db, kernel_size, stride, padding, dilation, ceil_mode);
 
-    // AVG_POOL2D_SUBCASE(case8, array_ls_fb, kernel_size, stride, ceil_mode);
-    // AVG_POOL2D_SUBCASE(case8, array_ls_hb, kernel_size, stride, ceil_mode);
-    // AVG_POOL2D_SUBCASE(case8, array_ls_db, kernel_size, stride, ceil_mode);
+    // AVG_POOL2D_SUBCASE(case8, array_ls_fb, kernel_size, stride, padding, dilation, ceil_mode);
+    // AVG_POOL2D_SUBCASE(case8, array_ls_hb, kernel_size, stride, padding, dilation, ceil_mode);
+    // AVG_POOL2D_SUBCASE(case8, array_ls_db, kernel_size, stride, padding, dilation, ceil_mode);
 }
 
 // TODO: fix for sycl kernel (opencl/cuda), remove free/malloc in kernel code
-TEST_CASE("avg_pool2d(case9)" * doctest::test_suite("array::avg_pool2d") * doctest::skip())
+TEST_CASE("avg_pool2d(case9)" * doctest::test_suite("array::avg_pool2d"))
 {
-    // AVG_POOL2D_SUBCASE(case9, array, kernel_size, stride, ceil_mode);
-    // AVG_POOL2D_SUBCASE(case9, array_a, kernel_size, stride, ceil_mode);
-    // AVG_POOL2D_SUBCASE(case9, array_f, kernel_size, stride, ceil_mode);
-    // AVG_POOL2D_SUBCASE(case9, array_h, kernel_size, stride, ceil_mode);
-    // AVG_POOL2D_SUBCASE(case9, array_d, kernel_size, stride, ceil_mode);
+    // AVG_POOL2D_SUBCASE(case9, array, kernel_size, stride, padding, dilation, ceil_mode);
+    // AVG_POOL2D_SUBCASE(case9, array_a, kernel_size, stride, padding, dilation, ceil_mode);
+    // AVG_POOL2D_SUBCASE(case9, array_f, kernel_size, stride, padding, dilation, ceil_mode);
+    // AVG_POOL2D_SUBCASE(case9, array_h, kernel_size, stride, padding, dilation, ceil_mode);
+    // AVG_POOL2D_SUBCASE(case9, array_d, kernel_size, stride, padding, dilation, ceil_mode);
 
-    // AVG_POOL2D_SUBCASE(case9, array_cs_fb, kernel_size, stride, ceil_mode);
-    // AVG_POOL2D_SUBCASE(case9, array_cs_hb, kernel_size, stride, ceil_mode);
-    // AVG_POOL2D_SUBCASE(case9, array_cs_db, kernel_size, stride, ceil_mode);
+    // AVG_POOL2D_SUBCASE(case9, array_cs_fb, kernel_size, stride, padding, dilation, ceil_mode);
+    // AVG_POOL2D_SUBCASE(case9, array_cs_hb, kernel_size, stride, padding, dilation, ceil_mode);
+    // AVG_POOL2D_SUBCASE(case9, array_cs_db, kernel_size, stride, padding, dilation, ceil_mode);
 
-    AVG_POOL2D_SUBCASE(case9, array_fs_fb, kernel_size, stride, ceil_mode);
-    AVG_POOL2D_SUBCASE(case9, array_fs_hb, kernel_size, stride, ceil_mode);
-    AVG_POOL2D_SUBCASE(case9, array_fs_db, kernel_size, stride, ceil_mode);
+    AVG_POOL2D_SUBCASE(case9, array_fs_fb, kernel_size, stride, padding, dilation, ceil_mode);
+    AVG_POOL2D_SUBCASE(case9, array_fs_hb, kernel_size, stride, padding, dilation, ceil_mode);
+    AVG_POOL2D_SUBCASE(case9, array_fs_db, kernel_size, stride, padding, dilation, ceil_mode);
 
-    AVG_POOL2D_SUBCASE(case9, array_hs_fb, kernel_size, stride, ceil_mode);
-    AVG_POOL2D_SUBCASE(case9, array_hs_hb, kernel_size, stride, ceil_mode);
-    AVG_POOL2D_SUBCASE(case9, array_hs_db, kernel_size, stride, ceil_mode);
+    AVG_POOL2D_SUBCASE(case9, array_hs_fb, kernel_size, stride, padding, dilation, ceil_mode);
+    AVG_POOL2D_SUBCASE(case9, array_hs_hb, kernel_size, stride, padding, dilation, ceil_mode);
+    AVG_POOL2D_SUBCASE(case9, array_hs_db, kernel_size, stride, padding, dilation, ceil_mode);
 
-    AVG_POOL2D_SUBCASE(case9, array_ds_fb, kernel_size, stride, ceil_mode);
-    AVG_POOL2D_SUBCASE(case9, array_ds_hb, kernel_size, stride, ceil_mode);
-    AVG_POOL2D_SUBCASE(case9, array_ds_db, kernel_size, stride, ceil_mode);
+    AVG_POOL2D_SUBCASE(case9, array_ds_fb, kernel_size, stride, padding, dilation, ceil_mode);
+    AVG_POOL2D_SUBCASE(case9, array_ds_hb, kernel_size, stride, padding, dilation, ceil_mode);
+    AVG_POOL2D_SUBCASE(case9, array_ds_db, kernel_size, stride, padding, dilation, ceil_mode);
 
-    // AVG_POOL2D_SUBCASE(case9, array_ls_fb, kernel_size, stride, ceil_mode);
-    // AVG_POOL2D_SUBCASE(case9, array_ls_hb, kernel_size, stride, ceil_mode);
-    // AVG_POOL2D_SUBCASE(case9, array_ls_db, kernel_size, stride, ceil_mode);
+    // AVG_POOL2D_SUBCASE(case9, array_ls_fb, kernel_size, stride, padding, dilation, ceil_mode);
+    // AVG_POOL2D_SUBCASE(case9, array_ls_hb, kernel_size, stride, padding, dilation, ceil_mode);
+    // AVG_POOL2D_SUBCASE(case9, array_ls_db, kernel_size, stride, padding, dilation, ceil_mode);
 }
 
 // TODO: fix for sycl kernel (opencl/cuda), remove free/malloc in kernel code
-TEST_CASE("avg_pool2d(case10)" * doctest::test_suite("array::avg_pool2d") * doctest::skip())
+TEST_CASE("avg_pool2d(case10)" * doctest::test_suite("array::avg_pool2d"))
 {
-    // AVG_POOL2D_SUBCASE(case10, array, kernel_size, stride, ceil_mode);
-    // AVG_POOL2D_SUBCASE(case10, array_a, kernel_size, stride, ceil_mode);
-    // AVG_POOL2D_SUBCASE(case10, array_f, kernel_size, stride, ceil_mode);
-    // AVG_POOL2D_SUBCASE(case10, array_h, kernel_size, stride, ceil_mode);
-    // AVG_POOL2D_SUBCASE(case10, array_d, kernel_size, stride, ceil_mode);
+    // AVG_POOL2D_SUBCASE(case10, array, kernel_size, stride, padding, dilation, ceil_mode);
+    // AVG_POOL2D_SUBCASE(case10, array_a, kernel_size, stride, padding, dilation, ceil_mode);
+    // AVG_POOL2D_SUBCASE(case10, array_f, kernel_size, stride, padding, dilation, ceil_mode);
+    // AVG_POOL2D_SUBCASE(case10, array_h, kernel_size, stride, padding, dilation, ceil_mode);
+    // AVG_POOL2D_SUBCASE(case10, array_d, kernel_size, stride, padding, dilation, ceil_mode);
 
-    // AVG_POOL2D_SUBCASE(case10, array_cs_fb, kernel_size, stride, ceil_mode);
-    // AVG_POOL2D_SUBCASE(case10, array_cs_hb, kernel_size, stride, ceil_mode);
-    // AVG_POOL2D_SUBCASE(case10, array_cs_db, kernel_size, stride, ceil_mode);
+    // AVG_POOL2D_SUBCASE(case10, array_cs_fb, kernel_size, stride, padding, dilation, ceil_mode);
+    // AVG_POOL2D_SUBCASE(case10, array_cs_hb, kernel_size, stride, padding, dilation, ceil_mode);
+    // AVG_POOL2D_SUBCASE(case10, array_cs_db, kernel_size, stride, padding, dilation, ceil_mode);
 
-    AVG_POOL2D_SUBCASE(case10, array_fs_fb, kernel_size, stride, ceil_mode);
-    AVG_POOL2D_SUBCASE(case10, array_fs_hb, kernel_size, stride, ceil_mode);
-    AVG_POOL2D_SUBCASE(case10, array_fs_db, kernel_size, stride, ceil_mode);
+    AVG_POOL2D_SUBCASE(case10, array_fs_fb, kernel_size, stride, padding, dilation, ceil_mode);
+    AVG_POOL2D_SUBCASE(case10, array_fs_hb, kernel_size, stride, padding, dilation, ceil_mode);
+    AVG_POOL2D_SUBCASE(case10, array_fs_db, kernel_size, stride, padding, dilation, ceil_mode);
 
-    AVG_POOL2D_SUBCASE(case10, array_hs_fb, kernel_size, stride, ceil_mode);
-    AVG_POOL2D_SUBCASE(case10, array_hs_hb, kernel_size, stride, ceil_mode);
-    AVG_POOL2D_SUBCASE(case10, array_hs_db, kernel_size, stride, ceil_mode);
+    AVG_POOL2D_SUBCASE(case10, array_hs_fb, kernel_size, stride, padding, dilation, ceil_mode);
+    AVG_POOL2D_SUBCASE(case10, array_hs_hb, kernel_size, stride, padding, dilation, ceil_mode);
+    AVG_POOL2D_SUBCASE(case10, array_hs_db, kernel_size, stride, padding, dilation, ceil_mode);
 
-    AVG_POOL2D_SUBCASE(case10, array_ds_fb, kernel_size, stride, ceil_mode);
-    AVG_POOL2D_SUBCASE(case10, array_ds_hb, kernel_size, stride, ceil_mode);
-    AVG_POOL2D_SUBCASE(case10, array_ds_db, kernel_size, stride, ceil_mode);
+    AVG_POOL2D_SUBCASE(case10, array_ds_fb, kernel_size, stride, padding, dilation, ceil_mode);
+    AVG_POOL2D_SUBCASE(case10, array_ds_hb, kernel_size, stride, padding, dilation, ceil_mode);
+    AVG_POOL2D_SUBCASE(case10, array_ds_db, kernel_size, stride, padding, dilation, ceil_mode);
 
-    // AVG_POOL2D_SUBCASE(case10, array_ls_fb, kernel_size, stride, ceil_mode);
-    // AVG_POOL2D_SUBCASE(case10, array_ls_hb, kernel_size, stride, ceil_mode);
-    // AVG_POOL2D_SUBCASE(case10, array_ls_db, kernel_size, stride, ceil_mode);
+    // AVG_POOL2D_SUBCASE(case10, array_ls_fb, kernel_size, stride, padding, dilation, ceil_mode);
+    // AVG_POOL2D_SUBCASE(case10, array_ls_hb, kernel_size, stride, padding, dilation, ceil_mode);
+    // AVG_POOL2D_SUBCASE(case10, array_ls_db, kernel_size, stride, padding, dilation, ceil_mode);
 }
