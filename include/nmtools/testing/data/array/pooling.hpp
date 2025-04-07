@@ -3,7 +3,6 @@
 
 #include "nmtools/testing/testing.hpp"
 #include "nmtools/testing/array_cast.hpp"
-#include "nmtools/testing/data/index/pooling.hpp"
 
 using namespace nmtools::literals;
 
