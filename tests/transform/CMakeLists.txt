@@ -62,6 +62,7 @@ set(TRANSFORM_TEST_LINEARIZE_SOURCES
     src/linearize/vecdot.cpp
     src/linearize/trace.cpp
     src/linearize/tensordot.cpp
+    src/linearize/pad.cpp
     src/linearize/pairwise_distance.cpp
     src/linearize/bilinear.cpp
     src/linearize/vstack.cpp
@@ -88,6 +89,7 @@ set(TRANSFORM_TEST_APPLY_SOURCES
     src/apply/vecdot.cpp
     src/apply/trace.cpp
     src/apply/tensordot.cpp
+    src/apply/pad.cpp
     src/apply/pairwise_distance.cpp
     src/apply/bilinear.cpp
     src/apply/vstack.cpp

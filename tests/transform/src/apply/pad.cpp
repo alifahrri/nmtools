@@ -1,5 +1,5 @@
 #include "nmtools/core/transform/linearize.hpp"
-#include "nmtools/array/pooling.hpp"
+#include "nmtools/array/pad.hpp"
 #include "nmtools/array/random.hpp"
 #include "nmtools/testing/doctest.hpp"
 
@@ -17,17 +17,19 @@ using namespace nmtools::literals;
 
 using nmtools_array, nmtools_tuple, nmtools::unwrap;
 
-TEST_CASE("apply_graph(avg_pool2d)" * doctest::test_suite("transform"))
+TEST_CASE("apply_graph(pad)" * doctest::test_suite("transform"))
 {
     auto gen   = na::random_engine();
     auto dtype = nm::float32;
 
-    auto input = na::random(array{1,1,7,7},dtype,gen);
-    auto kernel_size = array{3,3};
-    auto stride = array{2,2};
-    auto ceil_mode = nm::True;
+    auto a = na::random(array{2,3,2},dtype,gen);
+    int pad_width[3][2] = {
+        {0,1},
+        {2,3},
+        {4,5},
+    };
 
-    auto res = view::avg_pool2d(input,kernel_size,stride,nm::None,nm::None,ceil_mode);
+    auto res = view::pad(a,pad_width);
 
     auto graph = fn::linearize(fn::get_compute_graph(unwrap(res)));
     auto operands = fn::get_operands(graph);

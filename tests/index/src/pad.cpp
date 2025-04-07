@@ -21,6 +21,15 @@ SUBCASE(#case_name) \
     NMTOOLS_ASSERT_EQUAL( result, expect::pads ); \
 }
 
+#define PARSE_PAD_SUBCASE(case_name, ...) \
+SUBCASE(#case_name) \
+{ \
+    NMTOOLS_TESTING_USE_CASE(index, parse_pad, case_name); \
+    using namespace args; \
+    auto result = nmtools::index::parse_pad(__VA_ARGS__); \
+    NMTOOLS_ASSERT_EQUAL_MSG_ATTRIBUTES( result, expect::result, __VA_ARGS__ ); \
+}
+
 TEST_CASE("parse_pad_width(case1)" * doctest::test_suite("index::parse_pad_width"))
 {
     PARSE_PAD_WIDTH_SUBCASE( case1, pad_width );
@@ -64,6 +73,18 @@ TEST_CASE("parse_pad_width(case5)" * doctest::test_suite("index::parse_pad_width
     PARSE_PAD_WIDTH_SUBCASE( case5, pad_width_f );
     PARSE_PAD_WIDTH_SUBCASE( case5, pad_width_h );
     PARSE_PAD_WIDTH_SUBCASE( case5, pad_width_d );
+}
+
+TEST_CASE("parse_pad(case1)" * doctest::test_suite("index::parse_pad"))
+{
+    PARSE_PAD_SUBCASE( case1, pad );
+    PARSE_PAD_SUBCASE( case1, pad_a );
+    PARSE_PAD_SUBCASE( case1, pad_f );
+    PARSE_PAD_SUBCASE( case1, pad_h );
+    PARSE_PAD_SUBCASE( case1, pad_v );
+
+    // PARSE_PAD_SUBCASE( case1, m_pad );
+    PARSE_PAD_SUBCASE( case1, m_pad_a );
 }
 
 TEST_CASE("shape_pad(case1)" * doctest::test_suite("index::shape_pad"))

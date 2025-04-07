@@ -12,6 +12,45 @@
 
 namespace nmtools::index
 {
+    struct parse_pad_t {};
+
+    template <typename pad_t>
+    constexpr auto parse_pad(const pad_t& pad)
+    {
+        if constexpr (meta::is_maybe_v<pad_t>) {
+            using result_t = decltype(parse_pad(unwrap(pad)));
+            using return_t = meta::conditional_t<meta::is_maybe_v<result_t>,result_t,nmtools_maybe<result_t>>;
+            return (has_value(pad)
+                ? return_t{parse_pad(unwrap(pad))}
+                : return_t{meta::Nothing}
+            );
+        } else {
+            using result_t = meta::resolve_optype_t<parse_pad_t,pad_t>;
+
+            auto result = result_t {};
+
+            if constexpr (!meta::is_constant_index_array_v<result_t>
+                && !meta::is_fail_v<result_t>
+            ) {
+                auto dim = len(pad);
+
+                if constexpr (meta::is_resizable_v<result_t>) {
+                    result.resize(dim);
+                }
+
+                for (nm_size_t i=0; i<(nm_size_t)dim/2; i++) {
+                    at(result,i) = at(pad,-nm_index_t(i+1)*2);
+                }
+
+                for (nm_size_t i=0; i<(nm_size_t)dim/2; i++) {
+                    at(result,i+(dim/2)) = at(pad,-(nm_index_t(i*2)+1));
+                }
+            }
+
+            return result;
+        }
+    } // parse_pad
+
     struct parse_pad_width_t {};
 
     template <typename pad_width_t>
@@ -62,8 +101,50 @@ namespace nmtools::meta
     namespace error
     {
         template <typename...>
+        struct PARSE_PAD_UNSUPPORTED : detail::fail_t {};
+
+        template <typename...>
         struct PARSE_PAD_WIDTH_UNSUPPORTED : detail::fail_t {};
     }
+
+    template <typename pad_t>
+    struct resolve_optype<
+        void, index::parse_pad_t, pad_t
+    > {
+        static constexpr auto vtype = [](){
+            if constexpr (!is_index_array_v<pad_t>) {
+                using type = error::PARSE_PAD_UNSUPPORTED<pad_t>;
+                return as_value_v<type>;
+            } else if constexpr (is_constant_index_array_v<pad_t>) {
+                constexpr auto pad = to_value_v<pad_t>;
+                constexpr auto result = index::parse_pad(pad);
+                using nmtools::at, nmtools::len;
+                return template_reduce<len(result)>([&](auto init, auto I){
+                    using init_t = type_t<decltype(init)>;
+                    using type = append_type_t<init_t,ct<at(result,I)>>;
+                    return as_value_v<type>;
+                },as_value_v<nmtools_tuple<>>);
+            } else {
+                constexpr auto SRC_DIM = len_v<pad_t>;
+                [[maybe_unused]]
+                constexpr auto SRC_B_DIM = bounded_size_v<pad_t>;
+                if constexpr (SRC_DIM > 0) {
+                    constexpr auto DST_DIM = SRC_DIM;
+                    using type = nmtools_array<nm_size_t,DST_DIM>;
+                    return as_value_v<type>;
+                } else if constexpr (!is_fail_v<decltype(SRC_B_DIM)>) {
+                    constexpr auto DST_B_DIM = SRC_B_DIM;
+                    using type = nmtools_static_vector<nm_size_t,DST_B_DIM>;
+                    return as_value_v<type>;
+                } else {
+                    // TODO: support small vector
+                    using type = nmtools_list<nm_size_t>;
+                    return as_value_v<type>;
+                }
+            }
+        }();
+        using type = type_t<decltype(vtype)>;
+    }; // parse_pad_t
 
     template <typename pad_width_t>
     struct resolve_optype<
@@ -213,6 +294,14 @@ namespace nmtools::view
         auto pads = index::parse_pad_width(pad_width);
         return view::pad2(array,pads,constant_values);
     }
+
+    template <typename array_t, typename pad_t, typename value_t=float>
+    constexpr auto pad3(const array_t& array, const pad_t& pad
+        , value_t value=static_cast<value_t>(0))
+    {
+        auto pads = index::parse_pad(pad);
+        return view::pad2(array,pads,value);
+    }
 } // namespace nmtools::view
 
 namespace nmtools::array
@@ -340,6 +429,19 @@ namespace nmtools::array
             ,resolver
         );
     } // pad
+
+    template <typename output_t=none_t, typename context_t=none_t, typename resolver_t=eval_result_t<>,
+        typename array_t, typename pad_t, typename value_t=float>
+    constexpr auto pad3(const array_t& array, const pad_t& pad, value_t value=static_cast<value_t>(0),
+        context_t&& context=context_t{}, output_t&& output=output_t{},meta::as_value<resolver_t> resolver=meta::as_value_v<resolver_t>)
+    {
+        auto padded = view::pad3(array,pad,value);
+        return eval(padded
+            ,nmtools::forward<context_t>(context)
+            ,nmtools::forward<output_t>(output)
+            ,resolver
+        );
+    } // pad3
 } // namespace nmtools::array
 
 #endif // NMTOOLS_ARRAY_PAD_HPP

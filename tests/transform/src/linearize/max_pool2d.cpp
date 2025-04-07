@@ -28,7 +28,7 @@ TEST_CASE("transform_unary_fusion(max_pool2d1)" * doctest::test_suite("transfomr
     auto stride = array{2,2};
     auto ceil_mode = nm::True;
 
-    auto res = view::max_pool2d(input,kernel_size,stride,nm::None,ceil_mode);
+    auto res = view::max_pool2d(input,kernel_size,stride,nm::None,nm::None,ceil_mode);
 
     auto graph = fn::get_compute_graph(unwrap(res));
 
@@ -50,7 +50,7 @@ TEST_CASE("transform_unary_fusion(max_pool2d2)" * doctest::test_suite("transfomr
     auto stride = array{2,2};
     auto ceil_mode = nm::False;
 
-    auto res = view::max_pool2d(input,kernel_size,stride,nm::None,ceil_mode);
+    auto res = view::max_pool2d(input,kernel_size,stride,nm::None,nm::None,ceil_mode);
 
     auto graph = fn::get_compute_graph(unwrap(res));
 
@@ -72,7 +72,7 @@ TEST_CASE("linearize(max_pool2d)" * doctest::test_suite("transfomr"))
     auto stride = array{2,2};
     auto ceil_mode = nm::False;
 
-    auto res = view::max_pool2d(input,kernel_size,stride,nm::None,ceil_mode);
+    auto res = view::max_pool2d(input,kernel_size,stride,nm::None,nm::None,ceil_mode);
 
     auto graph = fn::get_compute_graph(unwrap(res));
 
@@ -95,7 +95,7 @@ TEST_CASE("linearize(max_pool2d)" * doctest::test_suite("transfomr"))
     auto dilation = array{2,2};
     auto ceil_mode = nm::False;
 
-    auto res = view::max_pool2d(input,kernel_size,stride,dilation,ceil_mode);
+    auto res = view::max_pool2d(input,kernel_size,stride,nm::None,dilation,ceil_mode);
 
     auto graph = fn::get_compute_graph(unwrap(res));
 
