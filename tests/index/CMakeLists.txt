@@ -73,6 +73,7 @@ if (NMTOOLS_INDEX_TEST_ALL)
         src/normalize_axis.cpp
         src/outer.cpp
         src/pad.cpp
+        src/pooling.cpp
         src/remove_dims.cpp
         src/remove_single_dims.cpp
         src/repeat.cpp

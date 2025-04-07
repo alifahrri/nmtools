@@ -23,6 +23,7 @@ NMTOOLS_TESTING_DECLARE_CASE(array, max_pool2d)
         };
         inline int kernel_size[2] = {3,3};
         inline int stride[2]  = {2,2};
+        inline auto padding   = None;
         inline auto dilation  = None;
         inline auto ceil_mode = True;
         NMTOOLS_CAST_ARRAYS(array)
@@ -55,6 +56,7 @@ NMTOOLS_TESTING_DECLARE_CASE(array, max_pool2d)
         };
         inline int kernel_size[2] = {3,3};
         inline int stride[2]  = {3,3};
+        inline auto padding   = None;
         inline auto dilation  = None;
         inline auto ceil_mode = True;
         NMTOOLS_CAST_ARRAYS(array)
@@ -87,6 +89,7 @@ NMTOOLS_TESTING_DECLARE_CASE(array, max_pool2d)
         };
         inline int kernel_size[2] = {3,3};
         inline int stride[2]  = {4,4};
+        inline auto padding   = None;
         inline auto dilation  = None;
         inline auto ceil_mode = True;
         NMTOOLS_CAST_ARRAYS(array)
@@ -118,6 +121,7 @@ NMTOOLS_TESTING_DECLARE_CASE(array, max_pool2d)
         };
         inline int kernel_size[2] = {3,3};
         inline int stride[2]  = {1,1};
+        inline auto padding   = None;
         inline auto dilation  = None;
         inline auto ceil_mode = True;
         NMTOOLS_CAST_ARRAYS(array)
@@ -150,6 +154,7 @@ NMTOOLS_TESTING_DECLARE_CASE(array, max_pool2d)
         };
         inline int kernel_size[2] = {3,3};
         inline int stride[2]  = {1,2};
+        inline auto padding   = None;
         inline auto dilation  = None;
         inline auto ceil_mode = True;
         NMTOOLS_CAST_ARRAYS(array)
@@ -182,6 +187,7 @@ NMTOOLS_TESTING_DECLARE_CASE(array, max_pool2d)
         };
         inline int kernel_size[2] = {3,3};
         inline int stride[2]  = {2,1};
+        inline auto padding   = None;
         inline auto dilation  = None;
         inline auto ceil_mode = True;
         NMTOOLS_CAST_ARRAYS(array)
@@ -214,6 +220,7 @@ NMTOOLS_TESTING_DECLARE_CASE(array, max_pool2d)
         };
         inline int kernel_size[2] = {3,3};
         inline int stride[2]  = {2,1};
+        inline auto padding   = None;
         inline auto dilation  = None;
         inline auto ceil_mode = False;
         NMTOOLS_CAST_ARRAYS(array)
@@ -245,6 +252,7 @@ NMTOOLS_TESTING_DECLARE_CASE(array, max_pool2d)
         };
         inline int kernel_size[2] = {3,3};
         inline int stride[2]  = {1,2};
+        inline auto padding   = None;
         inline auto dilation  = None;
         inline auto ceil_mode = False;
         NMTOOLS_CAST_ARRAYS(array)
@@ -277,6 +285,7 @@ NMTOOLS_TESTING_DECLARE_CASE(array, max_pool2d)
         };
         inline int kernel_size[2] = {2,2};
         inline int stride[2]  = {1,1};
+        inline auto padding   = None;
         inline auto dilation  = None;
         inline auto ceil_mode = False;
         NMTOOLS_CAST_ARRAYS(array)
@@ -310,6 +319,7 @@ NMTOOLS_TESTING_DECLARE_CASE(array, max_pool2d)
         };
         inline int kernel_size[2] = {2,2};
         inline int stride[2]  = {2,2};
+        inline auto padding   = None;
         inline auto dilation  = None;
         inline auto ceil_mode = False;
         NMTOOLS_CAST_ARRAYS(array)
@@ -342,6 +352,7 @@ NMTOOLS_TESTING_DECLARE_CASE(array, max_pool2d)
         };
         inline int kernel_size[2] = {2,2};
         inline int stride[2]  = {3,3};
+        inline auto padding   = None;
         inline auto dilation  = None;
         inline auto ceil_mode = False;
         NMTOOLS_CAST_ARRAYS(array)
@@ -373,6 +384,7 @@ NMTOOLS_TESTING_DECLARE_CASE(array, max_pool2d)
         };
         inline int kernel_size[2] = {2,2};
         inline int stride[2]  = {3,3};
+        inline auto padding   = None;
         inline auto dilation  = None;
         inline auto ceil_mode = True;
         NMTOOLS_CAST_ARRAYS(array)
@@ -405,6 +417,7 @@ NMTOOLS_TESTING_DECLARE_CASE(array, max_pool2d)
         };
         inline int kernel_size[2] = {2,2};
         inline int stride[2]  = {2,2};
+        inline auto padding   = None;
         inline auto dilation  = None;
         inline auto ceil_mode = True;
         NMTOOLS_CAST_ARRAYS(array)
@@ -437,6 +450,7 @@ NMTOOLS_TESTING_DECLARE_CASE(array, max_pool2d)
         };
         inline int kernel_size[2] = {2,2};
         inline int stride[2]  = {1,1};
+        inline auto padding   = None;
         inline auto dilation  = None;
         inline auto ceil_mode = True;
         NMTOOLS_CAST_ARRAYS(array)
@@ -472,6 +486,7 @@ NMTOOLS_TESTING_DECLARE_CASE(array, max_pool2d)
         };
         inline int kernel_size[2] = {3, 3};
         inline int stride[2]  = {2, 2};
+        inline auto padding   = None;
         inline auto dilation  = None;
         inline auto ceil_mode = True;
         NMTOOLS_CAST_ARRAYS(array)
@@ -507,6 +522,7 @@ NMTOOLS_TESTING_DECLARE_CASE(array, max_pool2d)
         };
         inline int kernel_size[2] = {3, 3};
         inline int stride[2]  = {2, 2};
+        inline auto padding   = None;
         inline auto dilation  = None;
         inline auto ceil_mode = False;
         NMTOOLS_CAST_ARRAYS(array)
@@ -541,6 +557,7 @@ NMTOOLS_TESTING_DECLARE_CASE(array, max_pool2d)
         };
         inline int kernel_size[2] = {3, 3};
         inline int stride[2]  = {3, 3};
+        inline auto padding   = None;
         inline auto dilation  = None;
         inline auto ceil_mode = False;
         NMTOOLS_CAST_ARRAYS(array)
@@ -576,6 +593,7 @@ NMTOOLS_TESTING_DECLARE_CASE(array, max_pool2d)
         };
         inline int kernel_size[2] = {3, 3};
         inline int stride[2]  = {2, 2};
+        inline auto padding   = None;
         inline auto dilation  = None;
         inline auto ceil_mode = True;
         NMTOOLS_CAST_ARRAYS(array)
@@ -612,6 +630,7 @@ NMTOOLS_TESTING_DECLARE_CASE(array, max_pool2d)
         };
         inline int kernel_size[2] = {3, 3};
         inline int stride[2]  = {2, 2};
+        inline auto padding   = None;
         inline auto dilation  = None;
         inline auto ceil_mode = False;
         NMTOOLS_CAST_ARRAYS(array)
@@ -649,6 +668,7 @@ NMTOOLS_TESTING_DECLARE_CASE(array, max_pool2d)
         };
         inline int kernel_size[2] = {3, 3};
         inline int stride[2]  = {3, 3};
+        inline auto padding   = None;
         inline auto dilation  = None;
         inline auto ceil_mode = False;
         NMTOOLS_CAST_ARRAYS(array)
@@ -685,6 +705,7 @@ NMTOOLS_TESTING_DECLARE_CASE(array, max_pool2d)
         };
         inline int kernel_size[2] = {3, 3};
         inline int stride[2]  = {3, 3};
+        inline auto padding   = None;
         inline auto dilation  = None;
         inline auto ceil_mode = True;
         NMTOOLS_CAST_ARRAYS(array)
@@ -721,6 +742,7 @@ NMTOOLS_TESTING_DECLARE_CASE(array, max_pool2d)
         };
         inline int kernel_size[2] = {3, 3};
         inline int stride[2]  = {3, 3};
+        inline auto padding   = None;
         inline auto dilation  = None;
         inline auto ceil_mode = false;
         NMTOOLS_CAST_ARRAYS(array)
@@ -757,6 +779,7 @@ NMTOOLS_TESTING_DECLARE_CASE(array, max_pool2d)
         };
         inline int kernel_size[2] = {3, 3};
         inline int stride[2]  = {3, 3};
+        inline auto padding   = None;
         inline auto dilation  = None;
         inline auto ceil_mode = true;
         NMTOOLS_CAST_ARRAYS(array)
@@ -793,16 +816,16 @@ NMTOOLS_TESTING_DECLARE_CASE(array, max_pool2d)
         };
         inline int kernel_size[2] = {3, 3};
         inline int stride[2]      = {2, 2};
-        inline int dilation[2]    = {2, 2}; // Added dilation parameter
-        inline auto ceil_mode     = True;    // Use nmtools 'True'
+        inline auto padding = None;
+        inline int dilation[2]    = {2, 2};
+        inline auto ceil_mode     = True;
         NMTOOLS_CAST_ARRAYS(array)
         NMTOOLS_CAST_INDEX_ARRAYS(kernel_size)
         NMTOOLS_CAST_INDEX_ARRAYS(stride)
-        NMTOOLS_CAST_INDEX_ARRAYS(dilation) // Cast dilation
+        NMTOOLS_CAST_INDEX_ARRAYS(dilation)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case13)
     {
-        // Expected output from python test case
         inline int result[1][1][2][2] = {{{{32, 34}, {46, 48}}}};
     }
 
@@ -823,6 +846,7 @@ NMTOOLS_TESTING_DECLARE_CASE(array, max_pool2d)
         };
         inline int kernel_size[2] = {3, 3};
         inline int stride[2]      = {2, 2};
+        inline auto padding = None;
         inline int dilation[2]    = {3, 3};
         inline auto ceil_mode     = True;
         NMTOOLS_CAST_ARRAYS(array)
@@ -852,6 +876,7 @@ NMTOOLS_TESTING_DECLARE_CASE(array, max_pool2d)
         };
         inline int kernel_size[2] = {3, 3};
         inline int stride[2]      = {2, 2};
+        inline auto padding = None;
         inline int dilation[2]    = {3, 3};
         inline auto ceil_mode     = False;
         NMTOOLS_CAST_ARRAYS(array)
@@ -881,6 +906,7 @@ NMTOOLS_TESTING_DECLARE_CASE(array, max_pool2d)
         };
         inline int kernel_size[2] = {3, 3};
         inline int stride[2]      = {2, 2};
+        inline auto padding = None;
         inline int dilation       = 3;
         inline auto ceil_mode     = True;
         NMTOOLS_CAST_ARRAYS(array)
@@ -909,6 +935,7 @@ NMTOOLS_TESTING_DECLARE_CASE(array, max_pool2d)
         };
         inline int kernel_size[2] = {3, 3};
         inline int stride         = 2;
+        inline auto padding = None;
         inline int dilation       = 3;
         inline auto ceil_mode     = True;
         NMTOOLS_CAST_ARRAYS(array)
@@ -936,6 +963,7 @@ NMTOOLS_TESTING_DECLARE_CASE(array, max_pool2d)
         };
         inline int kernel_size = 3;
         inline int stride      = 2;
+        inline auto padding = None;
         inline int dilation    = 3;
         inline auto ceil_mode  = True;
         NMTOOLS_CAST_ARRAYS(array)
@@ -962,6 +990,7 @@ NMTOOLS_TESTING_DECLARE_CASE(array, max_pool2d)
         };
         inline int kernel_size[2] = {3, 3};
         inline int stride[2]      = {2, 2};
+        inline auto padding = None;
         inline int dilation[2]    = {2, 1};
         inline auto ceil_mode     = True;
         NMTOOLS_CAST_ARRAYS(array)
@@ -998,6 +1027,7 @@ NMTOOLS_TESTING_DECLARE_CASE(array, max_pool2d)
         };
         inline int kernel_size[2] = {3, 3};
         inline int stride[2]      = {2, 2};
+        inline auto padding = None;
         inline int dilation[2]    = {1, 2};
         inline auto ceil_mode     = True;
         NMTOOLS_CAST_ARRAYS(array)
@@ -1035,6 +1065,7 @@ NMTOOLS_TESTING_DECLARE_CASE(array, max_pool2d)
         };
         inline int kernel_size[2] = {3, 3};
         inline int stride[2]      = {1, 1};
+        inline auto padding = None;
         inline int dilation[2]    = {3, 3};
         inline auto ceil_mode     = True;
         NMTOOLS_CAST_ARRAYS(array)
@@ -1064,6 +1095,7 @@ NMTOOLS_TESTING_DECLARE_CASE(array, max_pool2d)
         };
         inline int kernel_size[2] = {3, 3};
         inline int stride[2]      = {1, 1};
+        inline auto padding = None;
         inline int dilation[2]    = {2, 2};
         inline auto ceil_mode     = True;
         NMTOOLS_CAST_ARRAYS(array)
@@ -1079,6 +1111,167 @@ NMTOOLS_TESTING_DECLARE_CASE(array, max_pool2d)
                     {32,33,34},
                     {39,40,41},
                     {46,47,48},
+                }
+            }
+        };
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case19)
+    {
+        inline int array[1][1][7][7] = {
+            {
+                {
+                    { 0,  1,  2,  3,  4,  5,  6}, 
+                    { 7,  8,  9, 10, 11, 12, 13}, 
+                    {14, 15, 16, 17, 18, 19, 20}, 
+                    {21, 22, 23, 24, 25, 26, 27}, 
+                    {28, 29, 30, 31, 32, 33, 34}, 
+                    {35, 36, 37, 38, 39, 40, 41}, 
+                    {42, 43, 44, 45, 46, 47, 48}
+                }
+            }
+        };
+        inline int kernel_size[2] = {3, 3};
+        inline int stride[2]      = {2, 2};
+        inline int padding[2]     = {1, 1};
+        inline int dilation[2]    = {2, 2};
+        inline auto ceil_mode     = True;
+        NMTOOLS_CAST_ARRAYS(array)
+        NMTOOLS_CAST_INDEX_ARRAYS(kernel_size)
+        NMTOOLS_CAST_INDEX_ARRAYS(stride)
+        NMTOOLS_CAST_INDEX_ARRAYS(padding)
+        NMTOOLS_CAST_INDEX_ARRAYS(dilation)
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case19)
+    {
+        inline int result[1][1][3][3] = {
+            {
+                {
+                    {24, 26, 26},
+                    {38, 40, 40},
+                    {38, 40, 40},
+                }
+            }
+        };
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case20)
+    {
+        inline int array[1][1][7][7] = {
+            {
+                {
+                    { 0,  1,  2,  3,  4,  5,  6}, 
+                    { 7,  8,  9, 10, 11, 12, 13}, 
+                    {14, 15, 16, 17, 18, 19, 20}, 
+                    {21, 22, 23, 24, 25, 26, 27}, 
+                    {28, 29, 30, 31, 32, 33, 34}, 
+                    {35, 36, 37, 38, 39, 40, 41}, 
+                    {42, 43, 44, 45, 46, 47, 48}
+                }
+            }
+        };
+        inline int kernel_size[2] = {3, 3};
+        inline int stride[2]      = {2, 2};
+        inline int padding[2]     = {1, 2};
+        inline int dilation[2]    = {2, 2};
+        inline auto ceil_mode     = True;
+        NMTOOLS_CAST_ARRAYS(array)
+        NMTOOLS_CAST_INDEX_ARRAYS(kernel_size)
+        NMTOOLS_CAST_INDEX_ARRAYS(stride)
+        NMTOOLS_CAST_INDEX_ARRAYS(padding)
+        NMTOOLS_CAST_INDEX_ARRAYS(dilation)
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case20)
+    {
+        inline int result[1][1][3][4] = {
+            {
+                {
+                    {23, 25, 27, 27},
+                    {37, 39, 41, 41},
+                    {37, 39, 41, 41},
+                }
+            }
+        };
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case21)
+    {
+        inline int array[1][1][5][5] = {
+            {
+                {
+                    { 0,  1,  2,  3,  4}, 
+                    { 5,  6,  7,  8,  9}, 
+                    {10, 11, 12, 13, 14}, 
+                    {15, 16, 17, 18, 19}, 
+                    {20, 21, 22, 23, 24}
+                }
+            }
+        };
+        inline int kernel_size[2] = {2, 2};
+        inline int stride[2]      = {1, 1};
+        inline int padding[2]     = {1, 1};
+        inline int dilation[2]    = {1, 1};
+        inline auto ceil_mode     = False;
+        NMTOOLS_CAST_ARRAYS(array)
+        NMTOOLS_CAST_INDEX_ARRAYS(kernel_size)
+        NMTOOLS_CAST_INDEX_ARRAYS(stride)
+        NMTOOLS_CAST_INDEX_ARRAYS(padding)
+        NMTOOLS_CAST_INDEX_ARRAYS(dilation)
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case21)
+    {
+        inline int result[1][1][6][6] = {
+            {
+                {
+                    { 0,  1,  2,  3,  4,  4},
+                    { 5,  6,  7,  8,  9,  9},
+                    {10, 11, 12, 13, 14, 14},
+                    {15, 16, 17, 18, 19, 19},
+                    {20, 21, 22, 23, 24, 24},
+                    {20, 21, 22, 23, 24, 24}
+                }
+            }
+        };
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case22)
+    {
+        inline int array[1][1][7][7] = {
+            {
+                {
+                    { 0,  1,  2,  3,  4,  5,  6},
+                    { 7,  8,  9, 10, 11, 12, 13},
+                    {14, 15, 16, 17, 18, 19, 20},
+                    {21, 22, 23, 24, 25, 26, 27},
+                    {28, 29, 30, 31, 32, 33, 34},
+                    {35, 36, 37, 38, 39, 40, 41},
+                    {42, 43, 44, 45, 46, 47, 48}
+                }
+            }
+        };
+        inline int kernel_size[2] = {4, 4};
+        inline int stride[2]      = {1, 1};
+        inline int padding[2]     = {1, 2};
+        inline int dilation[2]    = {1, 1};
+        inline auto ceil_mode     = False;
+
+        NMTOOLS_CAST_ARRAYS(array)
+        NMTOOLS_CAST_INDEX_ARRAYS(kernel_size)
+        NMTOOLS_CAST_INDEX_ARRAYS(stride)
+        NMTOOLS_CAST_INDEX_ARRAYS(padding)
+        NMTOOLS_CAST_INDEX_ARRAYS(dilation)
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case22)
+    {
+        inline int result[1][1][6][8] = {
+            {
+                {
+                    {15, 16, 17, 18, 19, 20, 20, 20},
+                    {22, 23, 24, 25, 26, 27, 27, 27},
+                    {29, 30, 31, 32, 33, 34, 34, 34},
+                    {36, 37, 38, 39, 40, 41, 41, 41},
+                    {43, 44, 45, 46, 47, 48, 48, 48},
+                    {43, 44, 45, 46, 47, 48, 48, 48}
                 }
             }
         };
@@ -1101,6 +1294,7 @@ NMTOOLS_TESTING_DECLARE_CASE(array, avg_pool2d)
         };
         inline int kernel_size[2] = {3,3};
         inline int stride[2]  = {2,2};
+        inline auto padding   = None;
         inline auto dilation  = None;
         inline auto ceil_mode = True;
         NMTOOLS_CAST_ARRAYS(array)
@@ -1133,6 +1327,7 @@ NMTOOLS_TESTING_DECLARE_CASE(array, avg_pool2d)
         };
         inline int kernel_size[2] = {3,3};
         inline int stride[2]  = {1,1};
+        inline auto padding   = None;
         inline auto dilation  = None;
         inline auto ceil_mode = True;
         NMTOOLS_CAST_ARRAYS(array)
@@ -1165,6 +1360,7 @@ NMTOOLS_TESTING_DECLARE_CASE(array, avg_pool2d)
         };
         inline int kernel_size[2] = {3,3};
         inline int stride[2]  = {2,1};
+        inline auto padding   = None;
         inline auto dilation  = None;
         inline auto ceil_mode = True;
         NMTOOLS_CAST_ARRAYS(array)
@@ -1197,6 +1393,7 @@ NMTOOLS_TESTING_DECLARE_CASE(array, avg_pool2d)
         };
         inline int kernel_size[2] = {3,3};
         inline int stride[2]  = {1,2};
+        inline auto padding   = None;
         inline auto dilation  = None;
         inline auto ceil_mode = True;
         NMTOOLS_CAST_ARRAYS(array)
@@ -1229,6 +1426,7 @@ NMTOOLS_TESTING_DECLARE_CASE(array, avg_pool2d)
         };
         inline int kernel_size[2] = {3,3};
         inline int stride[2]  = {2,1};
+        inline auto padding   = None;
         inline auto dilation  = None;
         inline auto ceil_mode = False;
         NMTOOLS_CAST_ARRAYS(array)
@@ -1260,6 +1458,7 @@ NMTOOLS_TESTING_DECLARE_CASE(array, avg_pool2d)
         };
         inline int kernel_size[2] = {3,3};
         inline int stride[2]  = {1,2};
+        inline auto padding   = None;
         inline auto dilation  = None;
         inline auto ceil_mode = False;
         NMTOOLS_CAST_ARRAYS(array)
@@ -1292,6 +1491,7 @@ NMTOOLS_TESTING_DECLARE_CASE(array, avg_pool2d)
         };
         inline int kernel_size[2] = {2,2};
         inline int stride[2]  = {1,1};
+        inline auto padding   = None;
         inline auto dilation  = None;
         inline auto ceil_mode = False;
         NMTOOLS_CAST_ARRAYS(array)
@@ -1325,6 +1525,7 @@ NMTOOLS_TESTING_DECLARE_CASE(array, avg_pool2d)
         };
         inline int kernel_size[2] = {2,2};
         inline int stride[2]  = {2,2};
+        inline auto padding   = None;
         inline auto dilation  = None;
         inline auto ceil_mode = False;
         NMTOOLS_CAST_ARRAYS(array)
@@ -1357,6 +1558,7 @@ NMTOOLS_TESTING_DECLARE_CASE(array, avg_pool2d)
         };
         inline int kernel_size[2] = {2,2};
         inline int stride[2]  = {3,3};
+        inline auto padding   = None;
         inline auto dilation  = None;
         inline auto ceil_mode = False;
         NMTOOLS_CAST_ARRAYS(array)
@@ -1389,6 +1591,7 @@ NMTOOLS_TESTING_DECLARE_CASE(array, avg_pool2d)
         };
         inline int kernel_size[2] = {2,2};
         inline int stride[2]  = {3,3};
+        inline auto padding   = None;
         inline auto dilation  = None;
         inline auto ceil_mode = True;
         NMTOOLS_CAST_ARRAYS(array)

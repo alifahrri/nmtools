@@ -6,6 +6,37 @@
 
 using namespace nmtools::literals;
 
+NMTOOLS_TESTING_DECLARE_CASE(index, pool_padding)
+{
+    NMTOOLS_TESTING_DECLARE_ARGS(case1)
+    {
+        inline int src_shape[4] = {1,1,5,5};
+        inline int padding[2] = {1,1};
+        NMTOOLS_CAST_INDEX_ARRAYS(src_shape)
+        NMTOOLS_CAST_INDEX_ARRAYS(padding)
+        NMTOOLS_MAYBE_CAST_INDEX_ARRAYS(src_shape)
+        NMTOOLS_MAYBE_CAST_INDEX_ARRAYS(padding)
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case1)
+    {
+        inline int result[8] = {1,1,1,1,0,0,0,0};
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case2)
+    {
+        inline int src_shape[4] = {1,1,7,7};
+        inline int padding[2] = {1,2};
+        NMTOOLS_CAST_INDEX_ARRAYS(src_shape)
+        NMTOOLS_CAST_INDEX_ARRAYS(padding)
+        NMTOOLS_MAYBE_CAST_INDEX_ARRAYS(src_shape)
+        NMTOOLS_MAYBE_CAST_INDEX_ARRAYS(padding)
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case2)
+    {
+        inline int result[8] = {2,2,1,1,0,0,0,0};
+    }
+}
+
 NMTOOLS_TESTING_DECLARE_CASE(index, pool_pad)
 {
     NMTOOLS_TESTING_DECLARE_ARGS(case1)
@@ -16,6 +47,7 @@ NMTOOLS_TESTING_DECLARE_CASE(index, pool_pad)
         NMTOOLS_CAST_INDEX_ARRAYS(src_shape)
         NMTOOLS_CAST_INDEX_ARRAYS(kernel_size)
         NMTOOLS_CAST_INDEX_ARRAYS(stride)
+        NMTOOLS_MAYBE_CAST_INDEX_ARRAYS(src_shape)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case1)
     {
