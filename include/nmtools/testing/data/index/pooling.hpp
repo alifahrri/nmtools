@@ -35,6 +35,58 @@ NMTOOLS_TESTING_DECLARE_CASE(index, pool_padding)
     {
         inline int result[8] = {2,2,1,1,0,0,0,0};
     }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case3)
+    {
+        inline int src_shape[3] = {1,1,10};
+        inline int padding[1] = {0};
+        NMTOOLS_CAST_INDEX_ARRAYS(src_shape)
+        NMTOOLS_CAST_INDEX_ARRAYS(padding)
+        NMTOOLS_MAYBE_CAST_INDEX_ARRAYS(src_shape)
+        NMTOOLS_MAYBE_CAST_INDEX_ARRAYS(padding)
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case3)
+    {
+        inline int result[6] = {0,0,0,0,0,0};
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case3b)
+    {
+        inline int src_shape[3] = {1,1,10};
+        inline int padding = 0;
+        NMTOOLS_CAST_INDEX_ARRAYS(src_shape)
+        NMTOOLS_MAYBE_CAST_INDEX_ARRAYS(src_shape)
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case3b)
+    {
+        inline int result[6] = {0,0,0,0,0,0};
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case4)
+    {
+        inline int src_shape[3] = {1,1,10};
+        inline int padding[1] = {1};
+        NMTOOLS_CAST_INDEX_ARRAYS(src_shape)
+        NMTOOLS_CAST_INDEX_ARRAYS(padding)
+        NMTOOLS_MAYBE_CAST_INDEX_ARRAYS(src_shape)
+        NMTOOLS_MAYBE_CAST_INDEX_ARRAYS(padding)
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case4)
+    {
+        inline int result[6] = {1,1,0,0,0,0};
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case4b)
+    {
+        inline int src_shape[3] = {1,1,10};
+        inline int padding = 1;
+        NMTOOLS_CAST_INDEX_ARRAYS(src_shape)
+        NMTOOLS_MAYBE_CAST_INDEX_ARRAYS(src_shape)
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case4b)
+    {
+        inline int result[6] = {1,1,0,0,0,0};
+    }
 }
 
 NMTOOLS_TESTING_DECLARE_CASE(index, pool_pad)
@@ -97,6 +149,25 @@ NMTOOLS_TESTING_DECLARE_CASE(index, pool_pad)
         };
     }
 
+    NMTOOLS_TESTING_DECLARE_ARGS(case1d)
+    {
+        inline int src_shape[3] = {1,1,4};
+        inline int kernel_size[1] = {3};
+        inline int stride[1] = {2};
+        NMTOOLS_CAST_INDEX_ARRAYS(src_shape)
+        NMTOOLS_CAST_INDEX_ARRAYS(kernel_size)
+        NMTOOLS_CAST_INDEX_ARRAYS(stride)
+        NMTOOLS_MAYBE_CAST_INDEX_ARRAYS(src_shape)
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case1d)
+    {
+        inline int expected[3][2] = {
+            {0,0},
+            {0,0},
+            {0,1},
+        };
+    }
+
     NMTOOLS_TESTING_DECLARE_ARGS(case2)
     {
         inline int src_shape[4] = {1,1,4,4};
@@ -110,6 +181,24 @@ NMTOOLS_TESTING_DECLARE_CASE(index, pool_pad)
     {
         inline int expected[4][2] = {
             {0,0},
+            {0,0},
+            {0,0},
+            {0,0},
+        };
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case2b)
+    {
+        inline int src_shape[3] = {1,1,4};
+        inline int kernel_size[1] = {3};
+        inline int stride[1] = {1};
+        NMTOOLS_CAST_INDEX_ARRAYS(src_shape)
+        NMTOOLS_CAST_INDEX_ARRAYS(kernel_size)
+        NMTOOLS_CAST_INDEX_ARRAYS(stride)
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case2b)
+    {
+        inline int expected[4][2] = {
             {0,0},
             {0,0},
             {0,0},

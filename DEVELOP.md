@@ -223,10 +223,10 @@ mkdir -p build/cuda-${TOOLCHAIN} && cd build/cuda-${TOOLCHAIN} \
     && make -j`nproc` VERBOSE=1
 ```
 ```
-docker run -it --runtime=nvidia --device /dev/nvidia0:/dev/nvidia0 \                                           
-  --device /dev/nvidiactl:/dev/nvidiactl \
-  --device /dev/nvidia-uvm:/dev/nvidia-uvm \
-  --device /dev/nvidia-uvm-tools:/dev/nvidia-uvm-tools --name cuda-dev --volume ${PWD}:/workspace/nmtools --entrypoint zsh nmtools:cuda
+docker run -it --runtime=nvidia --device /dev/nvidia0 \
+  --device /dev/nvidiactl \
+  --device /dev/nvidia-uvm \
+  --device /dev/nvidia-uvm-tools --name cuda-dev --volume ${PWD}:/workspace/nmtools --entrypoint zsh nmtools:cuda
 ```
 To restart:
 ```
@@ -247,9 +247,9 @@ mkdir -p build/hip && cd build/hip && cmake -DCMAKE_TOOLCHAIN_FILE=../../cmake/t
 ```
 By default, the test use gfx1103 (Ryzen 8700G) as target, you can specify target arch by adding cmake args `-DNMTOOLS_TEST_HIP_ARCH` as follows:
 ```
-mkdir -p build/hip && cd build/hip && cmake -DCMAKE_TOOLCHAIN_FILE=../../cmake/toolchains/hip.cmake -DNMTOOLS_BUILD_HIP_TESTS=ON -DNMTOOLS_TEST_HIP_ARCH="gfx1036,gfx1103" ../.. && make -j`nproc` VERBOSE=1
+mkdir -p build/hip && cd build/hip && cmake -DCMAKE_TOOLCHAIN_FILE=../../cmake/toolchains/hip.cmake -DNMTOOLS_BUILD_HIP_TESTS=ON -DNMTOOLS_TEST_HIP_ARCH="gfx1036,gfx1100,gfx1103" ../.. && make -j`nproc` VERBOSE=1
 ```
-where `gfx1036` is iGPU in ryzen 7000/9000 series.
+where `gfx1036` is iGPU in ryzen 7000/9000 series and `gfx1100` is for Radeon 7900 XTX.
 
 After successful build, then you can run the hip-test:
 ```

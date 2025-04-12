@@ -80,6 +80,8 @@ set(ARRAY_VIEW_1_TEST_SOURCES
     src/linspace.cpp
     # split matmul to avoid high peak memory
     # src/matmul.cpp
+    src/max_pool1d.cpp
+    src/max_pool3d.cpp
     src/mean.cpp
     src/moveaxis.cpp
     src/mutable_flatten.cpp
