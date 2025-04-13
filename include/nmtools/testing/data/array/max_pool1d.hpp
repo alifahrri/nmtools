@@ -317,6 +317,189 @@ NMTOOLS_TESTING_DECLARE_CASE(array, max_pool1d)
         };
     }
 
+    NMTOOLS_TESTING_DECLARE_ARGS(case7)
+    {
+        inline float array[1][1][5] = {
+            {
+                {0.f, 1.f, 2.f, 3.f, 4.f}
+            }
+        };
+        inline int kernel_size = 2;
+        inline int stride      = 2;
+        inline int padding     = 1;
+        inline int dilation    = 1;
+        inline auto ceil_mode  = True;
+        NMTOOLS_CAST_ARRAYS(array);
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case7)
+    {
+        inline float result[1][1][3] = {
+            {
+                {0.f, 2.f, 4.f}
+            }
+        };
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case8)
+    {
+        inline float array[1][1][5] = {
+            {
+                {0.f, 1.f, 2.f, 3.f, 4.f}
+            }
+        };
+        inline int kernel_size = 2;
+        inline int stride      = 2;
+        inline int padding     = 1;
+        inline int dilation    = 1;
+        inline auto ceil_mode  = False;
+        NMTOOLS_CAST_ARRAYS(array);
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case8)
+    {
+        inline float result[1][1][3] = {
+            {
+                {0.f, 2.f, 4.f}
+            }
+        };
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case9)
+    {
+        inline float array[1][1][10] = {
+            {
+                {0.f, 1.f, 2.f, 3.f, 4.f, 5.f, 6.f, 7.f, 8.f, 9.f}
+            }
+        };
+        inline int kernel_size = 2;
+        inline int stride      = 2;
+        inline int padding     = 1;
+        inline int dilation    = 1;
+        inline auto ceil_mode  = False;
+        NMTOOLS_CAST_ARRAYS(array);
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case9)
+    {
+        inline float result[1][1][6] = {
+            {
+                {0.f, 2.f, 4.f, 6.f, 8.f, 9.f}
+            }
+        };
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case10)
+    {
+        inline float array[1][1][10] = {
+            {
+                {0.f, 1.f, 2.f, 3.f, 4.f, 5.f, 6.f, 7.f, 8.f, 9.f}
+            }
+        };
+        inline int kernel_size = 2;
+        inline int stride      = 2;
+        inline int padding     = 1;
+        inline int dilation    = 1;
+        inline auto ceil_mode  = True;
+        NMTOOLS_CAST_ARRAYS(array);
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case10)
+    {
+        inline float result[1][1][6] = {
+            {
+                {0.f, 2.f, 4.f, 6.f, 8.f, 9.f}
+            }
+        };
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case11)
+    {
+        inline float array[1][1][10] = {
+            {
+                {0.f, 1.f, 2.f, 3.f, 4.f, 5.f, 6.f, 7.f, 8.f, 9.f}
+            }
+        };
+        inline int kernel_size = 4;
+        inline int stride      = 4;
+        inline int padding     = 2;
+        inline int dilation    = 1;
+        inline auto ceil_mode  = True;
+        NMTOOLS_CAST_ARRAYS(array);
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case11)
+    {
+        inline float result[1][1][3] = {
+            {
+                {1.f, 5.f, 9.f}
+            }
+        };
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case12)
+    {
+        inline float array[1][1][10] = {
+            {
+                {0.f, 1.f, 2.f, 3.f, 4.f, 5.f, 6.f, 7.f, 8.f, 9.f}
+            }
+        };
+        inline int kernel_size = 4;
+        inline int stride      = 4;
+        inline int padding     = 2;
+        inline int dilation    = 1;
+        inline auto ceil_mode  = False;
+        NMTOOLS_CAST_ARRAYS(array);
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case12)
+    {
+        inline float result[1][1][3] = {
+            {
+                {1.f, 5.f, 9.f}
+            }
+        };
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case13)
+    {
+        inline float array[1][1][10] = {
+            {
+                {0.f, 1.f, 2.f, 3.f, 4.f, 5.f, 6.f, 7.f, 8.f, 9.f}
+            }
+        };
+        inline int kernel_size = 4;
+        inline int stride      = 4;
+        inline int padding     = 1;
+        inline int dilation    = 1;
+        inline auto ceil_mode  = True;
+        NMTOOLS_CAST_ARRAYS(array);
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case13)
+    {
+        inline float result[1][1][3] = {
+            {
+                {2.f, 6.f, 9.f}
+            }
+        };
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case14)
+    {
+        inline float array[1][1][10] = {
+            {
+                {0.f, 1.f, 2.f, 3.f, 4.f, 5.f, 6.f, 7.f, 8.f, 9.f}
+            }
+        };
+        inline int kernel_size = 4;
+        inline int stride      = 4;
+        inline int padding     = 0;
+        inline int dilation    = 1;
+        inline auto ceil_mode  = True;
+        NMTOOLS_CAST_ARRAYS(array);
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case14)
+    {
+        inline float result[1][1][3] = {
+            {
+                {3.f, 7.f, 9.f}
+            }
+        };
+    }
 }
 
 #endif // NMTOOLS_TESTING_DATA_ARRAY_MAX_POOL1D_HPP

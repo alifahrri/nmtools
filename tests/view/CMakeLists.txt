@@ -81,6 +81,7 @@ set(ARRAY_VIEW_1_TEST_SOURCES
     # split matmul to avoid high peak memory
     # src/matmul.cpp
     src/max_pool1d.cpp
+    src/max_pool2d.cpp
     src/max_pool3d.cpp
     src/mean.cpp
     src/moveaxis.cpp

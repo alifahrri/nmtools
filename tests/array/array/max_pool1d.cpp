@@ -26,13 +26,13 @@ SUBCASE(#case_name) \
 { \
     NMTOOLS_TESTING_USE_CASE(array, max_pool1d, case_name); \
     using namespace args; \
-    auto result = nmtools::view::max_pool1d(__VA_ARGS__); \
+    auto result = nmtools::array::max_pool1d(__VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( nmtools::shape(result), nmtools::shape(expect::result) ); \
     NMTOOLS_ASSERT_CLOSE( result, expect::result ); \
 }
 
 #if 1
-TEST_CASE("max_pool1d(case1)" * doctest::test_suite("view::max_pool1d"))
+TEST_CASE("max_pool1d(case1)" * doctest::test_suite("array::max_pool1d"))
 {
     #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     MAX_POOL1D_SUBCASE( case1, array, kernel_size, stride, padding, dilation, ceil_mode );
@@ -62,7 +62,7 @@ TEST_CASE("max_pool1d(case1)" * doctest::test_suite("view::max_pool1d"))
 }
 #endif
 
-TEST_CASE("max_pool1d(case1b)" * doctest::test_suite("view::max_pool1d"))
+TEST_CASE("max_pool1d(case1b)" * doctest::test_suite("array::max_pool1d"))
 {
     #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     MAX_POOL1D_SUBCASE( case1b, array, kernel_size, stride, padding, dilation, ceil_mode );
@@ -92,7 +92,7 @@ TEST_CASE("max_pool1d(case1b)" * doctest::test_suite("view::max_pool1d"))
 }
 
 #if 1
-TEST_CASE("max_pool1d(case2)" * doctest::test_suite("view::max_pool1d"))
+TEST_CASE("max_pool1d(case2)" * doctest::test_suite("array::max_pool1d"))
 {
     #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     MAX_POOL1D_SUBCASE( case2, array, kernel_size, stride, padding, dilation, ceil_mode );
@@ -122,7 +122,7 @@ TEST_CASE("max_pool1d(case2)" * doctest::test_suite("view::max_pool1d"))
 }
 #endif
 
-TEST_CASE("max_pool1d(case2b)" * doctest::test_suite("view::max_pool1d"))
+TEST_CASE("max_pool1d(case2b)" * doctest::test_suite("array::max_pool1d"))
 {
     #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     MAX_POOL1D_SUBCASE( case2b, array, kernel_size, stride, padding, dilation, ceil_mode );
@@ -152,7 +152,7 @@ TEST_CASE("max_pool1d(case2b)" * doctest::test_suite("view::max_pool1d"))
 }
 
 #if 1
-TEST_CASE("max_pool1d(case3)" * doctest::test_suite("view::max_pool1d"))
+TEST_CASE("max_pool1d(case3)" * doctest::test_suite("array::max_pool1d"))
 {
     #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     MAX_POOL1D_SUBCASE( case3, array, kernel_size, stride, padding, dilation, ceil_mode );
@@ -182,7 +182,7 @@ TEST_CASE("max_pool1d(case3)" * doctest::test_suite("view::max_pool1d"))
 }
 #endif
 
-TEST_CASE("max_pool1d(case3b)" * doctest::test_suite("view::max_pool1d"))
+TEST_CASE("max_pool1d(case3b)" * doctest::test_suite("array::max_pool1d"))
 {
     #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     MAX_POOL1D_SUBCASE( case3b, array, kernel_size, stride, padding, dilation, ceil_mode );
@@ -212,7 +212,7 @@ TEST_CASE("max_pool1d(case3b)" * doctest::test_suite("view::max_pool1d"))
 }
 
 #if 1
-TEST_CASE("max_pool1d(case4)" * doctest::test_suite("view::max_pool1d"))
+TEST_CASE("max_pool1d(case4)" * doctest::test_suite("array::max_pool1d"))
 {
     #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     MAX_POOL1D_SUBCASE( case4, array, kernel_size, stride, padding, dilation, ceil_mode );
@@ -242,7 +242,7 @@ TEST_CASE("max_pool1d(case4)" * doctest::test_suite("view::max_pool1d"))
 }
 #endif
 
-TEST_CASE("max_pool1d(case4b)" * doctest::test_suite("view::max_pool1d"))
+TEST_CASE("max_pool1d(case4b)" * doctest::test_suite("array::max_pool1d"))
 {
     #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     MAX_POOL1D_SUBCASE( case4b, array, kernel_size, stride, padding, dilation, ceil_mode );
@@ -272,7 +272,7 @@ TEST_CASE("max_pool1d(case4b)" * doctest::test_suite("view::max_pool1d"))
 }
 
 #if 1
-TEST_CASE("max_pool1d(case5)" * doctest::test_suite("view::max_pool1d"))
+TEST_CASE("max_pool1d(case5)" * doctest::test_suite("array::max_pool1d"))
 {
     #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     MAX_POOL1D_SUBCASE( case5, array, kernel_size, stride, padding, dilation, ceil_mode );
@@ -302,7 +302,7 @@ TEST_CASE("max_pool1d(case5)" * doctest::test_suite("view::max_pool1d"))
 }
 #endif
 
-TEST_CASE("max_pool1d(case5b)" * doctest::test_suite("view::max_pool1d"))
+TEST_CASE("max_pool1d(case5b)" * doctest::test_suite("array::max_pool1d"))
 {
     #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     MAX_POOL1D_SUBCASE( case5b, array, kernel_size, stride, padding, dilation, ceil_mode );
@@ -332,7 +332,7 @@ TEST_CASE("max_pool1d(case5b)" * doctest::test_suite("view::max_pool1d"))
 }
 
 #if 1
-TEST_CASE("max_pool1d(case6)" * doctest::test_suite("view::max_pool1d"))
+TEST_CASE("max_pool1d(case6)" * doctest::test_suite("array::max_pool1d"))
 {
     #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     MAX_POOL1D_SUBCASE( case6, array, kernel_size, stride, padding, dilation, ceil_mode );
@@ -362,7 +362,7 @@ TEST_CASE("max_pool1d(case6)" * doctest::test_suite("view::max_pool1d"))
 }
 #endif
 
-TEST_CASE("max_pool1d(case6b)" * doctest::test_suite("view::max_pool1d"))
+TEST_CASE("max_pool1d(case6b)" * doctest::test_suite("array::max_pool1d"))
 {
     #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     MAX_POOL1D_SUBCASE( case6b, array, kernel_size, stride, padding, dilation, ceil_mode );
@@ -393,7 +393,7 @@ TEST_CASE("max_pool1d(case6b)" * doctest::test_suite("view::max_pool1d"))
 
 // resulting shape different from pytorch
 // TODO: fix or revisit
-TEST_CASE("max_pool1d(case7)" * doctest::test_suite("view::max_pool1d") * doctest::skip())
+TEST_CASE("max_pool1d(case7)" * doctest::test_suite("array::max_pool1d") * doctest::skip())
 {
     #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     MAX_POOL1D_SUBCASE( case7, array, kernel_size, stride, padding, dilation, ceil_mode );
@@ -422,7 +422,7 @@ TEST_CASE("max_pool1d(case7)" * doctest::test_suite("view::max_pool1d") * doctes
     #endif
 }
 
-TEST_CASE("max_pool1d(case8)" * doctest::test_suite("view::max_pool1d"))
+TEST_CASE("max_pool1d(case8)" * doctest::test_suite("array::max_pool1d"))
 {
     #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     MAX_POOL1D_SUBCASE( case8, array, kernel_size, stride, padding, dilation, ceil_mode );
@@ -451,7 +451,7 @@ TEST_CASE("max_pool1d(case8)" * doctest::test_suite("view::max_pool1d"))
     #endif
 }
 
-TEST_CASE("max_pool1d(case9)" * doctest::test_suite("view::max_pool1d"))
+TEST_CASE("max_pool1d(case9)" * doctest::test_suite("array::max_pool1d"))
 {
     #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     MAX_POOL1D_SUBCASE( case9, array, kernel_size, stride, padding, dilation, ceil_mode );
@@ -480,7 +480,7 @@ TEST_CASE("max_pool1d(case9)" * doctest::test_suite("view::max_pool1d"))
     #endif
 }
 
-TEST_CASE("max_pool1d(case10)" * doctest::test_suite("view::max_pool1d"))
+TEST_CASE("max_pool1d(case10)" * doctest::test_suite("array::max_pool1d"))
 {
     #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     MAX_POOL1D_SUBCASE( case10, array, kernel_size, stride, padding, dilation, ceil_mode );
@@ -511,7 +511,7 @@ TEST_CASE("max_pool1d(case10)" * doctest::test_suite("view::max_pool1d"))
 
 // resulting shape different from pytorch
 // TODO: fix or revisit
-TEST_CASE("max_pool1d(case11)" * doctest::test_suite("view::max_pool1d") * doctest::skip())
+TEST_CASE("max_pool1d(case11)" * doctest::test_suite("array::max_pool1d") * doctest::skip())
 {
     #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     MAX_POOL1D_SUBCASE( case11, array, kernel_size, stride, padding, dilation, ceil_mode );
@@ -540,7 +540,7 @@ TEST_CASE("max_pool1d(case11)" * doctest::test_suite("view::max_pool1d") * docte
     #endif
 }
 
-TEST_CASE("max_pool1d(case12)" * doctest::test_suite("view::max_pool1d"))
+TEST_CASE("max_pool1d(case12)" * doctest::test_suite("array::max_pool1d"))
 {
     #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     MAX_POOL1D_SUBCASE( case12, array, kernel_size, stride, padding, dilation, ceil_mode );
@@ -569,7 +569,7 @@ TEST_CASE("max_pool1d(case12)" * doctest::test_suite("view::max_pool1d"))
     #endif
 }
 
-TEST_CASE("max_pool1d(case13)" * doctest::test_suite("view::max_pool1d"))
+TEST_CASE("max_pool1d(case13)" * doctest::test_suite("array::max_pool1d"))
 {
     #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     MAX_POOL1D_SUBCASE( case13, array, kernel_size, stride, padding, dilation, ceil_mode );
@@ -598,7 +598,7 @@ TEST_CASE("max_pool1d(case13)" * doctest::test_suite("view::max_pool1d"))
     #endif
 }
 
-TEST_CASE("max_pool1d(case14)" * doctest::test_suite("view::max_pool1d"))
+TEST_CASE("max_pool1d(case14)" * doctest::test_suite("array::max_pool1d"))
 {
     #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     MAX_POOL1D_SUBCASE( case14, array, kernel_size, stride, padding, dilation, ceil_mode );

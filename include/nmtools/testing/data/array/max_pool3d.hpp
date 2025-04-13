@@ -731,6 +731,330 @@ NMTOOLS_TESTING_DECLARE_CASE(array, max_pool3d)
             }
         };
     }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case13)
+    {
+        inline float array[1][1][4][5][6] = {{{
+            {{ 0.f, 1.f, 2.f, 3.f, 4.f, 5.f}, { 6.f, 7.f, 8.f, 9.f,10.f,11.f}, {12.f,13.f,14.f,15.f,16.f,17.f}, {18.f,19.f,20.f,21.f,22.f,23.f}, {24.f,25.f,26.f,27.f,28.f,29.f}},
+            {{30.f,31.f,32.f,33.f,34.f,35.f}, {36.f,37.f,38.f,39.f,40.f,41.f}, {42.f,43.f,44.f,45.f,46.f,47.f}, {48.f,49.f,50.f,51.f,52.f,53.f}, {54.f,55.f,56.f,57.f,58.f,59.f}},
+            {{60.f,61.f,62.f,63.f,64.f,65.f}, {66.f,67.f,68.f,69.f,70.f,71.f}, {72.f,73.f,74.f,75.f,76.f,77.f}, {78.f,79.f,80.f,81.f,82.f,83.f}, {84.f,85.f,86.f,87.f,88.f,89.f}},
+            {{90.f,91.f,92.f,93.f,94.f,95.f}, {96.f,97.f,98.f,99.f,100.f,101.f}, {102.f,103.f,104.f,105.f,106.f,107.f}, {108.f,109.f,110.f,111.f,112.f,113.f}, {114.f,115.f,116.f,117.f,118.f,119.f}}
+        }}};
+        inline int kernel_size[3] = {4, 2, 3};
+        inline int stride         = 2;
+        inline int padding[3]     = {1, 1, 1};
+        inline auto dilation      = None;
+        inline auto ceil_mode     = True;
+        NMTOOLS_CAST_ARRAYS(array);
+        NMTOOLS_CAST_INDEX_ARRAYS(kernel_size);
+        NMTOOLS_CAST_INDEX_ARRAYS(padding);
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case13)
+    {
+        inline float result[1][1][2][3][4] = {
+            {
+                {
+                    {
+                        {61.f, 63.f, 65.f, 65.f},
+                        {73.f, 75.f, 77.f, 77.f},
+                        {85.f, 87.f, 89.f, 89.f},
+                    },
+                    {
+                        { 91.f,  93.f,  95.f,  95.f},
+                        {103.f, 105.f, 107.f, 107.f},
+                        {115.f, 117.f, 119.f, 119.f},
+                    },
+                }
+            }
+        };
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case14)
+    {
+        inline float array[1][1][4][5][6] = {{{
+            {{ 0.f, 1.f, 2.f, 3.f, 4.f, 5.f}, { 6.f, 7.f, 8.f, 9.f,10.f,11.f}, {12.f,13.f,14.f,15.f,16.f,17.f}, {18.f,19.f,20.f,21.f,22.f,23.f}, {24.f,25.f,26.f,27.f,28.f,29.f}},
+            {{30.f,31.f,32.f,33.f,34.f,35.f}, {36.f,37.f,38.f,39.f,40.f,41.f}, {42.f,43.f,44.f,45.f,46.f,47.f}, {48.f,49.f,50.f,51.f,52.f,53.f}, {54.f,55.f,56.f,57.f,58.f,59.f}},
+            {{60.f,61.f,62.f,63.f,64.f,65.f}, {66.f,67.f,68.f,69.f,70.f,71.f}, {72.f,73.f,74.f,75.f,76.f,77.f}, {78.f,79.f,80.f,81.f,82.f,83.f}, {84.f,85.f,86.f,87.f,88.f,89.f}},
+            {{90.f,91.f,92.f,93.f,94.f,95.f}, {96.f,97.f,98.f,99.f,100.f,101.f}, {102.f,103.f,104.f,105.f,106.f,107.f}, {108.f,109.f,110.f,111.f,112.f,113.f}, {114.f,115.f,116.f,117.f,118.f,119.f}}
+        }}};
+        inline int kernel_size[3] = {4, 2, 3};
+        inline int stride         = 2;
+        inline int padding[3]     = {1, 0, 1};
+        inline auto dilation      = None;
+        inline auto ceil_mode     = True;
+        NMTOOLS_CAST_ARRAYS(array);
+        NMTOOLS_CAST_INDEX_ARRAYS(kernel_size);
+        NMTOOLS_CAST_INDEX_ARRAYS(padding);
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case14)
+    {
+        inline float result[1][1][2][3][4] = {
+            {
+                {
+                    {
+                        {67.f, 69.f, 71.f, 71.f},
+                        {79.f, 81.f, 83.f, 83.f},
+                        {85.f, 87.f, 89.f, 89.f},
+                    },
+                    {
+                        { 97.f,  99.f, 101.f, 101.f},
+                        {109.f, 111.f, 113.f, 113.f},
+                        {115.f, 117.f, 119.f, 119.f},
+                    },
+                }
+            }
+        };
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case15)
+    {
+        inline float array[1][1][5][5][6] = {{{
+            {{  0.f,  1.f,  2.f,  3.f,  4.f,  5.f}, {  6.f,  7.f,  8.f,  9.f, 10.f, 11.f}, { 12.f, 13.f, 14.f, 15.f, 16.f, 17.f}, { 18.f, 19.f, 20.f, 21.f, 22.f, 23.f}, { 24.f, 25.f, 26.f, 27.f, 28.f, 29.f}},
+            {{ 30.f, 31.f, 32.f, 33.f, 34.f, 35.f}, { 36.f, 37.f, 38.f, 39.f, 40.f, 41.f}, { 42.f, 43.f, 44.f, 45.f, 46.f, 47.f}, { 48.f, 49.f, 50.f, 51.f, 52.f, 53.f}, { 54.f, 55.f, 56.f, 57.f, 58.f, 59.f}},
+            {{ 60.f, 61.f, 62.f, 63.f, 64.f, 65.f}, { 66.f, 67.f, 68.f, 69.f, 70.f, 71.f}, { 72.f, 73.f, 74.f, 75.f, 76.f, 77.f}, { 78.f, 79.f, 80.f, 81.f, 82.f, 83.f}, { 84.f, 85.f, 86.f, 87.f, 88.f, 89.f}},
+            {{ 90.f, 91.f, 92.f, 93.f, 94.f, 95.f}, { 96.f, 97.f, 98.f, 99.f,100.f,101.f}, {102.f,103.f,104.f,105.f,106.f,107.f}, {108.f,109.f,110.f,111.f,112.f,113.f}, {114.f,115.f,116.f,117.f,118.f,119.f}},
+            {{120.f,121.f,122.f,123.f,124.f,125.f}, {126.f,127.f,128.f,129.f,130.f,131.f}, {132.f,133.f,134.f,135.f,136.f,137.f}, {138.f,139.f,140.f,141.f,142.f,143.f}, {144.f,145.f,146.f,147.f,148.f,149.f}}
+        }}};
+        inline int kernel_size[3] = {4, 2, 3};
+        inline int stride         = 2;
+        inline int padding[3]     = {1, 1, 1};
+        inline auto dilation      = None;
+        inline auto ceil_mode     = True;
+        NMTOOLS_CAST_ARRAYS(array);
+        NMTOOLS_CAST_INDEX_ARRAYS(kernel_size);
+        NMTOOLS_CAST_INDEX_ARRAYS(padding);
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case15)
+    {
+        inline float result[1][1][3][3][4] = {
+            {
+                {
+                    { { 61.f,  63.f,  65.f,  65.f}, { 73.f,  75.f,  77.f,  77.f}, { 85.f,  87.f,  89.f,  89.f} },
+                    { {121.f, 123.f, 125.f, 125.f}, {133.f, 135.f, 137.f, 137.f}, {145.f, 147.f, 149.f, 149.f} },
+                    { {121.f, 123.f, 125.f, 125.f}, {133.f, 135.f, 137.f, 137.f}, {145.f, 147.f, 149.f, 149.f} }
+                }
+            }
+        };
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case16)
+    {
+        inline float array[1][1][5][5][6] = {{{
+            {{  0.f,  1.f,  2.f,  3.f,  4.f,  5.f}, {  6.f,  7.f,  8.f,  9.f, 10.f, 11.f}, { 12.f, 13.f, 14.f, 15.f, 16.f, 17.f}, { 18.f, 19.f, 20.f, 21.f, 22.f, 23.f}, { 24.f, 25.f, 26.f, 27.f, 28.f, 29.f}},
+            {{ 30.f, 31.f, 32.f, 33.f, 34.f, 35.f}, { 36.f, 37.f, 38.f, 39.f, 40.f, 41.f}, { 42.f, 43.f, 44.f, 45.f, 46.f, 47.f}, { 48.f, 49.f, 50.f, 51.f, 52.f, 53.f}, { 54.f, 55.f, 56.f, 57.f, 58.f, 59.f}},
+            {{ 60.f, 61.f, 62.f, 63.f, 64.f, 65.f}, { 66.f, 67.f, 68.f, 69.f, 70.f, 71.f}, { 72.f, 73.f, 74.f, 75.f, 76.f, 77.f}, { 78.f, 79.f, 80.f, 81.f, 82.f, 83.f}, { 84.f, 85.f, 86.f, 87.f, 88.f, 89.f}},
+            {{ 90.f, 91.f, 92.f, 93.f, 94.f, 95.f}, { 96.f, 97.f, 98.f, 99.f,100.f,101.f}, {102.f,103.f,104.f,105.f,106.f,107.f}, {108.f,109.f,110.f,111.f,112.f,113.f}, {114.f,115.f,116.f,117.f,118.f,119.f}},
+            {{120.f,121.f,122.f,123.f,124.f,125.f}, {126.f,127.f,128.f,129.f,130.f,131.f}, {132.f,133.f,134.f,135.f,136.f,137.f}, {138.f,139.f,140.f,141.f,142.f,143.f}, {144.f,145.f,146.f,147.f,148.f,149.f}}
+        }}};
+        inline int kernel_size[3] = {4, 2, 3};
+        inline int stride         = 2;
+        inline int padding[3]     = {0, 1, 1};
+        inline auto dilation      = None;
+        inline auto ceil_mode     = False;
+        NMTOOLS_CAST_ARRAYS(array);
+        NMTOOLS_CAST_INDEX_ARRAYS(kernel_size);
+        NMTOOLS_CAST_INDEX_ARRAYS(padding);
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case16)
+    {
+        inline float result[1][1][1][3][3] = {
+            {
+                {
+                    { { 91.f,  93.f,  95.f}, {103.f, 105.f, 107.f}, {115.f, 117.f, 119.f} }
+                }
+            }
+        };
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case17)
+    {
+        inline float array[1][1][4][6][6] = {{{
+             {{  0.f,  1.f,  2.f,  3.f,  4.f,  5.f}, {  6.f,  7.f,  8.f,  9.f, 10.f, 11.f}, { 12.f, 13.f, 14.f, 15.f, 16.f, 17.f}, { 18.f, 19.f, 20.f, 21.f, 22.f, 23.f}, { 24.f, 25.f, 26.f, 27.f, 28.f, 29.f}, { 30.f, 31.f, 32.f, 33.f, 34.f, 35.f}},
+             {{ 36.f, 37.f, 38.f, 39.f, 40.f, 41.f}, { 42.f, 43.f, 44.f, 45.f, 46.f, 47.f}, { 48.f, 49.f, 50.f, 51.f, 52.f, 53.f}, { 54.f, 55.f, 56.f, 57.f, 58.f, 59.f}, { 60.f, 61.f, 62.f, 63.f, 64.f, 65.f}, { 66.f, 67.f, 68.f, 69.f, 70.f, 71.f}},
+             {{ 72.f, 73.f, 74.f, 75.f, 76.f, 77.f}, { 78.f, 79.f, 80.f, 81.f, 82.f, 83.f}, { 84.f, 85.f, 86.f, 87.f, 88.f, 89.f}, { 90.f, 91.f, 92.f, 93.f, 94.f, 95.f}, { 96.f, 97.f, 98.f, 99.f,100.f,101.f}, {102.f,103.f,104.f,105.f,106.f,107.f}},
+             {{108.f,109.f,110.f,111.f,112.f,113.f}, {114.f,115.f,116.f,117.f,118.f,119.f}, {120.f,121.f,122.f,123.f,124.f,125.f}, {126.f,127.f,128.f,129.f,130.f,131.f}, {132.f,133.f,134.f,135.f,136.f,137.f}, {138.f,139.f,140.f,141.f,142.f,143.f}}
+        }}};
+        inline int kernel_size[3] = {4, 2, 3};
+        inline int stride         = 2;
+        inline int padding[3]     = {1, 1, 1};
+        inline auto dilation      = None;
+        inline auto ceil_mode     = True;
+        NMTOOLS_CAST_ARRAYS(array);
+        NMTOOLS_CAST_INDEX_ARRAYS(kernel_size);
+        NMTOOLS_CAST_INDEX_ARRAYS(padding);
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case17)
+    {
+        inline float result[1][1][2][4][4] = {
+            {
+                {
+                    {
+                        { 73.f,  75.f,  77.f,  77.f},
+                        { 85.f,  87.f,  89.f,  89.f},
+                        { 97.f,  99.f, 101.f, 101.f},
+                        {103.f, 105.f, 107.f, 107.f}
+                    },
+                    {
+                        {109.f, 111.f, 113.f, 113.f},
+                        {121.f, 123.f, 125.f, 125.f},
+                        {133.f, 135.f, 137.f, 137.f},
+                        {139.f, 141.f, 143.f, 143.f}
+                    }
+                }
+            }
+        };
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case18)
+    {
+        inline float array[1][1][4][6][6] = {{{
+             {{  0.f,  1.f,  2.f,  3.f,  4.f,  5.f}, {  6.f,  7.f,  8.f,  9.f, 10.f, 11.f}, { 12.f, 13.f, 14.f, 15.f, 16.f, 17.f}, { 18.f, 19.f, 20.f, 21.f, 22.f, 23.f}, { 24.f, 25.f, 26.f, 27.f, 28.f, 29.f}, { 30.f, 31.f, 32.f, 33.f, 34.f, 35.f}},
+             {{ 36.f, 37.f, 38.f, 39.f, 40.f, 41.f}, { 42.f, 43.f, 44.f, 45.f, 46.f, 47.f}, { 48.f, 49.f, 50.f, 51.f, 52.f, 53.f}, { 54.f, 55.f, 56.f, 57.f, 58.f, 59.f}, { 60.f, 61.f, 62.f, 63.f, 64.f, 65.f}, { 66.f, 67.f, 68.f, 69.f, 70.f, 71.f}},
+             {{ 72.f, 73.f, 74.f, 75.f, 76.f, 77.f}, { 78.f, 79.f, 80.f, 81.f, 82.f, 83.f}, { 84.f, 85.f, 86.f, 87.f, 88.f, 89.f}, { 90.f, 91.f, 92.f, 93.f, 94.f, 95.f}, { 96.f, 97.f, 98.f, 99.f,100.f,101.f}, {102.f,103.f,104.f,105.f,106.f,107.f}},
+             {{108.f,109.f,110.f,111.f,112.f,113.f}, {114.f,115.f,116.f,117.f,118.f,119.f}, {120.f,121.f,122.f,123.f,124.f,125.f}, {126.f,127.f,128.f,129.f,130.f,131.f}, {132.f,133.f,134.f,135.f,136.f,137.f}, {138.f,139.f,140.f,141.f,142.f,143.f}}
+        }}};
+        inline int kernel_size[3] = {4, 2, 3};
+        inline int stride         = 2;
+        inline int padding[3]     = {1, 1, 1};
+        inline auto dilation      = None;
+        inline auto ceil_mode     = False;
+        NMTOOLS_CAST_ARRAYS(array);
+        NMTOOLS_CAST_INDEX_ARRAYS(kernel_size);
+        NMTOOLS_CAST_INDEX_ARRAYS(padding);
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case18)
+    {
+        inline float result[1][1][2][4][3] = {
+            {
+                {
+                    {{ 73.f,  75.f,  77.f}, { 85.f,  87.f,  89.f}, { 97.f,  99.f, 101.f}, {103.f, 105.f, 107.f}},
+                    {{109.f, 111.f, 113.f}, {121.f, 123.f, 125.f}, {133.f, 135.f, 137.f}, {139.f, 141.f, 143.f}}
+                }
+            }
+        };
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case19)
+    {
+        inline float array[1][1][5][5][6] = {{{
+            {{  0.f,  1.f,  2.f,  3.f,  4.f,  5.f}, {  6.f,  7.f,  8.f,  9.f, 10.f, 11.f}, { 12.f, 13.f, 14.f, 15.f, 16.f, 17.f}, { 18.f, 19.f, 20.f, 21.f, 22.f, 23.f}, { 24.f, 25.f, 26.f, 27.f, 28.f, 29.f}},
+            {{ 30.f, 31.f, 32.f, 33.f, 34.f, 35.f}, { 36.f, 37.f, 38.f, 39.f, 40.f, 41.f}, { 42.f, 43.f, 44.f, 45.f, 46.f, 47.f}, { 48.f, 49.f, 50.f, 51.f, 52.f, 53.f}, { 54.f, 55.f, 56.f, 57.f, 58.f, 59.f}},
+            {{ 60.f, 61.f, 62.f, 63.f, 64.f, 65.f}, { 66.f, 67.f, 68.f, 69.f, 70.f, 71.f}, { 72.f, 73.f, 74.f, 75.f, 76.f, 77.f}, { 78.f, 79.f, 80.f, 81.f, 82.f, 83.f}, { 84.f, 85.f, 86.f, 87.f, 88.f, 89.f}},
+            {{ 90.f, 91.f, 92.f, 93.f, 94.f, 95.f}, { 96.f, 97.f, 98.f, 99.f,100.f,101.f}, {102.f,103.f,104.f,105.f,106.f,107.f}, {108.f,109.f,110.f,111.f,112.f,113.f}, {114.f,115.f,116.f,117.f,118.f,119.f}},
+            {{120.f,121.f,122.f,123.f,124.f,125.f}, {126.f,127.f,128.f,129.f,130.f,131.f}, {132.f,133.f,134.f,135.f,136.f,137.f}, {138.f,139.f,140.f,141.f,142.f,143.f}, {144.f,145.f,146.f,147.f,148.f,149.f}}
+        }}};
+        inline int kernel_size[3] = {4, 4, 3};
+        inline int stride         = 2;
+        inline int padding[3]     = {1, 2, 1};
+        inline int dilation       = 1;
+        inline auto ceil_mode     = True;
+        NMTOOLS_CAST_ARRAYS(array);
+        NMTOOLS_CAST_INDEX_ARRAYS(kernel_size);
+        NMTOOLS_CAST_INDEX_ARRAYS(padding);
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case19)
+    {
+        inline float result[1][1][3][4][4] = {
+            {
+                {
+                    {{ 67.f,  69.f,  71.f,  71.f}, { 79.f,  81.f,  83.f,  83.f}, { 85.f,  87.f,  89.f,  89.f}, { 85.f,  87.f,  89.f,  89.f}},
+                    {{127.f, 129.f, 131.f, 131.f}, {139.f, 141.f, 143.f, 143.f}, {145.f, 147.f, 149.f, 149.f}, {145.f, 147.f, 149.f, 149.f}},
+                    {{127.f, 129.f, 131.f, 131.f}, {139.f, 141.f, 143.f, 143.f}, {145.f, 147.f, 149.f, 149.f}, {145.f, 147.f, 149.f, 149.f}}
+                }
+            }
+        };
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case20)
+    {
+         inline float array[1][1][5][5][6] = {{{
+            {{  0.f,  1.f,  2.f,  3.f,  4.f,  5.f}, {  6.f,  7.f,  8.f,  9.f, 10.f, 11.f}, { 12.f, 13.f, 14.f, 15.f, 16.f, 17.f}, { 18.f, 19.f, 20.f, 21.f, 22.f, 23.f}, { 24.f, 25.f, 26.f, 27.f, 28.f, 29.f}},
+            {{ 30.f, 31.f, 32.f, 33.f, 34.f, 35.f}, { 36.f, 37.f, 38.f, 39.f, 40.f, 41.f}, { 42.f, 43.f, 44.f, 45.f, 46.f, 47.f}, { 48.f, 49.f, 50.f, 51.f, 52.f, 53.f}, { 54.f, 55.f, 56.f, 57.f, 58.f, 59.f}},
+            {{ 60.f, 61.f, 62.f, 63.f, 64.f, 65.f}, { 66.f, 67.f, 68.f, 69.f, 70.f, 71.f}, { 72.f, 73.f, 74.f, 75.f, 76.f, 77.f}, { 78.f, 79.f, 80.f, 81.f, 82.f, 83.f}, { 84.f, 85.f, 86.f, 87.f, 88.f, 89.f}},
+            {{ 90.f, 91.f, 92.f, 93.f, 94.f, 95.f}, { 96.f, 97.f, 98.f, 99.f,100.f,101.f}, {102.f,103.f,104.f,105.f,106.f,107.f}, {108.f,109.f,110.f,111.f,112.f,113.f}, {114.f,115.f,116.f,117.f,118.f,119.f}},
+            {{120.f,121.f,122.f,123.f,124.f,125.f}, {126.f,127.f,128.f,129.f,130.f,131.f}, {132.f,133.f,134.f,135.f,136.f,137.f}, {138.f,139.f,140.f,141.f,142.f,143.f}, {144.f,145.f,146.f,147.f,148.f,149.f}}
+        }}};
+        inline int kernel_size[3] = {4, 4, 3};
+        inline int stride         = 2;
+        inline int padding[3]     = {1, 2, 1};
+        inline int dilation       = 1;
+        inline auto ceil_mode     = False;
+        NMTOOLS_CAST_ARRAYS(array);
+        NMTOOLS_CAST_INDEX_ARRAYS(kernel_size);
+        NMTOOLS_CAST_INDEX_ARRAYS(padding);
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case20)
+    {
+        inline float result[1][1][2][3][3] = {
+            {
+                {
+                    {{ 67.f,  69.f,  71.f}, { 79.f,  81.f,  83.f}, { 85.f,  87.f,  89.f}},
+                    {{127.f, 129.f, 131.f}, {139.f, 141.f, 143.f}, {145.f, 147.f, 149.f}}
+                }
+            }
+        };
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case21)
+    {
+        inline float array[1][1][5][5][6] = {{{
+            {{  0.f,  1.f,  2.f,  3.f,  4.f,  5.f}, {  6.f,  7.f,  8.f,  9.f, 10.f, 11.f}, { 12.f, 13.f, 14.f, 15.f, 16.f, 17.f}, { 18.f, 19.f, 20.f, 21.f, 22.f, 23.f}, { 24.f, 25.f, 26.f, 27.f, 28.f, 29.f}},
+            {{ 30.f, 31.f, 32.f, 33.f, 34.f, 35.f}, { 36.f, 37.f, 38.f, 39.f, 40.f, 41.f}, { 42.f, 43.f, 44.f, 45.f, 46.f, 47.f}, { 48.f, 49.f, 50.f, 51.f, 52.f, 53.f}, { 54.f, 55.f, 56.f, 57.f, 58.f, 59.f}},
+            {{ 60.f, 61.f, 62.f, 63.f, 64.f, 65.f}, { 66.f, 67.f, 68.f, 69.f, 70.f, 71.f}, { 72.f, 73.f, 74.f, 75.f, 76.f, 77.f}, { 78.f, 79.f, 80.f, 81.f, 82.f, 83.f}, { 84.f, 85.f, 86.f, 87.f, 88.f, 89.f}},
+            {{ 90.f, 91.f, 92.f, 93.f, 94.f, 95.f}, { 96.f, 97.f, 98.f, 99.f,100.f,101.f}, {102.f,103.f,104.f,105.f,106.f,107.f}, {108.f,109.f,110.f,111.f,112.f,113.f}, {114.f,115.f,116.f,117.f,118.f,119.f}},
+            {{120.f,121.f,122.f,123.f,124.f,125.f}, {126.f,127.f,128.f,129.f,130.f,131.f}, {132.f,133.f,134.f,135.f,136.f,137.f}, {138.f,139.f,140.f,141.f,142.f,143.f}, {144.f,145.f,146.f,147.f,148.f,149.f}}
+        }}};
+        inline int kernel_size[3] = {4, 4, 3};
+        inline int stride         = 2;
+        inline int padding[3]     = {1, 1, 1};
+        inline int dilation       = 1;
+        inline auto ceil_mode     = False;
+        NMTOOLS_CAST_ARRAYS(array);
+        NMTOOLS_CAST_INDEX_ARRAYS(kernel_size);
+        NMTOOLS_CAST_INDEX_ARRAYS(padding);
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case21)
+    {
+        inline float result[1][1][2][2][3] = {
+            {
+                {
+                    {{ 73.f,  75.f,  77.f}, { 85.f,  87.f,  89.f}},
+                    {{133.f, 135.f, 137.f}, {145.f, 147.f, 149.f}}
+                }
+            }
+        };
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case22)
+    {
+        inline float array[1][1][5][5][6] = {{{
+            {{  0.f,  1.f,  2.f,  3.f,  4.f,  5.f}, {  6.f,  7.f,  8.f,  9.f, 10.f, 11.f}, { 12.f, 13.f, 14.f, 15.f, 16.f, 17.f}, { 18.f, 19.f, 20.f, 21.f, 22.f, 23.f}, { 24.f, 25.f, 26.f, 27.f, 28.f, 29.f}},
+            {{ 30.f, 31.f, 32.f, 33.f, 34.f, 35.f}, { 36.f, 37.f, 38.f, 39.f, 40.f, 41.f}, { 42.f, 43.f, 44.f, 45.f, 46.f, 47.f}, { 48.f, 49.f, 50.f, 51.f, 52.f, 53.f}, { 54.f, 55.f, 56.f, 57.f, 58.f, 59.f}},
+            {{ 60.f, 61.f, 62.f, 63.f, 64.f, 65.f}, { 66.f, 67.f, 68.f, 69.f, 70.f, 71.f}, { 72.f, 73.f, 74.f, 75.f, 76.f, 77.f}, { 78.f, 79.f, 80.f, 81.f, 82.f, 83.f}, { 84.f, 85.f, 86.f, 87.f, 88.f, 89.f}},
+            {{ 90.f, 91.f, 92.f, 93.f, 94.f, 95.f}, { 96.f, 97.f, 98.f, 99.f,100.f,101.f}, {102.f,103.f,104.f,105.f,106.f,107.f}, {108.f,109.f,110.f,111.f,112.f,113.f}, {114.f,115.f,116.f,117.f,118.f,119.f}},
+            {{120.f,121.f,122.f,123.f,124.f,125.f}, {126.f,127.f,128.f,129.f,130.f,131.f}, {132.f,133.f,134.f,135.f,136.f,137.f}, {138.f,139.f,140.f,141.f,142.f,143.f}, {144.f,145.f,146.f,147.f,148.f,149.f}}
+        }}};
+        inline int kernel_size[3] = {4, 4, 3};
+        inline int stride         = 2;
+        inline int padding[3]     = {1, 1, 1};
+        inline int dilation       = 1;
+        inline auto ceil_mode     = True;
+        NMTOOLS_CAST_ARRAYS(array);
+        NMTOOLS_CAST_INDEX_ARRAYS(kernel_size);
+        NMTOOLS_CAST_INDEX_ARRAYS(padding);
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case22)
+    {
+        inline float result[1][1][3][3][4] = {
+            {
+                {
+                    {{ 73.f,  75.f,  77.f,  77.f}, { 85.f,  87.f,  89.f,  89.f}, { 85.f,  87.f,  89.f,  89.f}},
+                    {{133.f, 135.f, 137.f, 137.f}, {145.f, 147.f, 149.f, 149.f}, {145.f, 147.f, 149.f, 149.f}},
+                    {{133.f, 135.f, 137.f, 137.f}, {145.f, 147.f, 149.f, 149.f}, {145.f, 147.f, 149.f, 149.f}}
+                }
+            }
+        };
+    }
 }
 
 #endif // NMTOOLS_TESTING_DATA_ARRAY_MAX_POOL3D_HPP

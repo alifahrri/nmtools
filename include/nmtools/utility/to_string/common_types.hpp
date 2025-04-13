@@ -66,8 +66,11 @@ namespace nmtools::utils::impl
         using formatter_t = fmt_string_t<tab,space,comma,open_bracket,close_bracket,show_types>;
         using result_type = nmtools_string;
 
-        template <typename color_t=none_t>
-        auto operator()(const T& array, [[maybe_unused]] const color_t& color=color_t{}) const noexcept
+        template <typename color_indices_t=none_t, typename color_t=none_t>
+        auto operator()(const T& array
+            , [[maybe_unused]] const color_indices_t& color_indices=color_indices_t{}
+            , [[maybe_unused]] const color_t& color=color_t{}
+        ) const noexcept
         {
             nmtools_string str;
             using ::nmtools::index::ndindex;
@@ -155,8 +158,8 @@ namespace nmtools::utils::impl
                     auto c = [&](){
                         // assume same shape
                         // TODO: handle error
-                        if constexpr (!is_none_v<color_t>) {
-                            return apply_at(color, idx);
+                        if constexpr (!is_none_v<color_indices_t>) {
+                            return apply_at(color_indices, idx);
                         } else {
                             return None;
                         }
@@ -173,13 +176,19 @@ namespace nmtools::utils::impl
                     }
 
                     str += tab;
-                    if constexpr (!is_none_v<color_t>) {
+                    if constexpr (!is_none_v<color_indices_t>) {
                         if (static_cast<bool>(c)) {
-                            str += "\033[41;97m";
+                            str += "\033[";
+                            if (is_none_v<color_t>) {
+                                str += "41;97";
+                            } else {
+                                str += color;
+                            }
+                            str += "m";
                         }
                     }
                     str += to_string(a,formatter_t{});
-                    if constexpr (!is_none_v<color_t>) {
+                    if constexpr (!is_none_v<color_indices_t>) {
                         if (static_cast<bool>(c)) {
                             str += "\033[0m";
                         }
@@ -320,18 +329,18 @@ namespace nmtools::utils::impl
 
 namespace nmtools::utils
 {
-    template <typename T, typename color_t, typename formatter_t>
-    auto to_string_color(const T& array, const color_t& color, formatter_t) -> nmtools_string
+    template <typename T, typename color_indices_t, typename formatter_t>
+    auto to_string_color(const T& array, const color_indices_t& color_indices, const nmtools_string& color, formatter_t) -> nmtools_string
     {
         auto to_string_impl = impl::to_string_t<T,formatter_t>{};
-        return to_string_impl(array,color);
+        return to_string_impl(array,color_indices,color);
     }
 
-    template <typename T, typename color_t>
-    auto to_string_color(const T& array, const color_t& color) -> nmtools_string
+    template <typename T, typename color_indices_t>
+    auto to_string_color(const T& array, const color_indices_t& color_indices) -> nmtools_string
     {
         auto to_string_impl = impl::to_string_t<T,fmt_string_t<>>{};
-        return to_string_impl(array,color);
+        return to_string_impl(array,color_indices);
     }
 }
 
