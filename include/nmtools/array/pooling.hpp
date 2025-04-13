@@ -19,7 +19,8 @@ namespace nmtools::index
     struct poolnd_normalize_arg_t {};
 
     template <typename nd_t, typename arg_t>
-    constexpr auto poolnd_normalize_arg(nd_t nd, const arg_t& arg)
+    constexpr auto poolnd_normalize_arg([[maybe_unused]] nd_t nd
+        , [[maybe_unused]] const arg_t& arg)
     {
         if constexpr (meta::is_maybe_v<arg_t>) {
             using result_t = decltype(poolnd_normalize_arg(nd,unwrap(arg)));
@@ -41,7 +42,7 @@ namespace nmtools::index
                     result.resize(dst_dim);
                 }
 
-                for (nm_size_t i=0; i<(nm_size_t)nd; i++) {
+                for (nm_size_t i=0; i<(nm_size_t)dst_dim; i++) {
                     if constexpr (meta::is_index_v<arg_t>) {
                         at(result,i) = arg;
                     } else {
@@ -57,7 +58,8 @@ namespace nmtools::index
     struct poolnd_normalize_stride_t {};
 
     template <typename nd_t, typename kernel_size_t, typename stride_t>
-    constexpr auto poolnd_normalize_stride(nd_t nd
+    constexpr auto poolnd_normalize_stride(
+        [[maybe_unused]] nd_t nd
         , [[maybe_unused]] const kernel_size_t& kernel_size
         , [[maybe_unused]] const stride_t& stride)
     {
@@ -168,9 +170,10 @@ namespace nmtools::index
     struct pool_pad_t {};
 
     template <typename src_shape_t, typename kernel_size_t, typename stride_t, typename dilation_t=none_t>
-    constexpr auto pool_pad(const src_shape_t& src_shape
-        , const kernel_size_t& kernel_size
-        , const stride_t& stride
+    constexpr auto pool_pad(
+        [[maybe_unused]] const src_shape_t& src_shape
+        , [[maybe_unused]] const kernel_size_t& kernel_size
+        , [[maybe_unused]] const stride_t& stride
         , [[maybe_unused]] const dilation_t& dilation=dilation_t{})
     {
         if constexpr (meta::is_maybe_v<src_shape_t>
