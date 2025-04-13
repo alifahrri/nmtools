@@ -103,6 +103,9 @@ set(ARRAY_EVAL_TEST_SOURCES
     array/instance_norm.cpp
     array/kron.cpp
     array/linspace.cpp
+    array/max_pool1d.cpp
+    array/max_pool2d.cpp
+    array/max_pool3d.cpp
     array/mean.cpp
     array/moveaxis.cpp
     array/ones.cpp

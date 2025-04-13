@@ -57,6 +57,7 @@ set(TRANSFORM_TEST_LINEARIZE_SOURCES
     src/linearize/cosine_similarity.cpp
     src/linearize/kron.cpp
     src/linearize/max_pool2d.cpp
+    src/linearize/max_pool3d.cpp
     src/linearize/dot.cpp
     src/linearize/vector_norm.cpp
     src/linearize/vecdot.cpp
