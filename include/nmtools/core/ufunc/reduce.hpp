@@ -18,6 +18,7 @@
 #include "nmtools/core/eval.hpp"
 #include "nmtools/constants.hpp"
 #include "nmtools/utility/as_static.hpp"
+#include "nmtools/utility/fwd.hpp"
 
 #include "nmtools/core/ufunc/detail.hpp"
 #include "nmtools/utility/isequal.hpp"
@@ -183,36 +184,77 @@ namespace nmtools::view
          * @param array 
          * @return constexpr auto 
          */
-        template <typename result_t, typename array_t>
-        constexpr auto operator()(const array_t& array) const
+        template <typename result_t
+            , typename array_t
+            , typename initial_t=none_t
+            , typename where_t=none_t>
+        constexpr auto reduce(
+            const array_t& array
+            , [[maybe_unused]] initial_t initial=initial_t{}
+            , [[maybe_unused]] const where_t& where=where_t{}
+        ) const
         {
-            using index_t = size_t;
-            auto initial = static_cast<result_t>(at(array,0));
+            using index_t = nm_size_t;
+            auto i_id = 1;
+            auto m_initial = [&](){
+                if constexpr (
+                    meta::has_identity_v<op_t>
+                    && is_none_v<initial_t>
+                ) {
+                    i_id = 0;
+                    return static_cast<result_t>(op.identity());
+                } else if constexpr (
+                    is_none_v<where_t>
+                    && is_none_v<initial_t>
+                ) {
+                    return static_cast<result_t>(at(array,0));
+                } else {
+                    i_id = 0;
+                    return static_cast<result_t>(initial);
+                }
+                // TODO: check for invalid case
+                // if where is not none, must have identity
+            }();
             auto size = len(array);
-            for (index_t i=1; i<(index_t)size; i++)
-                initial = op(initial,at(array,i));
-            return initial;
-        } // operator()
+            for (index_t i=i_id; i<(index_t)size; i++) {
+                if constexpr (is_none_v<where_t>) {
+                    m_initial = op(m_initial,at(array,i));
+                } else {
+                    auto w_i = at(where,i);
+                    if (w_i) {
+                        m_initial = op(m_initial,at(array,i));
+                    }
+                }
+            }
+            return m_initial;
+        } // reduce
 
-        /**
-         * @brief perform reduction on single 1D array with given initial value
-         * 
-         * @tparam result_t 
-         * @tparam array_t 
-         * @tparam initial_t 
-         * @param array 
-         * @param init 
-         * @return constexpr auto 
-         */
-        template <typename result_t, typename array_t, typename initial_t>
-        constexpr auto operator()(const array_t& array, initial_t init) const
+        template <typename result_t
+            , typename array_t
+            , typename initial_t=none_t
+            , typename where_t=none_t>
+        constexpr auto operator()(
+            const array_t& array
+            , [[maybe_unused]] initial_t initial=initial_t{}
+            , [[maybe_unused]] const where_t& where=where_t{}
+        ) const
         {
-            auto initial = static_cast<result_t>(init);
-            auto size = len(array);
-            for (size_t i=0; i<size; i++)
-                initial = op(initial,at(array,i));
-            return initial;
-        } // operator()
+            return reduce<result_t>(array,initial,where);
+        }
+
+        template <typename result_t
+            , typename array_t
+            , typename initial_t=none_t
+            , typename where_t=none_t>
+        constexpr auto operator()(
+            meta::as_value<result_t>
+            , const array_t& array
+            , [[maybe_unused]] initial_t initial=initial_t{}
+            , [[maybe_unused]] const where_t& where=where_t{}
+        ) const
+        {
+            return reduce<result_t>(array,initial,where);
+        }
     }; // reducer_t
 
     /**
@@ -227,21 +269,22 @@ namespace nmtools::view
     template <typename op_t, typename array_t, typename axis_t, typename initial_t, typename keepdims_t, typename dtype_t=none_t>
     struct reduce_t
     {
-        // if given array is a view, just use value instead of reference
-        using operands_type = resolve_array_type_t<array_t>;
-        using array_type    = operands_type;
-        using axis_type     = resolve_attribute_type_t<axis_t>;
+        using operand_type  = meta::fwd_operand_t<array_t>;
+        using array_type    = operand_type;
+        using axis_type     = meta::fwd_attribute_t<axis_t>;
         using op_type       = op_t;
         using initial_type  = initial_t;
         using reducer_type  = reducer_t<op_t>;
-        using element_type  = meta::get_element_type_t<array_t>;
         using keepdims_type = keepdims_t;
         using dtype_type    = dtype_t;
 
         using attributes_type = args::reduce<axis_type,dtype_type,initial_type,keepdims_type,op_type>;
 
-        using src_shape_type = decltype(nmtools::shape<true>(meta::declval<array_t>()));
-        using dst_shape_type = const meta::resolve_optype_t<index::remove_dims_t,src_shape_type,axis_t,keepdims_t>;
+        using left_array_type = meta::conditional_t<meta::is_tuple_v<array_t>,meta::at_t<array_t,0>,array_t>;
+        using element_type    = meta::get_element_type_t<left_array_type>;
+
+        using src_shape_type  = decltype(nmtools::shape<true>(meta::declval<left_array_type>()));
+        using dst_shape_type  = const meta::resolve_optype_t<index::remove_dims_t,src_shape_type,axis_t,keepdims_t>;
 
         using result_type = meta::type_t<detail::get_result_type<element_type,op_type>>;
 
@@ -256,13 +299,20 @@ namespace nmtools::view
         dst_shape_type shape_;
 
         constexpr reduce_t(op_type op, const array_t& array_, const axis_t& axis_, initial_type initial, keepdims_type keepdims_, dtype_type dtype=dtype_type{})
-            : op(op), array(initialize<array_type>(array_))
-            , axis(init_attribute<axis_type>(axis_))
+            : op(op)
+            , array(fwd_operand(array_))
+            , axis(fwd_attribute(axis_))
             , initial(initial)
             , reducer{op} // TODO: remove, recurse to scalar reduce ufunc instead of using reducer
             , keepdims(keepdims_)
             , dtype(dtype)
-            , shape_(index::remove_dims(nmtools::shape<true>(array_),axis_,keepdims_))
+            , shape_(index::remove_dims([&](){
+                if constexpr (meta::is_tuple_v<array_t>) {
+                    return nmtools::shape<true>(nmtools::get<0>(array_));
+                } else {
+                    return nmtools::shape<true>(array_);
+                }
+            }(),axis_,keepdims_))
         {}
 
         constexpr reduce_t(const array_t& array_, const args::reduce<axis_t,dtype_t,initial_t,keepdims_t,op_t>& attributes)
@@ -278,7 +328,11 @@ namespace nmtools::view
 
         constexpr auto operands() const noexcept
         {
-            return nmtools_tuple<array_type>{array};
+            if constexpr (meta::is_tuple_v<array_type>) {
+                return array;
+            } else {
+                return nmtools_tuple<array_type>{array};
+            }
         }
 
         constexpr auto attributes() const noexcept
@@ -301,6 +355,16 @@ namespace nmtools::view
         {
             return index::product(shape());
         }
+
+        template <typename array_type, typename slices_t>
+        static constexpr auto get_slice(const array_type& array, const slices_t& slices)
+        {
+            if constexpr (meta::is_pointer_v<array_type>) {
+                return apply_slice(*array,slices);
+            } else {
+                return apply_slice(array, slices);
+            }
+        } // get_slice
 
         /**
          * @brief compute element at given indices, effectively perform reduction.
@@ -329,27 +393,34 @@ namespace nmtools::view
             
             auto indices_ = pack_indices(indices...);
 
+            auto make_subarray = [](const auto& array, const auto& indices, const auto& axis, const auto keepdims){
+                auto m_shape   = unwrap(detail::shape<true>(array));
+                auto slices    = index::reduction_slices(indices,m_shape,axis,keepdims);
+                auto sliced    = get_slice(array, slices);
+                auto flattened = unwrap(view::flatten(sliced));
+                return flattened;
+            };
+
             // apply slice only works with fixed dim ndarray for now
             // TODO: support dynamic dim ndarray
-            auto sliced = [&](){
-                auto slices = index::reduction_slices(indices_,unwrap(detail::shape<true>(array)),axis,keepdims);
-                // this slice operates directly with the underlying array
-                // which may be pointer
-                if constexpr (meta::is_pointer_v<array_type>) {
-                    return apply_slice(*array,slices);
+            auto subarray = [&](){
+                if constexpr (meta::is_tuple_v<array_type>) {
+                    const auto& m_array = nmtools::get<0>(array);
+                    return make_subarray(m_array,indices_,axis,keepdims);
                 } else {
-                    return apply_slice(array, slices);
+                    return make_subarray(array,indices_,axis,keepdims);
                 }
             }();
-            // NOTE: use view::flatten to avoid ambiguous call because of ADL
-            auto flattened = unwrap(view::flatten(sliced));
-            // TODO: instead of reduce using reducer_t, return reduce using None axis
-            // doing so may simplify evaluation
-            return [&](){
-                if constexpr (is_none_v<initial_type>)
-                    return reducer.template operator()<result_type>(flattened);
-                else return reducer.template operator()<result_type>(flattened,initial);
+            auto where = [&](){
+                if constexpr (meta::is_tuple_v<array_type>) {
+                    const auto& m_array = nmtools::get<1>(array);
+                    return make_subarray(m_array,indices_,axis,keepdims);
+                } else {
+                    return None;
+                }
             }();
+            auto result_vtype = meta::as_value_v<result_type>;
+            return reducer(result_vtype,subarray,initial,where);
         } // operator()
 
         // NOTE: the following is to allow reducing to numeric type
@@ -365,6 +436,7 @@ namespace nmtools::view
         }();
         using num_type = meta::type_t<decltype(num_vtype)>;
 
+        // TODO: remove
         constexpr operator num_type() const
         {
             if constexpr (meta::is_fail_v<num_type>) {
@@ -373,18 +445,37 @@ namespace nmtools::view
                 // reduce the whole array
                 // must check if array is pointer or not since
                 // flatten (and view in general) doesn't accept pointer
-                auto flattened = [&](){
+                
+                auto make_subarray = [](const auto& array){
+                    using array_type = meta::remove_cvref_t<decltype(array)>;
                     if constexpr (meta::is_pointer_v<array_type>) {
-                        return unwrap(view::flatten(*array));
+                        auto flattened = unwrap(view::flatten(*array));
+                        return flattened;
                     } else {
-                        return unwrap(view::flatten(array));
+                        auto flattened = unwrap(view::flatten(array));
+                        return flattened;
+                    }
+                };
+    
+                // TODO: support dynamic dim ndarray
+                auto subarray = [&](){
+                    if constexpr (meta::is_tuple_v<array_type>) {
+                        const auto& m_array = nmtools::get<0>(array);
+                        return make_subarray(m_array);
+                    } else {
+                        return make_subarray(array);
                     }
                 }();
-                return [&](){
-                    if constexpr (is_none_v<initial_type>)
-                        return reducer.template operator()<result_type>(flattened);
-                    else return reducer.template operator()<result_type>(flattened,initial);
+                auto where = [&](){
+                    if constexpr (meta::is_tuple_v<array_type>) {
+                        const auto& m_array = nmtools::get<1>(array);
+                        return make_subarray(m_array);
+                    } else {
+                        return None;
+                    }
                 }();
+                auto result_vtype = meta::as_value_v<result_type>;
+                return reducer(result_vtype,subarray,initial,where);
             }
         } // operator result_type()
     }; // reduce_t
@@ -402,19 +493,21 @@ namespace nmtools::view
     template <typename op_t, typename array_t, typename initial_t, typename keepdims_t, typename dtype_t>
     struct reduce_t<op_t,array_t,none_t,initial_t,keepdims_t,dtype_t>
     {
-        using array_type    = resolve_array_type_t<array_t>;
-        // use reference for now since raw array decays to pointer
-        using axis_type     = none_t;
+        using operand_type  = meta::fwd_operand_t<array_t>;
+        using array_type    = operand_type;
+        using axis_type     = meta::fwd_attribute_t<none_t>;
         using op_type       = op_t;
         using initial_type  = initial_t;
         using reducer_type  = reducer_t<op_t>;
-        using element_type  = meta::get_element_type_t<array_t>;
         using keepdims_type = keepdims_t;
         using dtype_type    = dtype_t;
 
         using attributes_type = args::reduce<axis_type,dtype_type,initial_type,keepdims_type,op_type>;
 
-        using src_shape_type = decltype(nmtools::shape<true>(meta::declval<array_t>()));
+        using left_array_type = meta::conditional_t<meta::is_tuple_v<array_t>,meta::at_t<array_t,0>,array_t>;
+        using element_type    = meta::get_element_type_t<left_array_type>;
+
+        using src_shape_type  = decltype(nmtools::shape<true>(meta::declval<left_array_type>()));
         using dst_shape_type = const meta::resolve_optype_t<index::remove_dims_t,src_shape_type,axis_type,keepdims_t>;
 
         using result_type = meta::type_t<detail::get_result_type<element_type,op_type>>;
@@ -431,13 +524,19 @@ namespace nmtools::view
 
         constexpr reduce_t(op_type op, const array_t& array_, axis_type axis_, initial_type initial, keepdims_type keepdims_, dtype_type dtype=dtype_type{})
             : op(op)
-            , array(initialize<array_type>(array_))
-            , axis(axis_)
+            , array(fwd_operand(array_))
+            , axis(fwd_attribute(axis_))
             , initial(initial)
             , reducer{op}
             , keepdims(keepdims_)
             , dtype(dtype)
-            , shape_(index::remove_dims(nmtools::shape<true>(array_),axis_,keepdims_))
+            , shape_(index::remove_dims([&](){
+                if constexpr (meta::is_tuple_v<array_t>) {
+                    return nmtools::shape<true>(nmtools::get<0>(array_));
+                } else {
+                    return nmtools::shape<true>(array_);
+                }
+            }(),axis_,keepdims_))
         {}
 
         constexpr reduce_t(const array_t& array_, const args::reduce<none_t,dtype_t,initial_t,keepdims_t,op_t>& attributes)
@@ -453,7 +552,11 @@ namespace nmtools::view
 
         constexpr auto operands() const noexcept
         {
-            return nmtools_tuple<array_type>{array};
+            if constexpr (meta::is_tuple_v<array_type>) {
+                return array;
+            } else {
+                return nmtools_tuple<array_type>{array};
+            }
         }
 
         constexpr auto attributes() const noexcept
@@ -477,42 +580,49 @@ namespace nmtools::view
             return meta::ct_v<1ul>;
         }
 
-        constexpr operator result_type() const
+        constexpr auto reduce() const
         {
-            // reduce the whole array
-            // must check if array is pointer or not since
-            // flatten (and view in general) doesn't accept pointer
-            auto flattened = [&](){
+            auto make_subarray = [](const auto& array){
+                using array_type = meta::remove_cvref_t<decltype(array)>;
                 if constexpr (meta::is_pointer_v<array_type>) {
-                    return unwrap(view::flatten(*array));
+                    auto flattened = unwrap(view::flatten(*array));
+                    return flattened;
                 } else {
-                    return unwrap(view::flatten(array));
+                    auto flattened = unwrap(view::flatten(array));
+                    return flattened;
+                }
+            };
+            // reduce the whole array
+            auto subarray = [&](){
+                if constexpr (meta::is_tuple_v<array_type>) {
+                    const auto& m_array = nmtools::get<0>(array);
+                    return make_subarray(m_array);
+                } else {
+                    return make_subarray(array);
                 }
             }();
-            return [&](){
-                if constexpr (is_none_v<initial_type>)
-                    return reducer.template operator()<result_type>(flattened);
-                else return reducer.template operator()<result_type>(flattened,initial);
-            }(); 
+            auto where = [&](){
+                if constexpr (meta::is_tuple_v<array_type>) {
+                    const auto& m_array = nmtools::get<1>(array);
+                    return make_subarray(m_array);
+                } else {
+                    return None;
+                }
+            }();
+            auto result_vtype = meta::as_value_v<result_type>;
+            return reducer(result_vtype,subarray,initial,where);
+        }
+
+        constexpr operator result_type() const
+        {
+            return reduce();
         } // operator result_type()
 
         // TODO: remove
         template <typename...size_types>
         constexpr auto operator()(size_types.../*indices*/) const
         {
-            // reduce the whole array
-            auto flattened = [&](){
-                if constexpr (meta::is_pointer_v<array_type>) {
-                    return unwrap(view::flatten(*array));
-                } else {
-                    return unwrap(view::flatten(array));
-                }
-            }();
-            return [&](){
-                if constexpr (is_none_v<initial_type>)
-                    return reducer.template operator()<result_type>(flattened);
-                else return reducer.template operator()<result_type>(flattened,initial);
-            }(); 
+            return reduce();
         } // operator()
     }; // reduce_t
 } // namespace nmtools::view
@@ -572,7 +682,8 @@ namespace nmtools::meta
     >
     {
         using view_t = view::decorator_t< view::reduce_t, op_t, array_t, axis_t, initial_t, keepdims_t, dtype_t >;
-        static constexpr auto value = is_ndarray_v<array_t> && !is_num_v<view_t>;
+        // TODO: check if array_t is tuple of ndarray
+        static constexpr auto value = (is_ndarray_v<array_t> || meta::is_tuple_v<array_t>) && !is_num_v<view_t>;
     };
 
     // provide specialization for reducer

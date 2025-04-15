@@ -343,34 +343,43 @@ namespace nmtools::view
      * @param keepdims keep reduced axes in the result as dimensions with size one.
      * @return constexpr auto 
      */
-    template <typename op_t, typename array_t, typename axis_t, typename dtype_t=none_t, typename initial_t=none_t, typename keepdims_t=meta::false_type>
-    constexpr auto reduce(op_t op, const array_t& array, const axis_t& axis, dtype_t dtype=dtype_t{}, initial_t initial=initial_t{}, keepdims_t keepdims=keepdims_t{})
+    template <typename op_t
+        , typename array_t
+        , typename axis_t
+        , typename dtype_t=none_t
+        , typename initial_t=none_t
+        , typename keepdims_t=meta::false_type
+        , typename where_t=none_t>
+    constexpr auto reduce(op_t op
+        , const array_t& array, const axis_t& axis
+        , dtype_t dtype=dtype_t{}
+        , initial_t initial=initial_t{}
+        , keepdims_t keepdims=keepdims_t{}
+        , [[maybe_unused]] const where_t& where=where_t{})
     {
-        // note: here, axis as reference to prevent array decays
-        // the view type may decide wether to take ref or copy
         // TODO: error handling for duplicate axis
 
-        if constexpr (meta::is_maybe_v<array_t>) {
-            using array_type  = meta::get_maybe_type_t<array_t>;
-            using result_type = decltype(reduce(op,meta::declval<array_type>(),axis,dtype,initial,keepdims));
-            static_assert( !meta::is_maybe_v<result_type> );
-            // using return_type = meta::conditional_t<meta::is_maybe_v<result_type>,result_type,nmtools_maybe<result_type>>;
-            using return_type = nmtools_maybe<result_type>;
-            return (array ?
-                return_type{reduce(op,*array,axis,dtype,initial,keepdims)}
+        if constexpr (meta::is_maybe_v<array_t>
+            || meta::is_maybe_v<axis_t>
+            || meta::is_maybe_v<where_t>
+        ) {
+            using result_type = decltype(reduce(op,unwrap(array),unwrap(axis),dtype,initial,keepdims,unwrap(where)));
+            using return_type = meta::conditional_t<meta::is_maybe_v<result_type>,result_type,nmtools_maybe<result_type>>;
+            return (has_value(array) && has_value(axis) && has_value(where)
+                ? return_type{reduce(op,unwrap(array),unwrap(axis),dtype,initial,keepdims,unwrap(where))}
                 : return_type{meta::Nothing}
             );
         } else if constexpr (meta::is_either_v<array_t>) {
             using left_t  = meta::get_either_left_t<array_t>;
             using right_t = meta::get_either_right_t<array_t>;
-            using ret_left_t  = decltype(reduce(op,meta::declval<left_t>(),axis,dtype,initial,keepdims));
-            using ret_right_t = decltype(reduce(op,meta::declval<right_t>(),axis,dtype,initial,keepdims));
+            using ret_left_t  = decltype(reduce(op,meta::declval<left_t>(),axis,dtype,initial,keepdims,where));
+            using ret_right_t = decltype(reduce(op,meta::declval<right_t>(),axis,dtype,initial,keepdims,where));
             using either_t = meta::replace_either_t<array_t,ret_left_t,ret_right_t>;
             if (auto l_ptr = nmtools::get_if<left_t>(&array)) {
-                return either_t{reduce(op,*l_ptr,axis,dtype,initial,keepdims)};
+                return either_t{reduce(op,*l_ptr,axis,dtype,initial,keepdims,where)};
             } else /* if (auto r_ptr = nmtools::get_if<right_t>(&array)) */ {
                 auto r_ptr = nmtools::get_if<right_t>(&array);
-                return either_t{reduce(op,*r_ptr,axis,dtype,initial,keepdims)};
+                return either_t{reduce(op,*r_ptr,axis,dtype,initial,keepdims,where)};
             }
         }
         // keepdims is runtime value, 
@@ -380,19 +389,25 @@ namespace nmtools::view
         // use variant to tell that the return value may be scalar or ndarray,
         // depending on the value of keepdims at runtime
         else if constexpr (meta::is_boolean_v<keepdims_t>) {
-            using left_t   = decltype(reduce(op,array,axis,dtype,initial,True));
-            using right_t  = decltype(reduce(op,array,axis,dtype,initial,False));
+            using left_t   = decltype(reduce(op,array,axis,dtype,initial,True,where));
+            using right_t  = decltype(reduce(op,array,axis,dtype,initial,False,where));
             using either_t = nmtools_either<left_t,right_t>;
-            return (
-                keepdims ?
-                  either_t{reduce(op,array,axis,dtype,initial,True)}
-                : either_t{reduce(op,array,axis,dtype,initial,False)}
+            return (keepdims
+                ? either_t{reduce(op,array,axis,dtype,initial,True,where)}
+                : either_t{reduce(op,array,axis,dtype,initial,False,where)}
             );
         }
         // otherwise simply use as it is
         else {
-            using view_t = decorator_t<reduce_t,op_t,array_t,axis_t,initial_t,keepdims_t,dtype_t>;
-            return view_t{{op,array,axis,initial,keepdims,dtype}};
+            if constexpr (is_none_v<where_t>) {
+                using view_t = decorator_t<reduce_t,op_t,array_t,axis_t,initial_t,keepdims_t,dtype_t>;
+                return view_t{{op,array,axis,initial,keepdims,dtype}};
+            } else {
+                auto broadcasted_arrays = view::broadcast_arrays(array,where);
+                using broadcasted_t = decltype(broadcasted_arrays);
+                using view_t = decorator_t<reduce_t,op_t,broadcasted_t,axis_t,initial_t,keepdims_t,dtype_t>;
+                return view_t{{op,broadcasted_arrays,axis,initial,keepdims,dtype}};
+            }
         }
     } // reduce
 

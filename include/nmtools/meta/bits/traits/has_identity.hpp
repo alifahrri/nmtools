@@ -5,6 +5,17 @@
 
 namespace nmtools::meta
 {
+    namespace expr
+    {
+        /**
+         * @brief helper alias template to deduce the return value of member function `identity` of type `T`
+         * 
+         * @tparam T type to check
+         */
+         template <typename T>
+         using identity = decltype(declval<T>().identity());
+    }
+
     /**
      * @brief check if type `T` has member function `identity`.
      * 
