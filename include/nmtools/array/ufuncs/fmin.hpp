@@ -45,53 +45,22 @@ namespace nmtools::view
         return broadcast_binary_ufunc(fmin_t<>{},a,b);
     } // fmin
 
-    template <typename left_t, typename axis_t, typename dtype_t, typename initial_t, typename keepdims_t>
+    template <typename left_t, typename axis_t, typename dtype_t=none_t, typename initial_t=none_t, typename keepdims_t=meta::false_type, typename where_t=none_t>
     NMTOOLS_UFUNC_CONSTEXPR
-    auto reduce_fmin(const left_t& a, const axis_t& axis, dtype_t dtype, initial_t init, keepdims_t keepdims)
+    auto reduce_fmin(const left_t& a, const axis_t& axis, dtype_t dtype=dtype_t{}, initial_t init=initial_t{}, keepdims_t keepdims=keepdims_t{}, const where_t& where=where_t{})
     {
         using res_t = get_dtype_t<dtype_t>;
         using op_t  = fmin_t<none_t,none_t,res_t>;
-        return reduce(op_t{},a,axis,dtype,init,keepdims);
+        return reduce(op_t{},a,axis,dtype,init,keepdims,where);
     } // reduce_fmin
 
-    template <typename left_t, typename axis_t, typename dtype_t, typename initial_t>
+    template <typename left_t, typename axis_t, typename dtype_t=none_t>
     NMTOOLS_UFUNC_CONSTEXPR
-    auto reduce_fmin(const left_t& a, const axis_t& axis, dtype_t dtype, initial_t init)
-    {
-        using res_t = get_dtype_t<dtype_t>;
-        using op_t  = fmin_t<none_t,none_t,res_t>;
-        return reduce(op_t{},a,axis,dtype,init);
-    } // reduce_fmin
-
-    template <typename left_t, typename axis_t, typename dtype_t>
-    NMTOOLS_UFUNC_CONSTEXPR
-    auto reduce_fmin(const left_t& a, const axis_t& axis, dtype_t dtype)
-    {
-        return reduce_fmin(a,axis,dtype,None);
-    } // reduce_fmin
-
-    // TODO: use default args, instead of overloads
-    template <typename left_t, typename axis_t>
-    NMTOOLS_UFUNC_CONSTEXPR
-    auto reduce_fmin(const left_t& a, const axis_t& axis)
-    {
-        return reduce_fmin(a,axis,None,None);
-    } // reduce_fmin
-
-    template <typename left_t, typename axis_t, typename dtype_t>
-    NMTOOLS_UFUNC_CONSTEXPR
-    auto accumulate_fmin(const left_t& a, const axis_t& axis, dtype_t dtype)
+    auto accumulate_fmin(const left_t& a, const axis_t& axis, dtype_t dtype=dtype_t{})
     {
         using res_t = get_dtype_t<dtype_t>;
         using op_t  = fmin_t<none_t,none_t,res_t>;
         return accumulate(op_t{},a,axis,dtype);
-    } // accumulate_fmin
-
-    template <typename left_t, typename axis_t>
-    NMTOOLS_UFUNC_CONSTEXPR
-    auto accumulate_fmin(const left_t& a, const axis_t& axis)
-    {
-        return accumulate_fmin(a,axis,None);
     } // accumulate_fmin
 
     template <typename left_t, typename right_t, typename dtype_t=none_t>
