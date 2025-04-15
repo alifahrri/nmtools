@@ -85,8 +85,8 @@ namespace nmtools::view
         // TODO: support Casting::EQUIV
     } // subtract
 
-    template <typename left_t, typename axis_t, typename dtype_t, typename initial_t, typename keepdims_t>
-    constexpr auto reduce_subtract(const left_t& a, const axis_t& axis, dtype_t dtype, initial_t initial, keepdims_t keepdims)
+    template <typename left_t, typename axis_t, typename dtype_t=none_t, typename initial_t=none_t, typename keepdims_t=meta::false_type, typename where_t=none_t>
+    constexpr auto reduce_subtract(const left_t& a, const axis_t& axis, dtype_t dtype=dtype_t{}, initial_t initial=initial_t{}, keepdims_t keepdims=keepdims_t{}, const where_t& where=where_t{})
     {
         static_assert( meta::is_integral_v<axis_t>
             , "reduce_subtract only support single axis with integral type"
@@ -96,48 +96,15 @@ namespace nmtools::view
         // to match the signature of reduce_t
         using res_t = get_dtype_t<dtype_t>;
         using op_t  = subtract_t<none_t,none_t,res_t>;
-        return reduce(op_t{},a,axis,dtype,initial,keepdims);
+        return reduce(op_t{},a,axis,dtype,initial,keepdims,where);
     } // reduce_subtract
 
-    template <typename left_t, typename axis_t, typename dtype_t, typename initial_t>
-    constexpr auto reduce_subtract(const left_t& a, const axis_t& axis, dtype_t dtype, initial_t initial)
-    {
-        static_assert( meta::is_integral_v<axis_t>
-            , "reduce_subtract only support single axis with integral type"
-        );
-        // note that reduce_t takes reference, to support multiple axis
-        // while reduce_subtract only support single axis, here axis is const ref
-        // to match the signature of reduce_t
-        using res_t = get_dtype_t<dtype_t>;
-        using op_t  = subtract_t<none_t,none_t,res_t>;
-        return reduce(op_t{},a,axis,dtype,initial);
-    } // reduce_subtract
-
-    template <typename left_t, typename axis_t, typename dtype_t>
-    constexpr auto reduce_subtract(const left_t& a, const axis_t& axis, dtype_t dtype)
-    {
-        return reduce_subtract(a,axis,dtype,None);
-    } // reduce_subtract
-
-    // TODO: use default args instead of overloads!
-    template <typename left_t, typename axis_t>
-    constexpr auto reduce_subtract(const left_t& a, const axis_t& axis)
-    {
-        return reduce_subtract(a,axis,None,None);
-    } // reduce_subtract
-
-    template <typename left_t, typename axis_t, typename dtype_t>
-    auto accumulate_subtract(const left_t& a, const axis_t& axis, dtype_t dtype)
+    template <typename left_t, typename axis_t, typename dtype_t=none_t>
+    auto accumulate_subtract(const left_t& a, const axis_t& axis, dtype_t dtype=dtype_t{})
     {
         using res_t = get_dtype_t<dtype_t>;
         using op_t  = subtract_t<none_t,none_t,res_t>;
         return accumulate(op_t{},a,axis,dtype);
-    } // accumulate_subtract
-
-    template <typename left_t, typename axis_t>
-    auto accumulate_subtract(const left_t& a, const axis_t& axis)
-    {
-        return accumulate_subtract(a,axis,None);
     } // accumulate_subtract
 
     template <typename left_t, typename right_t, typename dtype_t=none_t>
