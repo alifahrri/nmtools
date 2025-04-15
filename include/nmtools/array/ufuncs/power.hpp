@@ -100,9 +100,9 @@ namespace nmtools::view
         return broadcast_binary_ufunc(power_t<>{},a,b);
     } // power
 
-    template <typename left_t, typename axis_t, typename dtype_t, typename initial_t, typename keepdims_t>
+    template <typename left_t, typename axis_t, typename dtype_t=none_t, typename initial_t=none_t, typename keepdims_t=meta::false_type>
     NMTOOLS_UFUNC_CONSTEXPR
-    auto reduce_power(const left_t& a, const axis_t& axis, dtype_t dtype, initial_t initial, keepdims_t keepdims)
+    auto reduce_power(const left_t& a, const axis_t& axis, dtype_t dtype=dtype_t{}, initial_t initial=initial_t{}, keepdims_t keepdims=keepdims_t{})
     {
         static_assert( meta::is_integral_v<axis_t>
             , "reduce_power only support single axis with integral type"
@@ -112,52 +112,13 @@ namespace nmtools::view
         return reduce(op_t{},a,axis,dtype,initial,keepdims);
     } // reduce_power
 
-    template <typename left_t, typename axis_t, typename dtype_t, typename initial_t>
+    template <typename left_t, typename axis_t, typename dtype_t=none_t>
     NMTOOLS_UFUNC_CONSTEXPR
-    auto reduce_power(const left_t& a, const axis_t& axis, dtype_t dtype, initial_t initial)
-    {
-        static_assert( meta::is_integral_v<axis_t>
-            , "reduce_power only support single axis with integral type"
-        );
-        using res_t = get_dtype_t<dtype_t>;
-        using op_t  = power_t<none_t,none_t,res_t>;
-        return reduce(op_t{},a,axis,dtype,initial);
-    } // reduce_power
-
-    template <typename left_t, typename axis_t, typename dtype_t>
-    NMTOOLS_UFUNC_CONSTEXPR
-    auto reduce_power(const left_t& a, const axis_t& axis, dtype_t dtype)
-    {
-        static_assert( meta::is_integral_v<axis_t>
-            , "reduce_power only support single axis with integral type"
-        );
-        using res_t = get_dtype_t<dtype_t>;
-        using op_t = power_t<none_t,none_t,res_t>;
-        return reduce(op_t{},a,axis,dtype,None);
-    } // reduce_power
-
-    // TODO: use default args, instead of overload!
-    template <typename left_t, typename axis_t>
-    NMTOOLS_UFUNC_CONSTEXPR
-    auto reduce_power(const left_t& a, const axis_t& axis)
-    {
-        return reduce_power(a,axis,None);
-    } // reduce_power
-
-    template <typename left_t, typename axis_t, typename dtype_t>
-    NMTOOLS_UFUNC_CONSTEXPR
-    auto accumulate_power(const left_t& a, const axis_t& axis, dtype_t dtype)
+    auto accumulate_power(const left_t& a, const axis_t& axis, dtype_t dtype=dtype_t{})
     {
         using res_t = get_dtype_t<dtype_t>;
         using op_t  = power_t<none_t,none_t,res_t>;
         return accumulate(op_t{},a,axis,dtype);
-    } // accumulate_power
-
-    template <typename left_t, typename axis_t>
-    NMTOOLS_UFUNC_CONSTEXPR
-    auto accumulate_power(const left_t& a, const axis_t& axis)
-    {
-        return accumulate_power(a,axis,None);
     } // accumulate_power
 
     template <typename left_t, typename right_t, typename dtype_t=none_t>
