@@ -26,6 +26,7 @@ namespace nmtools::view
         return broadcast_binary_ufunc(logical_or_t{},a,b);
     } // logical_or
 
+    // TODO: handle dtype, initial, keepdims, where
     template <typename left_t, typename axis_t>
     constexpr auto reduce_logical_or(const left_t& a, const axis_t& axis)
     {
