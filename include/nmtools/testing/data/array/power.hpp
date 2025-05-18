@@ -102,7 +102,8 @@ NMTOOLS_TESTING_DECLARE_CASE(view, reduce_power)
             },
         };
         inline int axis = 1;
-        inline auto dtype = float64;
+        // inline auto dtype = float64;
+        inline auto dtype = dtype_t<long double>{};
         NMTOOLS_CAST_ARRAYS(a)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case2)

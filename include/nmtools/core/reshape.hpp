@@ -23,8 +23,8 @@ namespace nmtools::view
     struct reshape_t
         : base_indexer_t<reshape_t<src_shape_t,dst_shape_t,src_size_t>>
     {
-        using src_shape_type = meta::fwd_attribute_t<decltype(unwrap(meta::declval<src_shape_t>()))>;
-        using src_size_type  = meta::fwd_attribute_t<decltype(unwrap(meta::declval<src_size_t>()))>;
+        using src_shape_type = meta::fwd_attribute_t<src_shape_t>;
+        using src_size_type  = meta::fwd_attribute_t<src_size_t>;
 
         // TODO: refactor index::shape_reshape so that the result can be easily deduced
         // using dst_shape_type = meta::resolve_optype_t<

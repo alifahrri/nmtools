@@ -34,21 +34,22 @@ TEST_CASE("add.reduce(case1)" * doctest::test_suite("simd::simde_AVX512"))
     auto axis     = nm::None;
     auto dtype    = nm::None;
     auto initial  = nm::None;
+    auto where    = nm::None;
     {
         auto keepdims = nm::False;
-        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
     {
         auto keepdims = nm::True;
-        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
     {
         auto keepdims = false;
-        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
     {
         auto keepdims = true;
-        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
 }
 
@@ -58,21 +59,22 @@ TEST_CASE("add.reduce(case2)" * doctest::test_suite("simd::simde_AVX512"))
     auto axis     = nm::None;
     auto dtype    = nm::None;
     auto initial  = nm::None;
+    auto where    = nm::None;
     {
         auto keepdims = nm::False;
-        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
     {
         auto keepdims = nm::True;
-        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
     {
         auto keepdims = false;
-        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
     {
         auto keepdims = true;
-        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
 }
 
@@ -82,21 +84,22 @@ TEST_CASE("add.reduce(case3)" * doctest::test_suite("simd::simde_AVX512"))
     auto axis     = nm::None;
     auto dtype    = nm::None;
     auto initial  = nm::None;
+    auto where    = nm::None;
     {
         auto keepdims = nm::False;
-        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
     {
         auto keepdims = nm::True;
-        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
     {
         auto keepdims = false;
-        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
     {
         auto keepdims = true;
-        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
 }
 
@@ -106,21 +109,22 @@ TEST_CASE("add.reduce(case4)" * doctest::test_suite("simd::simde_AVX512"))
     auto axis     = nm::None;
     auto dtype    = nm::None;
     auto initial  = nm::None;
+    auto where    = nm::None;
     {
         auto keepdims = nm::False;
-        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
     {
         auto keepdims = nm::True;
-        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
     {
         auto keepdims = false;
-        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
     {
         auto keepdims = true;
-        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
 }
 
@@ -130,21 +134,22 @@ TEST_CASE("add.reduce(case5)" * doctest::test_suite("simd::simde_AVX512"))
     auto axis     = nm::None;
     auto dtype    = nm::None;
     auto initial  = nm::None;
+    auto where    = nm::None;
     {
         auto keepdims = nm::False;
-        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
     {
         auto keepdims = nm::True;
-        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
     {
         auto keepdims = false;
-        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
     {
         auto keepdims = true;
-        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
 }
 
@@ -154,21 +159,22 @@ TEST_CASE("add.reduce(case6)" * doctest::test_suite("simd::simde_AVX512"))
     auto axis     = nm::None;
     auto dtype    = nm::None;
     auto initial  = nm::None;
+    auto where    = nm::None;
     {
         auto keepdims = nm::False;
-        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
     {
         auto keepdims = nm::True;
-        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
     {
         auto keepdims = false;
-        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
     {
         auto keepdims = true;
-        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
 }
 
@@ -178,21 +184,22 @@ TEST_CASE("add.reduce(case7)" * doctest::test_suite("simd::simde_AVX512"))
     auto axis     = nm::None;
     auto dtype    = nm::None;
     auto initial  = nm::None;
+    auto where    = nm::None;
     {
         auto keepdims = nm::False;
-        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
     {
         auto keepdims = nm::True;
-        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
     {
         auto keepdims = false;
-        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
     {
         auto keepdims = true;
-        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
 }
 
@@ -202,21 +209,22 @@ TEST_CASE("add.reduce(case8)" * doctest::test_suite("simd::simde_AVX512"))
     auto axis     = nm::None;
     auto dtype    = nm::None;
     auto initial  = nm::None;
+    auto where    = nm::None;
     {
         auto keepdims = nm::False;
-        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
     {
         auto keepdims = nm::True;
-        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
     {
         auto keepdims = false;
-        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
     {
         auto keepdims = true;
-        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
 }
 
@@ -226,21 +234,22 @@ TEST_CASE("add.reduce(case9)" * doctest::test_suite("simd::simde_AVX512"))
     auto axis     = nm::None;
     auto dtype    = nm::None;
     auto initial  = nm::None;
+    auto where    = nm::None;
     {
         auto keepdims = nm::False;
-        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
     {
         auto keepdims = nm::True;
-        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
     {
         auto keepdims = false;
-        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
     {
         auto keepdims = true;
-        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
 }
 
@@ -250,21 +259,22 @@ TEST_CASE("add.reduce(case10)" * doctest::test_suite("simd::simde_AVX512"))
     auto axis     = nm::None;
     auto dtype    = nm::None;
     auto initial  = nm::None;
+    auto where    = nm::None;
     {
         auto keepdims = nm::False;
-        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
     {
         auto keepdims = nm::True;
-        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
     {
         auto keepdims = false;
-        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
     {
         auto keepdims = true;
-        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
 }
 
@@ -274,21 +284,22 @@ TEST_CASE("add.reduce(case11)" * doctest::test_suite("simd::simde_AVX512"))
     auto axis     = nm::None;
     auto dtype    = nm::None;
     auto initial  = nm::None;
+    auto where    = nm::None;
     {
         auto keepdims = nm::False;
-        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
     {
         auto keepdims = nm::True;
-        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
     {
         auto keepdims = false;
-        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
     {
         auto keepdims = true;
-        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
 }
 
@@ -298,21 +309,22 @@ TEST_CASE("add.reduce(case12)" * doctest::test_suite("simd::simde_AVX512"))
     auto axis     = nm::None;
     auto dtype    = nm::None;
     auto initial  = nm::None;
+    auto where    = nm::None;
     {
         auto keepdims = nm::False;
-        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
     {
         auto keepdims = nm::True;
-        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
     {
         auto keepdims = false;
-        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
     {
         auto keepdims = true;
-        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
 }
 
@@ -322,21 +334,22 @@ TEST_CASE("add.reduce(case13)" * doctest::test_suite("simd::simde_AVX512"))
     auto axis     = nm::None;
     auto dtype    = nm::None;
     auto initial  = nm::None;
+    auto where    = nm::None;
     {
         auto keepdims = nm::False;
-        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
     {
         auto keepdims = nm::True;
-        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
     {
         auto keepdims = false;
-        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
     {
         auto keepdims = true;
-        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
 }
 
@@ -346,21 +359,22 @@ TEST_CASE("add.reduce(case14)" * doctest::test_suite("simd::simde_AVX512"))
     auto axis     = nm::None;
     auto dtype    = nm::None;
     auto initial  = nm::None;
+    auto where    = nm::None;
     {
         auto keepdims = nm::False;
-        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
     {
         auto keepdims = nm::True;
-        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
     {
         auto keepdims = false;
-        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
     {
         auto keepdims = true;
-        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
 }
 
@@ -370,21 +384,22 @@ TEST_CASE("add.reduce(case15)" * doctest::test_suite("simd::simde_AVX512"))
     auto axis     = nm::None;
     auto dtype    = nm::None;
     auto initial  = nm::None;
+    auto where    = nm::None;
     {
         auto keepdims = nm::False;
-        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
     {
         auto keepdims = nm::True;
-        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
     {
         auto keepdims = false;
-        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
     {
         auto keepdims = true;
-        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
 }
 
@@ -394,21 +409,22 @@ TEST_CASE("add.reduce(case16)" * doctest::test_suite("simd::simde_AVX512"))
     auto axis     = nm::None;
     auto dtype    = nm::None;
     auto initial  = nm::None;
+    auto where    = nm::None;
     {
         auto keepdims = nm::False;
-        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
     {
         auto keepdims = nm::True;
-        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
     {
         auto keepdims = false;
-        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
     {
         auto keepdims = true;
-        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
 }
 
@@ -418,21 +434,22 @@ TEST_CASE("add.reduce(case17)" * doctest::test_suite("simd::simde_AVX512"))
     auto axis     = nm::None;
     auto dtype    = nm::None;
     auto initial  = nm::None;
+    auto where    = nm::None;
     {
         auto keepdims = nm::False;
-        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
     {
         auto keepdims = nm::True;
-        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
     {
         auto keepdims = false;
-        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
     {
         auto keepdims = true;
-        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
 }
 
@@ -442,21 +459,22 @@ TEST_CASE("add.reduce(case18)" * doctest::test_suite("simd::simde_AVX512"))
     auto axis     = nm::None;
     auto dtype    = nm::None;
     auto initial  = nm::None;
+    auto where    = nm::None;
     {
         auto keepdims = nm::False;
-        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
     {
         auto keepdims = nm::True;
-        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
     {
         auto keepdims = false;
-        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
     {
         auto keepdims = true;
-        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
 }
 
@@ -466,21 +484,22 @@ TEST_CASE("add.reduce(case19)" * doctest::test_suite("simd::simde_AVX512"))
     auto axis     = nm::None;
     auto dtype    = nm::None;
     auto initial  = nm::None;
+    auto where    = nm::None;
     {
         auto keepdims = nm::False;
-        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
     {
         auto keepdims = nm::True;
-        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
     {
         auto keepdims = false;
-        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
     {
         auto keepdims = true;
-        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
 }
 
@@ -490,21 +509,22 @@ TEST_CASE("add.reduce(case20)" * doctest::test_suite("simd::simde_AVX512"))
     auto axis     = nm::None;
     auto dtype    = nm::None;
     auto initial  = nm::None;
+    auto where    = nm::None;
     {
         auto keepdims = nm::False;
-        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
     {
         auto keepdims = nm::True;
-        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
     {
         auto keepdims = false;
-        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
     {
         auto keepdims = true;
-        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
 }
 
@@ -514,21 +534,22 @@ TEST_CASE("add.reduce(case21)" * doctest::test_suite("simd::simde_AVX512"))
     auto axis     = nm::None;
     auto dtype    = nm::None;
     auto initial  = nm::None;
+    auto where    = nm::None;
     {
         auto keepdims = nm::False;
-        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
     {
         auto keepdims = nm::True;
-        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
     {
         auto keepdims = false;
-        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
     {
         auto keepdims = true;
-        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
 }
 
@@ -538,21 +559,22 @@ TEST_CASE("add.reduce(case22)" * doctest::test_suite("simd::simde_AVX512"))
     auto axis     = nm::None;
     auto dtype    = nm::None;
     auto initial  = nm::None;
+    auto where    = nm::None;
     {
         auto keepdims = nm::False;
-        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
     {
         auto keepdims = nm::True;
-        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
     {
         auto keepdims = false;
-        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
     {
         auto keepdims = true;
-        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
 }
 
@@ -562,21 +584,22 @@ TEST_CASE("add.reduce(case23)" * doctest::test_suite("simd::simde_AVX512"))
     auto axis     = nm::None;
     auto dtype    = nm::None;
     auto initial  = nm::None;
+    auto where    = nm::None;
     {
         auto keepdims = nm::False;
-        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
     {
         auto keepdims = nm::True;
-        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
     {
         auto keepdims = false;
-        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
     {
         auto keepdims = true;
-        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
 }
 
@@ -586,21 +609,22 @@ TEST_CASE("add.reduce(case24)" * doctest::test_suite("simd::simde_AVX512"))
     auto axis     = nm::None;
     auto dtype    = nm::None;
     auto initial  = nm::None;
+    auto where    = nm::None;
     {
         auto keepdims = nm::False;
-        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
     {
         auto keepdims = nm::True;
-        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
     {
         auto keepdims = false;
-        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
     {
         auto keepdims = true;
-        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
 }
 
@@ -610,21 +634,22 @@ TEST_CASE("add.reduce(case25)" * doctest::test_suite("simd::simde_AVX512"))
     auto axis     = nm::None;
     auto dtype    = nm::None;
     auto initial  = nm::None;
+    auto where    = nm::None;
     {
         auto keepdims = nm::False;
-        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
     {
         auto keepdims = nm::True;
-        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
     {
         auto keepdims = false;
-        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
     {
         auto keepdims = true;
-        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(add.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
 }
 
@@ -636,21 +661,22 @@ TEST_CASE("multiply.reduce(case1)" * doctest::test_suite("simd::simde_AVX512"))
     auto axis     = nm::None;
     auto dtype    = nm::None;
     auto initial  = nm::None;
+    auto where    = nm::None;
     {
         auto keepdims = nm::False;
-        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
     {
         auto keepdims = nm::True;
-        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
     {
         auto keepdims = false;
-        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
     {
         auto keepdims = true;
-        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
 }
 
@@ -660,21 +686,22 @@ TEST_CASE("multiply.reduce(case2)" * doctest::test_suite("simd::simde_AVX512"))
     auto axis     = nm::None;
     auto dtype    = nm::None;
     auto initial  = nm::None;
+    auto where    = nm::None;
     {
         auto keepdims = nm::False;
-        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
     {
         auto keepdims = nm::True;
-        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
     {
         auto keepdims = false;
-        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
     {
         auto keepdims = true;
-        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
 }
 
@@ -684,21 +711,22 @@ TEST_CASE("multiply.reduce(case3)" * doctest::test_suite("simd::simde_AVX512"))
     auto axis     = nm::None;
     auto dtype    = nm::None;
     auto initial  = nm::None;
+    auto where    = nm::None;
     {
         auto keepdims = nm::False;
-        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
     {
         auto keepdims = nm::True;
-        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
     {
         auto keepdims = false;
-        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
     {
         auto keepdims = true;
-        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
 }
 
@@ -708,21 +736,22 @@ TEST_CASE("multiply.reduce(case4)" * doctest::test_suite("simd::simde_AVX512"))
     auto axis     = nm::None;
     auto dtype    = nm::None;
     auto initial  = nm::None;
+    auto where    = nm::None;
     {
         auto keepdims = nm::False;
-        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
     {
         auto keepdims = nm::True;
-        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
     {
         auto keepdims = false;
-        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
     {
         auto keepdims = true;
-        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
 }
 
@@ -732,21 +761,22 @@ TEST_CASE("multiply.reduce(case5)" * doctest::test_suite("simd::simde_AVX512"))
     auto axis     = nm::None;
     auto dtype    = nm::None;
     auto initial  = nm::None;
+    auto where    = nm::None;
     {
         auto keepdims = nm::False;
-        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
     {
         auto keepdims = nm::True;
-        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
     {
         auto keepdims = false;
-        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
     {
         auto keepdims = true;
-        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
 }
 
@@ -756,21 +786,22 @@ TEST_CASE("multiply.reduce(case6)" * doctest::test_suite("simd::simde_AVX512"))
     auto axis     = nm::None;
     auto dtype    = nm::None;
     auto initial  = nm::None;
+    auto where    = nm::None;
     {
         auto keepdims = nm::False;
-        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
     {
         auto keepdims = nm::True;
-        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
     {
         auto keepdims = false;
-        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
     {
         auto keepdims = true;
-        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
 }
 
@@ -780,21 +811,22 @@ TEST_CASE("multiply.reduce(case7)" * doctest::test_suite("simd::simde_AVX512"))
     auto axis     = nm::None;
     auto dtype    = nm::None;
     auto initial  = nm::None;
+    auto where    = nm::None;
     {
         auto keepdims = nm::False;
-        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
     {
         auto keepdims = nm::True;
-        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
     {
         auto keepdims = false;
-        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
     {
         auto keepdims = true;
-        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
 }
 
@@ -804,21 +836,22 @@ TEST_CASE("multiply.reduce(case8)" * doctest::test_suite("simd::simde_AVX512"))
     auto axis     = nm::None;
     auto dtype    = nm::None;
     auto initial  = nm::None;
+    auto where    = nm::None;
     {
         auto keepdims = nm::False;
-        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
     {
         auto keepdims = nm::True;
-        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
     {
         auto keepdims = false;
-        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
     {
         auto keepdims = true;
-        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
 }
 
@@ -828,21 +861,22 @@ TEST_CASE("multiply.reduce(case9)" * doctest::test_suite("simd::simde_AVX512"))
     auto axis     = nm::None;
     auto dtype    = nm::None;
     auto initial  = nm::None;
+    auto where    = nm::None;
     {
         auto keepdims = nm::False;
-        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
     {
         auto keepdims = nm::True;
-        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
     {
         auto keepdims = false;
-        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
     {
         auto keepdims = true;
-        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
 }
 
@@ -852,21 +886,22 @@ TEST_CASE("multiply.reduce(case10)" * doctest::test_suite("simd::simde_AVX512"))
     auto axis     = nm::None;
     auto dtype    = nm::None;
     auto initial  = nm::None;
+    auto where    = nm::None;
     {
         auto keepdims = nm::False;
-        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
     {
         auto keepdims = nm::True;
-        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
     {
         auto keepdims = false;
-        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
     {
         auto keepdims = true;
-        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
 }
 
@@ -876,21 +911,22 @@ TEST_CASE("multiply.reduce(case11)" * doctest::test_suite("simd::simde_AVX512"))
     auto axis     = nm::None;
     auto dtype    = nm::None;
     auto initial  = nm::None;
+    auto where    = nm::None;
     {
         auto keepdims = nm::False;
-        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
     {
         auto keepdims = nm::True;
-        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
     {
         auto keepdims = false;
-        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
     {
         auto keepdims = true;
-        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
 }
 
@@ -900,21 +936,22 @@ TEST_CASE("multiply.reduce(case12)" * doctest::test_suite("simd::simde_AVX512"))
     auto axis     = nm::None;
     auto dtype    = nm::None;
     auto initial  = nm::None;
+    auto where    = nm::None;
     {
         auto keepdims = nm::False;
-        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
     {
         auto keepdims = nm::True;
-        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
     {
         auto keepdims = false;
-        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
     {
         auto keepdims = true;
-        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
 }
 
@@ -924,21 +961,22 @@ TEST_CASE("multiply.reduce(case13)" * doctest::test_suite("simd::simde_AVX512"))
     auto axis     = nm::None;
     auto dtype    = nm::None;
     auto initial  = nm::None;
+    auto where    = nm::None;
     {
         auto keepdims = nm::False;
-        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
     {
         auto keepdims = nm::True;
-        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
     {
         auto keepdims = false;
-        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
     {
         auto keepdims = true;
-        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
 }
 
@@ -948,21 +986,22 @@ TEST_CASE("multiply.reduce(case14)" * doctest::test_suite("simd::simde_AVX512"))
     auto axis     = nm::None;
     auto dtype    = nm::None;
     auto initial  = nm::None;
+    auto where    = nm::None;
     {
         auto keepdims = nm::False;
-        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
     {
         auto keepdims = nm::True;
-        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
     {
         auto keepdims = false;
-        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
     {
         auto keepdims = true;
-        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
 }
 
@@ -972,21 +1011,22 @@ TEST_CASE("multiply.reduce(case15)" * doctest::test_suite("simd::simde_AVX512"))
     auto axis     = nm::None;
     auto dtype    = nm::None;
     auto initial  = nm::None;
+    auto where    = nm::None;
     {
         auto keepdims = nm::False;
-        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
     {
         auto keepdims = nm::True;
-        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
     {
         auto keepdims = false;
-        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
     {
         auto keepdims = true;
-        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
 }
 
@@ -996,21 +1036,22 @@ TEST_CASE("multiply.reduce(case16)" * doctest::test_suite("simd::simde_AVX512"))
     auto axis     = nm::None;
     auto dtype    = nm::None;
     auto initial  = nm::None;
+    auto where    = nm::None;
     {
         auto keepdims = nm::False;
-        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
     {
         auto keepdims = nm::True;
-        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
     {
         auto keepdims = false;
-        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
     {
         auto keepdims = true;
-        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
 }
 
@@ -1020,21 +1061,22 @@ TEST_CASE("multiply.reduce(case17)" * doctest::test_suite("simd::simde_AVX512"))
     auto axis     = nm::None;
     auto dtype    = nm::None;
     auto initial  = nm::None;
+    auto where    = nm::None;
     {
         auto keepdims = nm::False;
-        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
     {
         auto keepdims = nm::True;
-        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
     {
         auto keepdims = false;
-        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
     {
         auto keepdims = true;
-        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
 }
 
@@ -1044,21 +1086,22 @@ TEST_CASE("multiply.reduce(case18)" * doctest::test_suite("simd::simde_AVX512"))
     auto axis     = nm::None;
     auto dtype    = nm::None;
     auto initial  = nm::None;
+    auto where    = nm::None;
     {
         auto keepdims = nm::False;
-        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
     {
         auto keepdims = nm::True;
-        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
     {
         auto keepdims = false;
-        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
     {
         auto keepdims = true;
-        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
 }
 
@@ -1068,21 +1111,22 @@ TEST_CASE("multiply.reduce(case19)" * doctest::test_suite("simd::simde_AVX512"))
     auto axis     = nm::None;
     auto dtype    = nm::None;
     auto initial  = nm::None;
+    auto where    = nm::None;
     {
         auto keepdims = nm::False;
-        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
     {
         auto keepdims = nm::True;
-        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
     {
         auto keepdims = false;
-        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
     {
         auto keepdims = true;
-        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
 }
 
@@ -1094,21 +1138,22 @@ TEST_CASE("multiply.reduce(case20)" * doctest::test_suite("simd::simde_AVX512"))
     auto axis     = nm::None;
     auto dtype    = nm::None;
     auto initial  = nm::None;
+    auto where    = nm::None;
     {
         auto keepdims = nm::False;
-        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
     {
         auto keepdims = nm::True;
-        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
     {
         auto keepdims = false;
-        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
     {
         auto keepdims = true;
-        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
 }
 
@@ -1118,21 +1163,22 @@ TEST_CASE("multiply.reduce(case21)" * doctest::test_suite("simd::simde_AVX512"))
     auto axis     = nm::None;
     auto dtype    = nm::None;
     auto initial  = nm::None;
+    auto where    = nm::None;
     {
         auto keepdims = nm::False;
-        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
     {
         auto keepdims = nm::True;
-        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
     {
         auto keepdims = false;
-        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
     {
         auto keepdims = true;
-        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
 }
 
@@ -1144,21 +1190,22 @@ TEST_CASE("multiply.reduce(case22)" * doctest::test_suite("simd::simde_AVX512"))
     auto axis     = nm::None;
     auto dtype    = nm::None;
     auto initial  = nm::None;
+    auto where    = nm::None;
     {
         auto keepdims = nm::False;
-        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
     {
         auto keepdims = nm::True;
-        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
     {
         auto keepdims = false;
-        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
     {
         auto keepdims = true;
-        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
 }
 
@@ -1168,21 +1215,22 @@ TEST_CASE("multiply.reduce(case23)" * doctest::test_suite("simd::simde_AVX512"))
     auto axis     = nm::None;
     auto dtype    = nm::None;
     auto initial  = nm::None;
+    auto where    = nm::None;
     {
         auto keepdims = nm::False;
-        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
     {
         auto keepdims = nm::True;
-        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
     {
         auto keepdims = false;
-        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
     {
         auto keepdims = true;
-        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
 }
 
@@ -1192,21 +1240,22 @@ TEST_CASE("multiply.reduce(case24)" * doctest::test_suite("simd::simde_AVX512"))
     auto axis     = nm::None;
     auto dtype    = nm::None;
     auto initial  = nm::None;
+    auto where    = nm::None;
     {
         auto keepdims = nm::False;
-        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
     {
         auto keepdims = nm::True;
-        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
     {
         auto keepdims = false;
-        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
     {
         auto keepdims = true;
-        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
 }
 
@@ -1217,21 +1266,22 @@ TEST_CASE("multiply.reduce(case22)" * doctest::test_suite("simd::simde_AVX512"))
     auto axis     = nm::None;
     auto dtype    = nm::None;
     auto initial  = nm::None;
+    auto where    = nm::None;
     {
         auto keepdims = nm::False;
-        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
     {
         auto keepdims = nm::True;
-        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
     {
         auto keepdims = false;
-        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
     {
         auto keepdims = true;
-        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims);
+        SIMDE_AVX512_TEST(multiply.reduce,unwrap(input),axis,dtype,initial,keepdims,where);
     }
 }
 #endif

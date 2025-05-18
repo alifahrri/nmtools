@@ -58,19 +58,19 @@ TEST_CASE("pad(case1)" * doctest::test_suite("view::pad"))
     PAD2_SUBCASE( case1, array_a, pads_a );
     PAD2_SUBCASE( case1, array_f, pads_f );
     PAD2_SUBCASE( case1, array_h, pads_h );
-    PAD2_SUBCASE( case1, array_d, pads_a );
+    PAD2_SUBCASE( case1, array_d, pads_v );
 
     PAD_SUBCASE( case1, array, pad_width );
     PAD_SUBCASE( case1, array_a, pad_width_a );
     PAD_SUBCASE( case1, array_f, pad_width_f );
     PAD_SUBCASE( case1, array_h, pad_width_h );
-    PAD_SUBCASE( case1, array_d, pad_width_a );
+    PAD_SUBCASE( case1, array_d, pad_width_d );
 
     PAD3_SUBCASE( case1, array, pad );
     PAD3_SUBCASE( case1, array_a, pad_a );
     PAD3_SUBCASE( case1, array_f, pad_f );
     PAD3_SUBCASE( case1, array_h, pad_h );
-    PAD3_SUBCASE( case1, array_d, pad_a );
+    PAD3_SUBCASE( case1, array_d, pad_v );
 
     #else
     PAD2_SUBCASE( case1, array_cs_fb, pads_a );

@@ -2,8 +2,8 @@
 #define NMTOOLS_ARRAY_VIEW_DECORATOR_HPP
 
 #include "nmtools/meta.hpp"
-#include "nmtools/utility.hpp"
 #include "nmtools/utility/shape.hpp"
+#include "nmtools/utility/tuple_cat.hpp"
 #include "nmtools/index/max.hpp"
 #include "nmtools/index/sum.hpp"
 #include "nmtools/utility/data.hpp"

@@ -341,11 +341,11 @@ namespace nmtools::view
         // TODO: simplify with this version, fix segfault
         #if 0
         if constexpr (meta::is_maybe_v<array_t> || (meta::is_maybe_v<args_t> || ...)) {
-            using result_t   = decltype(f(unwrap(array),unwrap(args)...));
+            using result_t   = decltype(lift_indexing(nmtools::forward<F>(f),unwrap(array),unwrap(args)...));
             // f(...) may results in maybe type (e.g. because of invalid args.. configuration)
             using return_t = meta::conditional_t<meta::is_maybe_v<result_t>,result_t,nmtools_maybe<result_t>>;
             return (has_value(array) && (has_value(args) && ...)
-                ? return_t{f(unwrap(array),unwrap(args)...)}
+                ? return_t{lift_indexing(nmtools::forward<F>(f),unwrap(array),unwrap(args)...)}
                 : return_t{meta::Nothing}
             );
         #else
@@ -370,14 +370,16 @@ namespace nmtools::view
         } else if constexpr (meta::is_either_v<array_t>) {
             using left_t  = meta::get_either_left_t<array_t>;
             using right_t = meta::get_either_right_t<array_t>;
-            using left_res_t  = decltype(f(meta::declval<left_t>(),args...));
-            using right_res_t = decltype(f(meta::declval<right_t>(),args...));
-            using result_t = meta::replace_either_t<array_t,left_res_t,right_res_t>;
+            using left_res_t  = decltype(lift_indexing(nmtools::forward<F>(f),meta::declval<left_t>(),args...));
+            using right_res_t = decltype(lift_indexing(nmtools::forward<F>(f),meta::declval<right_t>(),args...));
+            using result_t = meta::conditional_t<
+                meta::is_same_v<left_res_t,right_res_t>
+                , left_res_t, nmtools_either<left_res_t,right_res_t>>;
             if (auto l_ptr = nmtools::get_if<left_t>(&array)) {
-                return result_t{f(*l_ptr,args...)};
+                return result_t{lift_indexing(nmtools::forward<F>(f),*l_ptr,args...)};
             } else {
                 auto r_ptr = nmtools::get_if<right_t>(&array);
-                return result_t{f(*r_ptr,args...)};
+                return result_t{lift_indexing(nmtools::forward<F>(f),*r_ptr,args...)};
             }
         } else {
             return f(array,args...);

@@ -521,6 +521,174 @@ NMTOOLS_TESTING_DECLARE_CASE(view, reduce_multiply)
         inline int shape[3] = {1,1,1};
         inline int result[1][1][1] = {{{0}}};
     }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case19)
+    {
+        using case1::args::a;
+        inline bool mask[3][2] = {
+            {true, false}, {false, true}, {true, true}
+        };
+        inline int axis = 0;
+        NMTOOLS_CAST_ARRAYS(a);
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case19)
+    {
+        inline int shape[2] = {3,2};
+        inline int result[3][2] = {
+            {0, 1}, {1, 27}, {40, 55}
+        };
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case20)
+    {
+        using case1::args::a;
+        using case19::args::mask;
+        inline int axis = 1;
+        inline int initial = 2;
+        inline auto keepdims = nm::False;
+        NMTOOLS_CAST_ARRAYS(a);
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case20)
+    {
+        inline int shape[2] = {2,2};
+        inline int result[2][2] = {
+            {0, 30}, {120, 198}
+        };
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case21)
+    {
+        using case1::args::a;
+        using case19::args::mask;
+        inline auto axis = nm::None;
+        inline auto keepdims = nm::True;
+        NMTOOLS_CAST_ARRAYS(a);
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case21)
+    {
+        inline int shape[3] = {1,1,1};
+        inline int result[1][1][1] = {{{0}}};
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case22)
+    {
+        inline int a[5] = {1, 2, 3, 4, 5};
+        inline bool mask[5] = {true, false, true, false, true};
+        inline auto axis = nm::None;
+        NMTOOLS_CAST_ARRAYS(a);
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case22)
+    {
+        inline auto shape = nm::None;
+        inline int result = 15;
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case23)
+    {
+        using case22::args::a;
+        inline bool mask[5] = {false, false, true, false, true};
+        inline auto axis = nm::None;
+        inline int initial = 10;
+        NMTOOLS_CAST_ARRAYS(a);
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case23)
+    {
+        inline auto shape = nm::None;
+        inline int result = 150;
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case24)
+    {
+        inline int a[3][3] = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
+        inline bool mask[3][3] = {{true, false, true}, {false, true, false}, {true, true, false}};
+        inline int axis = 0;
+        NMTOOLS_CAST_ARRAYS(a);
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case24)
+    {
+        inline int shape[1] = {3};
+        inline int result[3] = {7, 40, 3};
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case25)
+    {
+        using case24::args::a;
+        using case24::args::mask;
+        inline int axis = 1;
+        NMTOOLS_CAST_ARRAYS(a);
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case25)
+    {
+        inline int shape[1] = {3};
+        inline int result[3] = {3, 5, 56};
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case26)
+    {
+        using case1::args::a;
+        using case19::args::mask;
+        inline int axis = 0;
+        inline int initial = 100;
+        inline auto keepdims = nm::False;
+        NMTOOLS_CAST_ARRAYS(a);
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case26)
+    {
+        inline int shape[2] = {3,2};
+        inline int result[3][2] = {
+            {0, 100}, {100, 2700}, {4000, 5500}
+        };
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case27)
+    {
+        using case1::args::a;
+        using case19::args::mask;
+        inline int axis = 0;
+        inline int initial = 100;
+        inline auto keepdims = nm::True;
+        NMTOOLS_CAST_ARRAYS(a);
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case27)
+    {
+        inline int shape[3] = {1,3,2};
+        inline int result[1][3][2] = {
+            {{0, 100}, {100, 2700}, {4000, 5500}}
+        };
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case28)
+    {
+        using case1::args::a;
+        using case19::args::mask;
+        inline auto axis = nm::None;
+        inline int initial = 10;
+        inline auto keepdims = nm::True;
+        NMTOOLS_CAST_ARRAYS(a);
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case28)
+    {
+        inline int shape[3] = {1,1,1};
+        inline int result[1][1][1] = {{{0}}};
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case29)
+    {
+        inline int a[2][3][2] = {
+            {{1,1}, {2,3}, {4,5}},
+            {{6,7}, {8,9}, {10,11}}
+        };
+        using case19::args::mask;
+        inline auto axis = nm::None;
+        inline int initial = 2;
+        inline auto keepdims = nm::True;
+        NMTOOLS_CAST_ARRAYS(a);
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case29)
+    {
+        inline int shape[3] = {1,1,1};
+        inline int result[1][1][1] = {{{712800}}};
+    }
 }
 
 NMTOOLS_TESTING_DECLARE_CASE(view, accumulate_multiply)

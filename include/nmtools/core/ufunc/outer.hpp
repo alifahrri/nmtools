@@ -125,7 +125,7 @@ namespace nmtools::view
         using op_type = op_t;
         using lhs_element_type = meta::get_element_type_t<lhs_t>;
         using rhs_element_type = meta::get_element_type_t<rhs_t>;
-        using result_type = detail::get_ufunc_result_type_t<op_t,lhs_element_type,rhs_element_type>;
+        using result_type = meta::get_ufunc_result_type_t<op_t,lhs_element_type,rhs_element_type>;
         using dtype_type  = dtype_t;
 
         using attributes_type = args::outer<dtype_type,op_type>;

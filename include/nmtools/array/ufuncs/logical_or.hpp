@@ -1,5 +1,5 @@
-#ifndef NMTOOLS_ARRAY_VIEW_UFUNCS_LOGICAL_OR_HPP
-#define NMTOOLS_ARRAY_VIEW_UFUNCS_LOGICAL_OR_HPP
+#ifndef NMTOOLS_ARRAY_UFUNCS_LOGICAL_OR_HPP
+#define NMTOOLS_ARRAY_UFUNCS_LOGICAL_OR_HPP
 
 #include "nmtools/utility/to_string/to_string.hpp"
 #include "nmtools/core/ufunc.hpp"
@@ -26,12 +26,19 @@ namespace nmtools::view
         return broadcast_binary_ufunc(logical_or_t{},a,b);
     } // logical_or
 
-    // TODO: handle dtype, initial, keepdims, where
-    template <typename left_t, typename axis_t>
-    constexpr auto reduce_logical_or(const left_t& a, const axis_t& axis)
+    template <typename left_t
+        , typename axis_t
+        , typename dtype_t=none_t
+        , typename initial_t=none_t
+        , typename keepdims_t=meta::false_type
+        , typename where_t=none_t>
+    constexpr auto reduce_logical_or(const left_t& a, const axis_t& axis
+        , dtype_t dtype=dtype_t{}
+        , initial_t initial=initial_t{}
+        , keepdims_t keepdims=keepdims_t{}
+        , const where_t& where=where_t{})
     {
-        auto init = false;
-        return reduce(logical_or_t{},a,axis,init);
+        return reduce(logical_or_t{},a,axis,dtype,initial,keepdims,where);
     } // reduce_logical_or
 }
 
@@ -57,13 +64,7 @@ namespace nmtools::utils::impl
 
 #endif // NMTOOLS_HAS_STRING
 
-#endif // NMTOOLS_ARRAY_VIEW_UFUNCS_LOGICAL_OR_HPP
-
-#ifndef NMTOOLS_ARRAY_ARRAY_LOGICAL_OR_HPP
-#define NMTOOLS_ARRAY_ARRAY_LOGICAL_OR_HPP
-
 #include "nmtools/core/eval.hpp"
-#include "nmtools/array/ufuncs/logical_or.hpp"
 #include "nmtools/constants.hpp"
 
 namespace nmtools::array
@@ -79,9 +80,9 @@ namespace nmtools::array
             {
                 auto logical_or = view::logical_or(a,b);
                 return eval(logical_or
-                    ,nmtools::forward<context_t>(context)
-                    ,nmtools::forward<output_t>(output)
-                    ,resolver
+                    , nmtools::forward<context_t>(context)
+                    , nmtools::forward<output_t>(output)
+                    , resolver
                 );
             } // operator()
         }; // logical_or
@@ -90,4 +91,4 @@ namespace nmtools::array
     constexpr inline auto logical_or = fn::logical_or{};
 } // nmtools::array
 
-#endif // NMTOOLS_ARRAY_ARRAY_LOGICAL_OR_HPP
+#endif // NMTOOLS_ARRAY_UFUNCS_LOGICAL_OR_HPP

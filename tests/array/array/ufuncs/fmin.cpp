@@ -8,35 +8,12 @@
 namespace nm = nmtools;
 namespace na = nm::array;
 
-#define RUN_fmin_impl(...) \
-nm::array::fmin(__VA_ARGS__);
-
-#ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
-#include "nmtools/testing/benchmarks/bench.hpp"
-using nm::benchmarks::TrackedBench;
-// create immediately invoked lambda
-// that packs fmin fn to callable lambda
-#define RUN_fmin(case_name, ...) \
-[](auto&&...args){ \
-    auto title = std::string("fmin-") + #case_name; \
-    auto name  = nm::testing::make_func_args("", args...); \
-    auto fn    = [&](){ \
-        return RUN_fmin_impl(args...); \
-    }; \
-    return TrackedBench::run(title, name, fn); \
-}(__VA_ARGS__);
-#else
-// run normally without benchmarking, ignore case_name
-#define RUN_fmin(case_name, ...) \
-RUN_fmin_impl(__VA_ARGS__);
-#endif // NMTOOLS_TESTING_ENABLE_BENCHMARKS
-
 #define FMIN_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
     NMTOOLS_TESTING_USE_CASE(view, fmin, case_name); \
     using namespace args; \
-    auto result = RUN_fmin(case_name, __VA_ARGS__); \
+    auto result = nmtools::array::fmin(__VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( ::nm::shape(result), expect::shape ); \
     NMTOOLS_ASSERT_CLOSE( result, expect::result ); \
 }
@@ -59,35 +36,12 @@ TEST_CASE("fmin(case2)" * doctest::test_suite("array::fmin"))
     FMIN_SUBCASE( case2, a_h, b );
 }
 
-#define RUN_reduce_fmin_impl(...) \
-nm::array::fmin.reduce(__VA_ARGS__);
-
-#ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
-#include "nmtools/testing/benchmarks/bench.hpp"
-using nm::benchmarks::TrackedBench;
-// create immediately invoked lambda
-// that packs reduce_fmin fn to callable lambda
-#define RUN_reduce_fmin(case_name, ...) \
-[](auto&&...args){ \
-    auto title = std::string("reduce_fmin-") + #case_name; \
-    auto name  = nm::testing::make_func_args("", args...); \
-    auto fn    = [&](){ \
-        return RUN_reduce_fmin_impl(args...); \
-    }; \
-    return TrackedBench::run(title, name, fn); \
-}(__VA_ARGS__);
-#else
-// run normally without benchmarking, ignore case_name
-#define RUN_reduce_fmin(case_name, ...) \
-RUN_reduce_fmin_impl(__VA_ARGS__);
-#endif // NMTOOLS_TESTING_ENABLE_BENCHMARKS
-
 #define REDUCE_FMIN_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
     NMTOOLS_TESTING_USE_CASE(view, reduce_fmin, case_name); \
     using namespace args; \
-    auto result = RUN_reduce_fmin(case_name, __VA_ARGS__); \
+    auto result = nmtools::array::reduce_fmin(__VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( ::nm::shape(result), expect::shape ); \
     NMTOOLS_ASSERT_CLOSE( result, expect::result ); \
 }
@@ -200,35 +154,149 @@ TEST_CASE("reduce_fmin(case12)" * doctest::test_suite("array::reduce_fmin"))
     REDUCE_FMIN_SUBCASE( case12, a_f, axis, dtype, initial, keepdims );
 }
 
-#define RUN_accumulate_fmin_impl(...) \
-nm::array::fmin.accumulate(__VA_ARGS__);
 
-#ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
-#include "nmtools/testing/benchmarks/bench.hpp"
-using nm::benchmarks::TrackedBench;
-// create immediately invoked lambda
-// that packs accumulate_fmin fn to callable lambda
-#define RUN_accumulate_fmin(case_name, ...) \
-[](auto&&...args){ \
-    auto title = std::string("accumulate_fmin-") + #case_name; \
-    auto name  = nm::testing::make_func_args("", args...); \
-    auto fn    = [&](){ \
-        return RUN_accumulate_fmin_impl(args...); \
-    }; \
-    return TrackedBench::run(title, name, fn); \
-}(__VA_ARGS__);
-#else
-// run normally without benchmarking, ignore case_name
-#define RUN_accumulate_fmin(case_name, ...) \
-RUN_accumulate_fmin_impl(__VA_ARGS__);
-#endif // NMTOOLS_TESTING_ENABLE_BENCHMARKS
+TEST_CASE("reduce_fmin(case14)" * doctest::test_suite("array::reduce_fmin"))
+{
+    REDUCE_FMIN_SUBCASE( case14,   a, axis, dtype, initial, keepdims );
+    REDUCE_FMIN_SUBCASE( case14, a_a, axis, dtype, initial, keepdims );
+    REDUCE_FMIN_SUBCASE( case14, a_f, axis, dtype, initial, keepdims );
+    // REDUCE_FMIN_SUBCASE( case14, a_h, axis, dtype, initial, keepdims );
+    // REDUCE_FMIN_SUBCASE( case14, a_d, axis, dtype, initial, keepdims );
+}
+
+TEST_CASE("reduce_fmin(case15)" * doctest::test_suite("array::reduce_fmin"))
+{
+    REDUCE_FMIN_SUBCASE( case15,   a, axis, dtype, initial, keepdims );
+    REDUCE_FMIN_SUBCASE( case15, a_a, axis, dtype, initial, keepdims );
+    REDUCE_FMIN_SUBCASE( case15, a_f, axis, dtype, initial, keepdims );
+    // REDUCE_FMIN_SUBCASE( case15, a_h, axis, dtype, initial, keepdims );
+    // REDUCE_FMIN_SUBCASE( case15, a_d, axis, dtype, initial, keepdims );
+}
+
+TEST_CASE("reduce_fmin(case16)" * doctest::test_suite("array::reduce_fmin"))
+{
+    REDUCE_FMIN_SUBCASE( case16,   a, axis, dtype, initial, keepdims );
+    REDUCE_FMIN_SUBCASE( case16, a_a, axis, dtype, initial, keepdims );
+    REDUCE_FMIN_SUBCASE( case16, a_f, axis, dtype, initial, keepdims );
+    // REDUCE_FMIN_SUBCASE( case16, a_h, axis, dtype, initial, keepdims );
+    // REDUCE_FMIN_SUBCASE( case16, a_d, axis, dtype, initial, keepdims );
+}
+
+TEST_CASE("reduce_fmin(case17)" * doctest::test_suite("array::reduce_fmin"))
+{
+    REDUCE_FMIN_SUBCASE( case17,   a, axis, dtype, initial, keepdims );
+    REDUCE_FMIN_SUBCASE( case17, a_a, axis, dtype, initial, keepdims );
+    REDUCE_FMIN_SUBCASE( case17, a_f, axis, dtype, initial, keepdims );
+    // REDUCE_FMIN_SUBCASE( case17, a_h, axis, dtype, initial, keepdims );
+    // REDUCE_FMIN_SUBCASE( case17, a_d, axis, dtype, initial, keepdims );
+}
+
+// New test cases for reduce_fmin with where argument (cases 18-28)
+TEST_CASE("reduce_fmin(case18)" * doctest::test_suite("array::reduce_fmin"))
+{
+    REDUCE_FMIN_SUBCASE( case18, a, axis, dtype, initial, keepdims, mask );
+    REDUCE_FMIN_SUBCASE( case18, a_a, axis, dtype, initial, keepdims, mask );
+    REDUCE_FMIN_SUBCASE( case18, a_f, axis, dtype, initial, keepdims, mask );
+    // REDUCE_FMIN_SUBCASE( case18, a_h, axis, dtype, initial, keepdims, mask );
+    // REDUCE_FMIN_SUBCASE( case18, a_d, axis, dtype, initial, keepdims, mask );
+}
+
+TEST_CASE("reduce_fmin(case19)" * doctest::test_suite("array::reduce_fmin"))
+{
+    REDUCE_FMIN_SUBCASE( case19, a, axis, dtype, initial, keepdims, mask );
+    REDUCE_FMIN_SUBCASE( case19, a_a, axis, dtype, initial, keepdims, mask );
+    REDUCE_FMIN_SUBCASE( case19, a_f, axis, dtype, initial, keepdims, mask );
+    // REDUCE_FMIN_SUBCASE( case19, a_h, axis, dtype, initial, keepdims, mask );
+    // REDUCE_FMIN_SUBCASE( case19, a_d, axis, dtype, initial, keepdims, mask );
+}
+
+TEST_CASE("reduce_fmin(case20)" * doctest::test_suite("array::reduce_fmin"))
+{
+    REDUCE_FMIN_SUBCASE( case20, a, axis, dtype, initial, keepdims, mask );
+    REDUCE_FMIN_SUBCASE( case20, a_a, axis, dtype, initial, keepdims, mask );
+    REDUCE_FMIN_SUBCASE( case20, a_f, axis, dtype, initial, keepdims, mask );
+    // REDUCE_FMIN_SUBCASE( case20, a_h, axis, dtype, initial, keepdims, mask );
+    // REDUCE_FMIN_SUBCASE( case20, a_d, axis, dtype, initial, keepdims, mask );
+}
+
+TEST_CASE("reduce_fmin(case21)" * doctest::test_suite("array::reduce_fmin"))
+{
+    REDUCE_FMIN_SUBCASE( case21, a, axis, dtype, initial, keepdims, mask );
+    REDUCE_FMIN_SUBCASE( case21, a_a, axis, dtype, initial, keepdims, mask );
+    REDUCE_FMIN_SUBCASE( case21, a_f, axis, dtype, initial, keepdims, mask );
+    // REDUCE_FMIN_SUBCASE( case21, a_h, axis, dtype, initial, keepdims, mask );
+    // REDUCE_FMIN_SUBCASE( case21, a_d, axis, dtype, initial, keepdims, mask );
+}
+
+TEST_CASE("reduce_fmin(case22)" * doctest::test_suite("array::reduce_fmin"))
+{
+    REDUCE_FMIN_SUBCASE( case22, a, axis, dtype, initial, keepdims, mask );
+    REDUCE_FMIN_SUBCASE( case22, a_a, axis, dtype, initial, keepdims, mask );
+    REDUCE_FMIN_SUBCASE( case22, a_f, axis, dtype, initial, keepdims, mask );
+    // REDUCE_FMIN_SUBCASE( case22, a_h, axis, dtype, initial, keepdims, mask );
+    // REDUCE_FMIN_SUBCASE( case22, a_d, axis, dtype, initial, keepdims, mask );
+}
+
+TEST_CASE("reduce_fmin(case23)" * doctest::test_suite("array::reduce_fmin"))
+{
+    REDUCE_FMIN_SUBCASE( case23, a, axis, dtype, initial, keepdims, mask );
+    REDUCE_FMIN_SUBCASE( case23, a_a, axis, dtype, initial, keepdims, mask );
+    REDUCE_FMIN_SUBCASE( case23, a_f, axis, dtype, initial, keepdims, mask );
+    // REDUCE_FMIN_SUBCASE( case23, a_h, axis, dtype, initial, keepdims, mask );
+    // REDUCE_FMIN_SUBCASE( case23, a_d, axis, dtype, initial, keepdims, mask );
+}
+
+TEST_CASE("reduce_fmin(case24)" * doctest::test_suite("array::reduce_fmin"))
+{
+    REDUCE_FMIN_SUBCASE( case24, a, axis, dtype, initial, keepdims, mask );
+    REDUCE_FMIN_SUBCASE( case24, a_a, axis, dtype, initial, keepdims, mask );
+    REDUCE_FMIN_SUBCASE( case24, a_f, axis, dtype, initial, keepdims, mask );
+    // REDUCE_FMIN_SUBCASE( case24, a_h, axis, dtype, initial, keepdims, mask );
+    // REDUCE_FMIN_SUBCASE( case24, a_d, axis, dtype, initial, keepdims, mask );
+}
+
+TEST_CASE("reduce_fmin(case25)" * doctest::test_suite("array::reduce_fmin"))
+{
+    REDUCE_FMIN_SUBCASE( case25, a, axis, dtype, initial, keepdims, mask );
+    REDUCE_FMIN_SUBCASE( case25, a_a, axis, dtype, initial, keepdims, mask );
+    REDUCE_FMIN_SUBCASE( case25, a_f, axis, dtype, initial, keepdims, mask );
+    // REDUCE_FMIN_SUBCASE( case25, a_h, axis, dtype, initial, keepdims, mask );
+    // REDUCE_FMIN_SUBCASE( case25, a_d, axis, dtype, initial, keepdims, mask );
+}
+
+TEST_CASE("reduce_fmin(case26)" * doctest::test_suite("array::reduce_fmin"))
+{
+    REDUCE_FMIN_SUBCASE( case26, a, axis, dtype, initial, keepdims, mask );
+    REDUCE_FMIN_SUBCASE( case26, a_a, axis, dtype, initial, keepdims, mask );
+    REDUCE_FMIN_SUBCASE( case26, a_f, axis, dtype, initial, keepdims, mask );
+    // REDUCE_FMIN_SUBCASE( case26, a_h, axis, dtype, initial, keepdims, mask );
+    // REDUCE_FMIN_SUBCASE( case26, a_d, axis, dtype, initial, keepdims, mask );
+}
+
+TEST_CASE("reduce_fmin(case27)" * doctest::test_suite("array::reduce_fmin"))
+{
+    REDUCE_FMIN_SUBCASE( case27, a, axis, dtype, initial, keepdims, mask );
+    REDUCE_FMIN_SUBCASE( case27, a_a, axis, dtype, initial, keepdims, mask );
+    REDUCE_FMIN_SUBCASE( case27, a_f, axis, dtype, initial, keepdims, mask );
+    // REDUCE_FMIN_SUBCASE( case27, a_h, axis, dtype, initial, keepdims, mask );
+    // REDUCE_FMIN_SUBCASE( case27, a_d, axis, dtype, initial, keepdims, mask );
+}
+
+TEST_CASE("reduce_fmin(case28)" * doctest::test_suite("array::reduce_fmin"))
+{
+    REDUCE_FMIN_SUBCASE( case28, a, axis, dtype, initial, keepdims, mask );
+    REDUCE_FMIN_SUBCASE( case28, a_a, axis, dtype, initial, keepdims, mask );
+    REDUCE_FMIN_SUBCASE( case28, a_f, axis, dtype, initial, keepdims, mask );
+    // REDUCE_FMIN_SUBCASE( case28, a_h, axis, dtype, initial, keepdims, mask );
+    // REDUCE_FMIN_SUBCASE( case28, a_d, axis, dtype, initial, keepdims, mask );
+}
 
 #define ACCUMULATE_FMIN_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
     NMTOOLS_TESTING_USE_CASE(view, accumulate_fmin, case_name); \
     using namespace args; \
-    auto result = RUN_accumulate_fmin(case_name, __VA_ARGS__); \
+    auto result = nmtools::array::accumulate_fmin(__VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( ::nm::shape(result), expect::shape ); \
     NMTOOLS_ASSERT_CLOSE( result, expect::result ); \
 }
@@ -263,35 +331,12 @@ TEST_CASE("accumulate_fmin(case3)" * doctest::test_suite("array::accumulate_fmin
     ACCUMULATE_FMIN_SUBCASE( case3, a_f, axis );
 }
 
-#define RUN_outer_fmin_impl(...) \
-nm::array::fmin.outer(__VA_ARGS__);
-
-#ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
-#include "nmtools/testing/benchmarks/bench.hpp"
-using nm::benchmarks::TrackedBench;
-// create immediately invoked lambda
-// that packs outer_fmin fn to callable lambda
-#define RUN_outer_fmin(case_name, ...) \
-[](auto&&...args){ \
-    auto title = std::string("outer_fmin-") + #case_name; \
-    auto name  = nm::testing::make_func_args("", args...); \
-    auto fn    = [&](){ \
-        return RUN_outer_fmin_impl(args...); \
-    }; \
-    return TrackedBench::run(title, name, fn); \
-}(__VA_ARGS__);
-#else
-// run normally without benchmarking, ignore case_name
-#define RUN_outer_fmin(case_name, ...) \
-RUN_outer_fmin_impl(__VA_ARGS__);
-#endif // NMTOOLS_TESTING_ENABLE_BENCHMARKS
-
 #define OUTER_FMIN_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
     NMTOOLS_TESTING_USE_CASE(view, outer_fmin, case_name); \
     using namespace args; \
-    auto result = RUN_outer_fmin(case_name, __VA_ARGS__); \
+    auto result = nmtools::array::outer_fmin(__VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( ::nm::shape(result), expect::shape ); \
     NMTOOLS_ASSERT_CLOSE( result, expect::result ); \
 }

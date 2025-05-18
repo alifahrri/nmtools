@@ -35,11 +35,11 @@ namespace nmtools::view
         using src_shape_type = decltype(shape(meta::declval<array_t>()));
         using axis_type      = const axis_t;
 
-        array_type     array;
-        indices_type   indices;
-        dst_shape_type dst_shape;
-        src_shape_type src_shape;
-        axis_type      axis;
+        const array_type     array;
+        const indices_type   indices;
+        const dst_shape_type dst_shape;
+        const src_shape_type src_shape;
+        const axis_type      axis;
 
 
         constexpr take_along_axis_t(const array_t& array, const indices_t& indices, axis_t axis, const dst_shape_t& dst_shape)
@@ -111,7 +111,34 @@ namespace nmtools::view
                 return success;
             };
 
-            auto shape_ = b_shape;
+            using b_shape_t = decltype(b_shape);
+            constexpr auto vtype = [](){
+                using meta::as_value_v;
+                constexpr auto SIZE = meta::len_v<b_shape_t>;
+                [[maybe_unused]]
+                constexpr auto B_SIZE = meta::bounded_size_v<b_shape_t>;
+                if constexpr (SIZE > 0) {
+                    using type = nmtools_array<nm_size_t,SIZE>;
+                    return as_value_v<type>;
+                } else if constexpr (!meta::is_fail_v<decltype(B_SIZE)>) {
+                    using type = nmtools_static_vector<nm_size_t,B_SIZE>;
+                    return as_value_v<type>;
+                } else {
+                    // TODO: support small vector
+                    using type = nmtools_list<nm_size_t>;
+                    return as_value_v<type>;
+                }
+            }();
+            using m_shape_t = meta::type_t<decltype(vtype)>;
+            auto shape_ = m_shape_t{};
+
+            auto b_dim = len(b_shape);
+            if constexpr (meta::is_resizable_v<m_shape_t>) {
+                shape_.resize(b_dim);
+            }
+            for (nm_size_t i=0; i<(nm_size_t)b_dim; i++) {
+                at(shape_,i) = at(b_shape,i);
+            }
             at(shape_,axis) = at(src_shape,axis);
             const auto [Ni, M_Nk] = index::split(shape_,axis);
             const auto [M_, Nk] = index::split(M_Nk,1_ct);

@@ -44,35 +44,12 @@ using nm::None;
 using nm::False;
 using nm::True;
 
-#define RUN_add_impl(...) \
-na::add(__VA_ARGS__);
-
-#ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
-#include "nmtools/testing/benchmarks/bench.hpp"
-using nm::benchmarks::TrackedBench;
-// create immediately invoked lambda
-// that packs add fn to callable lambda
-#define RUN_add(case_name, ...) \
-[](auto&&...args){ \
-    auto title = std::string("add-") + #case_name; \
-    auto name  = nm::testing::make_func_args("", args...); \
-    auto fn    = [&](){ \
-        return RUN_add_impl(args...); \
-    }; \
-    return TrackedBench::run(title, name, fn); \
-}(__VA_ARGS__);
-#else
-// run normally without benchmarking, ignore case_name
-#define RUN_add(case_name, ...) \
-RUN_add_impl(__VA_ARGS__);
-#endif // NMTOOLS_TESTING_ENABLE_BENCHMARKS
-
 #define ADD_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
     NMTOOLS_TESTING_USE_CASE(view, add, case_name); \
     using namespace args; \
-    auto result = RUN_add(case_name, __VA_ARGS__); \
+    auto result = nmtools::array::add(__VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( ::nm::shape(result), expect::shape ); \
     NMTOOLS_ASSERT_CLOSE( result, expect::result ); \
 }
@@ -82,40 +59,17 @@ SUBCASE(#case_name) \
 { \
     NMTOOLS_TESTING_USE_CASE(array, constexpr_add, case_name); \
     using namespace args; \
-    constexpr auto result = RUN_add(case_name, __VA_ARGS__); \
+    constexpr auto result = nmtools::array::add(__VA_ARGS__); \
     NMTOOLS_STATIC_ASSERT_EQUAL( ::nm::shape(result), expect::shape ); \
     NMTOOLS_STATIC_ASSERT_CLOSE( result, expect::result ); \
 }
-
-#define RUN_reduce_add_impl(...) \
-na::fn::add::reduce(__VA_ARGS__);
-
-#ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
-#include "nmtools/testing/benchmarks/bench.hpp"
-using nm::benchmarks::TrackedBench;
-// create immediately invoked lambda
-// that packs add.reduce fn to callable lambda
-#define RUN_reduce_add(case_name, ...) \
-[](auto&&...args){ \
-    auto title = std::string("add.reduce-") + #case_name; \
-    auto name  = nm::testing::make_func_args("", args...); \
-    auto fn    = [&](){ \
-        return RUN_reduce_add_impl(args...); \
-    }; \
-    return TrackedBench::run(title, name, fn); \
-}(__VA_ARGS__);
-#else
-// run normally without benchmarking, ignore case_name
-#define RUN_reduce_add(case_name, ...) \
-RUN_reduce_add_impl(__VA_ARGS__);
-#endif // NMTOOLS_TESTING_ENABLE_BENCHMARKS
 
 #define REDUCE_ADD_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
     NMTOOLS_TESTING_USE_CASE(view, reduce_add, case_name); \
     using namespace args; \
-    auto result = RUN_reduce_add(case_name, __VA_ARGS__); \
+    auto result = nmtools::array::add.reduce(__VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( nm::shape(result), expect::shape ); \
     NMTOOLS_ASSERT_CLOSE( result, expect::result ); \
 }
@@ -125,40 +79,17 @@ SUBCASE(#case_name) \
 { \
     NMTOOLS_TESTING_USE_CASE(array, constexpr_reduce_add, case_name); \
     using namespace args; \
-    constexpr auto result = RUN_reduce_add(case_name, __VA_ARGS__); \
+    constexpr auto result = nmtools::array::add.reduce(__VA_ARGS__); \
     NMTOOLS_STATIC_ASSERT_EQUAL( nm::shape(result), expect::shape ); \
     NMTOOLS_STATIC_ASSERT_CLOSE( result, expect::result ); \
 }
-
-#define RUN_accumulate_add_impl(...) \
-na::add.accumulate(__VA_ARGS__);
-
-#ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
-#include "nmtools/testing/benchmarks/bench.hpp"
-using nm::benchmarks::TrackedBench;
-// create immediately invoked lambda
-// that packs add.accumulate fn to callable lambda
-#define RUN_accumulate_add(case_name, ...) \
-[](auto&&...args){ \
-    auto title = std::string("add.accumulate-") + #case_name; \
-    auto name  = nm::testing::make_func_args("", args...); \
-    auto fn    = [&](){ \
-        return RUN_accumulate_add_impl(args...); \
-    }; \
-    return TrackedBench::run(title, name, fn); \
-}(__VA_ARGS__);
-#else
-// run normally without benchmarking, ignore case_name
-#define RUN_accumulate_add(case_name, ...) \
-RUN_accumulate_add_impl(__VA_ARGS__);
-#endif // NMTOOLS_TESTING_ENABLE_BENCHMARKS
 
 #define ACCUMULATE_ADD_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
     NMTOOLS_TESTING_USE_CASE(view, accumulate_add, case_name); \
     using namespace args; \
-    auto result = RUN_accumulate_add(case_name, __VA_ARGS__); \
+    auto result = nmtools::array::add.accumulate(__VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( nm::shape(result), expect::shape ); \
     NMTOOLS_ASSERT_CLOSE( result, expect::result ); \
 }
@@ -168,40 +99,17 @@ SUBCASE(#case_name) \
 { \
     NMTOOLS_TESTING_USE_CASE(array, constexpr_accumulate_add, case_name); \
     using namespace args; \
-    constexpr auto result = RUN_accumulate_add(case_name, __VA_ARGS__); \
+    constexpr auto result = nmtools::array::add.accumulate(__VA_ARGS__); \
     NMTOOLS_STATIC_ASSERT_EQUAL( nm::shape(result), expect::shape ); \
     NMTOOLS_STATIC_ASSERT_CLOSE( result, expect::result ); \
 }
-
-#define RUN_outer_add_impl(...) \
-na::add.outer(__VA_ARGS__);
-
-#ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
-#include "nmtools/testing/benchmarks/bench.hpp"
-using nm::benchmarks::TrackedBench;
-// create immediately invoked lambda
-// that packs add.outer fn to callable lambda
-#define RUN_outer_add(case_name, ...) \
-[](auto&&...args){ \
-    auto title = std::string("add.outer-") + #case_name; \
-    auto name  = nm::testing::make_func_args("", args...); \
-    auto fn    = [&](){ \
-        return RUN_outer_add_impl(args...); \
-    }; \
-    return TrackedBench::run(title, name, fn); \
-}(__VA_ARGS__);
-#else
-// run normally without benchmarking, ignore case_name
-#define RUN_outer_add(case_name, ...) \
-RUN_outer_add_impl(__VA_ARGS__);
-#endif // NMTOOLS_TESTING_ENABLE_BENCHMARKS
 
 #define OUTER_ADD_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
     NMTOOLS_TESTING_USE_CASE(view, outer_add, case_name); \
     using namespace args; \
-    auto result = RUN_outer_add(case_name, __VA_ARGS__); \
+    auto result = nmtools::array::add.outer(__VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( nm::shape(result), expect::shape ); \
     NMTOOLS_ASSERT_CLOSE( result, expect::result ); \
 }
@@ -211,7 +119,7 @@ SUBCASE(#case_name) \
 { \
     NMTOOLS_TESTING_USE_CASE(array, constexpr_outer_add, case_name); \
     using namespace args; \
-    constexpr auto result = RUN_outer_add(case_name, __VA_ARGS__); \
+    constexpr auto result = nmtools::array::add.outer(__VA_ARGS__); \
     NMTOOLS_STATIC_ASSERT_EQUAL( nm::shape(result), expect::shape ); \
     NMTOOLS_STATIC_ASSERT_CLOSE( result, expect::result ); \
 }
@@ -1323,6 +1231,372 @@ TEST_CASE("reduce_add(case24)" * doctest::test_suite("array::add.reduce"))
     REDUCE_ADD_SUBCASE( case24, a_ls_db, axis, dtype, initial, keepdims );
     #endif
 }
+
+
+TEST_CASE("reduce_add(case25)" * doctest::test_suite("array::reduce_add"))
+{
+    auto dtype   = nmtools::None;
+    auto initial = nmtools::None;
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
+    REDUCE_ADD_SUBCASE( case25,   a, axis, dtype, initial, keepdims );
+    REDUCE_ADD_SUBCASE( case25, a_a, axis, dtype, initial, keepdims );
+    REDUCE_ADD_SUBCASE( case25, a_f, axis, dtype, initial, keepdims );
+    // NOTE: currently can't deduce the result as num statically
+    // TODO: support num result deduction static/runtime
+    #if 0
+    REDUCE_ADD_SUBCASE( case25, a_d, axis, dtype, initial, keepdims );
+    #endif
+    REDUCE_ADD_SUBCASE( case25, a_h, axis, dtype, initial, keepdims );
+
+    #else
+    REDUCE_ADD_SUBCASE( case25, a_cs_fb, axis, dtype, initial, keepdims );
+    REDUCE_ADD_SUBCASE( case25, a_fs_fb, axis, dtype, initial, keepdims );
+    REDUCE_ADD_SUBCASE( case25, a_hs_fb, axis, dtype, initial, keepdims );
+    // REDUCE_ADD_SUBCASE( case25, a_ds_fb, axis, dtype, initial, keepdims );
+    REDUCE_ADD_SUBCASE( case25, a_ls_fb, axis, dtype, initial, keepdims );
+
+    REDUCE_ADD_SUBCASE( case25, a_cs_hb, axis, dtype, initial, keepdims );
+    REDUCE_ADD_SUBCASE( case25, a_fs_hb, axis, dtype, initial, keepdims );
+    REDUCE_ADD_SUBCASE( case25, a_hs_hb, axis, dtype, initial, keepdims );
+    // REDUCE_ADD_SUBCASE( case25, a_ds_hb, axis, dtype, initial, keepdims );
+    REDUCE_ADD_SUBCASE( case25, a_ls_hb, axis, dtype, initial, keepdims );
+
+    REDUCE_ADD_SUBCASE( case25, a_cs_db, axis, dtype, initial, keepdims );
+    REDUCE_ADD_SUBCASE( case25, a_fs_db, axis, dtype, initial, keepdims );
+    REDUCE_ADD_SUBCASE( case25, a_hs_db, axis, dtype, initial, keepdims );
+    // REDUCE_ADD_SUBCASE( case25, a_ds_db, axis, dtype, initial, keepdims );
+    REDUCE_ADD_SUBCASE( case25, a_ls_db, axis, dtype, initial, keepdims );
+    #endif
+}
+
+TEST_CASE("reduce_add(case26)" * doctest::test_suite("array::reduce_add"))
+{
+    auto dtype   = nmtools::None;
+    auto initial = nmtools::None;
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
+    REDUCE_ADD_SUBCASE( case26,   a, axis, dtype, initial, keepdims );
+    REDUCE_ADD_SUBCASE( case26, a_a, axis, dtype, initial, keepdims );
+    REDUCE_ADD_SUBCASE( case26, a_f, axis, dtype, initial, keepdims );
+    // NOTE: currently can't deduce the result as num statically
+    // TODO: support num result deduction static/runtime
+    #if 0
+    REDUCE_ADD_SUBCASE( case26, a_d, axis, dtype, initial, keepdims );
+    #endif
+    REDUCE_ADD_SUBCASE( case26, a_h, axis, dtype, initial, keepdims );
+
+    #else
+    REDUCE_ADD_SUBCASE( case26, a_cs_fb, axis, dtype, initial, keepdims );
+    REDUCE_ADD_SUBCASE( case26, a_fs_fb, axis, dtype, initial, keepdims );
+    REDUCE_ADD_SUBCASE( case26, a_hs_fb, axis, dtype, initial, keepdims );
+    // REDUCE_ADD_SUBCASE( case26, a_ds_fb, axis, dtype, initial, keepdims );
+    REDUCE_ADD_SUBCASE( case26, a_ls_fb, axis, dtype, initial, keepdims );
+
+    REDUCE_ADD_SUBCASE( case26, a_cs_hb, axis, dtype, initial, keepdims );
+    REDUCE_ADD_SUBCASE( case26, a_fs_hb, axis, dtype, initial, keepdims );
+    REDUCE_ADD_SUBCASE( case26, a_hs_hb, axis, dtype, initial, keepdims );
+    // REDUCE_ADD_SUBCASE( case26, a_ds_hb, axis, dtype, initial, keepdims );
+    REDUCE_ADD_SUBCASE( case26, a_ls_hb, axis, dtype, initial, keepdims );
+
+    REDUCE_ADD_SUBCASE( case26, a_cs_db, axis, dtype, initial, keepdims );
+    REDUCE_ADD_SUBCASE( case26, a_fs_db, axis, dtype, initial, keepdims );
+    REDUCE_ADD_SUBCASE( case26, a_hs_db, axis, dtype, initial, keepdims );
+    // REDUCE_ADD_SUBCASE( case26, a_ds_db, axis, dtype, initial, keepdims );
+    REDUCE_ADD_SUBCASE( case26, a_ls_db, axis, dtype, initial, keepdims );
+    #endif
+}
+
+TEST_CASE("reduce_add(case27)" * doctest::test_suite("array::reduce_add"))
+{
+    auto dtype   = nmtools::None;
+    auto initial = nmtools::None;
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
+    REDUCE_ADD_SUBCASE( case27,   a, axis, dtype, initial, keepdims );
+    REDUCE_ADD_SUBCASE( case27, a_a, axis, dtype, initial, keepdims );
+    REDUCE_ADD_SUBCASE( case27, a_f, axis, dtype, initial, keepdims );
+    REDUCE_ADD_SUBCASE( case27, a_d, axis, dtype, initial, keepdims );
+    REDUCE_ADD_SUBCASE( case27, a_h, axis, dtype, initial, keepdims );
+
+    #else
+    REDUCE_ADD_SUBCASE( case27, a_cs_fb, axis, dtype, initial, keepdims );
+    REDUCE_ADD_SUBCASE( case27, a_fs_fb, axis, dtype, initial, keepdims );
+    REDUCE_ADD_SUBCASE( case27, a_hs_fb, axis, dtype, initial, keepdims );
+    REDUCE_ADD_SUBCASE( case27, a_ds_fb, axis, dtype, initial, keepdims );
+    REDUCE_ADD_SUBCASE( case27, a_ls_fb, axis, dtype, initial, keepdims );
+
+    REDUCE_ADD_SUBCASE( case27, a_cs_hb, axis, dtype, initial, keepdims );
+    REDUCE_ADD_SUBCASE( case27, a_fs_hb, axis, dtype, initial, keepdims );
+    REDUCE_ADD_SUBCASE( case27, a_hs_hb, axis, dtype, initial, keepdims );
+    REDUCE_ADD_SUBCASE( case27, a_ds_hb, axis, dtype, initial, keepdims );
+    REDUCE_ADD_SUBCASE( case27, a_ls_hb, axis, dtype, initial, keepdims );
+
+    REDUCE_ADD_SUBCASE( case27, a_cs_db, axis, dtype, initial, keepdims );
+    REDUCE_ADD_SUBCASE( case27, a_fs_db, axis, dtype, initial, keepdims );
+    REDUCE_ADD_SUBCASE( case27, a_hs_db, axis, dtype, initial, keepdims );
+    REDUCE_ADD_SUBCASE( case27, a_ds_db, axis, dtype, initial, keepdims );
+    REDUCE_ADD_SUBCASE( case27, a_ls_db, axis, dtype, initial, keepdims );
+    #endif
+}
+
+TEST_CASE("reduce_add(case30)" * doctest::test_suite("array::reduce_add"))
+{
+    auto dtype   = nmtools::None;
+    auto initial = nmtools::None;
+    auto keepdims = nmtools::False;
+
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
+    REDUCE_ADD_SUBCASE( case30,   a, axis, dtype, initial, keepdims, mask );
+    REDUCE_ADD_SUBCASE( case30, a_a, axis, dtype, initial, keepdims, mask );
+    REDUCE_ADD_SUBCASE( case30, a_f, axis, dtype, initial, keepdims, mask );
+    REDUCE_ADD_SUBCASE( case30, a_d, axis, dtype, initial, keepdims, mask );
+    REDUCE_ADD_SUBCASE( case30, a_h, axis, dtype, initial, keepdims, mask );
+
+    #else
+    REDUCE_ADD_SUBCASE( case30, a_cs_fb, axis, dtype, initial, keepdims, mask );
+    REDUCE_ADD_SUBCASE( case30, a_fs_fb, axis, dtype, initial, keepdims, mask );
+    REDUCE_ADD_SUBCASE( case30, a_hs_fb, axis, dtype, initial, keepdims, mask );
+    REDUCE_ADD_SUBCASE( case30, a_ds_fb, axis, dtype, initial, keepdims, mask );
+    REDUCE_ADD_SUBCASE( case30, a_ls_fb, axis, dtype, initial, keepdims, mask );
+
+    REDUCE_ADD_SUBCASE( case30, a_cs_hb, axis, dtype, initial, keepdims, mask );
+    REDUCE_ADD_SUBCASE( case30, a_fs_hb, axis, dtype, initial, keepdims, mask );
+    REDUCE_ADD_SUBCASE( case30, a_hs_hb, axis, dtype, initial, keepdims, mask );
+    REDUCE_ADD_SUBCASE( case30, a_ds_hb, axis, dtype, initial, keepdims, mask );
+    REDUCE_ADD_SUBCASE( case30, a_ls_hb, axis, dtype, initial, keepdims, mask );
+
+    REDUCE_ADD_SUBCASE( case30, a_cs_db, axis, dtype, initial, keepdims, mask );
+    REDUCE_ADD_SUBCASE( case30, a_fs_db, axis, dtype, initial, keepdims, mask );
+    REDUCE_ADD_SUBCASE( case30, a_hs_db, axis, dtype, initial, keepdims, mask );
+    REDUCE_ADD_SUBCASE( case30, a_ds_db, axis, dtype, initial, keepdims, mask );
+    REDUCE_ADD_SUBCASE( case30, a_ls_db, axis, dtype, initial, keepdims, mask );
+    #endif
+}
+
+TEST_CASE("reduce_add(case32)" * doctest::test_suite("array::reduce_add"))
+{
+    auto dtype   = nmtools::None;
+    auto initial = nmtools::None;
+    auto keepdims = nmtools::False;
+
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
+    REDUCE_ADD_SUBCASE( case32,   a, axis, dtype, initial, keepdims, mask );
+    REDUCE_ADD_SUBCASE( case32, a_a, axis, dtype, initial, keepdims, mask );
+    REDUCE_ADD_SUBCASE( case32, a_f, axis, dtype, initial, keepdims, mask );
+    REDUCE_ADD_SUBCASE( case32, a_d, axis, dtype, initial, keepdims, mask );
+    REDUCE_ADD_SUBCASE( case32, a_h, axis, dtype, initial, keepdims, mask );
+
+    #else
+    REDUCE_ADD_SUBCASE( case32, a_cs_fb, axis, dtype, initial, keepdims, mask );
+    REDUCE_ADD_SUBCASE( case32, a_fs_fb, axis, dtype, initial, keepdims, mask );
+    REDUCE_ADD_SUBCASE( case32, a_hs_fb, axis, dtype, initial, keepdims, mask );
+    REDUCE_ADD_SUBCASE( case32, a_ds_fb, axis, dtype, initial, keepdims, mask );
+    REDUCE_ADD_SUBCASE( case32, a_ls_fb, axis, dtype, initial, keepdims, mask );
+
+    REDUCE_ADD_SUBCASE( case32, a_cs_hb, axis, dtype, initial, keepdims, mask );
+    REDUCE_ADD_SUBCASE( case32, a_fs_hb, axis, dtype, initial, keepdims, mask );
+    REDUCE_ADD_SUBCASE( case32, a_hs_hb, axis, dtype, initial, keepdims, mask );
+    REDUCE_ADD_SUBCASE( case32, a_ds_hb, axis, dtype, initial, keepdims, mask );
+    REDUCE_ADD_SUBCASE( case32, a_ls_hb, axis, dtype, initial, keepdims, mask );
+
+    REDUCE_ADD_SUBCASE( case32, a_cs_db, axis, dtype, initial, keepdims, mask );
+    REDUCE_ADD_SUBCASE( case32, a_fs_db, axis, dtype, initial, keepdims, mask );
+    REDUCE_ADD_SUBCASE( case32, a_hs_db, axis, dtype, initial, keepdims, mask );
+    REDUCE_ADD_SUBCASE( case32, a_ds_db, axis, dtype, initial, keepdims, mask );
+    REDUCE_ADD_SUBCASE( case32, a_ls_db, axis, dtype, initial, keepdims, mask );
+    #endif
+}
+
+TEST_CASE("reduce_add(case33)" * doctest::test_suite("array::reduce_add"))
+{
+    auto dtype    = nmtools::None;
+    auto initial  = nmtools::None;
+    auto keepdims = nmtools::False;
+
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
+    REDUCE_ADD_SUBCASE( case33,   a, axis, dtype, initial, keepdims, mask );
+    REDUCE_ADD_SUBCASE( case33, a_a, axis, dtype, initial, keepdims, mask );
+    REDUCE_ADD_SUBCASE( case33, a_f, axis, dtype, initial, keepdims, mask );
+    REDUCE_ADD_SUBCASE( case33, a_d, axis, dtype, initial, keepdims, mask );
+    REDUCE_ADD_SUBCASE( case33, a_h, axis, dtype, initial, keepdims, mask );
+
+    #else
+    REDUCE_ADD_SUBCASE( case33, a_cs_fb, axis, dtype, initial, keepdims, mask );
+    REDUCE_ADD_SUBCASE( case33, a_fs_fb, axis, dtype, initial, keepdims, mask );
+    REDUCE_ADD_SUBCASE( case33, a_hs_fb, axis, dtype, initial, keepdims, mask );
+    REDUCE_ADD_SUBCASE( case33, a_ds_fb, axis, dtype, initial, keepdims, mask );
+    REDUCE_ADD_SUBCASE( case33, a_ls_fb, axis, dtype, initial, keepdims, mask );
+
+    REDUCE_ADD_SUBCASE( case33, a_cs_hb, axis, dtype, initial, keepdims, mask );
+    REDUCE_ADD_SUBCASE( case33, a_fs_hb, axis, dtype, initial, keepdims, mask );
+    REDUCE_ADD_SUBCASE( case33, a_hs_hb, axis, dtype, initial, keepdims, mask );
+    REDUCE_ADD_SUBCASE( case33, a_ds_hb, axis, dtype, initial, keepdims, mask );
+    REDUCE_ADD_SUBCASE( case33, a_ls_hb, axis, dtype, initial, keepdims, mask );
+
+    REDUCE_ADD_SUBCASE( case33, a_cs_db, axis, dtype, initial, keepdims, mask );
+    REDUCE_ADD_SUBCASE( case33, a_fs_db, axis, dtype, initial, keepdims, mask );
+    REDUCE_ADD_SUBCASE( case33, a_hs_db, axis, dtype, initial, keepdims, mask );
+    REDUCE_ADD_SUBCASE( case33, a_ds_db, axis, dtype, initial, keepdims, mask );
+    REDUCE_ADD_SUBCASE( case33, a_ls_db, axis, dtype, initial, keepdims, mask );
+    #endif
+}
+
+TEST_CASE("reduce_add(case34)" * doctest::test_suite("array::reduce_add"))
+{
+    auto dtype = nmtools::None;
+
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
+    REDUCE_ADD_SUBCASE( case34,   a, axis, dtype, initial, keepdims, mask );
+    REDUCE_ADD_SUBCASE( case34, a_a, axis, dtype, initial, keepdims, mask );
+    REDUCE_ADD_SUBCASE( case34, a_f, axis, dtype, initial, keepdims, mask );
+    REDUCE_ADD_SUBCASE( case34, a_d, axis, dtype, initial, keepdims, mask );
+    REDUCE_ADD_SUBCASE( case34, a_h, axis, dtype, initial, keepdims, mask );
+
+    #else
+    REDUCE_ADD_SUBCASE( case34, a_cs_fb, axis, dtype, initial, keepdims, mask );
+    REDUCE_ADD_SUBCASE( case34, a_fs_fb, axis, dtype, initial, keepdims, mask );
+    REDUCE_ADD_SUBCASE( case34, a_hs_fb, axis, dtype, initial, keepdims, mask );
+    REDUCE_ADD_SUBCASE( case34, a_ds_fb, axis, dtype, initial, keepdims, mask );
+    REDUCE_ADD_SUBCASE( case34, a_ls_fb, axis, dtype, initial, keepdims, mask );
+
+    REDUCE_ADD_SUBCASE( case34, a_cs_hb, axis, dtype, initial, keepdims, mask );
+    REDUCE_ADD_SUBCASE( case34, a_fs_hb, axis, dtype, initial, keepdims, mask );
+    REDUCE_ADD_SUBCASE( case34, a_hs_hb, axis, dtype, initial, keepdims, mask );
+    REDUCE_ADD_SUBCASE( case34, a_ds_hb, axis, dtype, initial, keepdims, mask );
+    REDUCE_ADD_SUBCASE( case34, a_ls_hb, axis, dtype, initial, keepdims, mask );
+
+    REDUCE_ADD_SUBCASE( case34, a_cs_db, axis, dtype, initial, keepdims, mask );
+    REDUCE_ADD_SUBCASE( case34, a_fs_db, axis, dtype, initial, keepdims, mask );
+    REDUCE_ADD_SUBCASE( case34, a_hs_db, axis, dtype, initial, keepdims, mask );
+    REDUCE_ADD_SUBCASE( case34, a_ds_db, axis, dtype, initial, keepdims, mask );
+    REDUCE_ADD_SUBCASE( case34, a_ls_db, axis, dtype, initial, keepdims, mask );
+    #endif
+}
+
+TEST_CASE("reduce_add(case35)" * doctest::test_suite("array::reduce_add"))
+{
+    auto dtype = nmtools::None;
+
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
+    REDUCE_ADD_SUBCASE( case35,   a, axis, dtype, initial, keepdims, mask );
+    REDUCE_ADD_SUBCASE( case35, a_a, axis, dtype, initial, keepdims, mask );
+    REDUCE_ADD_SUBCASE( case35, a_f, axis, dtype, initial, keepdims, mask );
+    REDUCE_ADD_SUBCASE( case35, a_d, axis, dtype, initial, keepdims, mask );
+    REDUCE_ADD_SUBCASE( case35, a_h, axis, dtype, initial, keepdims, mask );
+
+    #else
+    REDUCE_ADD_SUBCASE( case35, a_cs_fb, axis, dtype, initial, keepdims, mask );
+    REDUCE_ADD_SUBCASE( case35, a_fs_fb, axis, dtype, initial, keepdims, mask );
+    REDUCE_ADD_SUBCASE( case35, a_hs_fb, axis, dtype, initial, keepdims, mask );
+    REDUCE_ADD_SUBCASE( case35, a_ds_fb, axis, dtype, initial, keepdims, mask );
+    REDUCE_ADD_SUBCASE( case35, a_ls_fb, axis, dtype, initial, keepdims, mask );
+
+    REDUCE_ADD_SUBCASE( case35, a_cs_hb, axis, dtype, initial, keepdims, mask );
+    REDUCE_ADD_SUBCASE( case35, a_fs_hb, axis, dtype, initial, keepdims, mask );
+    REDUCE_ADD_SUBCASE( case35, a_hs_hb, axis, dtype, initial, keepdims, mask );
+    REDUCE_ADD_SUBCASE( case35, a_ds_hb, axis, dtype, initial, keepdims, mask );
+    REDUCE_ADD_SUBCASE( case35, a_ls_hb, axis, dtype, initial, keepdims, mask );
+
+    REDUCE_ADD_SUBCASE( case35, a_cs_db, axis, dtype, initial, keepdims, mask );
+    REDUCE_ADD_SUBCASE( case35, a_fs_db, axis, dtype, initial, keepdims, mask );
+    REDUCE_ADD_SUBCASE( case35, a_hs_db, axis, dtype, initial, keepdims, mask );
+    REDUCE_ADD_SUBCASE( case35, a_ds_db, axis, dtype, initial, keepdims, mask );
+    REDUCE_ADD_SUBCASE( case35, a_ls_db, axis, dtype, initial, keepdims, mask );
+    #endif
+}
+
+TEST_CASE("reduce_add(case36)" * doctest::test_suite("array::reduce_add"))
+{
+    auto dtype = nmtools::None;
+
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
+    REDUCE_ADD_SUBCASE( case36,   a, axis, dtype, initial, keepdims, mask );
+    REDUCE_ADD_SUBCASE( case36, a_a, axis, dtype, initial, keepdims, mask );
+    REDUCE_ADD_SUBCASE( case36, a_f, axis, dtype, initial, keepdims, mask );
+    REDUCE_ADD_SUBCASE( case36, a_d, axis, dtype, initial, keepdims, mask );
+    REDUCE_ADD_SUBCASE( case36, a_h, axis, dtype, initial, keepdims, mask );
+
+    #else
+    REDUCE_ADD_SUBCASE( case36, a_cs_fb, axis, dtype, initial, keepdims, mask );
+    REDUCE_ADD_SUBCASE( case36, a_fs_fb, axis, dtype, initial, keepdims, mask );
+    REDUCE_ADD_SUBCASE( case36, a_hs_fb, axis, dtype, initial, keepdims, mask );
+    REDUCE_ADD_SUBCASE( case36, a_ds_fb, axis, dtype, initial, keepdims, mask );
+    REDUCE_ADD_SUBCASE( case36, a_ls_fb, axis, dtype, initial, keepdims, mask );
+
+    REDUCE_ADD_SUBCASE( case36, a_cs_hb, axis, dtype, initial, keepdims, mask );
+    REDUCE_ADD_SUBCASE( case36, a_fs_hb, axis, dtype, initial, keepdims, mask );
+    REDUCE_ADD_SUBCASE( case36, a_hs_hb, axis, dtype, initial, keepdims, mask );
+    REDUCE_ADD_SUBCASE( case36, a_ds_hb, axis, dtype, initial, keepdims, mask );
+    REDUCE_ADD_SUBCASE( case36, a_ls_hb, axis, dtype, initial, keepdims, mask );
+
+    REDUCE_ADD_SUBCASE( case36, a_cs_db, axis, dtype, initial, keepdims, mask );
+    REDUCE_ADD_SUBCASE( case36, a_fs_db, axis, dtype, initial, keepdims, mask );
+    REDUCE_ADD_SUBCASE( case36, a_hs_db, axis, dtype, initial, keepdims, mask );
+    REDUCE_ADD_SUBCASE( case36, a_ds_db, axis, dtype, initial, keepdims, mask );
+    REDUCE_ADD_SUBCASE( case36, a_ls_db, axis, dtype, initial, keepdims, mask );
+    #endif
+}
+
+TEST_CASE("reduce_add(case37)" * doctest::test_suite("array::reduce_add"))
+{
+    auto dtype = nmtools::None;
+
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
+    REDUCE_ADD_SUBCASE( case37,   a, axis, dtype, initial, keepdims, mask );
+    REDUCE_ADD_SUBCASE( case37, a_a, axis, dtype, initial, keepdims, mask );
+    REDUCE_ADD_SUBCASE( case37, a_f, axis, dtype, initial, keepdims, mask );
+    REDUCE_ADD_SUBCASE( case37, a_d, axis, dtype, initial, keepdims, mask );
+    REDUCE_ADD_SUBCASE( case37, a_h, axis, dtype, initial, keepdims, mask );
+
+    #else
+    REDUCE_ADD_SUBCASE( case37, a_cs_fb, axis, dtype, initial, keepdims, mask );
+    REDUCE_ADD_SUBCASE( case37, a_fs_fb, axis, dtype, initial, keepdims, mask );
+    REDUCE_ADD_SUBCASE( case37, a_hs_fb, axis, dtype, initial, keepdims, mask );
+    REDUCE_ADD_SUBCASE( case37, a_ds_fb, axis, dtype, initial, keepdims, mask );
+    REDUCE_ADD_SUBCASE( case37, a_ls_fb, axis, dtype, initial, keepdims, mask );
+
+    REDUCE_ADD_SUBCASE( case37, a_cs_hb, axis, dtype, initial, keepdims, mask );
+    REDUCE_ADD_SUBCASE( case37, a_fs_hb, axis, dtype, initial, keepdims, mask );
+    REDUCE_ADD_SUBCASE( case37, a_hs_hb, axis, dtype, initial, keepdims, mask );
+    REDUCE_ADD_SUBCASE( case37, a_ds_hb, axis, dtype, initial, keepdims, mask );
+    REDUCE_ADD_SUBCASE( case37, a_ls_hb, axis, dtype, initial, keepdims, mask );
+
+    REDUCE_ADD_SUBCASE( case37, a_cs_db, axis, dtype, initial, keepdims, mask );
+    REDUCE_ADD_SUBCASE( case37, a_fs_db, axis, dtype, initial, keepdims, mask );
+    REDUCE_ADD_SUBCASE( case37, a_hs_db, axis, dtype, initial, keepdims, mask );
+    REDUCE_ADD_SUBCASE( case37, a_ds_db, axis, dtype, initial, keepdims, mask );
+    REDUCE_ADD_SUBCASE( case37, a_ls_db, axis, dtype, initial, keepdims, mask );
+    #endif
+}
+
+TEST_CASE("reduce_add(case38)" * doctest::test_suite("array::reduce_add"))
+{
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
+    REDUCE_ADD_SUBCASE( case38,   a, axis, dtype, initial, keepdims, mask );
+    REDUCE_ADD_SUBCASE( case38, a_a, axis, dtype, initial, keepdims, mask );
+    REDUCE_ADD_SUBCASE( case38, a_f, axis, dtype, initial, keepdims, mask );
+    REDUCE_ADD_SUBCASE( case38, a_d, axis, dtype, initial, keepdims, mask );
+    REDUCE_ADD_SUBCASE( case38, a_h, axis, dtype, initial, keepdims, mask );
+
+    #else
+    REDUCE_ADD_SUBCASE( case38, a_cs_fb, axis, dtype, initial, keepdims, mask );
+    REDUCE_ADD_SUBCASE( case38, a_fs_fb, axis, dtype, initial, keepdims, mask );
+    REDUCE_ADD_SUBCASE( case38, a_hs_fb, axis, dtype, initial, keepdims, mask );
+    REDUCE_ADD_SUBCASE( case38, a_ds_fb, axis, dtype, initial, keepdims, mask );
+    REDUCE_ADD_SUBCASE( case38, a_ls_fb, axis, dtype, initial, keepdims, mask );
+
+    REDUCE_ADD_SUBCASE( case38, a_cs_hb, axis, dtype, initial, keepdims, mask );
+    REDUCE_ADD_SUBCASE( case38, a_fs_hb, axis, dtype, initial, keepdims, mask );
+    REDUCE_ADD_SUBCASE( case38, a_hs_hb, axis, dtype, initial, keepdims, mask );
+    REDUCE_ADD_SUBCASE( case38, a_ds_hb, axis, dtype, initial, keepdims, mask );
+    REDUCE_ADD_SUBCASE( case38, a_ls_hb, axis, dtype, initial, keepdims, mask );
+
+    REDUCE_ADD_SUBCASE( case38, a_cs_db, axis, dtype, initial, keepdims, mask );
+    REDUCE_ADD_SUBCASE( case38, a_fs_db, axis, dtype, initial, keepdims, mask );
+    REDUCE_ADD_SUBCASE( case38, a_hs_db, axis, dtype, initial, keepdims, mask );
+    REDUCE_ADD_SUBCASE( case38, a_ds_db, axis, dtype, initial, keepdims, mask );
+    REDUCE_ADD_SUBCASE( case38, a_ls_db, axis, dtype, initial, keepdims, mask );
+    #endif
+}
+
 
 TEST_CASE("add.accumulate(case1)" * doctest::test_suite("array::add.accumulate"))
 {

@@ -50,8 +50,14 @@ namespace nmtools::array
         {
             auto array_ref = view::ref(array);
             auto array_shape = ::nmtools::shape(array_ref);
-            for (const auto& s : array_shape)
-                shape_.push_back(s);
+            if constexpr (meta::is_tuple_v<decltype(array_shape)>) {
+                meta::template_for<meta::len_v<decltype(array_shape)>>([&](auto I){
+                    shape_.push_back(nmtools::at(array_shape,I));
+                });
+            } else {
+                for (const auto& s : array_shape)
+                    shape_.push_back(s);
+            }
             strides_ = strides();
             numel_   = numel();
             data_.resize(numel_);

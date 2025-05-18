@@ -62,6 +62,7 @@ set(ARRAY_VIEW_1_TEST_SOURCES
     src/atleast_nd.cpp
     src/broadcast_to.cpp
     src/broadcast_arrays.cpp
+    src/cast.cpp
     src/column_stack.cpp
     src/concatenate.cpp
     src/compress.cpp

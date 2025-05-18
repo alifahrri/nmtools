@@ -125,7 +125,7 @@ namespace nmtools::index
                     continue;
                 else {
                     auto si = at(shape,i);
-                    at(res,idx++) = in_axis_ ? 1 : si;
+                    at(res,idx++) = in_axis_ ? idx_t(1) : idx_t(si);
                 }
             }
         }

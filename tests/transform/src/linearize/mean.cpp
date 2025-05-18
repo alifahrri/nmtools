@@ -10,6 +10,8 @@
 #include "nmtools/array/layer_norm.hpp"
 #include "nmtools/testing/doctest.hpp"
 #include "nmtools/array/random.hpp"
+#include "nmtools/array/arange.hpp"
+#include "nmtools/array/reshape.hpp"
 
 namespace nm = nmtools;
 namespace fn = nmtools::functional;
@@ -42,6 +44,84 @@ TEST_CASE("transform_unary_fusion(mean)" * doctest::test_suite("transform"))
     CHECK_MESSAGE( true, utils::to_string(graph,utils::Graphviz) );
     CHECK_MESSAGE( true, utils::to_string(result,utils::Graphviz) );
 }
+
+TEST_CASE("transform_unary_fusion(mean2)" * doctest::test_suite("transform"))
+{
+    auto input    = na::reshape(na::arange(12,nm::int32),array{2,3,2});
+    auto axis     = nm::None;
+    auto dtype    = nm::None;
+    auto keepdims = nm::True;
+    auto res      = view::mean(input,axis,dtype,keepdims);
+
+    auto graph = fn::get_compute_graph(unwrap(res));
+
+    auto result = fn::transform_unary_fusion(graph,meta::ct_v<-1>);
+
+    // TODO: compare graph
+
+    CHECK_MESSAGE( true, utils::to_string(graph,utils::Graphviz) );
+    CHECK_MESSAGE( true, utils::to_string(result,utils::Graphviz) );
+}
+
+#if 0
+TEST_CASE("transform_unary_fusion(mean2)" * doctest::test_suite("transform"))
+{
+    int8_t input[2][3][2] = {
+        {
+            {0,1},
+            {2,3},
+            {4,5},
+        },
+        {
+            { 6, 7},
+            { 8, 9},
+            {10,11},
+        }
+    };
+    auto axis     = nm::None;
+    auto dtype    = nm::None;
+    auto keepdims = nm::False;
+    auto res      = view::mean(input,axis,dtype,keepdims);
+
+    auto graph = fn::get_compute_graph(unwrap(res));
+
+    auto result = fn::transform_unary_fusion(graph,meta::ct_v<-1>);
+
+    // TODO: compare graph
+
+    CHECK_MESSAGE( true, utils::to_string(graph,utils::Graphviz) );
+    CHECK_MESSAGE( true, utils::to_string(result,utils::Graphviz) );
+}
+
+TEST_CASE("transform_unary_fusion(mean3)" * doctest::test_suite("transform"))
+{
+    int input[2][3][2] = {
+        {
+            {0,1},
+            {2,3},
+            {4,5},
+        },
+        {
+            { 6, 7},
+            { 8, 9},
+            {10,11},
+        }
+    };
+    auto axis     = nm::None;
+    auto dtype    = nm::None;
+    auto keepdims = nm::True;
+    auto res      = view::mean(input,axis,dtype,keepdims);
+
+    auto graph = fn::get_compute_graph(unwrap(res));
+
+    auto result = fn::transform_unary_fusion(graph,meta::ct_v<-1>);
+
+    // TODO: compare graph
+
+    CHECK_MESSAGE( true, utils::to_string(graph,utils::Graphviz) );
+    CHECK_MESSAGE( true, utils::to_string(result,utils::Graphviz) );
+}
+#endif
 
 TEST_CASE("transform_binary_fusion(mean)" * doctest::test_suite("transform"))
 {

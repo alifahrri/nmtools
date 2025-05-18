@@ -405,8 +405,19 @@ namespace nmtools::view
             } else {
                 auto broadcasted_arrays = view::broadcast_arrays(array,where);
                 using broadcasted_t = decltype(broadcasted_arrays);
-                using view_t = decorator_t<reduce_t,op_t,broadcasted_t,axis_t,initial_t,keepdims_t,dtype_t>;
-                return view_t{{op,broadcasted_arrays,axis,initial,keepdims,dtype}};
+                if constexpr (meta::is_maybe_v<broadcasted_t>) {
+                    using result_t = decorator_t<reduce_t
+                        , op_t, meta::get_maybe_type_t<broadcasted_t>
+                        , axis_t, initial_t, keepdims_t, dtype_t>;
+                    using return_t = nmtools_maybe<result_t>;
+                    return (has_value(broadcasted_arrays)
+                        ? return_t{result_t{{op,unwrap(broadcasted_arrays),axis,initial,keepdims,dtype}}}
+                        : return_t{meta::Nothing}
+                    );
+                } else {
+                    using view_t = decorator_t<reduce_t,op_t,broadcasted_t,axis_t,initial_t,keepdims_t,dtype_t>;
+                    return view_t{{op,broadcasted_arrays,axis,initial,keepdims,dtype}};
+                }
             }
         }
     } // reduce

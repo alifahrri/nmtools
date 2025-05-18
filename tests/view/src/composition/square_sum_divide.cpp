@@ -372,7 +372,7 @@ TEST_CASE("square_sum_divide(case2)" * doctest::test_suite("composition::square_
         using namespace args;
 
         auto view = composition::square_sum_divide(a, N, axis, dtype, keepdims);
-        using view_t   = decltype(unwrap(view));
+        using view_t   =  meta::remove_cvref_t<decltype(unwrap(view))>;
         static_assert(  nm::meta::is_ndarray_v<view_t> );
         static_assert( !nm::meta::is_num_v<view_t> );
     }

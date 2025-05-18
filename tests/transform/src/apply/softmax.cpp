@@ -38,9 +38,9 @@ TEST_CASE("apply_graph(softmax)" * doctest::test_suite("transform"))
 
     auto f = function.functor;
 
+    static_assert( meta::len_v<decltype(operands)> == 1 );
     auto result = fn::apply(function.functor,operands);
 
-    static_assert( meta::len_v<decltype(operands)> == 1 );
     NMTOOLS_ASSERT_EQUAL( decltype(f)::arity, 1 );
 
     auto expected = res;

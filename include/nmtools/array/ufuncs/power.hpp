@@ -104,7 +104,7 @@ namespace nmtools::view
             , "reduce_power only support single axis with integral type"
         );
         using res_t = get_dtype_t<dtype_t>;
-        using op_t  = power_t<none_t,none_t,res_t>;
+        using op_t  = power_t<res_t,res_t,res_t>;
         return reduce(op_t{},a,axis,dtype,initial,keepdims,where);
     }
 

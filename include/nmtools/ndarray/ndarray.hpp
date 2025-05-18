@@ -13,6 +13,7 @@
 #include "nmtools/ndarray/hybrid.hpp"
 #include "nmtools/utility/get.hpp"
 #include "nmtools/ndarray/base_ndarray.hpp"
+#include "nmtools/utility.hpp"
 
 // experimental version that combine all three to single class
 

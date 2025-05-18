@@ -6,6 +6,7 @@
 #include "nmtools/utility/at.hpp"
 #include "nmtools/utility/shape.hpp"
 #include "nmtools/utility/forward.hpp"
+#include "nmtools/utility/tuple_cat.hpp"
 #include "nmtools/index/product.hpp"
 
 /**

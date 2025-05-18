@@ -138,27 +138,9 @@ namespace nmtools::view
             }
         }();
         auto divisor = detail::mean_divisor(unwrap(shape),m_axis);
-        using divisor_t = decltype(divisor);
-        using element_t = meta::get_element_type_t<array_t>;
-        auto dtype_  = [&](){
-            if constexpr (is_none_v<dtype_t>) {
-                // explicitly promote using mean promotion rule
-                using dtype = meta::promote_types_t<meta::promote_mean,element_t,divisor_t>;
-                return dtype{};
-            } else {
-                return dtype;
-            }
-        }();
         auto initial = None;
-        // TODO: proper type promotions
-        auto reduced = reduce_add(array,m_axis,dtype_,initial,keepdims);
-        #if 0
-        // failed on clang with no-stl config, but okay on gcc with no-stl config 🤷
-        auto mean_   = divide(reduced,divisor);
-        return mean_;
-        #else
-        return divide(reduced,divisor);
-        #endif
+        auto reduced = view::reduce_add(array,m_axis,dtype,initial,keepdims);
+        return view::divide(reduced,divisor);
     } // mean
 } // namespace nmtools::view
 

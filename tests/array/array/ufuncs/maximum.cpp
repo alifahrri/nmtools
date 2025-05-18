@@ -9,35 +9,12 @@
 namespace nm = nmtools;
 namespace na = nm::array;
 
-#define RUN_maximum_impl(...) \
-nm::array::maximum(__VA_ARGS__);
-
-#ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
-#include "nmtools/testing/benchmarks/bench.hpp"
-using nm::benchmarks::TrackedBench;
-// create immediately invoked lambda
-// that packs maximum fn to callable lambda
-#define RUN_maximum(case_name, ...) \
-[](auto&&...args){ \
-    auto title = std::string("maximum-") + #case_name; \
-    auto name  = nm::testing::make_func_args("", args...); \
-    auto fn    = [&](){ \
-        return RUN_maximum_impl(args...); \
-    }; \
-    return TrackedBench::run(title, name, fn); \
-}(__VA_ARGS__);
-#else
-// run normally without benchmarking, ignore case_name
-#define RUN_maximum(case_name, ...) \
-RUN_maximum_impl(__VA_ARGS__);
-#endif // NMTOOLS_TESTING_ENABLE_BENCHMARKS
-
 #define MAXIMUM_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
     NMTOOLS_TESTING_USE_CASE(view, maximum, case_name); \
     using namespace args; \
-    auto result = RUN_maximum(case_name, __VA_ARGS__); \
+    auto result = nmtools::array::maximum(__VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( ::nm::shape(result), expect::shape ); \
     NMTOOLS_ASSERT_CLOSE( result, expect::result ); \
 }
@@ -60,35 +37,12 @@ TEST_CASE("maximum(case2)" * doctest::test_suite("array::maximum"))
     MAXIMUM_SUBCASE( case2, a_h, b );
 }
 
-#define RUN_reduce_maximum_impl(...) \
-nm::array::maximum.reduce(__VA_ARGS__);
-
-#ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
-#include "nmtools/testing/benchmarks/bench.hpp"
-using nm::benchmarks::TrackedBench;
-// create immediately invoked lambda
-// that packs reduce_maximum fn to callable lambda
-#define RUN_reduce_maximum(case_name, ...) \
-[](auto&&...args){ \
-    auto title = std::string("reduce_maximum-") + #case_name; \
-    auto name  = nm::testing::make_func_args("", args...); \
-    auto fn    = [&](){ \
-        return RUN_reduce_maximum_impl(args...); \
-    }; \
-    return TrackedBench::run(title, name, fn); \
-}(__VA_ARGS__);
-#else
-// run normally without benchmarking, ignore case_name
-#define RUN_reduce_maximum(case_name, ...) \
-RUN_reduce_maximum_impl(__VA_ARGS__);
-#endif // NMTOOLS_TESTING_ENABLE_BENCHMARKS
-
 #define REDUCE_MAXIMUM_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
     NMTOOLS_TESTING_USE_CASE(view, reduce_maximum, case_name); \
     using namespace args; \
-    auto result = RUN_reduce_maximum(case_name, __VA_ARGS__); \
+    auto result = nmtools::array::reduce_maximum(__VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( ::nm::shape(result), expect::shape ); \
     NMTOOLS_ASSERT_CLOSE( result, expect::result ); \
 }
@@ -201,35 +155,152 @@ TEST_CASE("reduce_maximum(case12)" * doctest::test_suite("array::reduce_maximum"
     REDUCE_MAXIMUM_SUBCASE( case12, a_h, axis, dtype, initial, keepdims );
 }
 
-#define RUN_accumulate_maximum_impl(...) \
-nm::array::maximum.accumulate(__VA_ARGS__);
 
-#ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
-#include "nmtools/testing/benchmarks/bench.hpp"
-using nm::benchmarks::TrackedBench;
-// create immediately invoked lambda
-// that packs accumulate_maximum fn to callable lambda
-#define RUN_accumulate_maximum(case_name, ...) \
-[](auto&&...args){ \
-    auto title = std::string("accumulate_maximum-") + #case_name; \
-    auto name  = nm::testing::make_func_args("", args...); \
-    auto fn    = [&](){ \
-        return RUN_accumulate_maximum_impl(args...); \
-    }; \
-    return TrackedBench::run(title, name, fn); \
-}(__VA_ARGS__);
-#else
-// run normally without benchmarking, ignore case_name
-#define RUN_accumulate_maximum(case_name, ...) \
-RUN_accumulate_maximum_impl(__VA_ARGS__);
-#endif // NMTOOLS_TESTING_ENABLE_BENCHMARKS
+TEST_CASE("reduce_maximum(case13)" * doctest::test_suite("array::reduce_maximum"))
+{
+    REDUCE_MAXIMUM_SUBCASE( case13,   a, axis );
+    REDUCE_MAXIMUM_SUBCASE( case13, a_a, axis );
+    REDUCE_MAXIMUM_SUBCASE( case13, a_f, axis );
+    REDUCE_MAXIMUM_SUBCASE( case13, a_h, axis );
+}
+
+TEST_CASE("reduce_maximum(case14)" * doctest::test_suite("array::reduce_maximum"))
+{
+    REDUCE_MAXIMUM_SUBCASE( case14,   a, axis, nm::None, initial, keepdims );
+    REDUCE_MAXIMUM_SUBCASE( case14, a_a, axis, nm::None, initial, keepdims );
+    REDUCE_MAXIMUM_SUBCASE( case14, a_f, axis, nm::None, initial, keepdims );
+    REDUCE_MAXIMUM_SUBCASE( case14, a_h, axis, nm::None, initial, keepdims );
+}
+
+TEST_CASE("reduce_maximum(case15)" * doctest::test_suite("array::reduce_maximum"))
+{
+    REDUCE_MAXIMUM_SUBCASE( case15,   a, axis, nm::None, initial, keepdims );
+    REDUCE_MAXIMUM_SUBCASE( case15, a_a, axis, nm::None, initial, keepdims );
+    REDUCE_MAXIMUM_SUBCASE( case15, a_f, axis, nm::None, initial, keepdims );
+    REDUCE_MAXIMUM_SUBCASE( case15, a_h, axis, nm::None, initial, keepdims );
+}
+
+TEST_CASE("reduce_maximum(case16)" * doctest::test_suite("array::reduce_maximum"))
+{
+    REDUCE_MAXIMUM_SUBCASE( case16,   a, axis, nm::None, initial, keepdims );
+    REDUCE_MAXIMUM_SUBCASE( case16, a_a, axis, nm::None, initial, keepdims );
+    REDUCE_MAXIMUM_SUBCASE( case16, a_f, axis, nm::None, initial, keepdims );
+    REDUCE_MAXIMUM_SUBCASE( case16, a_h, axis, nm::None, initial, keepdims );
+}
+
+TEST_CASE("reduce_maximum(case17)" * doctest::test_suite("array::reduce_maximum"))
+{
+    REDUCE_MAXIMUM_SUBCASE( case17,   a, axis, nm::None, initial, keepdims );
+    REDUCE_MAXIMUM_SUBCASE( case17, a_a, axis, nm::None, initial, keepdims );
+    REDUCE_MAXIMUM_SUBCASE( case17, a_f, axis, nm::None, initial, keepdims );
+    REDUCE_MAXIMUM_SUBCASE( case17, a_h, axis, nm::None, initial, keepdims );
+}
+
+TEST_CASE("reduce_maximum(case18)" * doctest::test_suite("array::reduce_maximum"))
+{
+    REDUCE_MAXIMUM_SUBCASE( case18, a, axis, dtype, initial, keepdims, mask );
+    REDUCE_MAXIMUM_SUBCASE( case18, a_a, axis, dtype, initial, keepdims, mask );
+    REDUCE_MAXIMUM_SUBCASE( case18, a_f, axis, dtype, initial, keepdims, mask );
+    // REDUCE_MAXIMUM_SUBCASE( case18, a_h, axis, dtype, initial, keepdims, mask );
+    // REDUCE_MAXIMUM_SUBCASE( case18, a_d, axis, dtype, initial, keepdims, mask );
+}
+
+TEST_CASE("reduce_maximum(case19)" * doctest::test_suite("array::reduce_maximum"))
+{
+    REDUCE_MAXIMUM_SUBCASE( case19, a, axis, dtype, initial, keepdims, mask );
+    REDUCE_MAXIMUM_SUBCASE( case19, a_a, axis, dtype, initial, keepdims, mask );
+    REDUCE_MAXIMUM_SUBCASE( case19, a_f, axis, dtype, initial, keepdims, mask );
+    // REDUCE_MAXIMUM_SUBCASE( case19, a_h, axis, dtype, initial, keepdims, mask );
+    // REDUCE_MAXIMUM_SUBCASE( case19, a_d, axis, dtype, initial, keepdims, mask );
+}
+
+TEST_CASE("reduce_maximum(case20)" * doctest::test_suite("array::reduce_maximum"))
+{
+    REDUCE_MAXIMUM_SUBCASE( case20, a, axis, dtype, initial, keepdims, mask );
+    REDUCE_MAXIMUM_SUBCASE( case20, a_a, axis, dtype, initial, keepdims, mask );
+    REDUCE_MAXIMUM_SUBCASE( case20, a_f, axis, dtype, initial, keepdims, mask );
+    // REDUCE_MAXIMUM_SUBCASE( case20, a_h, axis, dtype, initial, keepdims, mask );
+    // REDUCE_MAXIMUM_SUBCASE( case20, a_d, axis, dtype, initial, keepdims, mask );
+}
+
+TEST_CASE("reduce_maximum(case21)" * doctest::test_suite("array::reduce_maximum"))
+{
+    REDUCE_MAXIMUM_SUBCASE( case21, a, axis, dtype, initial, keepdims, mask );
+    REDUCE_MAXIMUM_SUBCASE( case21, a_a, axis, dtype, initial, keepdims, mask );
+    REDUCE_MAXIMUM_SUBCASE( case21, a_f, axis, dtype, initial, keepdims, mask );
+    // REDUCE_MAXIMUM_SUBCASE( case21, a_h, axis, dtype, initial, keepdims, mask );
+    // REDUCE_MAXIMUM_SUBCASE( case21, a_d, axis, dtype, initial, keepdims, mask );
+}
+
+TEST_CASE("reduce_maximum(case22)" * doctest::test_suite("array::reduce_maximum"))
+{
+    REDUCE_MAXIMUM_SUBCASE( case22, a, axis, dtype, initial, keepdims, mask );
+    REDUCE_MAXIMUM_SUBCASE( case22, a_a, axis, dtype, initial, keepdims, mask );
+    REDUCE_MAXIMUM_SUBCASE( case22, a_f, axis, dtype, initial, keepdims, mask );
+    // REDUCE_MAXIMUM_SUBCASE( case22, a_h, axis, dtype, initial, keepdims, mask );
+    // REDUCE_MAXIMUM_SUBCASE( case22, a_d, axis, dtype, initial, keepdims, mask );
+}
+
+TEST_CASE("reduce_maximum(case23)" * doctest::test_suite("array::reduce_maximum"))
+{
+    REDUCE_MAXIMUM_SUBCASE( case23, a, axis, dtype, initial, keepdims, mask );
+    REDUCE_MAXIMUM_SUBCASE( case23, a_a, axis, dtype, initial, keepdims, mask );
+    REDUCE_MAXIMUM_SUBCASE( case23, a_f, axis, dtype, initial, keepdims, mask );
+    // REDUCE_MAXIMUM_SUBCASE( case23, a_h, axis, dtype, initial, keepdims, mask );
+    // REDUCE_MAXIMUM_SUBCASE( case23, a_d, axis, dtype, initial, keepdims, mask );
+}
+
+TEST_CASE("reduce_maximum(case24)" * doctest::test_suite("array::reduce_maximum"))
+{
+    REDUCE_MAXIMUM_SUBCASE( case24, a, axis, dtype, initial, keepdims, mask );
+    REDUCE_MAXIMUM_SUBCASE( case24, a_a, axis, dtype, initial, keepdims, mask );
+    REDUCE_MAXIMUM_SUBCASE( case24, a_f, axis, dtype, initial, keepdims, mask );
+    // REDUCE_MAXIMUM_SUBCASE( case24, a_h, axis, dtype, initial, keepdims, mask );
+    // REDUCE_MAXIMUM_SUBCASE( case24, a_d, axis, dtype, initial, keepdims, mask );
+}
+
+TEST_CASE("reduce_maximum(case25)" * doctest::test_suite("array::reduce_maximum"))
+{
+    REDUCE_MAXIMUM_SUBCASE( case25, a, axis, dtype, initial, keepdims, mask );
+    REDUCE_MAXIMUM_SUBCASE( case25, a_a, axis, dtype, initial, keepdims, mask );
+    REDUCE_MAXIMUM_SUBCASE( case25, a_f, axis, dtype, initial, keepdims, mask );
+    // REDUCE_MAXIMUM_SUBCASE( case25, a_h, axis, dtype, initial, keepdims, mask );
+    // REDUCE_MAXIMUM_SUBCASE( case25, a_d, axis, dtype, initial, keepdims, mask );
+}
+
+TEST_CASE("reduce_maximum(case26)" * doctest::test_suite("array::reduce_maximum"))
+{
+    REDUCE_MAXIMUM_SUBCASE( case26, a, axis, dtype, initial, keepdims, mask );
+    REDUCE_MAXIMUM_SUBCASE( case26, a_a, axis, dtype, initial, keepdims, mask );
+    REDUCE_MAXIMUM_SUBCASE( case26, a_f, axis, dtype, initial, keepdims, mask );
+    // REDUCE_MAXIMUM_SUBCASE( case26, a_h, axis, dtype, initial, keepdims, mask );
+    // REDUCE_MAXIMUM_SUBCASE( case26, a_d, axis, dtype, initial, keepdims, mask );
+}
+
+TEST_CASE("reduce_maximum(case27)" * doctest::test_suite("array::reduce_maximum"))
+{
+    REDUCE_MAXIMUM_SUBCASE( case27, a, axis, dtype, initial, keepdims, mask );
+    REDUCE_MAXIMUM_SUBCASE( case27, a_a, axis, dtype, initial, keepdims, mask );
+    REDUCE_MAXIMUM_SUBCASE( case27, a_f, axis, dtype, initial, keepdims, mask );
+    // REDUCE_MAXIMUM_SUBCASE( case27, a_h, axis, dtype, initial, keepdims, mask );
+    // REDUCE_MAXIMUM_SUBCASE( case27, a_d, axis, dtype, initial, keepdims, mask );
+}
+
+TEST_CASE("reduce_maximum(case28)" * doctest::test_suite("array::reduce_maximum"))
+{
+    REDUCE_MAXIMUM_SUBCASE( case28, a, axis, dtype, initial, keepdims, mask );
+    REDUCE_MAXIMUM_SUBCASE( case28, a_a, axis, dtype, initial, keepdims, mask );
+    REDUCE_MAXIMUM_SUBCASE( case28, a_f, axis, dtype, initial, keepdims, mask );
+    // REDUCE_MAXIMUM_SUBCASE( case28, a_h, axis, dtype, initial, keepdims, mask );
+    // REDUCE_MAXIMUM_SUBCASE( case28, a_d, axis, dtype, initial, keepdims, mask );
+}
 
 #define ACCUMULATE_MAXIMUM_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
     NMTOOLS_TESTING_USE_CASE(view, accumulate_maximum, case_name); \
     using namespace args; \
-    auto result = RUN_accumulate_maximum(case_name, __VA_ARGS__); \
+    auto result = nmtools::array::accumulate_maximum(__VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( ::nm::shape(result), expect::shape ); \
     NMTOOLS_ASSERT_CLOSE( result, expect::result ); \
 }
@@ -264,35 +335,12 @@ TEST_CASE("accumulate_maximum(case3)" * doctest::test_suite("array::accumulate_m
     ACCUMULATE_MAXIMUM_SUBCASE( case3, a_f, axis );
 }
 
-#define RUN_outer_maximum_impl(...) \
-nm::array::maximum.outer(__VA_ARGS__);
-
-#ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
-#include "nmtools/testing/benchmarks/bench.hpp"
-using nm::benchmarks::TrackedBench;
-// create immediately invoked lambda
-// that packs outer_maximum fn to callable lambda
-#define RUN_outer_maximum(case_name, ...) \
-[](auto&&...args){ \
-    auto title = std::string("outer_maximum-") + #case_name; \
-    auto name  = nm::testing::make_func_args("", args...); \
-    auto fn    = [&](){ \
-        return RUN_outer_maximum_impl(args...); \
-    }; \
-    return TrackedBench::run(title, name, fn); \
-}(__VA_ARGS__);
-#else
-// run normally without benchmarking, ignore case_name
-#define RUN_outer_maximum(case_name, ...) \
-RUN_outer_maximum_impl(__VA_ARGS__);
-#endif // NMTOOLS_TESTING_ENABLE_BENCHMARKS
-
 #define OUTER_MAXIMUM_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
     NMTOOLS_TESTING_USE_CASE(view, outer_maximum, case_name); \
     using namespace args; \
-    auto result = RUN_outer_maximum(case_name, __VA_ARGS__); \
+    auto result = nmtools::array::outer_maximum(__VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( ::nm::shape(result), expect::shape ); \
     NMTOOLS_ASSERT_CLOSE( result, expect::result ); \
 }

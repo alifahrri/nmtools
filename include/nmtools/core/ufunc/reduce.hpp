@@ -280,13 +280,14 @@ namespace nmtools::view
 
         using attributes_type = args::reduce<axis_type,dtype_type,initial_type,keepdims_type,op_type>;
 
-        using left_array_type = meta::conditional_t<meta::is_tuple_v<array_t>,meta::at_t<array_t,0>,array_t>;
-        using element_type    = meta::get_element_type_t<left_array_type>;
+        using left_array_type  = meta::conditional_t<meta::is_tuple_v<array_t>,meta::at_t<array_t,0>,array_t>;
+        using src_element_type = meta::get_element_type_t<meta::remove_cvref_t<left_array_type>>;
 
-        using src_shape_type  = decltype(nmtools::shape<true>(meta::declval<left_array_type>()));
-        using dst_shape_type  = const meta::resolve_optype_t<index::remove_dims_t,src_shape_type,axis_t,keepdims_t>;
+        using src_shape_type = decltype(nmtools::shape<true>(meta::declval<left_array_type>()));
+        using dst_shape_type = const meta::resolve_optype_t<index::remove_dims_t,src_shape_type,axis_t,keepdims_t>;
 
-        using result_type = meta::type_t<detail::get_result_type<element_type,op_type>>;
+        using result_type  = meta::get_reducer_result_type_t<reducer_type,src_element_type,dtype_type,initial_type>;
+        using element_type = result_type;
 
         op_type       op;
         array_type    array;
@@ -360,9 +361,9 @@ namespace nmtools::view
         static constexpr auto get_slice(const array_type& array, const slices_t& slices)
         {
             if constexpr (meta::is_pointer_v<array_type>) {
-                return apply_slice(*array,slices);
+                return view::apply_slice(*array,slices);
             } else {
-                return apply_slice(array, slices);
+                return view::apply_slice(array, slices);
             }
         } // get_slice
 
@@ -394,33 +395,33 @@ namespace nmtools::view
             auto indices_ = pack_indices(indices...);
 
             auto make_subarray = [](const auto& array, const auto& indices, const auto& axis, const auto keepdims){
-                auto m_shape   = unwrap(detail::shape<true>(array));
-                auto slices    = index::reduction_slices(indices,m_shape,axis,keepdims);
+                auto m_shape   = detail::shape<true>(array);
+                auto slices    = index::reduction_slices(indices,unwrap(m_shape),axis,keepdims);
                 auto sliced    = get_slice(array, slices);
-                auto flattened = unwrap(view::flatten(sliced));
+                auto flattened = view::flatten(sliced);
                 return flattened;
             };
 
             // apply slice only works with fixed dim ndarray for now
             // TODO: support dynamic dim ndarray
-            auto subarray = [&](){
+            const auto subarray = [&](){
                 if constexpr (meta::is_tuple_v<array_type>) {
-                    const auto& m_array = nmtools::get<0>(array);
+                    const auto m_array = nmtools::get<0>(array);
                     return make_subarray(m_array,indices_,axis,keepdims);
                 } else {
                     return make_subarray(array,indices_,axis,keepdims);
                 }
             }();
-            auto where = [&](){
+            const auto where = [&](){
                 if constexpr (meta::is_tuple_v<array_type>) {
-                    const auto& m_array = nmtools::get<1>(array);
+                    const auto m_array = nmtools::get<1>(array);
                     return make_subarray(m_array,indices_,axis,keepdims);
                 } else {
                     return None;
                 }
             }();
             auto result_vtype = meta::as_value_v<result_type>;
-            return reducer(result_vtype,subarray,initial,where);
+            return reducer(result_vtype,unwrap(subarray),initial,unwrap(where));
         } // operator()
 
         // NOTE: the following is to allow reducing to numeric type
@@ -449,33 +450,33 @@ namespace nmtools::view
                 auto make_subarray = [](const auto& array){
                     using array_type = meta::remove_cvref_t<decltype(array)>;
                     if constexpr (meta::is_pointer_v<array_type>) {
-                        auto flattened = unwrap(view::flatten(*array));
+                        auto flattened = view::flatten(*array);
                         return flattened;
                     } else {
-                        auto flattened = unwrap(view::flatten(array));
+                        auto flattened = view::flatten(array);
                         return flattened;
                     }
                 };
     
                 // TODO: support dynamic dim ndarray
-                auto subarray = [&](){
+                const auto subarray = [&](){
                     if constexpr (meta::is_tuple_v<array_type>) {
-                        const auto& m_array = nmtools::get<0>(array);
+                        const auto m_array = nmtools::get<0>(array);
                         return make_subarray(m_array);
                     } else {
                         return make_subarray(array);
                     }
                 }();
-                auto where = [&](){
+                const auto where = [&](){
                     if constexpr (meta::is_tuple_v<array_type>) {
-                        const auto& m_array = nmtools::get<1>(array);
+                        const auto m_array = nmtools::get<1>(array);
                         return make_subarray(m_array);
                     } else {
                         return None;
                     }
                 }();
                 auto result_vtype = meta::as_value_v<result_type>;
-                return reducer(result_vtype,subarray,initial,where);
+                return reducer(result_vtype,unwrap(subarray),initial,unwrap(where));
             }
         } // operator result_type()
     }; // reduce_t
@@ -504,13 +505,14 @@ namespace nmtools::view
 
         using attributes_type = args::reduce<axis_type,dtype_type,initial_type,keepdims_type,op_type>;
 
-        using left_array_type = meta::conditional_t<meta::is_tuple_v<array_t>,meta::at_t<array_t,0>,array_t>;
-        using element_type    = meta::get_element_type_t<left_array_type>;
+        using left_array_type  = meta::conditional_t<meta::is_tuple_v<array_t>,meta::at_t<array_t,0>,array_t>;
+        using src_element_type = meta::get_element_type_t<meta::remove_cvref_t<left_array_type>>;
 
-        using src_shape_type  = decltype(nmtools::shape<true>(meta::declval<left_array_type>()));
+        using src_shape_type = decltype(nmtools::shape<true>(meta::declval<left_array_type>()));
         using dst_shape_type = const meta::resolve_optype_t<index::remove_dims_t,src_shape_type,axis_type,keepdims_t>;
 
-        using result_type = meta::type_t<detail::get_result_type<element_type,op_type>>;
+        using result_type  = meta::get_reducer_result_type_t<reducer_type,src_element_type,dtype_type,initial_type>;
+        using element_type = result_type;
 
         op_type       op;
         array_type    array;
@@ -585,32 +587,32 @@ namespace nmtools::view
             auto make_subarray = [](const auto& array){
                 using array_type = meta::remove_cvref_t<decltype(array)>;
                 if constexpr (meta::is_pointer_v<array_type>) {
-                    auto flattened = unwrap(view::flatten(*array));
+                    auto flattened = view::flatten(*array);
                     return flattened;
                 } else {
-                    auto flattened = unwrap(view::flatten(array));
+                    auto flattened = view::flatten(array);
                     return flattened;
                 }
             };
             // reduce the whole array
-            auto subarray = [&](){
+            const auto subarray = [&](){
                 if constexpr (meta::is_tuple_v<array_type>) {
-                    const auto& m_array = nmtools::get<0>(array);
+                    const auto m_array = nmtools::get<0>(array);
                     return make_subarray(m_array);
                 } else {
                     return make_subarray(array);
                 }
             }();
-            auto where = [&](){
+            const auto where = [&](){
                 if constexpr (meta::is_tuple_v<array_type>) {
-                    const auto& m_array = nmtools::get<1>(array);
+                    const auto m_array = nmtools::get<1>(array);
                     return make_subarray(m_array);
                 } else {
                     return None;
                 }
             }();
             auto result_vtype = meta::as_value_v<result_type>;
-            return reducer(result_vtype,subarray,initial,where);
+            return reducer(result_vtype,unwrap(subarray),initial,unwrap(where));
         }
 
         constexpr operator result_type() const
@@ -692,7 +694,7 @@ namespace nmtools::meta
         view::decorator_t< view::reduce_t, op_t, array_t, axis_t, initial_t, keepdims_t, dtype_t >
     >
     {
-        using type = typename view::reduce_t<op_t, array_t, axis_t, initial_t, keepdims_t>::result_type;
+        using type = typename view::reduce_t<op_t, array_t, axis_t, initial_t, keepdims_t, dtype_t>::result_type;
     };
 } // namespace nmtools::meta
 

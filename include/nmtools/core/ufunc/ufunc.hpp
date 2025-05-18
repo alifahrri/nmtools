@@ -124,16 +124,27 @@ namespace nmtools::view
     {
         // dont take reference for the array, a Num type should be copied
         // and view type should be cheap to copy
-        using operands_type = nmtools_tuple<arrays_t...>;
+        // using operands_type = nmtools_tuple<arrays_t...>;
+        using operands_type = nmtools_tuple<meta::fwd_operand_t<meta::remove_cvref_t<arrays_t>>...>;
         using array_type    = operands_type;
         using op_type       = op_t;
-        using result_type   = detail::get_ufunc_result_type_t<op_t,meta::get_element_type_t<arrays_t>...>;
+        using result_type   = meta::get_ufunc_result_type_t<op_t,meta::get_element_type_t<arrays_t>...>;
 
         op_type op;
         operands_type array;
 
         constexpr scalar_ufunc_t(op_type op, const arrays_t&...arrays)
-            : op(op), array{arrays...} {}
+            : op(op), array(pack_operands(arrays...)) {}
+        
+        constexpr auto operands() const noexcept
+        {
+            return array;
+        }
+
+        constexpr auto attributes() const noexcept
+        {
+            return args::ufunc<op_t>{op};
+        }
         
         constexpr auto dim() const noexcept
         {
@@ -178,9 +189,9 @@ namespace nmtools::view
         using operands_type = decltype(pack_operands(meta::declval<arrays_t>()...));
         using array_type    = operands_type;
         using op_type       = op_t;
-        using result_type = detail::get_ufunc_result_type_t<op_t,meta::get_element_type_t<arrays_t>...>;
-        using shape_type  = const meta::resolve_optype_t<index::shape_ufunc_t,decltype(nmtools::shape<true>(meta::declval<arrays_t>()))...>;
-        using size_type   = const meta::resolve_optype_t<index::size_ufunc_t,shape_type,decltype(nmtools::size<true>(meta::declval<arrays_t>()))...>;
+        using result_type   = meta::get_ufunc_result_type_t<op_t,meta::get_element_type_t<arrays_t>...>;
+        using shape_type    = const meta::resolve_optype_t<index::shape_ufunc_t,decltype(nmtools::shape<true>(meta::declval<arrays_t>()))...>;
+        using size_type     = const meta::resolve_optype_t<index::size_ufunc_t,shape_type,decltype(nmtools::size<true>(meta::declval<arrays_t>()))...>;
 
         op_type op;
         operands_type array;

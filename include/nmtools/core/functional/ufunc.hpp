@@ -62,6 +62,7 @@ namespace nmtools::utils
     using functional::unary_fmap_t;
     using functional::functor_t;
 
+    // TODO: clean-up
     template <
         typename F, typename lhs_operands_t, typename lhs_attributes_t
         , typename G, typename rhs_operands_t, typename rhs_attributes_t>
@@ -126,6 +127,30 @@ namespace nmtools::functional
         constexpr auto operator()() const noexcept
         {
             return unary_ufunc[view.attributes()];
+        }
+    };
+
+    template <typename op_t, typename...array_t>
+    struct get_function_t<
+        view::decorator_t<
+            view::scalar_ufunc_t, op_t, array_t...
+        >
+    > {
+        using view_type = view::decorator_t<
+            view::scalar_ufunc_t, op_t, array_t...
+        >;
+
+        view_type view;
+
+        constexpr auto operator()() const noexcept
+        {
+            // same as unary_ufunc
+            if constexpr (sizeof...(array_t) == 1) {
+                return unary_ufunc[view.attributes()];
+            } else {
+                // assume binary
+                return broadcast_binary_ufunc[view.attributes()];
+            }
         }
     };
 } // namespace nmtools::functional

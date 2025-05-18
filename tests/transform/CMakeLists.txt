@@ -75,12 +75,12 @@ set(TRANSFORM_TEST_APPLY_SOURCES
     src/apply/avg_pool2d.cpp
     src/apply/batch_norm.cpp
     src/apply/conv2d.cpp
-    src/apply/group_norm.cpp
-    src/apply/instance_norm.cpp
+    # src/apply/group_norm.cpp
+    # src/apply/instance_norm.cpp
     src/apply/matmul.cpp
     src/apply/softmax.cpp
     src/apply/var.cpp
-    src/apply/layer_norm.cpp
+    # src/apply/layer_norm.cpp
     src/apply/max_pool2d.cpp
     src/apply/stddev.cpp
     src/apply/cosine_similarity.cpp

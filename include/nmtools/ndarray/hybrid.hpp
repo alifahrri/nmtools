@@ -107,9 +107,9 @@ namespace nmtools::array
         template <typename array_t>
         auto init(array_t&& array)
         {
-            auto array_ref   = view::ref(array);
-            auto array_dim   = ::nmtools::dim(array);
-            auto array_shape = ::nmtools::shape(array_ref);
+            const auto array_ref   = view::ref(array);
+            const auto array_dim   = ::nmtools::dim(array);
+            const auto array_shape = ::nmtools::shape(array_ref);
             auto n = index::product(array_shape);
             nmtools_cassert ( array_dim == dimension
                 , "unsupported init, mismatched dimension"

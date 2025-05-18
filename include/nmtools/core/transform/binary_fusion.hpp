@@ -99,8 +99,10 @@ namespace nmtools::functional
         [[maybe_unused]] constexpr auto to  = nmtools::get<2>(binary_fusion);
 
         if constexpr (to < 0) {
+            // not found, return as it is
             return graph;
         } else {
+            // otherwise may recurse
             // check if any predecessor of binary_to is also the predecessors of lhs/rhs
             [[maybe_unused]]
             constexpr auto check_dups = [&](auto preds, auto r_preds){
@@ -181,7 +183,41 @@ namespace nmtools::functional
             [[maybe_unused]] auto lhs_ct = meta::ct_v<src_id_map[m_lhs]>;
             [[maybe_unused]] auto rhs_ct = meta::ct_v<src_id_map[m_rhs]>;
 
-            if constexpr (predecessors[m_lhs].size() > 0 && predecessors[m_rhs].size()) {
+            [[maybe_unused]]
+            auto fuse_operands = [](auto fst, auto snd){
+                constexpr auto FST = meta::to_value_v<decltype(fst)>;
+                constexpr auto N = meta::len_v<decltype(snd)>;
+                return meta::template_reduce<N>([&](auto init, auto I){
+                    auto operand = at(snd,I);
+                    if constexpr (index::contains(FST,decltype(operand)::value)) {
+                        return init;
+                    } else {
+                        return utility::tuple_append(init,operand);
+                    }
+                },fst);
+            };
+
+            if constexpr (m_lhs == m_rhs) {
+                // this case may encountered after binary fusion on softmax in fork-join pattern
+                // perform unary fusion
+
+                auto lhs_node = graph.nodes(lhs_ct);
+                // auto rhs_node = graph.nodes(rhs_ct);
+
+                auto operands = lhs_node.operands;
+                // static_assert( meta::len_v<decltype(operands)> == 2 );
+                auto fused = (node * combinator::dup * lhs_node).set_operands(operands);
+
+                auto g1 = utility::contracted_edge(graph,nmtools_tuple{lhs_ct,to_ct},to_ct,fused);
+                auto g2 = utility::contracted_edge(g1,nmtools_tuple{rhs_ct,to_ct},to_ct,fused);
+
+                constexpr auto n_repeats = n_repeats_t::value;
+                if constexpr ((0 < (nm_index_t)n_repeats-1) || ((nm_index_t)n_repeats < 0)) {
+                    return transform_binary_fusion(g2,meta::ct_v<n_repeats-1>);
+                } else {
+                    return g2;
+                }
+            } else if constexpr (predecessors[m_lhs].size() > 0 && predecessors[m_rhs].size()) {
                 auto lhs_node = graph.nodes(lhs_ct);
                 auto rhs_node = graph.nodes(rhs_ct);
 
@@ -190,19 +226,6 @@ namespace nmtools::functional
 
                 constexpr auto m_lhs_idx = vector_index(order,m_lhs);
                 constexpr auto m_rhs_idx = vector_index(order,m_rhs);
-
-                auto fuse_operands = [](auto fst, auto snd){
-                    constexpr auto FST = meta::to_value_v<decltype(fst)>;
-                    constexpr auto N = meta::len_v<decltype(snd)>;
-                    return meta::template_reduce<N>([&](auto init, auto I){
-                        auto operand = at(snd,I);
-                        if constexpr (index::contains(FST,decltype(operand)::value)) {
-                            return init;
-                        } else {
-                            return utility::tuple_append(init,operand);
-                        }
-                    },fst);
-                };
 
                 // assume lhs & rhs is unary
                 // TODO: handle lhs & rhs with arbitrary arity
@@ -337,13 +360,6 @@ namespace nmtools::functional
             } else {
                 return graph;
             }
-            #if 0
-            auto fused  = fuse_binary(graph.nodes(lhs_ct),graph.nodes(rhs_ct),graph.nodes(to_ct));
-
-            auto g1 = utility::contracted_edge(graph,nmtools_tuple{lhs_ct,to_ct},to_ct,fused);
-            auto g2 = utility::contracted_edge(g1,nmtools_tuple{rhs_ct,to_ct},to_ct,fused);
-            return g2;
-            #endif
         }
     }
 } // namespace nmtools::functional
