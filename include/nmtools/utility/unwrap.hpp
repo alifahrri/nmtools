@@ -13,8 +13,13 @@ namespace nmtools
     constexpr auto unwrap(const T& t)
         -> const meta::resolve_optype_t<unwrap_t,T>
     {
-        nmtools_cassert( has_value(t), "tried to unwrap invalid state" );
         if constexpr (meta::is_maybe_v<T>) {
+            if (!has_value(t)) {
+                // extra if to make it usable in constant expression
+                nmtools_panic( has_value(t)
+                    , "tried to unwrap invalid state"
+                );
+            }
             return *t;
         } else {
             return t;
@@ -25,8 +30,13 @@ namespace nmtools
     constexpr auto unwrap(T& t)
         -> meta::resolve_optype_t<unwrap_t,T>
     {
-        nmtools_cassert( has_value(t), "tried to unwrap invalid state" );
         if constexpr (meta::is_maybe_v<T>) {
+            if (!has_value(t)) {
+                // extra if to make it usable in constant expression
+                nmtools_panic( has_value(t)
+                    , "tried to unwrap invalid state"
+                );
+            }
             return *t;
         } else {
             return t;

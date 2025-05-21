@@ -61,7 +61,7 @@ namespace nmtools::utils::impl
         is_ellipsis_v<T> || is_none_v<T> || meta::is_either_v<T> || meta::is_nothing_v<T> || meta::is_maybe_v<T>
         || meta::is_num_v<T> || meta::is_integral_constant_v<T> || meta::is_ndarray_v<T> || meta::is_list_v<T>
         || meta::is_pointer_v<T> || meta::is_index_array_v<T> || meta::is_tuple_v<T> || meta::is_slice_index_v<T> || meta::is_slice_index_array_v<T>
-        || meta::is_combinator_v<T>
+        || meta::is_combinator_v<T> || meta::is_adjacency_list_v<T>
     >>{
         using formatter_t = fmt_string_t<tab,space,comma,open_bracket,close_bracket,show_types>;
         using result_type = nmtools_string;
@@ -109,7 +109,25 @@ namespace nmtools::utils::impl
             }
             else if constexpr (meta::is_integral_constant_v<T>) {
                 str += nmtools_to_string(T::value);
-            } // is_integral_constant
+            } else if constexpr (meta::is_adjacency_list_v<T>) {
+                if constexpr (meta::is_tuple_v<T>) {
+                    constexpr auto NUM_NODES = meta::len_v<T>;
+                    meta::template_for<NUM_NODES>([&](auto i){
+                        str += to_string(i);
+                        str += ": ";
+                        str += to_string(at(array,i));
+                        str += "\n";
+                    });
+                } else {
+                    auto num_nodes = len(array);
+                    for (nm_size_t i=0; i<(nm_size_t)num_nodes; i++) {
+                        str += to_string(i);
+                        str += ": ";
+                        str += to_string(at(array,i));
+                        str += "\n";
+                    }
+                }
+            }
             else if constexpr (meta::is_ndarray_v<T>) {
                 // TODO: do not use as array
                 /**
@@ -258,9 +276,11 @@ namespace nmtools::utils::impl
                 str += ss.str();
             }
             #endif
-            else if constexpr (meta::is_slice_index_v<T> || meta::is_slice_index_array_v<T> || meta::is_combinator_v<T>) {
+            else if constexpr (meta::is_slice_index_v<T> || meta::is_slice_index_array_v<T>) {
                 // TODO: implement
                 str += NMTOOLS_TYPENAME_TO_STRING(T);
+            } else if constexpr (meta::is_combinator_v<T>) {
+                str += utils::to_string(array.fn);
             }
             return str;
         } // operator()
