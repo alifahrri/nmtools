@@ -31,3 +31,30 @@
 #include "nmtools/utility/random_engine.hpp"
 
 #endif // NMTOOLS_UTILITY_HPP
+
+// TODO: move to include guard above
+
+#include "nmtools/utility/isequal.hpp"
+#include "nmtools/utility/isclose.hpp"
+#include "nmtools/utility/apply_isequal.hpp"
+#include "nmtools/utility/apply_isequal.hpp"
+#include "nmtools/utility/apply_resize.hpp"
+
+#include "nmtools/utility/as_static.hpp"
+#include "nmtools/utility/at.hpp"
+// #include "nmtools/utility/cast.hpp"
+#include "nmtools/utility/ct_digraph.hpp"
+#include "nmtools/utility/ct_map.hpp"
+#include "nmtools/utility/data.hpp"
+#include "nmtools/utility/flatten_either.hpp"
+#include "nmtools/utility/forward.hpp"
+#include "nmtools/utility/fwd.hpp"
+#include "nmtools/utility/get_if.hpp"
+#include "nmtools/utility/get.hpp"
+#include "nmtools/utility/has_value.hpp"
+#include "nmtools/utility/shape.hpp"
+#include "nmtools/utility/small_vector.hpp"
+#include "nmtools/utility/to_string.hpp"
+#include "nmtools/utility/tuple_cat.hpp"
+#include "nmtools/utility/tuple_slice.hpp"
+#include "nmtools/utility/unwrap.hpp"

@@ -11,6 +11,10 @@
 #include "nmtools/utl/tuplev2.hpp"
 #include "nmtools/utl/either.hpp"
 #include "nmtools/utl/maybe.hpp"
+#include "nmtools/utl/queue.hpp"
+#include "nmtools/utl/stack.hpp"
+#include "nmtools/utl/static_queue.hpp"
+#include "nmtools/utl/static_stack.hpp"
 #include "nmtools/utl/static_vector.hpp"
 #include "nmtools/utl/vector.hpp"
 
@@ -41,8 +45,24 @@
 #define nmtools_array ::nmtools::utl::array
 #endif // nmtools_array
 
+#ifndef nmtools_queue
+#define nmtools_queue ::nmtools::utl::queue
+#endif // nmtools_queue
+
+#ifndef nmtools_stack
+#define nmtools_stack ::nmtools::utl::stack
+#endif // nmtools_stack
+
 #ifndef nmtools_static_vector
 #define nmtools_static_vector ::nmtools::utl::static_vector
 #endif // nmtools_static_vector
+
+#ifndef nmtools_static_queue
+#define nmtools_static_queue ::nmtools::utl::static_queue
+#endif // nmtools_static_queue
+
+#ifndef nmtools_static_stack
+#define nmtools_static_stack ::nmtools::utl::static_stack
+#endif // nmtools_static_stack
 
 #endif // NMTOOLS_UTL_HPP

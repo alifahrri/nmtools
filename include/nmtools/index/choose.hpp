@@ -72,6 +72,7 @@ namespace nmtools::meta
         struct INDEX_CHOOSE_UNSUPPORTED : detail::fail_t {};
     } // namespace error
     
+    // TODO: simplify by prefer direct nmtools construct such as nmtools_array, nmtools_static_vector, nmtools_list, etc
     template <typename indices_t, typename array_t>
     struct resolve_optype<
         void, index::choose_t, indices_t, array_t
