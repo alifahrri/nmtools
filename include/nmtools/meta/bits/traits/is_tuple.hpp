@@ -15,6 +15,13 @@ namespace nmtools::meta
     template <typename>
     struct is_tuple : false_type {};
 
+    // const and ref should be ok, most use case check for tuple do not care if it's const or ref
+    template <typename T>
+    struct is_tuple<const T> : is_tuple<T> {};
+
+    template <typename T>
+    struct is_tuple<T&> : is_tuple<T> {};
+
     /**
      * @brief helper variable template to check if given type is tuple
      * 
