@@ -13,6 +13,10 @@ TEST_CASE("shape_matmul" * doctest::test_suite("index"))
     {
         using lhs_shape_t = int[2];
         using rhs_shape_t = int[2];
+        static_assert( !meta::is_fail_v<decltype(meta::fixed_shape_v<lhs_shape_t>)> );
+        static_assert( !meta::is_fail_v<decltype(meta::fixed_shape_v<rhs_shape_t>)> );
+        static_assert( !meta::is_fail_v<decltype(meta::fixed_size_v<lhs_shape_t>)> );
+        static_assert( !meta::is_fail_v<decltype(meta::fixed_size_v<rhs_shape_t>)> );
         using result_t    = meta::resolve_optype_t<ix::shape_matmul_t,lhs_shape_t,rhs_shape_t>;
         using expect_t    = nmtools_array<size_t,2>;
         NMTOOLS_STATIC_CHECK_IS_SAME( result_t, expect_t );

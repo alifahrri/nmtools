@@ -24,35 +24,12 @@ inline auto name##_ls_db = nmtools::cast(name, nmtools::array::kind::ndarray_ls_
 namespace nm = nmtools;
 namespace na = nm::array;
 
-#define RUN_compress_impl(...) \
-nm::view::compress(__VA_ARGS__);
-
-#ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
-#include "nmtools/testing/benchmarks/bench.hpp"
-using nm::benchmarks::TrackedBench;
-// create immediately invoked lambda
-// that packs compress fn to callable lambda
-#define RUN_compress(case_name, ...) \
-[](auto&&...args){ \
-    auto title = std::string("compress-") + #case_name; \
-    auto name  = nm::testing::make_func_args("", args...); \
-    auto fn    = [&](){ \
-        return RUN_compress_impl(args...); \
-    }; \
-    return TrackedBench::run(title, name, fn); \
-}(__VA_ARGS__);
-#else
-// run normally without benchmarking, ignore case_name
-#define RUN_compress(case_name, ...) \
-RUN_compress_impl(__VA_ARGS__);
-#endif // NMTOOLS_TESTING_ENABLE_BENCHMARKS
-
 #define COMPRESS_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
     NMTOOLS_TESTING_USE_CASE(array, compress, case_name); \
     using namespace args; \
-    auto result = RUN_compress(case_name, __VA_ARGS__); \
+    auto result = nmtools::view::compress(__VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( nmtools::shape(result), nmtools::shape(expect::result) ); \
     NMTOOLS_ASSERT_EQUAL( result, expect::result ); \
 }

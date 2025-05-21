@@ -28,6 +28,10 @@ add_test(
     NAME ${PROJECT_NAME}-doctest
     COMMAND ${PROJECT_NAME}-doctest
 )
+# useful for compiling constexpr testing data or not
+target_compile_definitions( ${PROJECT_NAME}-doctest
+    PRIVATE -DNMTOOLS_TESTING_CONSTEXPR
+)
 
 target_compile_options(${PROJECT_NAME}-doctest PRIVATE --std=c++17)
 

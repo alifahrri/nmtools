@@ -33,11 +33,13 @@ SUBCASE(#case_name) \
     NMTOOLS_TESTING_USE_CASE(broadcast_arrays, case_name); \
     using namespace args; \
     const auto results = view::broadcast_arrays(__VA_ARGS__); \
-    constexpr auto N = meta::len_v<decltype(results)>; \
-    nm::meta::template_for<N>([&](auto index){ \
-        constexpr auto i = decltype(index)::value; \
-        const auto array       = nmtools::get<i>(results); \
-        const auto expected    = nmtools::get<i>(expect::expected); \
+    constexpr auto N = meta::len_v<decltype(nmtools::unwrap(results))>; \
+    static_assert( meta::is_num_v<decltype(N)> ); \
+    static_assert( meta::is_tuple_v<decltype(nmtools::unwrap(results))> ); \
+    meta::template_for<N>([&](auto index){ \
+        constexpr auto i    = decltype(index)::value; \
+        const auto array    = nmtools::get<i>(nmtools::unwrap(results)); \
+        const auto expected = nmtools::get<i>(expect::expected); \
         NMTOOLS_ASSERT_EQUAL( nm::shape(array), expect::shape ); \
         NMTOOLS_ASSERT_CLOSE( array, expected ); \
     }); \
