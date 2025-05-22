@@ -12,9 +12,12 @@ namespace nmtools::tag
 namespace nmtools::network
 {
     template <typename input_t, typename node_ids_t>
-    constexpr auto map_ids(const input_t& input, const node_ids_t& node_ids)
+    constexpr auto map_ids(const input_t& input
+        , [[maybe_unused]] const node_ids_t& node_ids)
     {
-        if constexpr (meta::is_maybe_v<input_t>
+        if constexpr (meta::is_nothing_v<input_t>) {
+            return input;
+        } else if constexpr (meta::is_maybe_v<input_t>
             || meta::is_maybe_v<node_ids_t>
         ) {
             using result_t = decltype(map_ids(unwrap(input),unwrap(node_ids)));
@@ -78,6 +81,33 @@ namespace nmtools::meta
             ) {
                 using type = error::MAP_IDS_UNSUPPORTED<input_t,node_ids_t>;
                 return as_value_v<type>;
+            } else if constexpr (is_constant_index_array_v<node_ids_t>
+                && (is_constant_adjacency_list_v<input_t> || is_constant_index_array_v<input_t>)
+            ) {
+                constexpr auto input    = to_value_v<input_t>;
+                constexpr auto node_ids = to_value_v<node_ids_t>;
+                constexpr auto m_result = network::map_ids(input,node_ids);
+                constexpr auto result   = unwrap(m_result);
+                using nmtools::at, nmtools::len;
+                return template_reduce<len(result)>([&](auto init, auto index){
+                    using init_t = type_t<decltype(init)>;
+                    constexpr auto I = decltype(index)::value;
+                    constexpr auto value = at(result,I);
+                    if constexpr (is_index_array_v<decltype(value)>) {
+                        auto inner_vtype = template_reduce<len(value)>([&](auto init, auto index){
+                            using init_t = type_t<decltype(init)>;
+                            constexpr auto J = decltype(index)::value;
+                            using type = append_type_t<init_t,ct<at(value,J)>>;
+                            return as_value_v<type>;
+                        }, as_value_v<nmtools_tuple<>>);
+                        using inner_t = type_t<decltype(inner_vtype)>;
+                        using type = append_type_t<init_t,inner_t>;
+                        return as_value_v<type>;
+                    } else {
+                        using type = append_type_t<init_t,ct<value>>;
+                        return as_value_v<type>;
+                    }
+                }, as_value_v<nmtools_tuple<>>);
             } else {
                 // TODO: handle constant adjacency list/index array with constant node ids
                 return as_value_v<input_t>;

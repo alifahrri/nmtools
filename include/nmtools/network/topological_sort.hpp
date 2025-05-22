@@ -29,36 +29,43 @@ namespace nmtools::network
             // TODO: support constant adjacency list
             using return_t = nmtools_maybe<result_t>;
 
-            auto in_degree = network::in_degree(adjacency_list);
-
+            [[maybe_unused]]
             auto queue  = queue_t {};
             auto result = result_t {};
 
-            nm_size_t count = 0;
+            if constexpr (!meta::is_fail_v<result_t>
+                && !meta::is_constant_index_array_v<result_t>
+            ) {
+                nm_size_t count = 0;
 
-            // initialize queue with input (in_degree 0)
-            for (nm_size_t i=0; i<adjacency_list.size(); i++) {
-                if (in_degree[i] == 0) {
-                    queue.push(i);
-                }
-            }
-            for (; !queue.empty();) {
-                auto node = queue.pop();
-                count++;
-                result.push_back(node);
-                for (nm_size_t j=0; j<(nm_size_t)adjacency_list[node].size(); j++) {
-                    auto neighbor = adjacency_list[node][j];
-                    in_degree[neighbor] -= 1;
-                    if (in_degree[neighbor] == 0) {
-                        queue.push(neighbor);
+                auto in_degree = network::in_degree(adjacency_list);
+
+                // initialize queue with input (in_degree 0)
+                for (nm_size_t i=0; i<(nm_size_t)adjacency_list.size(); i++) {
+                    if (in_degree[i] == 0) {
+                        queue.push(i);
                     }
                 }
-            }
+                for (; !queue.empty();) {
+                    auto node = queue.pop();
+                    count++;
+                    result.push_back(node);
+                    for (nm_size_t j=0; j<(nm_size_t)adjacency_list[node].size(); j++) {
+                        auto neighbor = adjacency_list[node][j];
+                        in_degree[neighbor] -= 1;
+                        if (in_degree[neighbor] == 0) {
+                            queue.push(neighbor);
+                        }
+                    }
+                }
 
-            if (count != (nm_size_t)len(adjacency_list)) {
-                return return_t{meta::Nothing};
+                if (count != (nm_size_t)len(adjacency_list)) {
+                    return return_t{meta::Nothing};
+                } else {
+                    return return_t{result};
+                }
             } else {
-                return return_t{result};
+                return result;
             }
         }
     }
@@ -111,16 +118,27 @@ namespace nmtools::meta
             if constexpr (!is_adjacency_list_v<adjacency_list_t>) {
                 using type = error::TOPOLOGICAL_SORT_UNSUPPORTED<adjacency_list_t>;
                 return as_value_v<type>;
+            } else if constexpr (is_constant_adjacency_list_v<adjacency_list_t>) {
+                constexpr auto adjacency_list = to_value_v<adjacency_list_t>;
+                constexpr auto m_result = network::topological_sort(adjacency_list);
+                constexpr auto result = unwrap(m_result);
+                using nmtools::at, nmtools::len;
+                return template_reduce<len(result)>([&](auto init, auto index){
+                    using init_t = type_t<decltype(init)>;
+                    constexpr auto I = decltype(index)::value;
+                    using type = append_type_t<init_t,ct<at(result,I)>>;
+                    return as_value_v<type>;
+                }, as_value_v<nmtools_tuple<>>);
             } else {
                 // TODO: deduce index type from adjacency_list_t
                 using index_t = nm_index_t;
                 constexpr auto NUM_NODES = len_v<adjacency_list_t>;
                 [[maybe_unused]]
-                constexpr auto B_NUM_NODES = bounded_size_v<adjacency_list_t>;
-                if constexpr (NUM_NODES > 0) {
+                constexpr auto B_NUM_NODES = max_len_v<adjacency_list_t>;
+                if constexpr (NUM_NODES >= 0) {
                     using type = nmtools_static_vector<index_t,NUM_NODES>;
                     return as_value_v<type>;
-                } else if constexpr (!is_fail_v<decltype(B_NUM_NODES)>) {
+                } else if constexpr (B_NUM_NODES >= 0) {
                     using type = nmtools_static_vector<index_t,B_NUM_NODES>;
                     return as_value_v<type>;
                 } else {

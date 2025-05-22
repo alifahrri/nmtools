@@ -100,7 +100,6 @@ namespace nmtools::network
         // TODO: check with attributes_t which one has bounded size
         using adjacency_list_type = adjacency_list_t;
         // store mapping from node key/id to index in adjacency_list
-        // using id_buffer_type = meta::resolve_optype_t<generate_node_ids_t,adjacency_list_t>;
         using node_ids_type = node_ids_t;
 
         static constexpr auto attributes_vtype = [](){
@@ -446,8 +445,7 @@ namespace nmtools::network
     constexpr auto topological_sort(const digraph_t<adjacency_list_t,attributes_t>& digraph)
     {
         auto sorted = network::topological_sort(digraph.adjacency_list);
-        auto result = network::map_ids(sorted,digraph.node_ids);
-        return result;
+        return network::map_ids(sorted,digraph.node_ids);
     }
 } // namespace nmtools::network
 

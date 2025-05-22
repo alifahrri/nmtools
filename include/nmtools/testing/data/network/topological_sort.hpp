@@ -6,6 +6,8 @@
 
 NMTOOLS_TESTING_DECLARE_CASE(network, topological_sort)
 {
+    using namespace literals;
+
     // Bring types into scope
     using nmtools_array;
     using nmtools_tuple;
@@ -24,9 +26,9 @@ NMTOOLS_TESTING_DECLARE_CASE(network, topological_sort)
     {
         // Graph: 0 -> 1 -> 2
         constexpr inline auto list = nmtools_tuple{
-            array{1},          // Node 0 neighbors
-            array{2},          // Node 1 neighbors
-            array<int,0>(),    // Node 2 neighbors
+            nmtools_tuple{1_ct},          // Node 0 neighbors
+            nmtools_tuple{2_ct},          // Node 1 neighbors
+            nmtools_tuple{},              // Node 2 neighbors
         };
         NMTOOLS_CAST_NETWORK(list)
         NMTOOLS_CONSTEXPR_CAST_NETWORK(list)
@@ -47,10 +49,10 @@ NMTOOLS_TESTING_DECLARE_CASE(network, topological_sort)
         // Possible sorts: [0, 1, 2, 3], [1, 0, 2, 3], [0, 1, 3, 2], [1, 0, 3, 2]
         // (if processing nodes 0 then 1 for sources)
         constexpr inline auto list = nmtools_tuple{
-            array{2, 3},       // Node 0 neighbors
-            array{2, 3},       // Node 1 neighbors
-            array<int,0>(),    // Node 2 neighbors
-            array<int,0>(),    // Node 3 neighbors
+            nmtools_tuple{2_ct, 3_ct},       // Node 0 neighbors
+            nmtools_tuple{2_ct, 3_ct},       // Node 1 neighbors
+            nmtools_tuple{},    // Node 2 neighbors
+            nmtools_tuple{},    // Node 3 neighbors
         };
         NMTOOLS_CAST_NETWORK(list)
         NMTOOLS_CONSTEXPR_CAST_NETWORK(list)
@@ -70,9 +72,9 @@ NMTOOLS_TESTING_DECLARE_CASE(network, topological_sort)
     {
         // Graph: 0 -> 1, 1 -> 2, 2 -> 0 (cycle)
         constexpr inline auto list = nmtools_tuple{
-            array{1},          // Node 0 neighbors
-            array{2},          // Node 1 neighbors
-            array{0},          // Node 2 neighbors
+            nmtools_tuple{1_ct},          // Node 0 neighbors
+            nmtools_tuple{2_ct},          // Node 1 neighbors
+            nmtools_tuple{0_ct},          // Node 2 neighbors
         };
         NMTOOLS_CAST_NETWORK(list)
         NMTOOLS_CONSTEXPR_CAST_NETWORK(list)
@@ -104,10 +106,10 @@ NMTOOLS_TESTING_DECLARE_CASE(network, topological_sort)
         // Graph: 0 -> 1,  2 -> 3
         // Nodes 0,1 form one component; 2,3 form another.
         constexpr inline auto list = nmtools_tuple{
-            array{1},          // Node 0 neighbors
-            array<int,0>(),    // Node 1 neighbors
-            array{3},          // Node 2 neighbors
-            array<int,0>(),    // Node 3 neighbors
+            nmtools_tuple{1_ct}, // Node 0 neighbors
+            nmtools_tuple{},     // Node 1 neighbors
+            nmtools_tuple{3_ct}, // Node 2 neighbors
+            nmtools_tuple{},     // Node 3 neighbors
         };
         NMTOOLS_CAST_NETWORK(list)
         NMTOOLS_CONSTEXPR_CAST_NETWORK(list)
@@ -125,9 +127,7 @@ NMTOOLS_TESTING_DECLARE_CASE(network, topological_sort)
     //----------------------------------------------------
     NMTOOLS_TESTING_DECLARE_ARGS(case6)
     {
-        constexpr inline auto list = nmtools_tuple{
-            array<int,0>(),    // Node 0 neighbors
-        };
+        constexpr inline auto list = nmtools_tuple<nmtools_tuple<>>{};
         NMTOOLS_CAST_NETWORK(list)
         NMTOOLS_CONSTEXPR_CAST_NETWORK(list)
     }
@@ -148,12 +148,12 @@ NMTOOLS_TESTING_DECLARE_CASE(network, topological_sort)
         // 3 -> 5
         // 4 -> 5
         constexpr inline auto list = nmtools_tuple{
-            array{1, 2},       // Node 0 neighbors
-            array{3},          // Node 1 neighbors
-            array{3, 4},       // Node 2 neighbors
-            array{5},          // Node 3 neighbors
-            array{5},          // Node 4 neighbors
-            array<int,0>(),    // Node 5 neighbors
+            nmtools_tuple{1_ct, 2_ct}, // Node 0 neighbors
+            nmtools_tuple{3_ct},       // Node 1 neighbors
+            nmtools_tuple{3_ct, 4_ct}, // Node 2 neighbors
+            nmtools_tuple{5_ct},       // Node 3 neighbors
+            nmtools_tuple{5_ct},       // Node 4 neighbors
+            nmtools_tuple{},           // Node 5 neighbors
         };
         NMTOOLS_CAST_NETWORK(list)
         NMTOOLS_CONSTEXPR_CAST_NETWORK(list)
@@ -187,8 +187,8 @@ NMTOOLS_TESTING_DECLARE_CASE(network, topological_sort)
     {
         // Graph: 0 -> 1, 1 -> 1 (self-loop)
         constexpr inline auto list = nmtools_tuple{
-            array{1},          // Node 0 neighbors
-            array{1},          // Node 1 neighbors (points to itself)
+            nmtools_tuple{1_ct},          // Node 0 neighbors
+            nmtools_tuple{1_ct},          // Node 1 neighbors (points to itself)
         };
         NMTOOLS_CAST_NETWORK(list)
         NMTOOLS_CONSTEXPR_CAST_NETWORK(list)
