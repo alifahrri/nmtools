@@ -44,16 +44,23 @@ namespace nmtools::network
                     const auto& src = at(input,i);
                     auto& dst = at(result,i);
                     using dst_t = meta::remove_cvref_t<decltype(dst)>;
+                    auto map_id = [&](auto src){
+                        if constexpr (!is_none_v<node_ids_t>) {
+                            return at(node_ids,src);
+                        } else {
+                            return src;
+                        }
+                    };
                     if constexpr (meta::is_index_array_v<dst_t>) {
                         auto m = len(src);
                         if constexpr (meta::is_resizable_v<dst_t>) {
                             dst.resize(m);
                         }
                         for (nm_size_t j=0; j<(nm_size_t)m; j++) {
-                            at(dst,j) = at(node_ids,at(src,j));
+                            at(dst,j) = map_id(at(src,j));
                         }
                     } else {
-                        dst = at(node_ids,src);
+                        dst = map_id(src);
                     }
                 }
             }
@@ -77,7 +84,7 @@ namespace nmtools::meta
     > {
         static constexpr auto vtype = [](){
             if constexpr (!(is_adjacency_list_v<input_t> || is_index_array_v<input_t>)
-                || !is_index_array_v<node_ids_t>
+                || !(is_index_array_v<node_ids_t> || is_none_v<node_ids_t>)
             ) {
                 using type = error::MAP_IDS_UNSUPPORTED<input_t,node_ids_t>;
                 return as_value_v<type>;

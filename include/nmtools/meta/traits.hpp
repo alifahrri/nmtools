@@ -24,6 +24,7 @@
 #include "nmtools/meta/bits/traits/has_src_shape_type.hpp"
 #include "nmtools/meta/bits/traits/has_square_bracket.hpp"
 #include "nmtools/meta/bits/traits/has_template_get.hpp"
+#include "nmtools/meta/bits/traits/has_to_string.hpp"
 #include "nmtools/meta/bits/traits/has_tuple_size.hpp"
 #include "nmtools/meta/bits/traits/has_type.hpp"
 #include "nmtools/meta/bits/traits/has_value_type.hpp"

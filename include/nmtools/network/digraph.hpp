@@ -458,23 +458,33 @@ namespace nmtools::network
         constexpr decltype(auto) add_edges_from(const edges_t& edges)
         {
             if constexpr (meta::is_constant_adjacency_list_v<adjacency_list_type>) {
+                constexpr auto result = [&](){
+                    // TODO: handle edges > 1
+                    auto dst_digraph = to_value<adjacency_list_type,1>();
+                    dst_digraph.add_edges_from(edges);
+                    return dst_digraph;
+                }();
 
+                auto vtype = nmtools_adjacency_list_vtype(result.adjacency_list);
+                using type = meta::type_t<decltype(vtype)>;
+                // TODO: also return edges and nodes
+                return digraph(type{});
             } else {
                 constexpr auto N_PAIRS = meta::len_v<edges_t>;
+                auto loop = [&](auto i){
+                    const auto& edge = at(edges,i);
+                        auto from = at(edge,meta::ct_v<0>);
+                    auto to   = at(edge,meta::ct_v<1>);
+                    add_edge(from,to);
+                };
                 if constexpr (N_PAIRS > 0) {
                     meta::template_for<N_PAIRS>([&](auto I){
-                        const auto& edge = at(edges,I);
-                        auto from = at(edge,meta::ct_v<0>);
-                        auto to   = at(edge,meta::ct_v<1>);
-                        add_edge(from,to);
+                        loop(I);
                     });
                 } else {
                     auto n_pairs = len(edges);
                     for (nm_size_t i=0; i<(nm_size_t)n_pairs; i++) {
-                        const auto& edge = at(edges,i);
-                        auto from = at(edge,meta::ct_v<0>);
-                        auto to   = at(edge,meta::ct_v<1>);
-                        add_edge(from,to);
+                        loop(i);
                     }
                 }
                 return *this;
@@ -513,7 +523,6 @@ namespace nmtools::network
         constexpr decltype(auto) edges(from_t from, to_t to) const
         {
             if constexpr (!is_none_v<edge_attributes_type>) {
-                // TODO: handle None node_ids
                 auto from_idx = get_index(from);
                 auto to_idx   = get_index(to);
 
@@ -608,15 +617,9 @@ namespace nmtools::network
             using digraph_type  = digraph_t<adjacency_list_type,node_ids_type,node_attributes_t,edge_attributes_t>;
             return digraph_type{};
         } else if constexpr (meta::is_adjacency_list_v<adjacency_list_t>) {
+            // TODO: check if adj_list and node_ids has the same length
+            // and use panic to assert condition instead of return maybe
             return digraph_t{adj_list,node_ids,node_attributes,edge_attributes};
-            // if constexpr (!is_none_v<node_ids_t>) {
-            //     // TODO: check if adj_list and node_ids has the same length
-            //     // and use panic to assert condition instead of return maybe
-            //     return digraph_t{adj_list,node_ids,node_attributes,edge_attributes};
-            // } else {
-            //     auto m_node_ids = generate_node_ids(adj_list);
-            //     return digraph_t{adj_list,m_node_ids,node_attributes,edge_attributes};
-            // }
         }
     } // digraph
 
@@ -753,7 +756,7 @@ namespace nmtools::utils::impl
                 graphviz += "shape=\"record\" style=\"rounded,filled\" color=\"black\" fillcolor=\"gray93\" ";
 
                 const auto& node = digraph.nodes(node_id);
-                using node_t = decltype(node);
+                using node_t = meta::remove_cvref_t<decltype(node)>;
                 if constexpr (!is_none_v<node_t>
                     && (meta::has_to_string_v<node_t> || meta::is_same_v<node_t,nmtools_string>)
                 ) {

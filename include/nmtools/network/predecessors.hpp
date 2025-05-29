@@ -26,8 +26,9 @@ namespace nmtools::network
 
             auto result = result_t {};
 
-            // TODO: handle constant adjacency list
-            if constexpr (!meta::is_fail_v<result_t>) {
+            if constexpr (!meta::is_fail_v<result_t>
+                && !meta::is_constant_adjacency_list_v<result_t>
+            ) {
                 [[maybe_unused]]
                 auto num_nodes = len(adj_list);
                 if constexpr (meta::is_resizable_v<result_t>) {
@@ -91,21 +92,39 @@ namespace nmtools::meta
             if constexpr (!is_adjacency_list_v<adjacency_list_t>) {
                 using type = error::PREDECESSORS_UNSUPPORTED<adjacency_list_t>;
                 return as_value_v<type>;
+            } else if constexpr (is_constant_adjacency_list_v<adjacency_list_t>) {
+                constexpr auto adjacency_list = to_value_v<adjacency_list_t>;
+                constexpr auto result = network::predecessors(adjacency_list);
+                using nmtools::at, nmtools::len;
+                return template_reduce<len(result)>([&](auto init, auto index){
+                    using init_t = type_t<decltype(init)>;
+                    constexpr auto I = decltype(index)::value;
+                    constexpr auto neighbors = at(result,I);
+                    auto inner_vtype = template_reduce<len(neighbors)>([&](auto init, auto index){
+                        using init_t = type_t<decltype(init)>;
+                        constexpr auto J = decltype(index)::value;
+                        using type = append_type_t<init_t,ct<at(neighbors,J)>>;
+                        return as_value_v<type>;
+                    }, as_value_v<nmtools_tuple<>>);
+                    using inner_t = type_t<decltype(inner_vtype)>;
+                    using type = append_type_t<init_t,inner_t>;
+                    return as_value_v<type>;
+                }, as_value_v<nmtools_tuple<>>);
             } else {
                 // TODO: handle constant adjacency list
 
                 constexpr auto NUM_NODES = len_v<adjacency_list_t>;
-                constexpr auto B_NUM_NODES = bounded_size_v<adjacency_list_t>;
+                constexpr auto B_NUM_NODES = max_len_v<adjacency_list_t>;
 
                 // TODO: deduce index type from adjacency_list_t
                 using index_t = nm_index_t;
 
-                if constexpr (NUM_NODES > 0) {
+                if constexpr (NUM_NODES >= 0) {
                     using inner_type = nmtools_static_vector<index_t,NUM_NODES>;
                     using outer_type = nmtools_array<inner_type,NUM_NODES>;
                     using type = outer_type;
                     return as_value_v<type>;
-                } else if constexpr (!is_fail_v<decltype(B_NUM_NODES)>) {
+                } else if constexpr (B_NUM_NODES >= 0) {
                     using inner_type = nmtools_static_vector<index_t,B_NUM_NODES>;
                     using outer_type = nmtools_static_vector<inner_type,B_NUM_NODES>;
                     using type = outer_type;

@@ -94,11 +94,11 @@ namespace nmtools::meta
                 using index_t = nm_index_t;
                 constexpr auto NUM_NODES = len_v<adjacency_list_t>;
                 [[maybe_unused]]
-                constexpr auto B_NUM_NODES = bounded_size_v<adjacency_list_t>;
-                if constexpr (NUM_NODES > 0) {
+                constexpr auto B_NUM_NODES = max_len_v<adjacency_list_t>;
+                if constexpr (NUM_NODES >= 0) {
                     using type = nmtools_static_queue<index_t,NUM_NODES>;
                     return as_value_v<type>;
-                } else if constexpr (!is_fail_v<decltype(B_NUM_NODES)>) {
+                } else if constexpr (B_NUM_NODES >= 0) {
                     using type = nmtools_static_queue<index_t,B_NUM_NODES>;
                     return as_value_v<type>;
                 } else {
