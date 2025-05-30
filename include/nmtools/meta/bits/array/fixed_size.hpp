@@ -3,9 +3,11 @@
 
 #include "nmtools/meta/common.hpp"
 #include "nmtools/meta/bits/array/fixed_shape.hpp"
-#include "nmtools/meta/bits/traits/is_index_array.hpp"
 #include "nmtools/meta/bits/traits/is_constant_index_array.hpp"
+#include "nmtools/meta/bits/traits/is_num.hpp"
 #include "nmtools/meta/bits/transform/to_value.hpp"
+#include "nmtools/meta/bits/transform/get_value_type.hpp"
+#include "nmtools/meta/bits/transform/len.hpp"
 
 namespace nmtools::meta
 {
@@ -19,23 +21,21 @@ namespace nmtools::meta
     struct fixed_size
     {
         static constexpr auto value = [](){
-            constexpr auto shape = fixed_shape_v<T>;
-            using shape_t = decltype(shape);
+            using value_t [[maybe_unused]] = get_value_type_t<T>;
+            [[maybe_unused]]
+            constexpr auto SIZE  = len_v<T>;
+            constexpr auto SHAPE = fixed_shape_v<T>;
+            using shape_t = decltype(SHAPE);
             // by default, try to compute from fixed_shape_v
             // size is actually just product of shape
-            if constexpr (is_index_array_v<shape_t>) {
-                constexpr auto shape_ = [&](){
-                    if constexpr (is_constant_index_array_v<shape_t>) {
-                        return to_value_v<shape_t>;
-                    } else {
-                        return shape;
-                    }
-                }();
+            if constexpr (!is_fail_v<shape_t>) {
                 auto product = 1ul;
-                for (size_t i=0; i<shape_.size(); i++) {
-                    product *= shape_[i];
+                for (nm_size_t i=0; i<SHAPE.size(); i++) {
+                    product *= SHAPE[i];
                 }
                 return product;
+            } else if constexpr (is_num_v<value_t> && (SIZE > 0)) {
+                return SIZE;
             } else {
                 return error::FIXED_SIZE_UNSUPPORTED<T>{};
             }

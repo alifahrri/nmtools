@@ -11,6 +11,7 @@
 #include "nmtools/utility/at.hpp"
 #include "nmtools/utility/apply_resize.hpp"
 #include "nmtools/utility/shape.hpp"
+#include "nmtools/utility/tuple_cat.hpp"
 
 namespace nmtools::array
 {

@@ -5,7 +5,6 @@
 
 #include "nmtools/utility/at.hpp"
 #include "nmtools/constants.hpp"
-#include "nmtools/utility.hpp"
 
 namespace nmtools::impl::error
 {

@@ -23,6 +23,7 @@
 #include "nmtools/meta/bits/transform/len.hpp"
 #include "nmtools/meta/bits/transform/make_signed.hpp"
 #include "nmtools/meta/bits/transform/make_unsigned.hpp"
+#include "nmtools/meta/bits/transform/max_len.hpp"
 #include "nmtools/meta/bits/transform/max_value.hpp"
 #include "nmtools/meta/bits/transform/min_value.hpp"
 #include "nmtools/meta/bits/transform/numeric_limits.hpp"

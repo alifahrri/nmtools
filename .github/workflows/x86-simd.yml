@@ -14,7 +14,7 @@ on:
 jobs:
   dockcross-x86-simd:
     name: ${{ matrix.name }}-x86-simd
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     strategy:
       matrix:
         include:
@@ -39,7 +39,7 @@ jobs:
   
   dockcross-x86-simd-vector:
     name: ${{ matrix.name }}-simd-${{ matrix.arch }}-vector
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     strategy:
       matrix:
         include:

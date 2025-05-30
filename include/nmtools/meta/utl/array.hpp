@@ -31,6 +31,12 @@ namespace nmtools::meta
         static constexpr auto value = sizeof...(Args);
     };
 
+    template <typename T, size_t Capacity>
+    struct max_len<utl::static_vector<T,Capacity>>
+    {
+        static constexpr auto value = Capacity;
+    };
+
     template <typename T, size_t N>
     struct fixed_shape<utl::array<T,N>>
     {
@@ -94,6 +100,7 @@ namespace nmtools::meta
         utl::static_vector<T,Capacity>
     >
     {
+        // TODO: no need to check for num or slice index
         static constexpr auto value = [](){
             if constexpr (is_num_v<T> || is_slice_index_v<T>) {
                 return 1;
@@ -108,13 +115,7 @@ namespace nmtools::meta
         utl::static_vector<T,Capacity>
     >
     {
-        static constexpr auto value = [](){
-            if constexpr (is_num_v<T> || is_slice_index_v<T>) {
-                return Capacity;
-            } else {
-                return error::BOUNDED_SIZE_UNSUPPORTED<utl::static_vector<T,Capacity>>{};
-            }
-        }();
+        static constexpr auto value = Capacity;
     };
 
     // TODO: remove this specialization

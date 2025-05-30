@@ -3,6 +3,7 @@
 
 #include "nmtools/meta.hpp"
 #include "nmtools/core/functor.hpp"
+#include "nmtools/utility/to_string/to_string.hpp"
 
 namespace nmtools::combinator
 {
@@ -13,20 +14,7 @@ namespace nmtools::combinator
         template <typename lhs_t, typename rhs_t>
         constexpr auto operator()(const lhs_t& lhs, const rhs_t& rhs) const
         {
-            #if 0
-            if constexpr (meta::is_maybe_v<lhs_t> || meta::is_maybe_v<rhs_t>) {
-                using result_t = decltype(pack_operands(unwrap(rhs),unwrap(lhs)));
-                using return_t = meta::conditional_t<meta::is_maybe_v<result_t>,result_t,nmtools_maybe<result_t>>;
-                return (has_value(lhs) && has_value(rhs)
-                    ? return_t{pack_operands(unwrap(rhs),unwrap(lhs))}
-                    : return_t{meta::Nothing}
-                );
-            } else {
-                return pack_operands(rhs,lhs);
-            }
-            #else
             return pack_operands(rhs,lhs);
-            #endif
         }
     }; // swap_t
 
@@ -112,7 +100,7 @@ namespace nmtools::combinator
     constexpr inline auto dig2  = dig_n<2>;
     constexpr inline auto bury1 = bury_n<1>;
     constexpr inline auto bury2 = bury_n<2>;
-}
+} // namespace nmtools::combinator
 
 namespace nmtools::meta
 {
@@ -128,5 +116,84 @@ namespace nmtools::meta
     template <auto N>
     struct is_combinator<functional::fmap_t<combinator::bury_t<N>,N+1,N+1>> : true_type {};
 }
+
+#if NMTOOLS_HAS_STRING
+
+namespace nmtools::utils::impl
+{
+    template <auto N, auto...fmt_args>
+    struct to_string_t<
+        // functional::functor_t< combinator::dup_fmap_t<N> >, fmt_string_t<fmt_args...>
+        // combinator::dup_fmap_t<N>, fmt_string_t<fmt_args...>
+        // functional::fmap_t< combinator::dup_t<N>, IN, OUT >, fmt_string_t<fmt_args...>
+        combinator::dup_t<N>, fmt_string_t<fmt_args...>
+    > {
+        using result_type = nmtools_string;
+
+        // auto operator()(const functional::functor_t< combinator::dup_fmap_t<N> >&) const noexcept
+        // auto operator()(const combinator::dup_fmap_t<N>&) const noexcept
+        // auto operator()(const functional::fmap_t<combinator::dup_t<N>,IN,OUT>&) const noexcept
+        auto operator()(const combinator::dup_t<N>&) const noexcept
+        {
+            nmtools_string str;
+
+            str += "dup";
+            str += to_string(N,Compact);
+
+            return str;
+        }
+    };
+
+    template <auto N, auto...fmt_args>
+    struct to_string_t<
+        combinator::bury_t<N>, fmt_string_t<fmt_args...>
+    > {
+        using result_type = nmtools_string;
+
+        auto operator()(const combinator::bury_t<N>&) const noexcept
+        {
+            nmtools_string str;
+
+            str += "bury";
+            str += to_string(N,Compact);
+
+            return str;
+        }
+    };
+
+    template <auto N, auto...fmt_args>
+    struct to_string_t<
+        combinator::dig_t<N>, fmt_string_t<fmt_args...>
+    > {
+        using result_type = nmtools_string;
+
+        auto operator()(const combinator::dig_t<N>&) const noexcept
+        {
+            nmtools_string str;
+
+            str += "dig";
+            str += to_string(N,Compact);
+
+            return str;
+        }
+    };
+
+    template <auto...fmt_args>
+    struct to_string_t<
+        combinator::swap_t, fmt_string_t<fmt_args...>
+    > {
+        using result_type = nmtools_string;
+
+        auto operator()(const combinator::swap_t&) const noexcept
+        {
+            nmtools_string str;
+
+            str += "swap";
+
+            return str;
+        }
+    };
+}
+#endif // NMTOOLS_HAS_STRING
 
 #endif // NMTOOLS_ARRAY_FUNCTIONAL_COMBINATOR_HPP

@@ -62,13 +62,17 @@ namespace nmtools::meta
             } else if constexpr (is_ndarray_v<T>) {
                 // To allow nested std::array
                 constexpr auto shape = fixed_shape_v<T>;
-                constexpr auto dim = shape.size() + 1;
-                auto result = std::array<size_t,dim>{};
-                result[0] = N;
-                for (size_t i=0; i<(dim-1); i++) {
-                    result[i+1] = shape[i];
+                if constexpr (!is_fail_v<decltype(shape)>) {
+                    constexpr auto dim = shape.size() + 1;
+                    auto result = std::array<size_t,dim>{};
+                    result[0] = N;
+                    for (size_t i=0; i<(dim-1); i++) {
+                        result[i+1] = shape[i];
+                    }
+                    return result;
+                } else {
+                    return shape;
                 }
-                return result;
             } else {
                 return error::FIXED_SHAPE_UNSUPPORTED<std::array<T,N>>{};
             }

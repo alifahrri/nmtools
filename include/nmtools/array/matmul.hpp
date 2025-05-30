@@ -144,7 +144,7 @@ namespace nmtools::index
         auto fill_non_matmul_indices = [&](auto& slices, const auto& src_shape){
             // NOTE: use len, to handle tuple properly, assume 0 is dynamic size
             constexpr auto LEN = meta::len_v<decltype(slices)>;
-            if constexpr (LEN == 0) {
+            if constexpr (LEN < 0) {
                 auto dim = len(src_shape);
                 // fill non-matmul axes
                 for (nm_size_t i=0; (dim > 2) && (i<(dim-2)); i++) {

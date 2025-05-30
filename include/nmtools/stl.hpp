@@ -37,6 +37,18 @@
 #endif
 #endif // __has_include(<vector>)
 
+#include <stack>
+#include <queue>
+
+// TODO: fix for std
+// #ifndef nmtools_queue
+// #define nmtools_queue ::std::queue
+// #endif // nmtools_queue
+
+// #ifndef nmtools_stack
+// #define nmtools_stack ::std::stack
+// #endif // nmtools_stack
+
 #endif // __has_include(<array>)
 
 #endif // NMTOOLS_DISABLE_STL

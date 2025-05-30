@@ -25,6 +25,7 @@
 #include "nmtools/meta/transform.hpp"
 #include "nmtools/meta/array.hpp"
 
+// TODO: remove
 namespace nmtools::meta
 {
     // TODO: remove, cleanup fixed shape design
@@ -34,8 +35,5 @@ namespace nmtools::meta
         static constexpr auto value = N;
     };
 }
-
-// TODO: do not include top level utility in top level meta
-#include "nmtools/utility.hpp"
 
 #endif // NMTOOLS_META_HPP

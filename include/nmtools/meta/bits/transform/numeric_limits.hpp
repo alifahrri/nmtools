@@ -22,11 +22,27 @@ namespace nmtools::meta
 
         static constexpr T max()
         {
-            constexpr T MAX = ~T(0);
+            constexpr auto t_size = sizeof(T);
             if constexpr (!is_signed_v<T>) {
-                return MAX;
+                if constexpr (t_size == 1) {
+                    return 0xFF;
+                } else if constexpr (t_size == 2) {
+                    return 0xFFFF;
+                } else if constexpr (t_size == 4) {
+                    return 0xFFFFFFFF;
+                } else if constexpr (t_size == 8) {
+                    return 0xFFFFFFFFFFFFFFFF;
+                }
             } else {
-                return (MAX >> 1);
+                if constexpr (t_size == 1) {
+                    return 0x7F;
+                } else if constexpr (t_size == 2) {
+                    return 0x7FFF;
+                } else if constexpr (t_size == 4) {
+                    return 0x7FFFFFFF;
+                } else if constexpr (t_size == 8) {
+                    return 0x7FFFFFFFFFFFFFFF;
+                }
             }
         }
     };

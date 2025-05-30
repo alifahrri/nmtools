@@ -98,16 +98,6 @@ namespace nmtools::meta
         using type = std::array<T,new_size>;
     };
 
-    // TODO: remove
-    #if 0
-    template <typename...Ts>
-    struct tuple_to_array<std::tuple<Ts...>>
-    {
-        using common_t = std::common_type_t<Ts...>;
-        using type = std::array<common_t,sizeof...(Ts)>;
-    }; // tuple_to_array
-    #endif
-
     template <typename first, typename second>
     struct tuple_to_array<std::pair<first,second>>
     {
@@ -132,26 +122,6 @@ namespace nmtools::meta
     {
         using type = std::variant<Left,Right>;
     };
-
-#if 0
-    // TODO: remove, add more generic specialization with sfinae on is_tuple
-    template <typename...Ts>
-    struct get_common_type<std::tuple<Ts...>>
-    {
-        // we do not want this because it trigger compile error when failing
-        // using type = std::common_type_t<Ts...>;
-
-        static constexpr auto vtype = [](){
-            using type = std::common_type<Ts...>;
-            if constexpr (has_type_v<type>) {
-                return as_value_v<type_t<type>>;
-            } else {
-                return as_value_v<error::GET_COMMON_TYPE_UNSUPPORTED<std::tuple<Ts...>>>;
-            }
-        }();
-        using type = type_t<decltype(vtype)>;
-    };
-#endif
 
     template <typename T, typename Allocator>
     struct get_value_type<std::vector<T,Allocator>>
@@ -223,98 +193,6 @@ namespace nmtools::meta
 
 namespace nmtools::meta
 {
-    // TODO: remove
-    // the following code breaks gcc: "internal compiler error: in finish_member_declaration, at cp/semantics.c:3237"
-    // (even in newest version: 11.2), works fine on clang, check the else block for workaround
-    // https://github.com/alifahrri/nmtools/runs/3708887742?check_suite_focus=true
-    // https://github.com/alifahrri/nmtools/pull/156/checks?check_run_id=3708887743
-    // https://github.com/alifahrri/nmtools/pull/156/checks?check_run_id=3711520594
-    #if 0
-        /**
-     * @brief Specialization fo to_value for std types (tuple of int constant)
-     * 
-     * @tparam Is 
-     */
-    template <auto...Is>
-    struct to_value<
-        std::tuple<std::integral_constant<decltype(Is),Is>...>
-    >
-    {
-        using tuple_type = std::tuple<std::integral_constant<decltype(Is),Is>...>;
-        using value_type = std::common_type_t<decltype(Is)...>;
-        // The following line breaks gcc (even in newest version: 11.2)
-        static inline constexpr auto value = std::array<value_type,sizeof...(Is)>{static_cast<value_type>(Is)...};
-
-        // trying to find workaround but didn't work
-        // static constexpr auto value = [](){
-        //     using type = std::array<value_type,sizeof...(Is)>;
-        //     auto dst = type{};
-        //     meta::template_for<sizeof...(Is)>([&](auto index){
-        //         constexpr auto i = decltype(index)::value;
-        //         constexpr auto v = std::tuple_element_t<i,tuple_type>::value;
-        //         dst[i] = v;
-        //     });
-        //     return dst;
-        // }();
-    }; // to_value
-
-    // avoid ambiguous specialization
-    #elif 0
-    template <typename...Ts>
-    struct to_value<
-        std::tuple<Ts...>,
-        enable_if_t<(is_constant_index_v<Ts> && ...)>
-    >
-    {
-        using tuple_type = std::tuple<Ts...>;
-        using error_type = error::TO_VALUE_UNSUPPORTED<std::tuple<Ts...>>;
-        static constexpr auto value = [](){
-            constexpr auto N = sizeof...(Ts);
-            // the following alias decl. can't compile on clang 10 & gcc 9.3
-            // gcc error: pack expansion argument for non-pack parameter
-            // clang error: pack expansion used as argument for non-pack parameter of alias template
-            // seems like related:
-            // - https://gcc.gnu.org/bugzilla/show_bug.cgi?id=59498
-            // - https://stackoverflow.com/questions/57080425/clang-fails-to-expand-parameter-pack-in-stdfunction-instantiation
-            // using element_t  = promote_index_t<Ts...>;
-
-            /* trying to work-around but cannot make this work, both on gcc (9.3) and clang (10), */
-            // using element_t = typename promote_index<Ts...>::type;
-            // static_assert( is_index_v<element_t>, "nmtools internal error" );
-            // using array_type = std::array<element_t,N>;
-            return meta::template_reduce<N>([&](auto init, auto index){
-                constexpr auto i = decltype(index)::value;
-                using init_t = remove_cvref_t<decltype(init)>;
-                using type_i = remove_cvref_t<std::tuple_element_t<i,tuple_type>>;
-                if constexpr (is_constant_index_v<type_i>) {
-                    if constexpr (i==0) {
-                        // starting point, create the array
-                        using element_t = typename type_i::value_type;
-                        using array_type = std::array<element_t,1>;
-                        auto array = array_type{};
-                        array[i] = type_i::value;
-                        return array;
-                    } else if constexpr (std::is_same_v<init_t,error_type>) {
-                        return error_type{};
-                    } else /* if constexpr (is_index_array_v<init_t>) */ {
-                        using value_type = typename type_i::value_type;
-                        using element_t  = promote_index_t<value_type,get_element_type_t<init_t>>;
-                        using array_type = std::array<element_t,i+1>;
-                        auto array = array_type{};
-                        for (size_t j=0; j<i; j++) {
-                            array[j] = init[j];
-                        }
-                        array[i] = type_i::value;
-                        return array;
-                    }
-                } else {
-                    return error_type{};
-                }
-            }, error_type{});
-        }();
-    }; // to_value
-    #endif
-
     /**
      * @brief Specialization of resize_fixed_ndarray for std::array.
      * 

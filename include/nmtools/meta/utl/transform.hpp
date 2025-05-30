@@ -97,50 +97,6 @@ namespace nmtools::meta
         using type = utl::either<Left,Right>;
     };
 
-    // TODO: remove
-    #if 0
-    template <typename...Ts>
-    struct to_value<utl::tuple<Ts...>
-        , enable_if_t<(is_constant_index_v<Ts> && ...)>
-    >
-    {
-        using tuple_type = utl::tuple<Ts...>;
-        using error_type = error::TO_VALUE_UNSUPPORTED<tuple_type>;
-        static constexpr auto value = [](){
-            constexpr auto N = sizeof...(Ts);
-            return meta::template_reduce<N>([&](auto init, auto index){
-                constexpr auto i = decltype(index)::value;
-                using init_t = remove_cvref_t<decltype(init)>;
-                using type_i = remove_cvref_t<typename std::tuple_element<i,tuple_type>::type>;
-                if constexpr (is_constant_index_v<type_i>) {
-                    if constexpr (i==0) {
-                        // starting point, create the array
-                        using element_t = typename type_i::value_type;
-                        using array_type = utl::array<element_t,1>;
-                        auto array = array_type{};
-                        array[i] = type_i::value;
-                        return array;
-                    } else if constexpr (is_same_v<init_t,error_type>) {
-                        return error_type{};
-                    } else /* if constexpr (is_index_array_v<init_t>) */ {
-                        using value_type = typename type_i::value_type;
-                        using element_t  = promote_index_t<value_type,get_element_type_t<init_t>>;
-                        using array_type = utl::array<element_t,i+1>;
-                        auto array = array_type{};
-                        for (size_t j=0; j<i; j++) {
-                            array[j] = init[j];
-                        }
-                        array[i] = type_i::value;
-                        return array;
-                    }
-                } else {
-                    return error_type{};
-                }
-            }, error_type{});
-        }();
-    };
-    #endif
-
     template <typename left_t, typename right_t>
     struct get_either_left<utl::either<left_t,right_t>>
     {

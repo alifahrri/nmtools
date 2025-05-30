@@ -87,6 +87,21 @@ namespace nmtools::meta
     template <typename T>
     constexpr inline auto as_value_v = as_value<T>{};
 
+    template <typename T>
+    struct is_vtype : false_type {};
+
+    template <typename T>
+    struct is_vtype<as_value<T>> : true_type {};
+
+    template <typename T>
+    struct is_vtype<T&> : is_vtype<T> {};
+
+    template <typename T>
+    struct is_vtype<const T> : is_vtype<T> {};
+
+    template <typename T>
+    constexpr inline auto is_vtype_v = is_vtype<T>::value;
+
     /**
      * @brief Generic value holder to wrap value as type.
      * 

@@ -39,9 +39,9 @@ namespace nmtools::meta
                 } else if constexpr (has_template_get_v<shape_t>) {
                     return get<0>(shape);
                 }
+            } else {
+                return -1;
             }
-            // TODO: do not return 0, return error type instead?
-            else return 0;
         }();
     };
 

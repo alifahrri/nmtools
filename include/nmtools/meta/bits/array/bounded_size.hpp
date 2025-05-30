@@ -14,18 +14,7 @@ namespace nmtools::meta
     } // namespace error
 
     template <typename T, typename=void>
-    struct bounded_size
-    {
-        static constexpr auto value = [](){
-            auto fixed_size = fixed_size_v<T>;
-            if constexpr (is_num_v<decltype(fixed_size)>) {
-                return fixed_size;
-            } else {
-                return error::BOUNDED_SIZE_UNSUPPORTED<T>{};
-            }
-        }();
-        using value_type = decltype(value);
-    };
+    struct bounded_size : fixed_size<T> {};
 
     template <typename T>
     struct bounded_size<const T> : bounded_size<T> {};

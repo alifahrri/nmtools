@@ -3,6 +3,7 @@
 
 #include "nmtools/meta.hpp"
 #include "nmtools/utility/shape.hpp"
+#include "nmtools/utility/tuple_cat.hpp"
 
 namespace nmtools::index
 {

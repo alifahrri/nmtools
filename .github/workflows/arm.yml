@@ -14,7 +14,7 @@ on:
 jobs:
   dockcross-linux-arm:
     name: ${{ matrix.name }}
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     strategy:
       matrix:
         include:
@@ -36,7 +36,7 @@ jobs:
         run: ./dockcross-${{ matrix.name }} bash -c 'mkdir -p build/${{ matrix.name }} && cd build/${{ matrix.name }}/ && cmake ../.. && make -j2'
   dockcross-linux-arm-simd:
     name: ${{ matrix.name }}-simd-${{ matrix.arch }}-vector
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     strategy:
       matrix:
         include:
