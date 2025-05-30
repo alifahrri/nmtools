@@ -22,7 +22,7 @@ jobs:
           - c_compiler: clang-10
             cxx_compiler: clang++-10
             compiler: clang
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v2
       - name: install dependencies

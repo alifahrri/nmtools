@@ -14,7 +14,7 @@ on:
 jobs:
   dockcross-wasm-eval:
     name: ${{ matrix.name }}-eval
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     strategy:
       matrix:
         include:
@@ -51,7 +51,7 @@ jobs:
 
   dockcross-wasm:
     name: ${{ matrix.name }}
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     strategy:
       matrix:
         include:
@@ -90,7 +90,7 @@ jobs:
     # NOTE: failing on github ci because of stack size
     if: ${{ false }}  # TODO: fix
     name: ${{ matrix.name }}-index
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     strategy:
       matrix:
         include:
@@ -127,7 +127,7 @@ jobs:
 
   dockcross-wasm-misc:
     name: ${{ matrix.name }}-misc
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     strategy:
       matrix:
         include:
@@ -164,7 +164,7 @@ jobs:
 
   dockcross-wasm-constexpr-eval:
     name: ${{ matrix.name }}-constexpr-eval
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     strategy:
       matrix:
         include:
@@ -206,7 +206,7 @@ jobs:
     # TODO: fix
     if: ${{ false }}
     name: ${{ matrix.name }}-constexpr-generic-ndarray-eval
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     strategy:
       matrix:
         include:
@@ -247,7 +247,7 @@ jobs:
     # TODO: fix
     if: ${{ false }}
     name: ${{ matrix.name }}-constexpr-no-stl-generic-ndarray-eval
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     strategy:
       matrix:
         include:

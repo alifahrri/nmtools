@@ -14,7 +14,7 @@ on:
 jobs:
   dockcross-clang:
     name: ${{ matrix.name }}
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     strategy:
       matrix:
         include:
@@ -42,7 +42,7 @@ jobs:
 
   dockcross-clang-index:
     name: ${{ matrix.name }}-index
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     strategy:
       matrix:
         include:
@@ -66,7 +66,7 @@ jobs:
 
   dockcross-clang-functional:
     name: ${{ matrix.name }}-functional
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     strategy:
       matrix:
         include:
@@ -90,7 +90,7 @@ jobs:
 
     dockcross-clang-transform:
     name: ${{ matrix.name }}-transform
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     strategy:
       matrix:
         include:
@@ -114,7 +114,7 @@ jobs:
 
   dockcross-clang-generic-ndarray:
     name: ${{ matrix.name }}-generic-ndarray
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     strategy:
       matrix:
         include:
@@ -141,7 +141,7 @@ jobs:
 
   dockcross-clang-no-stl:
     name: ${{ matrix.name }}-no-stl
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     strategy:
       matrix:
         include:
@@ -165,7 +165,7 @@ jobs:
 
   dockcross-clang-utility-no-stl:
     name: ${{ matrix.name }}-utility-no-stl
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     strategy:
       matrix:
         include:
@@ -189,7 +189,7 @@ jobs:
 
   dockcross-clang-utility:
     name: ${{ matrix.name }}-utility
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     strategy:
       matrix:
         include:
@@ -213,7 +213,7 @@ jobs:
 
   dockcross-clang-no-stl-generic-ndarray:
     name: ${{ matrix.name }}-no-stl-generic-ndarray
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     strategy:
       matrix:
         include:
@@ -237,7 +237,7 @@ jobs:
 
   dockcross-clang-no-stl-generic-ndarray-eval:
     name: ${{ matrix.name }}-no-stl-generic-ndarray-eval
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     strategy:
       matrix:
         include:
@@ -261,7 +261,7 @@ jobs:
 
   dockcross-clang-generic-ndarray-eval:
     name: ${{ matrix.name }}-generic-ndarray-eval
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     strategy:
       matrix:
         include:
@@ -285,7 +285,7 @@ jobs:
     
   dockcross-clang-constexpr-eval:
     name: ${{ matrix.name }}-constexpr-eval
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     strategy:
       matrix:
         include:
@@ -309,7 +309,7 @@ jobs:
 
   dockcross-clang-constexpr-no-stl-generic-ndarray-eval:
     name: ${{ matrix.name }}-constexpr-no-stl-generic-ndarray-eval
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     strategy:
       matrix:
         include:
@@ -333,7 +333,7 @@ jobs:
   
   dockcross-clang-constexpr-generic-ndarray-eval:
     name: ${{ matrix.name }}-constexpr-generic-ndarray-eval
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     strategy:
       matrix:
         include:

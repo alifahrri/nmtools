@@ -13,7 +13,7 @@ on:
 jobs:
   gcc-9:
     name: gcc-9
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v2
       - name: Set up GCC
@@ -35,7 +35,7 @@ jobs:
   
   gcc-9-index:
     name: gcc-9-index
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v2
       - name: Set up GCC
@@ -53,7 +53,7 @@ jobs:
 
   gcc-9-constexpr-eval:
     name: gcc-9-constexpr-eval
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v2
       - name: Set up GCC
@@ -73,7 +73,7 @@ jobs:
     # temporarily skipped, OOM on github ci
     if: ${{ false }}
     name: gcc-9-constexpr-generic-ndarray-eval
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v2
       - name: Set up GCC
@@ -93,7 +93,7 @@ jobs:
     # temporarily skipped, OOM on github ci
     if: ${{ false }}
     name: gcc-9-constexpr-no-stl-generic-ndarray-eval
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v2
       - name: Set up GCC
