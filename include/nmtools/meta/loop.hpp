@@ -69,11 +69,13 @@ namespace nmtools::meta
      * @return constexpr auto 
      * @todo check if f match the required signature
      */
-    template <size_t N, typename F>
+    template <nm_index_t N, typename F>
     constexpr auto template_for(F&& f)
     {
-        using index_t = make_index_sequence<N>;
-        template_for(f,index_t{});
+        if constexpr (N > 0) {
+            using index_t = make_index_sequence<N>;
+            template_for(f,index_t{});
+        }
     } // template_for
 
     template <typename F, typename args_pack_t, typename initial_t, size_t I, size_t...Is>
