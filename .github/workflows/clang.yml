@@ -88,7 +88,7 @@ jobs:
         run: |
           ./dockcross-${{ matrix.name }} bash -c 'build/${{ matrix.name }}/tests/functional/numeric-tests-functional-doctest'
 
-    dockcross-clang-transform:
+  dockcross-clang-transform:
     name: ${{ matrix.name }}-transform
     runs-on: ubuntu-22.04
     strategy:
@@ -354,3 +354,27 @@ jobs:
       - name: run tests
         run: |
           ./dockcross-${{ matrix.name }} bash -c 'build/${{ matrix.name }}/tests/constexpr/numeric-tests-constexpr-doctest'
+  
+  dockcross-clang-network:
+    name: ${{ matrix.name }}-network
+    runs-on: ubuntu-22.04
+    strategy:
+      matrix:
+        include:
+          - name: linux-x64-clang
+    steps:
+      - uses: actions/checkout@v2
+      - name: setup dockcross
+        run: docker run --rm dockcross/${{ matrix.name }} > ./dockcross-${{ matrix.name }}; chmod +x ./dockcross-${{ matrix.name }}
+      - uses: actions/cache@v3
+        id: cache
+        with:
+          path: ./build/${{ matrix.name }}
+          key: ${{ github.job }}-${{ matrix.name }}-${{ hashFiles('./**') }}
+      - name: setup doctest
+        run: bash scripts/download_doctest_header.sh -d include/
+      - name: build
+        run: ./dockcross-${{ matrix.name }} bash -c 'mkdir -p build/${{ matrix.name }} && cd build/${{ matrix.name }}/ && cmake -DCMAKE_TOOLCHAIN_FILE=${PWD}/../../cmake/toolchains/clang.cmake -DNMTOOLS_TEST_ALL=OFF -DNMTOOLS_BUILD_NETWORK_TESTS=ON ../.. && make -j1 VERBOSE=1'
+      - name: run tests
+        run: |
+          ./dockcross-${{ matrix.name }} bash -c 'build/${{ matrix.name }}/tests/network/numeric-tests-network-doctest'
