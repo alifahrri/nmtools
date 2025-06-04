@@ -7,8 +7,8 @@ NMTOOLS_TESTING_DECLARE_CASE(array, shape_matmul)
 
     NMTOOLS_TESTING_DECLARE_ARGS(case1)
     {
-        inline int lshape[2] = {3,4};
-        inline int rshape[2] = {4,3};
+        constexpr inline int lshape[2] = {3,4};
+        constexpr inline int rshape[2] = {4,3};
         inline auto lshape_ct = nmtools_tuple{3_ct,4_ct};
         inline auto lshape_cl = nmtools_tuple{"3:[3]"_ct,"4:[4]"_ct};
         inline auto rshape_ct = nmtools_tuple{4_ct,3_ct};
@@ -23,8 +23,8 @@ NMTOOLS_TESTING_DECLARE_CASE(array, shape_matmul)
 
     NMTOOLS_TESTING_DECLARE_ARGS(case2)
     {
-        inline int lshape[2] = {4,3};
-        inline int rshape[2] = {3,4};
+        constexpr inline int lshape[2] = {4,3};
+        constexpr inline int rshape[2] = {3,4};
         inline auto lshape_ct = nmtools_tuple{4_ct,3_ct};
         inline auto rshape_ct = nmtools_tuple{3_ct,4_ct};
         inline auto lshape_cl = nmtools_tuple{"4:[4]"_ct,"3:[3]"_ct};
@@ -39,8 +39,8 @@ NMTOOLS_TESTING_DECLARE_CASE(array, shape_matmul)
 
     NMTOOLS_TESTING_DECLARE_ARGS(case3)
     {
-        inline int lshape[2] = {4,1};
-        inline int rshape[2] = {1,4};
+        constexpr inline int lshape[2] = {4,1};
+        constexpr inline int rshape[2] = {1,4};
         inline auto lshape_ct = nmtools_tuple{4_ct,1_ct};
         inline auto rshape_ct = nmtools_tuple{1_ct,4_ct};
         inline auto lshape_cl = nmtools_tuple{"4:[4]"_ct,"1:[1]"_ct};
@@ -55,8 +55,8 @@ NMTOOLS_TESTING_DECLARE_CASE(array, shape_matmul)
 
     NMTOOLS_TESTING_DECLARE_ARGS(case4)
     {
-        inline int lshape[2] = {1,4};
-        inline int rshape[2] = {4,1};
+        constexpr inline int lshape[2] = {1,4};
+        constexpr inline int rshape[2] = {4,1};
         inline auto lshape_ct = nmtools_tuple{1_ct,4_ct};
         inline auto rshape_ct = nmtools_tuple{4_ct,1_ct};
         inline auto lshape_cl = nmtools_tuple{"1:[1]"_ct,"4:[4]"_ct};
@@ -71,8 +71,8 @@ NMTOOLS_TESTING_DECLARE_CASE(array, shape_matmul)
 
     NMTOOLS_TESTING_DECLARE_ARGS(case5)
     {
-        inline int lshape[2] =   {4,3};
-        inline int rshape[3] = {2,3,2};
+        constexpr inline int lshape[2] =   {4,3};
+        constexpr inline int rshape[3] = {2,3,2};
         inline auto lshape_ct = nmtools_tuple{4_ct,3_ct};
         inline auto rshape_ct = nmtools_tuple{2_ct,3_ct,2_ct};
         inline auto lshape_cl = nmtools_tuple{"4:[4]"_ct,"3:[3]"_ct};
@@ -87,8 +87,8 @@ NMTOOLS_TESTING_DECLARE_CASE(array, shape_matmul)
 
     NMTOOLS_TESTING_DECLARE_ARGS(case6)
     {
-        inline int lshape[3] = {2,3,2};
-        inline int rshape[2] =   {2,4};
+        constexpr inline int lshape[3] = {2,3,2};
+        constexpr inline int rshape[2] =   {2,4};
         inline auto lshape_ct = nmtools_tuple{2_ct,3_ct,2_ct};
         inline auto rshape_ct = nmtools_tuple{2_ct,4_ct};
         inline auto lshape_cl = nmtools_tuple{"2:[2]"_ct,"3:[3]"_ct,"2:[2]"_ct};
@@ -103,8 +103,8 @@ NMTOOLS_TESTING_DECLARE_CASE(array, shape_matmul)
 
     NMTOOLS_TESTING_DECLARE_ARGS(case7)
     {
-        inline int lshape[4] = {9,5,7,4};
-        inline int rshape[4] = {9,5,4,3};
+        constexpr inline int lshape[4] = {9,5,7,4};
+        constexpr inline int rshape[4] = {9,5,4,3};
         inline auto lshape_ct = nmtools_tuple{9_ct,5_ct,7_ct,4_ct};
         inline auto rshape_ct = nmtools_tuple{9_ct,5_ct,4_ct,3_ct};
         inline auto lshape_cl = nmtools_tuple{"9:[9]"_ct,"5:[5]"_ct,"7:[7]"_ct,"4:[4]"_ct};

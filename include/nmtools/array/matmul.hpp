@@ -241,8 +241,8 @@ namespace nmtools::meta
             } else {
                 constexpr auto LHS_DIM = len_v<lhs_shape_t>;
                 constexpr auto RHS_DIM = len_v<rhs_shape_t>;
-                [[maybe_unused]] constexpr auto LHS_B_DIM = bounded_size_v<lhs_shape_t>;
-                [[maybe_unused]] constexpr auto RHS_B_DIM = bounded_size_v<rhs_shape_t>;
+                [[maybe_unused]] constexpr auto LHS_B_DIM = max_len_v<lhs_shape_t>;
+                [[maybe_unused]] constexpr auto RHS_B_DIM = max_len_v<rhs_shape_t>;
                 if constexpr ((LHS_DIM > 0) && (RHS_DIM > 0)) {
                     constexpr auto MAX_DIM = (LHS_DIM > RHS_DIM) ? LHS_DIM : RHS_DIM;
                     if constexpr ((LHS_DIM == 1) || (RHS_B_DIM == 1)) {
@@ -259,7 +259,7 @@ namespace nmtools::meta
                         using type = nmtools_array<nm_size_t,MAX_DIM>;
                         return as_value_v<type>;   
                     }
-                } else if constexpr (!is_fail_v<decltype(LHS_B_DIM)> && !is_fail_v<decltype(RHS_B_DIM)>) {
+                } else if constexpr ((LHS_B_DIM > 0) && (RHS_B_DIM > 0)) {
                     constexpr auto MAX_DIM = (LHS_B_DIM > RHS_B_DIM ? LHS_B_DIM : RHS_B_DIM);
                     using type = nmtools_static_vector<nm_size_t,MAX_DIM>;
                     return as_value_v<type>;

@@ -314,6 +314,64 @@ NMTOOLS_TESTING_DECLARE_CASE(broadcast_arrays)
         inline auto shape = None;
         inline auto expected = nmtools_tuple{1,2};
     }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case11)
+    {
+        inline int A = 6;
+        inline int B[2][2][3] = {
+            {
+                {4,4,4},
+                {5,5,5},
+            },
+            {
+                {6,6,6},
+                {7,7,7},
+            }
+        };
+        inline int C[1][2][3] = {
+            {
+                { 8, 9,10},
+                {11,12,13},
+            }
+        };
+        NMTOOLS_CAST_ARRAYS(B)
+        NMTOOLS_CAST_ARRAYS(C)
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case11)
+    {
+        inline int A[2][2][3] = {
+            {
+                {6,6,6},
+                {6,6,6},
+            },
+            {
+                {6,6,6},
+                {6,6,6},
+            },
+        };
+        inline int B[2][2][3] = {
+            {
+                {4,4,4},
+                {5,5,5},
+            },
+            {
+                {6,6,6},
+                {7,7,7},
+            }
+        };
+        inline int C[2][2][3] = {
+            {
+                { 8, 9,10},
+                {11,12,13},
+            },
+            {
+                { 8, 9,10},
+                {11,12,13},
+            }
+        };
+        inline auto shape = nmtools_array{2,2,3};
+        inline auto expected = nmtools_tuple{cast<int>(A),cast<int>(B),cast<int>(C)};
+    }
 }
 
 #endif // NMTOOLS_TESTING_DATA_ARRAY_BROADCAST_ARRAYS_HPP

@@ -82,6 +82,30 @@ namespace nmtools::meta
     >
     {
         static constexpr auto vtype = [](){
+            if constexpr (!is_index_array_v<shape_t> || !is_num_v<split_t>) {
+                using type = error::SPLIT_INDEX_UNSUPPORTED<shape_t,split_t>;
+                return as_value_v<type>;
+            } else {
+                using index_t = get_index_element_type_t<shape_t>;
+                constexpr auto DIM = len_v<shape_t>;
+                [[maybe_unused]]
+                constexpr auto B_DIM = max_len_v<shape_t>;
+                if constexpr (DIM > 0) {
+                    using array_t = nmtools_static_vector<index_t,DIM>;
+                    using type = nmtools_tuple<array_t,array_t>;
+                    return as_value_v<type>;
+                } else if constexpr (B_DIM > 0) {
+                    using array_t = nmtools_static_vector<index_t,B_DIM>;
+                    using type = nmtools_tuple<array_t,array_t>;
+                    return as_value_v<type>;
+                } else {
+                    // TODO: use small vector
+                    using array_t = nmtools_list<index_t>;
+                    using type = nmtools_tuple<array_t,array_t>;
+                    return as_value_v<type>;
+                }
+            }
+            #if 0
             if constexpr (is_constant_index_array_v<shape_t>) {
                 // TODO: check if split_t is constant index and then compute at compile-time
                 using type = resolve_optype_t<index::split_index_t,remove_cvref_t<decltype(to_value_v<shape_t>)>,split_t>;
@@ -122,6 +146,7 @@ namespace nmtools::meta
                 using type = error::SPLIT_INDEX_UNSUPPORTED<shape_t,split_t>;
                 return as_value_v<type>;
             }
+            #endif
         }();
         using type = type_t<decltype(vtype)>;
     }; // resolve_optype<split_index_t>

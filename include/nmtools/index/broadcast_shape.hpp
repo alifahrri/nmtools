@@ -84,17 +84,6 @@ namespace nmtools::index::impl
                 auto broadcast_shape_impl = [&](auto i){
                     using idx_t = meta::remove_address_space_t<meta::make_signed_t<element_t>>;
                     // compute index to fill from behind
-                    #if 0
-                    // OK in gcc but failed on clang 🤷
-                    auto si = [&](){
-                        using rdim_t = decltype(rdim);
-                        if constexpr (is_constant_index_v<rdim_t> && is_constant_index_v<decltype(i)>) {
-                            return meta::ct_v<(rdim_t::value - decltype(i)::value - 1)>;
-                        } else {
-                            return idx_t(rdim - i - 1);
-                        }
-                    }();
-                    #else
                     auto si = [&](auto rdim, auto i){
                         using rdim_t = decltype(rdim);
                         if constexpr (is_constant_index_v<rdim_t> && is_constant_index_v<decltype(i)>) {
@@ -103,7 +92,6 @@ namespace nmtools::index::impl
                             return idx_t(rdim - i - 1);
                         }
                     }(rdim,i);
-                    #endif
                     idx_t ai = ((idx_t)adim - (idx_t)i) - 1;
                     idx_t bi = ((idx_t)bdim - (idx_t)i) - 1;
                     if ((ai>=0) && (bi>=0)) {
@@ -312,64 +300,177 @@ namespace nmtools::meta
     >
     {
         static constexpr auto vtype = [](){
-            // TODO: deduce index_t from ashape and bshape
+            // using index_t = meta::get_index_element_type_t<ashape_t>;
             using index_t [[maybe_unused]] = nm_size_t;
+            [[maybe_unused]] constexpr auto is_constant_shape_a = is_constant_index_array_v<ashape_t>;
+            [[maybe_unused]] constexpr auto is_constant_shape_b = is_constant_index_array_v<bshape_t>;
+            // both ashape and bshape values are known at compile-time
+            // then compute at compile-time
             if constexpr (!(is_index_array_v<ashape_t> || is_none_v<ashape_t>)
                 || !(is_index_array_v<bshape_t> || is_none_v<bshape_t>)
             ) {
                 using type = error::BROADCAST_SHAPE_UNSUPPORTED<ashape_t,bshape_t>;
                 return as_value_v<type>;
-            } else if constexpr (is_none_v<ashape_t> && is_none_v<bshape_t>){
-                using type = none_t;
-                return as_value_v<type>;
-            } else if constexpr  (
-                (is_constant_index_array_v<ashape_t> || is_none_v<ashape_t>)
-                && (is_constant_index_array_v<bshape_t> || is_none_v<bshape_t>)
+            } else if constexpr (
+                (is_constant_shape_a || is_clipped_index_array_v<ashape_t>)
+                && (is_constant_shape_b || is_clipped_index_array_v<bshape_t>)
             ) {
                 constexpr auto ashape = to_value_v<ashape_t>;
                 constexpr auto bshape = to_value_v<bshape_t>;
-                constexpr auto result = index::broadcast_shape(ashape,bshape);
-                if constexpr (has_value(result)) {
-                    using nmtools::at, nmtools::len;
-                    constexpr auto DIM = len(unwrap(result));
-                    static_assert( is_index_v<decltype(DIM)>, "internal error" );
-                    return meta::template_reduce<DIM>([&](auto init, auto index){
+                constexpr auto broadcasted = index::broadcast_shape(ashape,bshape);
+                constexpr auto success = static_cast<bool>(broadcasted);
+                if constexpr (success) {
+                    // convert back from value to type
+                    constexpr auto shape = *broadcasted;
+                    return template_reduce<::nmtools::len(shape)>([&](auto init, auto index){
+                        // init should be as_value<sometype>
                         using init_t = type_t<decltype(init)>;
-                        constexpr auto I = decltype(index)::value;
-                        constexpr auto shape_i = at(unwrap(result),I);
-                        using type = append_type_t<init_t,ct<(nm_size_t)shape_i>>;
-                        return as_value_v<type>;
-                    }, as_value_v<nmtools_tuple<>>);
-                } else {
-                    using type = error::BROADCAST_SHAPE_ERROR<ashape_t,bshape_t>;
+                        constexpr auto I = at(shape,index);
+                        // using `is_constant_shape_a` here seems to not working on avr-gcc
+                        if constexpr (is_constant_index_array_v<ashape_t> && is_constant_index_array_v<bshape_t>) {
+                            using type = append_type_t<init_t,ct<I>>;
+                            return as_value_v<type>;
+                        } else {
+                            using type = append_type_t<init_t,clipped_size_t<I>>;
+                            return as_value_v<type>;
+                        }
+                    }, meta::as_value_v<nmtools_tuple<>>);
+                } else if constexpr (!is_constant_shape_a || !is_constant_shape_b) {
+                    // actual value is runtime
+                    constexpr auto len_a = len_v<ashape_t>;
+                    constexpr auto len_b = len_v<bshape_t>;
+                    constexpr auto dim = (len_a > len_b ? len_a : len_b);
+                    // TODO: consider to use index_t
+                    using type = nmtools_array<size_t,dim>;
                     return as_value_v<type>;
+                } else {
+                    return as_value_v<error::BROADCAST_SHAPE_ERROR<ashape_t,bshape_t>>;
                 }
-            } else {
-                // TODO: return maybe constant index if ashape or bshape is constant index (without 1 as entry)
-                [[maybe_unused]] constexpr auto A_DIM = len_v<ashape_t>;
-                [[maybe_unused]] constexpr auto B_DIM = len_v<bshape_t>;
-                [[maybe_unused]] constexpr auto A_B_DIM = bounded_size_v<ashape_t>;
-                [[maybe_unused]] constexpr auto B_B_DIM = bounded_size_v<bshape_t>;
-                if constexpr ((A_DIM > 0) && (B_DIM > 0)) {
-                    constexpr auto MAX_DIM = (A_DIM > B_DIM ? A_DIM : B_DIM);
-                    using type = nmtools_array<index_t,MAX_DIM>;
-                    return as_value_v<type>;
-                } else if constexpr (!is_fail_v<decltype(A_B_DIM)> && !is_fail_v<decltype(B_B_DIM)>) {
-                    constexpr auto MAX_DIM = (A_B_DIM > B_B_DIM ? A_B_DIM : B_B_DIM);
-                    using type = nmtools_static_vector<index_t,MAX_DIM>;
-                    return as_value_v<type>;
-                } else if constexpr (!is_fail_v<decltype(A_B_DIM)> && is_none_v<bshape_t>) {
-                    // TODO: try to deduce for fixed dim
-                    using type = nmtools_static_vector<index_t,A_B_DIM>;
-                    return as_value_v<type>;
-                } else if constexpr (is_none_v<ashape_t> && !is_fail_v<decltype(B_B_DIM)>) {
-                    using type = nmtools_static_vector<index_t,B_B_DIM>;
+            } else if constexpr (is_none_v<ashape_t> && is_constant_index_array_v<bshape_t>) {
+                // broadcasting with none retain shape, just select the shape
+                return as_value_v<bshape_t>;
+            } else if constexpr (is_constant_index_array_v<ashape_t> && is_none_v<bshape_t>) {
+                return as_value_v<ashape_t>;
+            }
+            // none shape indicates scalar type
+            else if constexpr (is_none_v<ashape_t> && is_none_v<bshape_t>) {
+                // broadcasting none and none should result none
+                return as_value_v<none_t>;
+            } else if constexpr (is_index_array_v<ashape_t> && is_index_array_v<bshape_t>) {
+                constexpr auto len_a = len_v<ashape_t>;
+                constexpr auto len_b = len_v<bshape_t>;
+                constexpr auto b_size_a = max_len_v<ashape_t>;
+                constexpr auto b_size_b = max_len_v<bshape_t>;
+                constexpr auto c_value_a = to_value_v<ashape_t>;
+                constexpr auto c_value_b = to_value_v<bshape_t>;
+
+                if constexpr ((len_a > 0) && (len_b > 0)) {
+                    using type [[maybe_unused]] = nmtools_array<index_t,(len_a > len_b ? len_a : len_b)>;
+                    if constexpr (!is_fail_v<decltype(c_value_a)> && (len_a >= len_b)) {
+                        return meta::template_reduce<len_a>([&](auto init, auto index){
+                            using init_type = type_t<decltype(init)>;
+                            constexpr auto I = at(c_value_a,index);
+                            // if there exists "1", bail out, we can't know the value at compile-time
+                            if constexpr ((I > 1) && is_tuple_v<init_type>) {
+                                using type = append_type_t<init_type,clipped_size_t<I>>;
+                                return as_value_v<type>;
+                            } else {
+                                return as_value_v<type>;
+                            }
+                        }, as_value_v<nmtools_tuple<>>);
+                    } else if constexpr (!is_fail_v<decltype(c_value_b)> && (len_b >= len_a)) {
+                        return meta::template_reduce<len_b>([&](auto init, auto index){
+                            using init_type = type_t<decltype(init)>;
+                            constexpr auto I = at(c_value_b,index);
+                            // if there exists "1", bail out, we can't know the value at compile-time
+                            if constexpr ((I > 1) && is_tuple_v<init_type>) {
+                                using type = append_type_t<init_type,clipped_size_t<I>>;
+                                return as_value_v<type>;
+                            } else {
+                                return as_value_v<type>;
+                            }
+                        }, as_value_v<nmtools_tuple<>>);
+                    } else {
+                        return as_value_v<type>;
+                    }
+                } else if constexpr ((len_a >= 0) && (b_size_b >= 0)) {
+                    constexpr auto dim = (len_a > b_size_b ? len_a : b_size_b);
+                    using type [[maybe_unused]] = nmtools_static_vector<index_t,dim>;
+                    if constexpr (!is_fail_v<decltype(c_value_a)> && (len_a >= b_size_b)) {
+                        // NOTE: the following tries to deduce as bounded-shape to be able to compute at compile-time
+                        // but the runtime part index::broadcast_shape is still not support it yet
+                        // because of unhandled mixed constant index vs runtime index when computing result
+                        // get max num and return clipped index packed in array instead of tuple
+                        constexpr auto minmax = [&](){
+                            auto min = at(c_value_a,0);
+                            auto max = at(c_value_a,0);
+                            for (size_t i=1; i<nmtools::len(c_value_a); i++) {
+                                auto v_i = at(c_value_a,i);
+                                max = (v_i > max ? v_i : max);
+                                min = (v_i < min ? v_i : min);
+                            }
+                            return nmtools_tuple{min,max};
+                        }();
+                        constexpr auto min_dim = nmtools::get<0>(minmax);
+                        constexpr auto max_dim = nmtools::get<1>(minmax);
+                        if constexpr (min_dim == 1) {
+                            // bail-out, can't decide max at compile time
+                            return as_value_v<type>;
+                        } else {
+                            using type = nmtools_array<clipped_integer_t<index_t,0,max_dim>,(size_t)len_a>;
+                            return as_value_v<type>;
+                        }
+                    } else {
+                        return as_value_v<type>;
+                    }
+                } else if constexpr ((len_b >= 0) && (b_size_a >= 0)) {
+                    using type [[maybe_unused]] = nmtools_static_vector<index_t,(len_b > b_size_a ? len_b : b_size_a)>;
+                    if constexpr (!is_fail_v<decltype(c_value_b)> && (len_b >= b_size_a)) {
+                        // NOTE: the following tries to deduce as bounded-shape to be able to compute at compile-time
+                        // but the runtime part index::broadcast_shape is still not support it yet
+                        // because of unhandled mixed constant index vs runtime index when computing result
+                        // get max num and return clipped index packed in array instead of tuple
+                        constexpr auto minmax = [&](){
+                            auto min = at(c_value_b,0);
+                            auto max = at(c_value_b,0);
+                            for (size_t i=1; i<nmtools::len(c_value_b); i++) {
+                                auto v_i = at(c_value_b,i);
+                                max = (v_i > max ? v_i : max);
+                                min = (v_i < min ? v_i : min);
+                            }
+                            return nmtools_tuple{min,max};
+                        }();
+                        constexpr auto min_dim = nmtools::get<0>(minmax);
+                        constexpr auto max_dim = nmtools::get<1>(minmax);
+                        if constexpr (min_dim == 1) {
+                            return as_value_v<type>;
+                        } else {
+                            using type = nmtools_array<clipped_integer_t<index_t,0,max_dim>,(size_t)len_b>;
+                            return as_value_v<type>;
+                        }
+                    } else {
+                        return as_value_v<type>;
+                    }
+                } else if constexpr ((b_size_a >= 0) && (b_size_b >= 0)) {
+                    using type = nmtools_static_vector<index_t,(b_size_a > b_size_b ? b_size_a : b_size_b)>;
                     return as_value_v<type>;
                 } else {
-                    // TODO: use small vector
+                    // TODO: small buffer optimization
                     using type = nmtools_list<index_t>;
                     return as_value_v<type>;
                 }
+            }
+            // return either b or a which is not None
+            else if constexpr (is_none_v<ashape_t>) {
+                using ret_t = transform_bounded_array_t<bshape_t>;
+                return as_value_v<ret_t>;
+            }
+            else if constexpr (is_none_v<bshape_t>) {
+                using ret_t = transform_bounded_array_t<ashape_t>;
+                return as_value_v<ret_t>;
+            }
+            else {
+                return as_value_v<error::BROADCAST_SHAPE_UNSUPPORTED<ashape_t,bshape_t>>;
             }
         }();
 

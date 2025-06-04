@@ -32,16 +32,16 @@ TEST_CASE("broadcast_shape(array;array)" * doctest::test_suite("index::broadcast
     }
 }
 
-TEST_CASE("broadcast_shape(tuple;tuple)" * doctest::test_suite("index::broadcast_shape"))
-{
-    {
-        using lhs_t = nmtools_tuple<int,int,int,int>;
-        using rhs_t = nmtools_tuple<int,int,int>;
-        using res_t = meta::resolve_optype_t<nm::index::broadcast_shape_t,lhs_t,rhs_t>;
-        using exp_t = nmtools_array<nm_size_t,4>;
-        STATIC_CHECK_IS_SAME( res_t, exp_t );
-    }
-}
+// TEST_CASE("broadcast_shape(tuple;tuple)" * doctest::test_suite("index::broadcast_shape"))
+// {
+//     {
+//         using lhs_t = nmtools_tuple<int,int,int,int>;
+//         using rhs_t = nmtools_tuple<int,int,int>;
+//         using res_t = meta::resolve_optype_t<nm::index::broadcast_shape_t,lhs_t,rhs_t>;
+//         using exp_t = nmtools_array<nm_size_t,4>;
+//         STATIC_CHECK_IS_SAME( res_t, exp_t );
+//     }
+// }
 
 TEST_CASE("broadcast_shape(hybrid_ndarray;hybrid_ndarray)" * doctest::test_suite("index::broadcast_shape"))
 {

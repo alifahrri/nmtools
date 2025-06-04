@@ -522,6 +522,13 @@ namespace nmtools::meta
         using value_type = size_t;
     }; // bounded_size
 
+    template <typename T, size_t max_elements>
+    struct max_len<array::hybrid_ndarray<T,max_elements,1>>
+    {
+        static constexpr auto value = max_elements;
+        using value_type = size_t;
+    }; // max_len
+
     // TODO: remove
     template <typename T, size_t max_elements, size_t dimension>
     struct hybrid_ndarray_max_size<array::hybrid_ndarray<T,max_elements,dimension>>

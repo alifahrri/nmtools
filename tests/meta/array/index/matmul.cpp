@@ -48,6 +48,10 @@ TEST_CASE("shape_matmul" * doctest::test_suite("index"))
         using result_t    = meta::resolve_optype_t<ix::shape_matmul_t,lhs_shape_t,rhs_shape_t>;
         using expect_t    = nmtools_static_vector<size_t,3>;
         NMTOOLS_STATIC_CHECK_IS_SAME( result_t, expect_t );
+        constexpr auto LHS_B_DIM = meta::max_len_v<lhs_shape_t>;
+        constexpr auto RHS_B_DIM = meta::max_len_v<rhs_shape_t>;
+        static_assert( RHS_B_DIM > 0 );
+        static_assert( LHS_B_DIM > 0 );
     }
     {
         using lhs_shape_t = na::static_vector<int,3>;
