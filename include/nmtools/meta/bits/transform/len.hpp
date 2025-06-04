@@ -60,6 +60,18 @@ namespace nmtools::meta
         static constexpr auto value = N;
     };
 
+    template <>
+    struct len<empty_operands_t>
+    {
+        static constexpr auto value = 0;
+    };
+
+    template <>
+    struct len<empty_attributes_t>
+    {
+        static constexpr auto value = 0;
+    };
+
     #ifdef __OPENCL_VERSION__
     #if 0
     // NOTE: the following is ambiguous

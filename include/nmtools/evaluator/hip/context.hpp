@@ -293,10 +293,10 @@ namespace nmtools::array::hip
         template <typename F, typename operands_t, typename attributes_t>
         auto map_to_device(const functional::functor_t<F,operands_t,attributes_t>& f)
         {
-            static_assert( meta::len_v<operands_t> == 0 );
             if constexpr (meta::is_same_v<attributes_t,meta::empty_attributes_t>) {
                 return f;
             } else {
+                static_assert( meta::len_v<operands_t> == 0 );
                 constexpr auto N = meta::len_v<attributes_t>;
                 auto attributes  = meta::template_reduce<N>([&](auto init, auto I){
                     auto attribute = array::as_static(at(f.attributes,I));
