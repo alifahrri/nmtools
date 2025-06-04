@@ -359,10 +359,10 @@ namespace nmtools::meta
             } else if constexpr (is_index_array_v<ashape_t> && is_index_array_v<bshape_t>) {
                 constexpr auto len_a = len_v<ashape_t>;
                 constexpr auto len_b = len_v<bshape_t>;
-                constexpr auto b_size_a = max_len_v<ashape_t>;
-                constexpr auto b_size_b = max_len_v<bshape_t>;
-                constexpr auto c_value_a = to_value_v<ashape_t>;
-                constexpr auto c_value_b = to_value_v<bshape_t>;
+                [[maybe_unused]] constexpr auto b_size_a = max_len_v<ashape_t>;
+                [[maybe_unused]] constexpr auto b_size_b = max_len_v<bshape_t>;
+                [[maybe_unused]] constexpr auto c_value_a = to_value_v<ashape_t>;
+                [[maybe_unused]] constexpr auto c_value_b = to_value_v<bshape_t>;
 
                 if constexpr ((len_a > 0) && (len_b > 0)) {
                     using type [[maybe_unused]] = nmtools_array<index_t,(len_a > len_b ? len_a : len_b)>;
