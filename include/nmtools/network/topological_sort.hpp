@@ -26,8 +26,6 @@ namespace nmtools::network
         } else {
             using queue_t  = meta::resolve_optype_t<tag::topological_sort_queue_t,adjacency_list_t>;
             using result_t = meta::resolve_optype_t<tag::topological_sort_t,adjacency_list_t>;
-            // TODO: support constant adjacency list
-            using return_t = nmtools_maybe<result_t>;
 
             [[maybe_unused]]
             auto queue  = queue_t {};
@@ -36,6 +34,8 @@ namespace nmtools::network
             if constexpr (!meta::is_fail_v<result_t>
                 && !meta::is_constant_index_array_v<result_t>
             ) {
+                using return_t = nmtools_maybe<result_t>;
+
                 nm_size_t count = 0;
 
                 auto in_degree = network::in_degree(adjacency_list);

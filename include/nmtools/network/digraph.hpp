@@ -6,6 +6,7 @@
 #include "nmtools/index/contains.hpp"
 #include "nmtools/index/index_of.hpp"
 #include "nmtools/network/out_edges.hpp"
+#include "nmtools/network/topological_generations.hpp"
 #include "nmtools/network/topological_sort.hpp"
 #include "nmtools/network/map_ids.hpp"
 
@@ -628,6 +629,13 @@ namespace nmtools::network
     {
         auto sorted = network::topological_sort(digraph.adjacency_list);
         return network::map_ids(sorted,digraph.node_ids);
+    }
+
+    template <typename adjacency_list_t, typename node_ids_t, typename node_attributes_t, typename edge_attribute_t>
+    constexpr auto topological_generations(const digraph_t<adjacency_list_t,node_ids_t,node_attributes_t,edge_attribute_t>& digraph)
+    {
+        auto generations = network::topological_generations(digraph.adjacency_list);
+        return network::map_ids(generations,digraph.node_ids);
     }
 } // namespace nmtools::network
 
