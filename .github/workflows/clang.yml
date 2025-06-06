@@ -14,7 +14,7 @@ on:
 jobs:
   dockcross-clang:
     name: ${{ matrix.name }}
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     strategy:
       matrix:
         include:
@@ -42,7 +42,7 @@ jobs:
 
   dockcross-clang-index:
     name: ${{ matrix.name }}-index
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     strategy:
       matrix:
         include:
@@ -66,7 +66,7 @@ jobs:
 
   dockcross-clang-functional:
     name: ${{ matrix.name }}-functional
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     strategy:
       matrix:
         include:
@@ -88,9 +88,9 @@ jobs:
         run: |
           ./dockcross-${{ matrix.name }} bash -c 'build/${{ matrix.name }}/tests/functional/numeric-tests-functional-doctest'
 
-    dockcross-clang-transform:
+  dockcross-clang-transform:
     name: ${{ matrix.name }}-transform
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     strategy:
       matrix:
         include:
@@ -114,7 +114,7 @@ jobs:
 
   dockcross-clang-generic-ndarray:
     name: ${{ matrix.name }}-generic-ndarray
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     strategy:
       matrix:
         include:
@@ -141,7 +141,7 @@ jobs:
 
   dockcross-clang-no-stl:
     name: ${{ matrix.name }}-no-stl
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     strategy:
       matrix:
         include:
@@ -165,7 +165,7 @@ jobs:
 
   dockcross-clang-utility-no-stl:
     name: ${{ matrix.name }}-utility-no-stl
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     strategy:
       matrix:
         include:
@@ -189,7 +189,7 @@ jobs:
 
   dockcross-clang-utility:
     name: ${{ matrix.name }}-utility
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     strategy:
       matrix:
         include:
@@ -213,7 +213,7 @@ jobs:
 
   dockcross-clang-no-stl-generic-ndarray:
     name: ${{ matrix.name }}-no-stl-generic-ndarray
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     strategy:
       matrix:
         include:
@@ -237,7 +237,7 @@ jobs:
 
   dockcross-clang-no-stl-generic-ndarray-eval:
     name: ${{ matrix.name }}-no-stl-generic-ndarray-eval
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     strategy:
       matrix:
         include:
@@ -261,7 +261,7 @@ jobs:
 
   dockcross-clang-generic-ndarray-eval:
     name: ${{ matrix.name }}-generic-ndarray-eval
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     strategy:
       matrix:
         include:
@@ -285,7 +285,7 @@ jobs:
     
   dockcross-clang-constexpr-eval:
     name: ${{ matrix.name }}-constexpr-eval
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     strategy:
       matrix:
         include:
@@ -309,7 +309,7 @@ jobs:
 
   dockcross-clang-constexpr-no-stl-generic-ndarray-eval:
     name: ${{ matrix.name }}-constexpr-no-stl-generic-ndarray-eval
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     strategy:
       matrix:
         include:
@@ -333,7 +333,7 @@ jobs:
   
   dockcross-clang-constexpr-generic-ndarray-eval:
     name: ${{ matrix.name }}-constexpr-generic-ndarray-eval
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     strategy:
       matrix:
         include:
@@ -354,3 +354,27 @@ jobs:
       - name: run tests
         run: |
           ./dockcross-${{ matrix.name }} bash -c 'build/${{ matrix.name }}/tests/constexpr/numeric-tests-constexpr-doctest'
+  
+  dockcross-clang-network:
+    name: ${{ matrix.name }}-network
+    runs-on: ubuntu-22.04
+    strategy:
+      matrix:
+        include:
+          - name: linux-x64-clang
+    steps:
+      - uses: actions/checkout@v2
+      - name: setup dockcross
+        run: docker run --rm dockcross/${{ matrix.name }} > ./dockcross-${{ matrix.name }}; chmod +x ./dockcross-${{ matrix.name }}
+      - uses: actions/cache@v3
+        id: cache
+        with:
+          path: ./build/${{ matrix.name }}
+          key: ${{ github.job }}-${{ matrix.name }}-${{ hashFiles('./**') }}
+      - name: setup doctest
+        run: bash scripts/download_doctest_header.sh -d include/
+      - name: build
+        run: ./dockcross-${{ matrix.name }} bash -c 'mkdir -p build/${{ matrix.name }} && cd build/${{ matrix.name }}/ && cmake -DCMAKE_TOOLCHAIN_FILE=${PWD}/../../cmake/toolchains/clang.cmake -DNMTOOLS_TEST_ALL=OFF -DNMTOOLS_BUILD_NETWORK_TESTS=ON ../.. && make -j1 VERBOSE=1'
+      - name: run tests
+        run: |
+          ./dockcross-${{ matrix.name }} bash -c 'build/${{ matrix.name }}/tests/network/numeric-tests-network-doctest'

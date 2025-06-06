@@ -23,13 +23,13 @@ namespace nmtools::meta
     struct has_tuple_size<tuple<Ts...>
         , enable_if_t<is_tuple_v<tuple<Ts...>>>
     > : true_type {};
+    #endif
 
     template <typename T>
     struct has_tuple_size<const T> : has_tuple_size<T> {};
 
     template <typename T>
     struct has_tuple_size<T&> : has_tuple_size<T> {};
-    #endif
 
     /**
      * @brief helper variable template to check if std tuple_size<T> is valid

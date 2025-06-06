@@ -132,6 +132,11 @@ if (NMTOOLS_BUILD_FUNCTIONAL_TESTS)
     add_subdirectory(functional)
 endif (NMTOOLS_BUILD_FUNCTIONAL_TESTS)
 
+option(NMTOOLS_BUILD_NETWORK_TESTS "build network test programs" OFF)
+if (NMTOOLS_BUILD_NETWORK_TESTS)
+    add_subdirectory(network)
+endif (NMTOOLS_BUILD_NETWORK_TESTS)
+
 option(NMTOOLS_BUILD_TRANSFORM_TESTS "build transform test programs" OFF)
 if (NMTOOLS_BUILD_TRANSFORM_TESTS)
     add_subdirectory(transform)

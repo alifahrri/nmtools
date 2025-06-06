@@ -39,9 +39,9 @@ namespace nmtools::meta
                 } else if constexpr (has_template_get_v<shape_t>) {
                     return get<0>(shape);
                 }
+            } else {
+                return -1;
             }
-            // TODO: do not return 0, return error type instead?
-            else return 0;
         }();
     };
 
@@ -58,6 +58,18 @@ namespace nmtools::meta
     struct len<T[N], enable_if_t<!(is_const_v<T> || is_lvalue_reference_v<T> || is_rvalue_reference_v<T>)>>
     {
         static constexpr auto value = N;
+    };
+
+    template <>
+    struct len<empty_operands_t>
+    {
+        static constexpr auto value = 0;
+    };
+
+    template <>
+    struct len<empty_attributes_t>
+    {
+        static constexpr auto value = 0;
     };
 
     #ifdef __OPENCL_VERSION__

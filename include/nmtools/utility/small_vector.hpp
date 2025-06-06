@@ -14,10 +14,15 @@
 
 namespace nmtools
 {
+    // to handle case when nmtools_list is defined as nmtools_static_vector
+    // accepting <typename,typename> vs accepting <typename,auto>
+    template <typename T>
+    using small_vector_list_t = nmtools_list<T>;
+
     template <typename T, auto DIM=NMTOOLS_SMALL_VECTOR_DEFAULT_DIM
         , template<typename...>typename either_t=nmtools_either
         , template<typename,auto>typename static_vector_t=nmtools_static_vector
-        , template<typename...>typename vector_t=nmtools_list
+        , template<typename...>typename vector_t=small_vector_list_t
     >
     struct small_vector
     {

@@ -6,6 +6,7 @@
 #else
    #include "doctest.h"
 #endif
+#include "nmtools/utility.hpp"
 #include <array>
 #include <tuple>
 #include <vector>

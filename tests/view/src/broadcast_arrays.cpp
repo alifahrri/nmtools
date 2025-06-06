@@ -33,11 +33,13 @@ SUBCASE(#case_name) \
     NMTOOLS_TESTING_USE_CASE(broadcast_arrays, case_name); \
     using namespace args; \
     const auto results = view::broadcast_arrays(__VA_ARGS__); \
-    constexpr auto N = meta::len_v<decltype(results)>; \
-    nm::meta::template_for<N>([&](auto index){ \
-        constexpr auto i = decltype(index)::value; \
-        const auto array       = nmtools::get<i>(results); \
-        const auto expected    = nmtools::get<i>(expect::expected); \
+    constexpr auto N = meta::len_v<decltype(nmtools::unwrap(results))>; \
+    static_assert( meta::is_num_v<decltype(N)> ); \
+    static_assert( meta::is_tuple_v<decltype(nmtools::unwrap(results))> ); \
+    meta::template_for<N>([&](auto index){ \
+        constexpr auto i    = decltype(index)::value; \
+        const auto array    = nmtools::get<i>(nmtools::unwrap(results)); \
+        const auto expected = nmtools::get<i>(expect::expected); \
         NMTOOLS_ASSERT_EQUAL( nm::shape(array), expect::shape ); \
         NMTOOLS_ASSERT_CLOSE( array, expected ); \
     }); \
@@ -773,4 +775,441 @@ TEST_CASE("broadcast_arrays(case9)" * doctest::test_suite("view::broadcast_array
 TEST_CASE("broadcast_arrays(case10)" * doctest::test_suite("view::broadcast_arrays"))
 {
     BROADCAST_ARRAYS_SUBCASE(case10, A, B);
+}
+
+TEST_CASE("broadcast_arrays(case11)" * doctest::test_suite("view::broadcast_arrays"))
+{
+    #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
+    BROADCAST_ARRAYS_SUBCASE(case11, A, B_a, C_a );
+    BROADCAST_ARRAYS_SUBCASE(case11, A, B_d, C_d );
+    BROADCAST_ARRAYS_SUBCASE(case11, A, B_f, C_f );
+    BROADCAST_ARRAYS_SUBCASE(case11, A, B_h, C_h );
+
+    #else
+    BROADCAST_ARRAYS_SUBCASE(case11, A, B_cs_fb, C_cs_fb );
+    BROADCAST_ARRAYS_SUBCASE(case11, A, B_cs_hb, C_cs_hb );
+    BROADCAST_ARRAYS_SUBCASE(case11, A, B_cs_db, C_cs_db );
+
+    BROADCAST_ARRAYS_SUBCASE(case11, A, B_fs_fb, C_fs_fb );
+    BROADCAST_ARRAYS_SUBCASE(case11, A, B_fs_hb, C_fs_hb );
+    BROADCAST_ARRAYS_SUBCASE(case11, A, B_fs_db, C_fs_db );
+
+    BROADCAST_ARRAYS_SUBCASE(case11, A, B_hs_fb, C_hs_fb );
+    BROADCAST_ARRAYS_SUBCASE(case11, A, B_hs_hb, C_hs_hb );
+    BROADCAST_ARRAYS_SUBCASE(case11, A, B_hs_db, C_hs_db );
+
+    BROADCAST_ARRAYS_SUBCASE(case11, A, B_ds_fb, C_ds_fb );
+    BROADCAST_ARRAYS_SUBCASE(case11, A, B_ds_hb, C_ds_hb );
+    BROADCAST_ARRAYS_SUBCASE(case11, A, B_ds_db, C_ds_db );
+
+    BROADCAST_ARRAYS_SUBCASE(case11, A, B_ls_fb, C_ls_fb );
+    BROADCAST_ARRAYS_SUBCASE(case11, A, B_ls_hb, C_ls_hb );
+    BROADCAST_ARRAYS_SUBCASE(case11, A, B_ls_db, C_ls_db );
+
+    BROADCAST_ARRAYS_SUBCASE(case11, A, B_fs_fb, C_cs_fb );
+    BROADCAST_ARRAYS_SUBCASE(case11, A, B_fs_hb, C_cs_hb );
+    BROADCAST_ARRAYS_SUBCASE(case11, A, B_fs_db, C_cs_db );
+
+    BROADCAST_ARRAYS_SUBCASE(case11, A, B_hs_fb, C_cs_fb );
+    BROADCAST_ARRAYS_SUBCASE(case11, A, B_hs_hb, C_cs_hb );
+    BROADCAST_ARRAYS_SUBCASE(case11, A, B_hs_db, C_cs_db );
+
+    BROADCAST_ARRAYS_SUBCASE(case11, A, B_ds_fb, C_cs_fb );
+    BROADCAST_ARRAYS_SUBCASE(case11, A, B_ds_hb, C_cs_hb );
+    BROADCAST_ARRAYS_SUBCASE(case11, A, B_ds_db, C_cs_db );
+
+    BROADCAST_ARRAYS_SUBCASE(case11, A, B_ls_fb, C_cs_fb );
+    BROADCAST_ARRAYS_SUBCASE(case11, A, B_ls_hb, C_cs_hb );
+    BROADCAST_ARRAYS_SUBCASE(case11, A, B_ls_db, C_cs_db );
+
+    BROADCAST_ARRAYS_SUBCASE(case11, A, B_cs_fb, C_fs_fb );
+    BROADCAST_ARRAYS_SUBCASE(case11, A, B_cs_hb, C_fs_hb );
+    BROADCAST_ARRAYS_SUBCASE(case11, A, B_cs_db, C_fs_db );
+
+    BROADCAST_ARRAYS_SUBCASE(case11, A, B_hs_fb, C_fs_fb );
+    BROADCAST_ARRAYS_SUBCASE(case11, A, B_hs_hb, C_fs_hb );
+    BROADCAST_ARRAYS_SUBCASE(case11, A, B_hs_db, C_fs_db );
+
+    BROADCAST_ARRAYS_SUBCASE(case11, A, B_ds_fb, C_fs_fb );
+    BROADCAST_ARRAYS_SUBCASE(case11, A, B_ds_hb, C_fs_hb );
+    BROADCAST_ARRAYS_SUBCASE(case11, A, B_ds_db, C_fs_db );
+
+    BROADCAST_ARRAYS_SUBCASE(case11, A, B_ls_fb, C_fs_fb );
+    BROADCAST_ARRAYS_SUBCASE(case11, A, B_ls_hb, C_fs_hb );
+    BROADCAST_ARRAYS_SUBCASE(case11, A, B_ls_db, C_fs_db );
+
+    BROADCAST_ARRAYS_SUBCASE(case11, A, B_cs_fb, C_hs_fb );
+    BROADCAST_ARRAYS_SUBCASE(case11, A, B_cs_hb, C_hs_hb );
+    BROADCAST_ARRAYS_SUBCASE(case11, A, B_cs_db, C_hs_db );
+
+    BROADCAST_ARRAYS_SUBCASE(case11, A, B_fs_fb, C_hs_fb );
+    BROADCAST_ARRAYS_SUBCASE(case11, A, B_fs_hb, C_hs_hb );
+    BROADCAST_ARRAYS_SUBCASE(case11, A, B_fs_db, C_hs_db );
+
+    BROADCAST_ARRAYS_SUBCASE(case11, A, B_ds_fb, C_hs_fb );
+    BROADCAST_ARRAYS_SUBCASE(case11, A, B_ds_hb, C_hs_hb );
+    BROADCAST_ARRAYS_SUBCASE(case11, A, B_ds_db, C_hs_db );
+
+    BROADCAST_ARRAYS_SUBCASE(case11, A, B_ls_fb, C_hs_fb );
+    BROADCAST_ARRAYS_SUBCASE(case11, A, B_ls_hb, C_hs_hb );
+    BROADCAST_ARRAYS_SUBCASE(case11, A, B_ls_db, C_hs_db );
+
+    BROADCAST_ARRAYS_SUBCASE(case11, A, B_cs_fb, C_ds_fb );
+    BROADCAST_ARRAYS_SUBCASE(case11, A, B_cs_hb, C_ds_hb );
+    BROADCAST_ARRAYS_SUBCASE(case11, A, B_cs_db, C_ds_db );
+
+    BROADCAST_ARRAYS_SUBCASE(case11, A, B_fs_fb, C_ds_fb );
+    BROADCAST_ARRAYS_SUBCASE(case11, A, B_fs_hb, C_ds_hb );
+    BROADCAST_ARRAYS_SUBCASE(case11, A, B_fs_db, C_ds_db );
+
+    BROADCAST_ARRAYS_SUBCASE(case11, A, B_hs_fb, C_ds_fb );
+    BROADCAST_ARRAYS_SUBCASE(case11, A, B_hs_hb, C_ds_hb );
+    BROADCAST_ARRAYS_SUBCASE(case11, A, B_hs_db, C_ds_db );
+
+    BROADCAST_ARRAYS_SUBCASE(case11, A, B_ls_fb, C_ds_fb );
+    BROADCAST_ARRAYS_SUBCASE(case11, A, B_ls_hb, C_ds_hb );
+    BROADCAST_ARRAYS_SUBCASE(case11, A, B_ls_db, C_ds_db );
+
+    BROADCAST_ARRAYS_SUBCASE(case11, A, B_cs_fb, C_ls_fb );
+    BROADCAST_ARRAYS_SUBCASE(case11, A, B_cs_hb, C_ls_hb );
+    BROADCAST_ARRAYS_SUBCASE(case11, A, B_cs_db, C_ls_db );
+
+    BROADCAST_ARRAYS_SUBCASE(case11, A, B_fs_fb, C_ls_fb );
+    BROADCAST_ARRAYS_SUBCASE(case11, A, B_fs_hb, C_ls_hb );
+    BROADCAST_ARRAYS_SUBCASE(case11, A, B_fs_db, C_ls_db );
+
+    BROADCAST_ARRAYS_SUBCASE(case11, A, B_hs_fb, C_ls_fb );
+    BROADCAST_ARRAYS_SUBCASE(case11, A, B_hs_hb, C_ls_hb );
+    BROADCAST_ARRAYS_SUBCASE(case11, A, B_hs_db, C_ls_db );
+
+    BROADCAST_ARRAYS_SUBCASE(case11, A, B_ds_fb, C_ls_fb );
+    BROADCAST_ARRAYS_SUBCASE(case11, A, B_ds_hb, C_ls_hb );
+    BROADCAST_ARRAYS_SUBCASE(case11, A, B_ds_db, C_ls_db );
+    #endif
+}
+
+TEST_CASE("broadcast_arrays(case11)" * doctest::test_suite("meta::broadcast_arrays"))
+{
+    {
+        NMTOOLS_TESTING_USE_CASE( broadcast_arrays, case11 );
+        using namespace args;
+        auto results = view::broadcast_arrays( A, B_a, C_a );
+        using results_t = decltype(unwrap(results));
+        using a_res_t [[maybe_unused]] = meta::at_t<results_t,0>;
+        using b_res_t [[maybe_unused]] = meta::at_t<results_t,1>;
+        using c_res_t [[maybe_unused]] = meta::at_t<results_t,2>;
+        {
+            using view_t = a_res_t;
+            constexpr auto shape  = meta::fixed_shape_v<view_t>;
+            constexpr auto dim    = meta::fixed_dim_v<view_t>;
+            constexpr auto size   = meta::fixed_size_v<view_t>;
+            constexpr auto b_dim  = meta::bounded_dim_v<view_t>;
+            constexpr auto b_size = meta::bounded_size_v<view_t>;
+            using shape_type  [[maybe_unused]] = decltype(shape);
+            using dim_type    [[maybe_unused]] = decltype(dim);
+            using size_type   [[maybe_unused]] = decltype(size);
+            using b_dim_type  [[maybe_unused]] = decltype(b_dim);
+            using b_size_type [[maybe_unused]] = decltype(b_size);
+            NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fail, shape_type );
+            NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fail, dim_type );
+            NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fail, size_type );
+            NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fail, b_dim_type );
+            NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fail, b_size_type );
+        }
+        {
+            using view_t = b_res_t;
+            constexpr auto shape  = meta::fixed_shape_v<view_t>;
+            constexpr auto dim    = meta::fixed_dim_v<view_t>;
+            constexpr auto size   = meta::fixed_size_v<view_t>;
+            constexpr auto b_dim  = meta::bounded_dim_v<view_t>;
+            constexpr auto b_size = meta::bounded_size_v<view_t>;
+            using shape_type  [[maybe_unused]] = decltype(shape);
+            using dim_type    [[maybe_unused]] = decltype(dim);
+            using size_type   [[maybe_unused]] = decltype(size);
+            using b_dim_type  [[maybe_unused]] = decltype(b_dim);
+            using b_size_type [[maybe_unused]] = decltype(b_size);
+            NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fail, shape_type );
+            NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fail, dim_type );
+            NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fail, size_type );
+            NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fail, b_dim_type );
+            NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fail, b_size_type );
+        }
+        {
+            using view_t = c_res_t;
+            constexpr auto shape  = meta::fixed_shape_v<view_t>;
+            constexpr auto dim    = meta::fixed_dim_v<view_t>;
+            constexpr auto size   = meta::fixed_size_v<view_t>;
+            constexpr auto b_dim  = meta::bounded_dim_v<view_t>;
+            constexpr auto b_size = meta::bounded_size_v<view_t>;
+            using shape_type  [[maybe_unused]] = decltype(shape);
+            using dim_type    [[maybe_unused]] = decltype(dim);
+            using size_type   [[maybe_unused]] = decltype(size);
+            using b_dim_type  [[maybe_unused]] = decltype(b_dim);
+            using b_size_type [[maybe_unused]] = decltype(b_size);
+            NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fail, shape_type );
+            NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fail, dim_type );
+            NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fail, size_type );
+            NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fail, b_dim_type );
+            NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fail, b_size_type );
+        }
+    }
+    {
+        NMTOOLS_TESTING_USE_CASE( broadcast_arrays, case11 );
+        using namespace args;
+        auto results = view::broadcast_arrays( A, B_d, C_d );
+        using results_t = decltype(unwrap(results));
+        using a_res_t [[maybe_unused]] = meta::at_t<results_t,0>;
+        using b_res_t [[maybe_unused]] = meta::at_t<results_t,1>;
+        using c_res_t [[maybe_unused]] = meta::at_t<results_t,2>;
+        {
+            using view_t = a_res_t;
+            constexpr auto shape  = meta::fixed_shape_v<view_t>;
+            constexpr auto dim    = meta::fixed_dim_v<view_t>;
+            constexpr auto size   = meta::fixed_size_v<view_t>;
+            constexpr auto b_dim  = meta::bounded_dim_v<view_t>;
+            constexpr auto b_size = meta::bounded_size_v<view_t>;
+            using shape_type  [[maybe_unused]] = decltype(shape);
+            using dim_type    [[maybe_unused]] = decltype(dim);
+            using size_type   [[maybe_unused]] = decltype(size);
+            using b_dim_type  [[maybe_unused]] = decltype(b_dim);
+            using b_size_type [[maybe_unused]] = decltype(b_size);
+            NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fail, shape_type );
+            NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fail, dim_type );
+            NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fail, size_type );
+            NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fail, b_dim_type );
+            NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fail, b_size_type );
+        }
+        {
+            using view_t = b_res_t;
+            constexpr auto shape  = meta::fixed_shape_v<view_t>;
+            constexpr auto dim    = meta::fixed_dim_v<view_t>;
+            constexpr auto size   = meta::fixed_size_v<view_t>;
+            constexpr auto b_dim  = meta::bounded_dim_v<view_t>;
+            constexpr auto b_size = meta::bounded_size_v<view_t>;
+            using shape_type  [[maybe_unused]] = decltype(shape);
+            using dim_type    [[maybe_unused]] = decltype(dim);
+            using size_type   [[maybe_unused]] = decltype(size);
+            using b_dim_type  [[maybe_unused]] = decltype(b_dim);
+            using b_size_type [[maybe_unused]] = decltype(b_size);
+            NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fail, shape_type );
+            NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fail, dim_type );
+            NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fail, size_type );
+            NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fail, b_dim_type );
+            NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fail, b_size_type );
+        }
+        {
+            using view_t = c_res_t;
+            constexpr auto shape  = meta::fixed_shape_v<view_t>;
+            constexpr auto dim    = meta::fixed_dim_v<view_t>;
+            constexpr auto size   = meta::fixed_size_v<view_t>;
+            constexpr auto b_dim  = meta::bounded_dim_v<view_t>;
+            constexpr auto b_size = meta::bounded_size_v<view_t>;
+            using shape_type  [[maybe_unused]] = decltype(shape);
+            using dim_type    [[maybe_unused]] = decltype(dim);
+            using size_type   [[maybe_unused]] = decltype(size);
+            using b_dim_type  [[maybe_unused]] = decltype(b_dim);
+            using b_size_type [[maybe_unused]] = decltype(b_size);
+            NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fail, shape_type );
+            NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fail, dim_type );
+            NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fail, size_type );
+            NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fail, b_dim_type );
+            NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fail, b_size_type );
+        }
+    }
+    {
+        NMTOOLS_TESTING_USE_CASE( broadcast_arrays, case11 );
+        using namespace args;
+        auto results = view::broadcast_arrays( A, B_h, C_h );
+        using results_t = decltype(unwrap(results));
+        using a_res_t [[maybe_unused]] = meta::at_t<results_t,0>;
+        using b_res_t [[maybe_unused]] = meta::at_t<results_t,1>;
+        using c_res_t [[maybe_unused]] = meta::at_t<results_t,2>;
+        {
+            using view_t = a_res_t;
+            constexpr auto shape  = meta::fixed_shape_v<view_t>;
+            constexpr auto dim    = meta::fixed_dim_v<view_t>;
+            constexpr auto size   = meta::fixed_size_v<view_t>;
+            constexpr auto b_dim  = meta::bounded_dim_v<view_t>;
+            constexpr auto b_size = meta::bounded_size_v<view_t>;
+            using shape_type  [[maybe_unused]] = decltype(shape);
+            using dim_type    [[maybe_unused]] = decltype(dim);
+            using size_type   [[maybe_unused]] = decltype(size);
+            using b_dim_type  [[maybe_unused]] = decltype(b_dim);
+            using b_size_type [[maybe_unused]] = decltype(b_size);
+            NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fail, shape_type );
+            NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fail, dim_type );
+            NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fail, size_type );
+            NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fail, b_dim_type );
+            NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fail, b_size_type );
+        }
+        {
+            using view_t = b_res_t;
+            constexpr auto shape  = meta::fixed_shape_v<view_t>;
+            constexpr auto dim    = meta::fixed_dim_v<view_t>;
+            constexpr auto size   = meta::fixed_size_v<view_t>;
+            constexpr auto b_dim  = meta::bounded_dim_v<view_t>;
+            constexpr auto b_size = meta::bounded_size_v<view_t>;
+            using shape_type  [[maybe_unused]] = decltype(shape);
+            using dim_type    [[maybe_unused]] = decltype(dim);
+            using size_type   [[maybe_unused]] = decltype(size);
+            using b_dim_type  [[maybe_unused]] = decltype(b_dim);
+            using b_size_type [[maybe_unused]] = decltype(b_size);
+            NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fail, shape_type );
+            NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fail, dim_type );
+            NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fail, size_type );
+            NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fail, b_dim_type );
+            NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fail, b_size_type );
+        }
+        {
+            using view_t = c_res_t;
+            constexpr auto shape  = meta::fixed_shape_v<view_t>;
+            constexpr auto dim    = meta::fixed_dim_v<view_t>;
+            constexpr auto size   = meta::fixed_size_v<view_t>;
+            constexpr auto b_dim  = meta::bounded_dim_v<view_t>;
+            constexpr auto b_size = meta::bounded_size_v<view_t>;
+            using shape_type  [[maybe_unused]] = decltype(shape);
+            using dim_type    [[maybe_unused]] = decltype(dim);
+            using size_type   [[maybe_unused]] = decltype(size);
+            using b_dim_type  [[maybe_unused]] = decltype(b_dim);
+            using b_size_type [[maybe_unused]] = decltype(b_size);
+            NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fail, shape_type );
+            NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fail, dim_type );
+            NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fail, size_type );
+            NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fail, b_dim_type );
+            NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fail, b_size_type );
+        }
+    }
+    // BROADCAST_ARRAYS_SUBCASE(case11, A, B_a, C_a );
+    // BROADCAST_ARRAYS_SUBCASE(case11, A, B_d, C_d );
+    // BROADCAST_ARRAYS_SUBCASE(case11, A, B_f, C_f );
+    // BROADCAST_ARRAYS_SUBCASE(case11, A, B_h, C_h );
+
+    #ifdef NMTOOLS_TESTING_GENERIC_NDARRAY
+    {
+        NMTOOLS_TESTING_USE_CASE( broadcast_arrays, case11 );
+        using namespace args;
+        auto results = view::broadcast_arrays( A, B_ls_fb, C_ls_fb );
+        using results_t = decltype(unwrap(results));
+        using a_res_t [[maybe_unused]] = meta::at_t<results_t,0>;
+        using b_res_t [[maybe_unused]] = meta::at_t<results_t,1>;
+        using c_res_t [[maybe_unused]] = meta::at_t<results_t,2>;
+        {
+            using view_t = a_res_t;
+            constexpr auto shape  = meta::fixed_shape_v<view_t>;
+            constexpr auto dim    = meta::fixed_dim_v<view_t>;
+            constexpr auto size   = meta::fixed_size_v<view_t>;
+            constexpr auto b_dim  = meta::bounded_dim_v<view_t>;
+            constexpr auto b_size = meta::bounded_size_v<view_t>;
+            using shape_type  [[maybe_unused]] = decltype(shape);
+            using dim_type    [[maybe_unused]] = decltype(dim);
+            using size_type   [[maybe_unused]] = decltype(size);
+            using b_dim_type  [[maybe_unused]] = decltype(b_dim);
+            using b_size_type [[maybe_unused]] = decltype(b_size);
+            NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fail, shape_type );
+            NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fail, dim_type );
+            NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fail, size_type );
+            NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fail, b_dim_type );
+            NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fail, b_size_type );
+        }
+        {
+            using view_t = b_res_t;
+            constexpr auto shape  = meta::fixed_shape_v<view_t>;
+            constexpr auto dim    = meta::fixed_dim_v<view_t>;
+            constexpr auto size   = meta::fixed_size_v<view_t>;
+            constexpr auto b_dim  = meta::bounded_dim_v<view_t>;
+            constexpr auto b_size = meta::bounded_size_v<view_t>;
+            using shape_type  [[maybe_unused]] = decltype(shape);
+            using dim_type    [[maybe_unused]] = decltype(dim);
+            using size_type   [[maybe_unused]] = decltype(size);
+            using b_dim_type  [[maybe_unused]] = decltype(b_dim);
+            using b_size_type [[maybe_unused]] = decltype(b_size);
+            NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fail, shape_type );
+            NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fail, dim_type );
+            NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fail, size_type );
+            NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fail, b_dim_type );
+            NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fail, b_size_type );
+        }
+        {
+            using view_t = c_res_t;
+            constexpr auto shape  = meta::fixed_shape_v<view_t>;
+            constexpr auto dim    = meta::fixed_dim_v<view_t>;
+            constexpr auto size   = meta::fixed_size_v<view_t>;
+            constexpr auto b_dim  = meta::bounded_dim_v<view_t>;
+            constexpr auto b_size = meta::bounded_size_v<view_t>;
+            using shape_type  [[maybe_unused]] = decltype(shape);
+            using dim_type    [[maybe_unused]] = decltype(dim);
+            using size_type   [[maybe_unused]] = decltype(size);
+            using b_dim_type  [[maybe_unused]] = decltype(b_dim);
+            using b_size_type [[maybe_unused]] = decltype(b_size);
+            NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fail, shape_type );
+            NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fail, dim_type );
+            NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fail, size_type );
+            NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fail, b_dim_type );
+            NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fail, b_size_type );
+        }
+    }
+    {
+        NMTOOLS_TESTING_USE_CASE( broadcast_arrays, case11 );
+        using namespace args;
+        auto results = view::broadcast_arrays( A, B_ls_hb, C_ls_hb );
+        using results_t = decltype(unwrap(results));
+        using a_res_t [[maybe_unused]] = meta::at_t<results_t,0>;
+        using b_res_t [[maybe_unused]] = meta::at_t<results_t,1>;
+        using c_res_t [[maybe_unused]] = meta::at_t<results_t,2>;
+        {
+            using view_t = a_res_t;
+            constexpr auto shape  = meta::fixed_shape_v<view_t>;
+            constexpr auto dim    = meta::fixed_dim_v<view_t>;
+            constexpr auto size   = meta::fixed_size_v<view_t>;
+            constexpr auto b_dim  = meta::bounded_dim_v<view_t>;
+            constexpr auto b_size = meta::bounded_size_v<view_t>;
+            using shape_type  [[maybe_unused]] = decltype(shape);
+            using dim_type    [[maybe_unused]] = decltype(dim);
+            using size_type   [[maybe_unused]] = decltype(size);
+            using b_dim_type  [[maybe_unused]] = decltype(b_dim);
+            using b_size_type [[maybe_unused]] = decltype(b_size);
+            NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fail, shape_type );
+            NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fail, dim_type );
+            NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fail, size_type );
+            NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fail, b_dim_type );
+            NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fail, b_size_type );
+        }
+        {
+            using view_t = b_res_t;
+            constexpr auto shape  = meta::fixed_shape_v<view_t>;
+            constexpr auto dim    = meta::fixed_dim_v<view_t>;
+            constexpr auto size   = meta::fixed_size_v<view_t>;
+            constexpr auto b_dim  = meta::bounded_dim_v<view_t>;
+            constexpr auto b_size = meta::bounded_size_v<view_t>;
+            using shape_type  [[maybe_unused]] = decltype(shape);
+            using dim_type    [[maybe_unused]] = decltype(dim);
+            using size_type   [[maybe_unused]] = decltype(size);
+            using b_dim_type  [[maybe_unused]] = decltype(b_dim);
+            using b_size_type [[maybe_unused]] = decltype(b_size);
+            NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fail, shape_type );
+            NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fail, dim_type );
+            NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fail, size_type );
+            NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fail, b_dim_type );
+            NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fail, b_size_type );
+        }
+        {
+            using view_t = c_res_t;
+            constexpr auto shape  = meta::fixed_shape_v<view_t>;
+            constexpr auto dim    = meta::fixed_dim_v<view_t>;
+            constexpr auto size   = meta::fixed_size_v<view_t>;
+            constexpr auto b_dim  = meta::bounded_dim_v<view_t>;
+            constexpr auto b_size = meta::bounded_size_v<view_t>;
+            using shape_type  [[maybe_unused]] = decltype(shape);
+            using dim_type    [[maybe_unused]] = decltype(dim);
+            using size_type   [[maybe_unused]] = decltype(size);
+            using b_dim_type  [[maybe_unused]] = decltype(b_dim);
+            using b_size_type [[maybe_unused]] = decltype(b_size);
+            NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fail, shape_type );
+            NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fail, dim_type );
+            NMTOOLS_STATIC_CHECK_TRAIT( meta::is_fail, size_type );
+            NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fail, b_dim_type );
+            NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fail, b_size_type );
+        }
+    }
+    #endif
 }

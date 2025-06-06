@@ -58,7 +58,7 @@ namespace nmtools::utils
                 equal = equal && apply_isequal(at(left,i),at(right,i));
             }
             return equal;
-        } else if constexpr (static_cast<bool>(meta::len_v<left_t>) && meta::is_list_v<right_t>) {
+        } else if constexpr (static_cast<bool>(meta::len_v<left_t> >= 0) && meta::is_list_v<right_t>) {
             auto equal = len(left) == len(right);
             meta::template_for<meta::len_v<left_t>>([&](auto i){
                 if (equal) {
@@ -66,7 +66,7 @@ namespace nmtools::utils
                 }
             });
             return equal;
-        } else if constexpr (meta::is_list_v<left_t> && static_cast<bool>(meta::len_v<right_t>)) {
+        } else if constexpr (meta::is_list_v<left_t> && static_cast<bool>(meta::len_v<right_t> >= 0)) {
             auto equal = len(left) == len(right);
             meta::template_for<meta::len_v<right_t>>([&](auto i){
                 if (equal) {

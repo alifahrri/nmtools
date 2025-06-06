@@ -337,7 +337,7 @@ namespace nmtools::utils
                 bool equal = true;
                 // TODO: static assert whenever possible
                 // NOTE: use assert instead of exception, to support compile with -fno-exceptions
-                nmtools_cassert ( (nm_size_t)len(t)==(nm_size_t)len(u)
+                nmtools_panic ( (nm_size_t)len(t)==(nm_size_t)len(u)
                     , "mismatched dimension"
                 );
                 // prefer fixed size for indexing to allow constant index
@@ -390,6 +390,39 @@ namespace nmtools::utils
             else if constexpr (meta::is_attribute_v<T> && meta::is_attribute_v<U>) {
                 return t == u;
             }
+            else if constexpr (meta::is_adjacency_list_v<T> && meta::is_adjacency_list_v<U>) {
+                constexpr auto NUM_NODES_LHS = meta::len_v<T>;
+                constexpr auto NUM_NODES_RHS = meta::len_v<U>;
+                if constexpr ((NUM_NODES_LHS > 0) && (NUM_NODES_RHS > 0)) {
+                    auto equal = NUM_NODES_LHS == NUM_NODES_RHS;
+                    meta::template_for<NUM_NODES_LHS>([&](auto i){
+                        equal = equal && isequal(at(t,i),at(u,i));
+                    });
+                    return equal;
+                } else if constexpr (NUM_NODES_LHS > 0) {
+                    auto num_nodes_rhs = len(u);
+                    auto equal = NUM_NODES_LHS == num_nodes_rhs;
+                    meta::template_for<NUM_NODES_LHS>([&](auto i){
+                        equal = equal && isequal(at(t,i),at(u,i));
+                    });
+                    return equal;
+                } else if constexpr (NUM_NODES_RHS > 0) {
+                    auto num_nodes_lhs = len(t);
+                    auto equal = num_nodes_lhs == NUM_NODES_RHS;
+                    meta::template_for<NUM_NODES_RHS>([&](auto i){
+                        equal = equal && isequal(at(t,i),at(u,i));
+                    });
+                    return equal;
+                } else {
+                    auto num_nodes_lhs = len(t);
+                    auto num_nodes_rhs = len(u);
+                    auto equal = num_nodes_lhs == num_nodes_rhs;
+                    for (nm_size_t i=0; (i<(nm_size_t)num_nodes_lhs) && equal; i++) {
+                        equal = equal && isequal(at(t,i),at(u,i));
+                    }
+                    return equal;
+                }
+            }
             else if constexpr (meta::is_ndarray_v<T> && meta::is_ndarray_v<U>) {
                 bool equal = true;
                 auto t_dim = ::nmtools::dim(t);
@@ -399,7 +432,7 @@ namespace nmtools::utils
                     // TODO: static assert whenever possible
                     // NOTE: use assert instead of exception, to support compile with -fno-exceptions
                     // TODO: use maybe type
-                    nmtools_cassert( ((common_t)t_dim == (common_t)u_dim)
+                    nmtools_panic( ((common_t)t_dim == (common_t)u_dim)
                         , "dimension mismatch for isequal"
                     );
                 }
@@ -412,7 +445,7 @@ namespace nmtools::utils
                 auto u_size = u_indices.size();
                 {
                     using common_t [[maybe_unused]] = meta::promote_index_t<decltype(t_size),decltype(u_size)>;
-                    nmtools_cassert( ((common_t)t_size == (common_t)u_size)
+                    nmtools_panic( ((common_t)t_size == (common_t)u_size)
                         , "size mismatch for isequal"
                     );
                 }
@@ -460,11 +493,9 @@ namespace nmtools::utils
             // TODO: use better/consistent/appropriate metafunctions
             constexpr auto nt = meta::len_v<T>;
             constexpr auto nu = meta::len_v<U>;
-            static_assert (nt==nu
-                , "unsupported isequal, mismatched size for packed type"
-            );
-            auto equal = true; // conjuction identity
-            meta::template_for<nt>([&](auto index){
+            auto equal = nt == nu; // conjuction identity
+            constexpr auto N = (nt > nu ? nu : nt);
+            meta::template_for<N>([&](auto index){
                 constexpr auto i = decltype(index)::value;
                 const auto& t_ = nmtools::get<i>(t);
                 const auto& u_ = nmtools::get<i>(u);
