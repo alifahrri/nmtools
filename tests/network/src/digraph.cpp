@@ -735,7 +735,10 @@ TEST_CASE("constexpr_digraph(case9)" * doctest::test_suite("network::digraph"))
         nmtools_tuple{},
         nmtools_tuple{}
     };
-    auto digraph = network::digraph(list)
+    auto src_digraph = network::digraph(list);
+    auto idx0 = src_digraph.get_index(0_ct);
+    static_assert( meta::is_same_v<decltype(idx0),meta::ct<0ul>> );
+    auto digraph = src_digraph
         .add_edge(0_ct,1_ct)
         .add_edge(0_ct,3_ct)
         .add_edge(1_ct,0_ct)

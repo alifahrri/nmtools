@@ -42,6 +42,7 @@ option(NMTOOLS_TRANSFORM_TEST_ALL "test all transform modules" ON)
 option(NMTOOLS_TRANSFORM_TEST_FUSION    "test all graph fusion modules"        OFF)
 option(NMTOOLS_TRANSFORM_TEST_LINEARIZE "test all graph linearizer modules"    OFF)
 option(NMTOOLS_TRANSFORM_TEST_APPLY     "test all graph apply modules"         OFF)
+option(NMTOOLS_TRANSFORM_TEST_GRAPH     "test all expression graph modules"      OFF)
 
 set(TRANSFORM_TEST_LINEARIZE_SOURCES
     src/linearize/avg_pool2d.cpp
@@ -65,6 +66,7 @@ set(TRANSFORM_TEST_LINEARIZE_SOURCES
     src/linearize/tensordot.cpp
     src/linearize/pad.cpp
     src/linearize/pairwise_distance.cpp
+    src/linearize/reshape.cpp
     src/linearize/bilinear.cpp
     src/linearize/vstack.cpp
     src/linearize/mean.cpp
@@ -101,10 +103,41 @@ set(TRANSFORM_TEST_FUSION_SOURCES
     src/binary_fusion.cpp
 )
 
+set(TRANSFORM_TEST_GRAPH_SOURCES
+    src/graph/add.cpp
+    src/graph/avg_pool2d.cpp
+    src/graph/batch_norm.cpp
+    src/graph/bilinear.cpp
+    src/graph/broadcast_to.cpp
+    src/graph/conv2d.cpp
+    src/graph/cosine_similarity.cpp
+    src/graph/dot.cpp
+    src/graph/group_norm.cpp
+    src/graph/instance_norm.cpp
+    src/graph/kron.cpp
+    src/graph/layer_norm.cpp
+    src/graph/matmul.cpp
+    src/graph/max_pool2d.cpp
+    src/graph/mean.cpp
+    src/graph/pad.cpp
+    src/graph/pairwise_distance.cpp
+    src/graph/reshape.cpp
+    src/graph/softmax.cpp
+    src/graph/stddev.cpp
+    src/graph/tensordot.cpp
+    src/graph/trace.cpp
+    src/graph/tri.cpp
+    src/graph/var.cpp
+    src/graph/vecdot.cpp
+    src/graph/vector_norm.cpp
+    src/graph/vstack.cpp
+)
+
 if (NMTOOLS_TRANSFORM_TEST_ALL)
     set(NMTOOLS_TRANSFORM_TEST_FUSION    ON CACHE BOOL "test graph fusion modules" FORCE)
     set(NMTOOLS_TRANSFORM_TEST_LINEARIZE ON CACHE BOOL "test graph linearizer modules" FORCE)
     set(NMTOOLS_TRANSFORM_TEST_APPLY     ON CACHE BOOL "test graph apply modules"      FORCE)
+    set(NMTOOLS_TRANSFORM_TEST_GRAPH      ON CACHE BOOL "test expression graph modules"  FORCE)
 endif()
 
 if(NOT ${NMTOOLS_TRANSFORM_TEST_LINEARIZE})
@@ -119,10 +152,15 @@ if (NOT ${NMTOOLS_TRANSFORM_TEST_FUSION})
     set(TRANSFORM_TEST_FUSION_SOURCES "")
 endif()
 
+if (NOT ${NMTOOLS_TRANSFORM_TEST_GRAPH})
+    set(TRANSFORM_TEST_GRAPH_SOURCES "")
+endif()
+
 set(TRANSFORM_TEST_SOURCES
     ${TRANSFORM_TEST_LINEARIZE_SOURCES}
     ${TRANSFORM_TEST_APPLY_SOURCES}
     ${TRANSFORM_TEST_FUSION_SOURCES}
+    ${TRANSFORM_TEST_GRAPH_SOURCES}
 )
 
 add_executable(${PROJECT_NAME}-doctest tests.cpp 
