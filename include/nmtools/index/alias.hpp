@@ -61,7 +61,7 @@ namespace nmtools::index
     #endif
 
     #ifndef NMTOOLS_ALIAS_DEFAULT_PRIME
-    #define NMTOOLS_ALIAS_DEFAULT_PRIME 1033
+    #define NMTOOLS_ALIAS_DEFAULT_PRIME 4393139
     #endif
 
     // polynomial rolling hash
@@ -162,7 +162,7 @@ namespace nmtools::meta
                 using type = meta::ct<(nm_index_t)result>;
                 return as_value_v<type>;
             } else {
-                using type = nm_index_t;
+                using type = nm_size_t;
                 return as_value_v<type>;
             }
         }();

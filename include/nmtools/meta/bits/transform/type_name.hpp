@@ -14,7 +14,7 @@ constexpr size_t nm_strlen(const char* str)
 }
 
 #ifndef NMTOOLS_DEFAULT_TYPE_NAME_MAX_BUFFER_SIZE
-#define NMTOOLS_DEFAULT_TYPE_NAME_MAX_BUFFER_SIZE 2048
+#define NMTOOLS_DEFAULT_TYPE_NAME_MAX_BUFFER_SIZE (1024*8)
 #endif
 
 template <typename T>
@@ -32,21 +32,33 @@ constexpr auto nm_get_function_name()
     }
     #else
     // avoid constexpr evaluation calls limit
+    #if 1
     constexpr auto max_type_name = NMTOOLS_DEFAULT_TYPE_NAME_MAX_BUFFER_SIZE;
+    #else
+    // too memory intensive on both clang & gcc
+    constexpr auto max_type_name = [&](){
+        size_t max_type_name = 0;
+        for (size_t i=0; i<(size_t)NMTOOLS_DEFAULT_TYPE_NAME_MAX_BUFFER_SIZE; i++) {
+            auto s = str[i];
+            if (s) {
+                max_type_name++;
+            } else {
+                break;
+            }
+        }
+        return max_type_name;
+    }();
+    #endif
     using type = nmtools::utl::static_vector<char,max_type_name>;
     auto result = type{};
-    auto size = max_type_name;
-    result.resize(size);
     for (size_t i=0; i<max_type_name; i++) {
-        auto string = str[i];
-        if (string) {
-            result[i] = string;
+        auto s = str[i];
+        if (s) {
+            result.push_back(s);
         } else {
-            size = i;
             break;
         }
     }
-    result.resize(size);
     #endif
 
 
