@@ -6,7 +6,9 @@
 #include "nmtools/core/functor.hpp"
 #include "nmtools/network/digraph.hpp"
 
+#if 0
 #include <iostream>
+#endif
 
 namespace nmtools::functional
 {

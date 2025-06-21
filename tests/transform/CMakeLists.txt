@@ -180,7 +180,6 @@ endif()
 ## TODO: remove
 apply_nmtools(
     TARGET ${PROJECT_NAME}-doctest
-    COMPILE_OPTIONS -g
 )
 target_include_directories(
     ${PROJECT_NAME}-doctest PRIVATE
