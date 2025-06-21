@@ -14,7 +14,7 @@ constexpr size_t nm_strlen(const char* str)
 }
 
 #ifndef NMTOOLS_DEFAULT_TYPE_NAME_MAX_BUFFER_SIZE
-#define NMTOOLS_DEFAULT_TYPE_NAME_MAX_BUFFER_SIZE (1024*8)
+#define NMTOOLS_DEFAULT_TYPE_NAME_MAX_BUFFER_SIZE (1024*2)
 #endif
 
 template <typename T>

@@ -16,7 +16,7 @@ RUN mkdir build && cd build \
         -DNMTOOLS_BUILD_EXAMPLES=ON \
         -DNMTOOLS_CODE_COVERAGE=ON \
         -DNMTOOLS_ENABLE_TEST_BENCHMARKS=OFF \
-        -DCMAKE_BUILD_TYPE=Debug .. \
+        .. \
     && make VERBOSE=1 -j1 && make install
 
 CMD ["bash","scripts/run_unit_tests.sh"]

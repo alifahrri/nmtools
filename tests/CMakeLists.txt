@@ -132,6 +132,11 @@ if (NMTOOLS_BUILD_FUNCTIONAL_TESTS)
     add_subdirectory(functional)
 endif (NMTOOLS_BUILD_FUNCTIONAL_TESTS)
 
+option(NMTOOLS_BUILD_COMPUTE_GRAPH_TESTS "build computational graph test programs" OFF)
+if (NMTOOLS_BUILD_COMPUTE_GRAPH_TESTS)
+    add_subdirectory(graph)
+endif (NMTOOLS_BUILD_COMPUTE_GRAPH_TESTS)
+
 option(NMTOOLS_BUILD_NETWORK_TESTS "build network test programs" OFF)
 if (NMTOOLS_BUILD_NETWORK_TESTS)
     add_subdirectory(network)
