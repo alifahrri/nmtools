@@ -110,7 +110,11 @@ set(TRANSFORM_TEST_FUSION_SOURCES
 
 if (NMTOOLS_TRANSFORM_TEST_ALL)
     set(NMTOOLS_TRANSFORM_TEST_FUSION    ON CACHE BOOL "test graph fusion modules" FORCE)
-    set(NMTOOLS_TRANSFORM_TEST_LINEARIZE ON CACHE BOOL "test graph linearizer modules" FORCE)
+    ## always hit the following error, skip for now
+    ## TODO: fix
+    ## /usr/bin/x86_64-linux-gnu-ld: numeric-tests-transform-doctest: too many sections: 1237489 (>= 65280)
+    ## /usr/bin/x86_64-linux-gnu-ld: final link failed: nonrepresentable section on output
+    # set(NMTOOLS_TRANSFORM_TEST_LINEARIZE ON CACHE BOOL "test graph linearizer modules" FORCE)
     set(NMTOOLS_TRANSFORM_TEST_APPLY     ON CACHE BOOL "test graph apply modules"      FORCE)
 endif()
 
