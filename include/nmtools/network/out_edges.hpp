@@ -55,20 +55,7 @@ namespace nmtools::network
                     auto num_neighbors = len(neighbors);
                     for (nm_size_t j=0; j<(nm_size_t)num_neighbors; j++) {
                         auto from = node_id;
-                        auto to = [&]()->nm_index_t{
-                            // handle zero element at compile-time to avoid compile error
-                            constexpr auto B_NUM_NEIGHBORS = meta::bounded_size_v<decltype(neighbors)>;
-                            if constexpr (!meta::is_fail_v<decltype(B_NUM_NEIGHBORS)>) {
-                                if constexpr (B_NUM_NEIGHBORS > 0) {
-                                    return at(neighbors,j);
-                                } else {
-                                    // should not hit at runtime
-                                    return {};
-                                }
-                            } else {
-                                return at(neighbors,j);
-                            }
-                        }();
+                        auto to = at(neighbors,j);
                         // TODO: get the index type from result_t
                         result[res_i++] = {(nm_size_t)from,(nm_size_t)to};
                     }
