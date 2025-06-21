@@ -5,6 +5,10 @@
 #include "nmtools/utility.hpp"
 #include "nmtools/index/contains.hpp"
 #include "nmtools/index/index_of.hpp"
+#include "nmtools/network/add_edge.hpp"
+#include "nmtools/network/compose.hpp"
+#include "nmtools/network/filter_nodes.hpp"
+#include "nmtools/network/is_directed_acyclic_graph.hpp"
 #include "nmtools/network/out_edges.hpp"
 #include "nmtools/network/topological_generations.hpp"
 #include "nmtools/network/topological_sort.hpp"
@@ -215,7 +219,7 @@ namespace nmtools::network
         {}
 
         // convert constant adjacency list to compile-time value
-        template <typename adj_list_t, auto extra_nodes=0>
+        template <typename adj_list_t, auto extra_nodes=0, typename m_node_ids_t=none_t>
         static constexpr auto to_value()
         {
             auto src_adj_list = meta::to_value_v<adj_list_t>;
@@ -231,8 +235,14 @@ namespace nmtools::network
                     at(adj_list,i).push_back(at(neighbors,j));
                 }
             }
-            auto dst_adj_list = digraph(adj_list);
-            return dst_adj_list;
+            if constexpr (is_none_v<m_node_ids_t>) {
+                auto dst_adj_list = digraph(adj_list);
+                return dst_adj_list;
+            } else {
+                auto node_ids = meta::to_value_v<m_node_ids_t>;
+                auto dst_adj_list = digraph(adj_list,node_ids);
+                return dst_adj_list;
+            }
         }
 
         constexpr auto order() const noexcept
@@ -270,9 +280,17 @@ namespace nmtools::network
         }
 
         template <typename node_id_t>
-        constexpr auto has_node(node_id_t node_id) const noexcept
+        constexpr auto has_node([[maybe_unused]] node_id_t node_id) const noexcept
         {
-            if constexpr (is_none_v<node_ids_type>) {
+            if constexpr (is_none_v<node_ids_type>
+                && meta::is_constant_adjacency_list_v<adjacency_list_type>
+                && meta::is_constant_index_v<node_id_t>
+            ) {
+                constexpr auto NUM_NODES = meta::len_v<adjacency_list_type>;
+                constexpr auto NODE_ID   = node_id_t::value;
+                constexpr auto HAS_NODE  = ((nm_index_t)NODE_ID < (nm_index_t)NUM_NODES);
+                return meta::ct_v<HAS_NODE>;
+            } else if constexpr (is_none_v<node_ids_type>) {
                 return ((nm_index_t)node_id < (nm_index_t)len(adjacency_list));
             } else {
                 return index::contains(node_ids,node_id);
@@ -280,10 +298,21 @@ namespace nmtools::network
         }
 
         template <typename id_t>
-        constexpr auto get_index(id_t id) const noexcept
+        constexpr auto get_index([[maybe_unused]] id_t id) const noexcept
         {
             if constexpr (!is_none_v<node_ids_type>) {
                 return index::index_of(node_ids,id);
+            } else if constexpr (is_none_v<node_ids_type>
+                && meta::is_constant_index_v<id_t>
+                && meta::is_constant_adjacency_list_v<adjacency_list_type>
+            ) {
+                constexpr auto ID = id_t::value;
+                constexpr auto NUM_NODES = meta::len_v<adjacency_list_type>;
+                if constexpr (ID < NUM_NODES) {
+                    return meta::ct_v<ID>;
+                } else {
+                    return meta::detail::fail_t {};
+                }
             } else {
                 using result_t = nmtools_maybe<nm_index_t>;
                 return (((nm_index_t)id < (nm_index_t)len(adjacency_list))
@@ -313,11 +342,10 @@ namespace nmtools::network
         constexpr decltype(auto) add_node([[maybe_unused]] node_id_t node_id
             , [[maybe_unused]] const attribute_t& attribute=attribute_t{})
         {
-            static_assert(
-                is_none_v<attribute_t> || meta::is_same_v<attribute_t,node_attribute_type>
-                , "unsupported attribute type"
-            );
-            if constexpr (meta::is_constant_adjacency_list_v<adjacency_list_type>) {
+            if constexpr (meta::is_constant_index_v<node_id_t> &&
+                meta::is_constant_adjacency_list_v<adjacency_list_type>
+            ) {
+                #if 0
                 constexpr auto result = [](){
                     auto dst_adj_list = to_value<adjacency_list_type,1>();
                     auto NODE_ID = node_id_t::value;
@@ -328,6 +356,24 @@ namespace nmtools::network
                 auto vtype = nmtools_adjacency_list_vtype(result.adjacency_list);
                 using type = meta::type_t<decltype(vtype)>;
                 return digraph(type{});
+                #else
+                auto dst_adj_list = utility::tuple_append(adjacency_list,nmtools_tuple{});
+                if constexpr (!is_none_v<node_ids_type> && !is_none_v<attribute_t>) {
+                    auto dst_node_ids = utility::tuple_append(node_ids,node_id);
+                    auto dst_attributes = utility::tuple_append(node_attributes,attribute);
+                    return digraph(dst_adj_list,dst_node_ids,dst_attributes);
+                } else if constexpr (is_none_v<node_ids_type> && !is_none_v<attribute_t>) {
+                    auto dst_node_ids = None;
+                    auto dst_attributes = utility::tuple_append(node_attributes,attribute);
+                    return digraph(dst_adj_list,dst_node_ids,dst_attributes);
+                } else if constexpr (!is_none_v<node_ids_type> && !is_none_v<attribute_t>) {
+                    auto dst_node_ids = utility::tuple_append(node_ids,node_id);
+                    auto dst_attributes = None;
+                    return digraph(dst_adj_list,dst_node_ids,dst_attributes);
+                } else {
+                    return digraph(dst_adj_list);
+                }
+                #endif
             } else {
                 auto num_nodes = len(adjacency_list);
                 auto dst_num_nodes = num_nodes + 1;
@@ -375,6 +421,7 @@ namespace nmtools::network
             , [[maybe_unused]] const attribute_t& attribute=attribute_t{})
         {
             if constexpr (meta::is_constant_adjacency_list_v<adjacency_list_type>) {
+                #if 0
                 constexpr auto result = [](){
                     auto dst_adj_list = to_value<adjacency_list_type,2>();
 
@@ -387,6 +434,33 @@ namespace nmtools::network
                 auto vtype = nmtools_adjacency_list_vtype(result.adjacency_list);
                 using type = meta::type_t<decltype(vtype)>;
                 return digraph(type{});
+                #else
+                constexpr auto HAS_FROM = decltype(has_node(from))::value;
+                constexpr auto HAS_TO   = decltype(has_node(from))::value;
+                auto digraph = [&](){
+                    if constexpr (HAS_FROM && HAS_TO) {
+                        return *this;
+                    } else if constexpr (!HAS_FROM && HAS_TO) {
+                        return add_node(from);
+                    } else if constexpr (HAS_FROM && !HAS_TO) {
+                        return add_node(to);
+                    } else {
+                        return add_node(from).add_node(to);
+                    }
+                }();
+                using from_idx_t = decltype(get_index(from));
+                using to_idx_t   = decltype(get_index(to));
+                static_assert( meta::is_constant_index_v<from_idx_t> );
+                static_assert( meta::is_constant_index_v<to_idx_t> );
+                constexpr auto FROM = from_idx_t::value;
+                constexpr auto TO = to_idx_t::value;
+                constexpr auto src_adj_list = meta::to_value_v<decltype(digraph.adjacency_list)>;
+                constexpr auto dst_adj_list = network::add_edge(src_adj_list,FROM,TO);
+
+                auto vtype = nmtools_adjacency_list_vtype(dst_adj_list);
+                using type = meta::type_t<decltype(vtype)>;
+                return network::digraph(type{},digraph.node_ids,digraph.node_attributes);
+                #endif
             } else {
                 if (!has_node(from)) {
                     add_node(from);
@@ -572,7 +646,7 @@ namespace nmtools::network
                 && meta::is_constant_index_array_v<node_ids_type>
             ) {
                 constexpr auto result = [](){
-                    auto adj_list = to_value<adjacency_list_type>();
+                    auto adj_list = to_value<adjacency_list_type,0,node_ids_type>();
                     return adj_list.out_edges();
                 }();
 
@@ -602,7 +676,18 @@ namespace nmtools::network
         , [[maybe_unused]] const node_attributes_t& node_attributes
         , [[maybe_unused]] const edge_attributes_t& edge_attributes)
     {
-        if constexpr (is_none_v<adjacency_list_t>) {
+        if constexpr (meta::is_maybe_v<adjacency_list_t>
+            || meta::is_maybe_v<node_ids_t>
+            || meta::is_maybe_v<node_attributes_t>
+            || meta::is_maybe_v<edge_attributes_t>
+        ) {
+            using result_t = decltype(digraph(unwrap(adj_list),unwrap(node_ids),unwrap(node_attributes),unwrap(edge_attributes)));
+            using return_t = meta::conditional_t<meta::is_maybe_v<result_t>,result_t,nmtools_maybe<result_t>>;
+            return (has_value(adj_list) && has_value(node_ids) && has_value(node_attributes) && has_value(edge_attributes)
+                ? return_t{digraph(unwrap(adj_list),unwrap(node_ids),unwrap(node_attributes),unwrap(edge_attributes))}
+                : return_t{meta::Nothing}
+            );
+        } else if constexpr (is_none_v<adjacency_list_t>) {
             // TODO: use small vector
             using adjacency_list_type = nmtools_list<nmtools_list<nm_index_t>>;
             using node_ids_type = nmtools_list<nm_index_t>;
@@ -636,6 +721,123 @@ namespace nmtools::network
     {
         auto generations = network::topological_generations(digraph.adjacency_list);
         return network::map_ids(generations,digraph.node_ids);
+    }
+
+    template <typename g_adjacency_list_t, typename g_node_ids_t, typename g_node_attributes_t, typename g_edge_attribute_t
+        , typename h_adjacency_list_t, typename h_node_ids_t, typename h_node_attributes_t, typename h_edge_attribute_t>
+    constexpr auto compose(const digraph_t<g_adjacency_list_t,g_node_ids_t,g_node_attributes_t,g_edge_attribute_t>& G
+        , const digraph_t<h_adjacency_list_t,h_node_ids_t,h_node_attributes_t,h_edge_attribute_t>& H
+    ) {
+        static_assert( is_none_v<g_edge_attribute_t> && is_none_v<h_edge_attribute_t>
+            , "expected edge attributes to be none for network::compose" );
+
+        static_assert( !is_none_v<g_node_ids_t> && !is_none_v<h_node_ids_t>
+            , "can't compose two nodes with none ids" );
+
+        auto fuse_node_attributes = [&](const auto& G, const auto& H){
+            if constexpr (is_none_v<g_node_attributes_t> && is_none_v<h_node_attributes_t>) {
+                return None;
+            } else if constexpr (meta::is_tuple_v<g_node_attributes_t>
+                && meta::is_tuple_v<h_node_attributes_t>
+            ) {
+                return utility::tuple_cat(G.node_attributes,H.node_attributes);
+            } else {
+                // assume same node type & has value_type
+                auto vtype = [](){
+                    using g_value_t = meta::get_value_type_t<g_node_attributes_t>;
+                    using h_value_t = meta::get_value_type_t<h_node_attributes_t>;
+                
+                    using value_type = g_value_t;
+
+                    static_assert( meta::is_same_v<g_value_t,h_value_t> && !meta::is_fail_v<g_value_t>
+                        , "invalid type for G's or H's node attributes" );
+
+                    constexpr auto B_NUM_G_NODES = meta::max_len_v<g_node_attributes_t>;
+                    constexpr auto B_NUM_H_NODES = meta::max_len_v<h_node_attributes_t>;
+                    if constexpr ((B_NUM_G_NODES >= 0) && (B_NUM_H_NODES >= 0)) {
+                        using type = nmtools_static_vector<value_type,B_NUM_G_NODES+B_NUM_H_NODES>;
+                        return meta::as_value_v<type>;
+                    } else {
+                        using type = nmtools_list<value_type>;
+                        return meta::as_value_v<type>;
+                    }
+                }();
+                using type = meta::type_t<decltype(vtype)>;
+
+                auto attributes = type {};
+
+                auto g_num_nodes = len(G.node_attributes);
+                auto h_num_nodes = len(H.node_attributes);
+                auto dst_num_nodes = g_num_nodes + h_num_nodes;
+                if constexpr (meta::is_resizable_v<type>) {
+                    attributes.resize(dst_num_nodes);
+                }
+
+                for (nm_size_t i=0; i<(nm_size_t)g_num_nodes; i++) {
+                    at(attributes,i) = at(G.node_attributes,i);
+                }
+                for (nm_size_t i=0; i<(nm_size_t)h_num_nodes; i++) {
+                    at(attributes,i+g_num_nodes) = at(H.node_attributes,i);
+                }
+
+                return attributes;
+            }
+        };
+        auto fuse_node_ids = [&](const auto& G, const auto& H){
+            if constexpr (meta::is_constant_index_array_v<g_node_ids_t>
+                && meta::is_constant_index_array_v<h_node_ids_t>
+            ) {
+                return utility::tuple_cat(G.node_ids,H.node_ids);
+            } else {
+                auto vtype = [](){
+                    using index_t = nm_size_t;
+                    constexpr auto B_NUM_G_NODES = meta::max_len_v<g_node_ids_t>;
+                    constexpr auto B_NUM_H_NODES = meta::max_len_v<h_node_ids_t>;
+                    if constexpr ((B_NUM_G_NODES >= 0) && (B_NUM_H_NODES >= 0)) {
+                        using type = nmtools_static_vector<index_t,B_NUM_G_NODES+B_NUM_H_NODES>;
+                        return meta::as_value_v<type>;
+                    } else {
+                        using type = nmtools_list<index_t>;
+                        return meta::as_value_v<type>;
+                    }
+                }();
+                using type = meta::type_t<decltype(vtype)>;
+
+                auto node_ids = type {};
+
+                auto g_num_nodes = len(G.node_ids);
+                auto h_num_nodes = len(H.node_ids);
+                auto dst_num_nodes = g_num_nodes + h_num_nodes;
+                if constexpr (meta::is_resizable_v<type>) {
+                    node_ids.resize(dst_num_nodes);
+                }
+
+                for (nm_size_t i=0; i<(nm_size_t)g_num_nodes; i++) {
+                    at(node_ids,i) = at(G.node_ids,i);
+                }
+                for (nm_size_t i=0; i<(nm_size_t)h_num_nodes; i++) {
+                    at(node_ids,i+g_num_nodes) = at(H.node_ids,i);
+                }
+
+                return node_ids;
+            }
+        };
+
+        auto result_pair = network::compose(G.adjacency_list,H.adjacency_list,G.node_ids,H.node_ids);
+        const auto& adj_list = nmtools::get<0>(result_pair);
+        const auto& node_ids = nmtools::get<1>(result_pair);
+
+        // networkx will take the attribute of H for any overlapping node
+        auto node_attributes = fuse_node_attributes(H,G);
+        auto src_node_ids = fuse_node_ids(H,G);
+        auto node_data = network::filter_nodes(node_attributes,src_node_ids,node_ids);
+        return digraph(adj_list,node_ids,node_data);
+    } // compose
+
+    template <typename adjacency_list_t, typename node_ids_t, typename node_attributes_t, typename edge_attribute_t>
+    constexpr auto is_directed_acyclic_graph(const digraph_t<adjacency_list_t,node_ids_t,node_attributes_t,edge_attribute_t>& digraph)
+    {
+        return network::is_directed_acyclic_graph(digraph.adjacency_list);
     }
 } // namespace nmtools::network
 
@@ -704,42 +906,59 @@ namespace nmtools::utils::impl
 
         inline auto operator()(const digraph_type& digraph) const
         {
-            // auto graphviz = nmtools_string("digraph G");
-            // auto graphviz = nmtools_string();
-            auto graphviz = std::string();
-            graphviz += "digraph G";
+            auto graphviz = nmtools_string("digraph G");
             graphviz += "{\n";
 
             auto out_edges  = digraph.out_edges();
             auto edge_loop = [&](auto i){
+                auto edge_string = nmtools_string();
                 const auto& out_edge = at(out_edges,i);
                 auto src_edge = nmtools::get<0>(out_edge);
                 auto dst_edge = nmtools::get<1>(out_edge);
 
-                graphviz += to_string(src_edge,utils::Compact);
-                graphviz += " -> ";
-                graphviz += to_string(dst_edge,utils::Compact);
-                graphviz += ":";
-                graphviz += to_string(src_edge,utils::Compact);
+                edge_string += to_string(src_edge,utils::Compact);
+                edge_string += " -> ";
+                edge_string += to_string(dst_edge,utils::Compact);
+                edge_string += ":";
+                edge_string += to_string(src_edge,utils::Compact);
 
                 const auto& edge = digraph.edges(src_edge,dst_edge);
                 using edge_t = meta::remove_cvref_t<decltype(edge)>;
                 if constexpr (!is_none_v<edge_t>
                     && (meta::has_to_string_v<edge_t> || meta::is_same_v<edge_t,nmtools_string>)
                 ) {
-                    graphviz += " [";
-                    graphviz += "label=\"";
+                    edge_string += " [";
+                    edge_string += "label=\"";
                     if constexpr (meta::has_to_string_v<edge_t>) {
                         auto edge_str = edge.to_string();
-                        graphviz += edge_str;
+                        edge_string += edge_str;
                     } else {
-                        graphviz += edge;
+                        edge_string += edge;
                     }
-                    graphviz += "\"";
-                    graphviz += "]";
+                    edge_string += "\"";
+                    edge_string += "]";
                 }
 
-                graphviz += "\n";
+                edge_string += "\n";
+
+                replace_string(edge_string,nmtools_string("->"),nmtools_string("[graphviz_edge_connector]"));
+                replace_string(edge_string,nmtools_string("{"),nmtools_string("[open_curl_bracket]"));
+                replace_string(edge_string,nmtools_string("}"),nmtools_string("[close_curl_bracket]"));
+                replace_string(edge_string,nmtools_string("<"),nmtools_string("[open_angle_bracket]"));
+                replace_string(edge_string,nmtools_string(">"),nmtools_string("[close_angle_bracket]"));
+
+                replace_string(edge_string,nmtools_string("[open_curl_bracket]"),nmtools_string("\\{"));
+                replace_string(edge_string,nmtools_string("[close_curl_bracket]"),nmtools_string("\\}"));
+                replace_string(edge_string,nmtools_string("[open_angle_bracket]"),nmtools_string("\\<"));
+                replace_string(edge_string,nmtools_string("[close_angle_bracket]"),nmtools_string("\\>"));
+
+                replace_string(edge_string,nmtools_string("[graphviz_record_layout_open]"),nmtools_string("{"));
+                replace_string(edge_string,nmtools_string("[graphviz_record_layout_close]"),nmtools_string("}"));
+                replace_string(edge_string,nmtools_string("[graphviz_record_fieldid_open]"),nmtools_string("<"));
+                replace_string(edge_string,nmtools_string("[graphviz_record_fieldid_close]"),nmtools_string(">"));
+                replace_string(edge_string,nmtools_string("[graphviz_edge_connector]"),nmtools_string("->"));
+
+                graphviz += edge_string;
             };
             using out_edges_t = decltype(out_edges);
             if constexpr (meta::is_tuple_v<out_edges_t>) {
@@ -757,31 +976,49 @@ namespace nmtools::utils::impl
             auto node_ids = digraph.nodes();
             auto num_nodes = len(node_ids);
             auto node_loop = [&](auto i){
+                auto node_string = nmtools_string();
                 auto node_id = at(node_ids,i);
                 static_assert( meta::is_index_v<decltype(node_id)> );
-                graphviz += to_string(node_id);
-                graphviz += "[";
-                graphviz += "shape=\"record\" style=\"rounded,filled\" color=\"black\" fillcolor=\"gray93\" ";
+                node_string += to_string(node_id);
+                node_string += "[";
+                node_string += "shape=\"record\" style=\"rounded,filled\" color=\"black\" fillcolor=\"gray93\" ";
 
                 const auto& node = digraph.nodes(node_id);
                 using node_t = meta::remove_cvref_t<decltype(node)>;
                 if constexpr (!is_none_v<node_t>
                     && (meta::has_to_string_v<node_t> || meta::is_same_v<node_t,nmtools_string>)
                 ) {
-                    graphviz += "label=\" ";
-                    graphviz += "id:";
-                    graphviz += to_string(node_id);
-                    graphviz += " | ";
+                    node_string += "label=\" ";
+                    node_string += "id:";
+                    node_string += to_string(node_id);
+                    node_string += " | ";
                     if constexpr (meta::has_to_string_v<node_t>) {
                         auto node_str = node.to_string();
-                        graphviz += node_str;
+                        node_string += node_str;
                     } else {
-                        graphviz += node;
+                        node_string += node;
                     }
-                    graphviz += "\"";
+                    node_string += "\"";
                 }
 
-                graphviz += "]\n";
+                node_string += "]\n";
+
+                replace_string(node_string,nmtools_string("{"),nmtools_string("[open_curl_bracket]"));
+                replace_string(node_string,nmtools_string("}"),nmtools_string("[close_curl_bracket]"));
+                replace_string(node_string,nmtools_string("<"),nmtools_string("[open_angle_bracket]"));
+                replace_string(node_string,nmtools_string(">"),nmtools_string("[close_angle_bracket]"));
+
+                replace_string(node_string,nmtools_string("[open_curl_bracket]"),nmtools_string("\\{"));
+                replace_string(node_string,nmtools_string("[close_curl_bracket]"),nmtools_string("\\}"));
+                replace_string(node_string,nmtools_string("[open_angle_bracket]"),nmtools_string("\\<"));
+                replace_string(node_string,nmtools_string("[close_angle_bracket]"),nmtools_string("\\>"));
+
+                replace_string(node_string,nmtools_string("[graphviz_record_layout_open]"),nmtools_string("{"));
+                replace_string(node_string,nmtools_string("[graphviz_record_layout_close]"),nmtools_string("}"));
+                replace_string(node_string,nmtools_string("[graphviz_record_fieldid_open]"),nmtools_string("<"));
+                replace_string(node_string,nmtools_string("[graphviz_record_fieldid_close]"),nmtools_string(">"));
+
+                graphviz += node_string;
             };
             if constexpr (meta::is_tuple_v<decltype(node_ids)>) {
                 constexpr auto N = meta::len_v<decltype(node_ids)>;

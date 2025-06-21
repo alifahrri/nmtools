@@ -44,10 +44,14 @@ set(NETWORK_TEST_META_SOURCES
 )
 
 set(NETWORK_TEST_DIGRAPH_SOURCES
+    src/add_edge.cpp
+    src/compose.cpp
     src/contracted_edge.cpp
     src/filter_node_arity.cpp
+    src/filter_nodes.cpp
     src/has_path.cpp
     src/in_degree.cpp
+    src/is_directed_acyclic_graph.cpp
     src/out_degree.cpp
     src/out_edges.cpp
     src/predecessors.cpp
@@ -55,6 +59,7 @@ set(NETWORK_TEST_DIGRAPH_SOURCES
     src/topological_sort.cpp
 
     src/digraph.cpp
+    src/expression_tree.cpp
 )
 
 if (NMTOOLS_NETWORK_TEST_ALL)

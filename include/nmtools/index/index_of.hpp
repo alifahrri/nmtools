@@ -6,6 +6,8 @@
 
 namespace nmtools::index
 {
+    struct index_of_t {};
+
     template <typename list_t, typename value_t>
     constexpr auto index_of(const list_t& list, value_t value)
     {
@@ -19,28 +21,69 @@ namespace nmtools::index
                 : return_t{meta::Nothing}
             );
         } else {
-            // TODO: handle constant index array list with constant index value
-            using result_t = nm_size_t;
-            using return_t = nmtools_maybe<result_t>;
+            using result_t = meta::resolve_optype_t<index_of_t,list_t,value_t>;
 
-            auto size   = len(list);
-            auto found  = false;
-            auto result = result_t{};
-            for (nm_size_t i=0; i<(nm_size_t)size; i++) {
-                if ((value_t)at(list,i) == value) {
-                    found = true;
-                    result = i;
-                    break;
+            auto result = result_t {};
+
+            if constexpr (!meta::is_fail_v<result_t>
+                && !meta::is_constant_index_v<result_t>
+            ) {
+                using return_t = nmtools_maybe<result_t>;
+
+                auto size  = len(list);
+                auto found = false;
+                for (nm_size_t i=0; i<(nm_size_t)size; i++) {
+                    if ((value_t)at(list,i) == value) {
+                        found = true;
+                        result = i;
+                        break;
+                    }
                 }
-            }
 
-            if (found) {
-                return return_t{result};
+                if (found) {
+                    return return_t{result};
+                } else {
+                    return return_t{meta::Nothing};
+                }
             } else {
-                return return_t{meta::Nothing};
+                return result;
             }
         }
     }
+}
+
+namespace nmtools::meta
+{
+    namespace error
+    {
+        template <typename...>
+        struct INDEX_OF_UNSUPPORTED : detail::fail_t {};
+    }
+
+    template <typename list_t, typename value_t>
+    struct resolve_optype<
+        void, index::index_of_t, list_t, value_t
+    > {
+        static constexpr auto vtype = [](){
+            if constexpr (!is_index_array_v<list_t> || !is_index_v<value_t>) {
+                using type = error::INDEX_OF_UNSUPPORTED<list_t,value_t>;
+                return as_value_v<type>;
+            } else if constexpr (is_constant_index_v<value_t>
+                && is_constant_index_array_v<list_t>
+            ) {
+                constexpr auto list     = to_value_v<list_t>;
+                constexpr auto value    = to_value_v<value_t>;
+                constexpr auto m_result = index::index_of(list,value);
+                constexpr auto result   = unwrap(m_result);
+                using type = ct<result>;
+                return as_value_v<type>;
+            } else {
+                using type = nm_size_t;
+                return as_value_v<type>;
+            }
+        }();
+        using type = type_t<decltype(vtype)>;
+    };
 }
 
 #endif // NMTOOLS_INDEX_INDEX_OF_HPP

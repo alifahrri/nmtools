@@ -7,8 +7,14 @@ if (CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
     set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/../cmake)
 endif()
 
-## TODO: remove
-include(nmtools)
+if(NMTOOLS_INCLUDE_DIR)
+    message(STATUS "    NMTOOLS_INCLUDE_DIR: ${NMTOOLS_INCLUDE_DIR}")
+else()
+    message(STATUS "trying to find nmtools")
+    find_package(nmtools REQUIRED CONFIG)
+    set(NMTOOLS_INCLUDE_DIR ${nmtools_INCLUDE_DIRS})
+    message(STATUS "    NMTOOLS_INCLUDE_DIR: ${NMTOOLS_INCLUDE_DIR}")
+endif()
 
 # TODO: cleanup
 # handle emscripten
@@ -65,6 +71,7 @@ set(TRANSFORM_TEST_LINEARIZE_SOURCES
     src/linearize/tensordot.cpp
     src/linearize/pad.cpp
     src/linearize/pairwise_distance.cpp
+    src/linearize/reshape.cpp
     src/linearize/bilinear.cpp
     src/linearize/vstack.cpp
     src/linearize/mean.cpp
@@ -103,7 +110,11 @@ set(TRANSFORM_TEST_FUSION_SOURCES
 
 if (NMTOOLS_TRANSFORM_TEST_ALL)
     set(NMTOOLS_TRANSFORM_TEST_FUSION    ON CACHE BOOL "test graph fusion modules" FORCE)
-    set(NMTOOLS_TRANSFORM_TEST_LINEARIZE ON CACHE BOOL "test graph linearizer modules" FORCE)
+    ## always hit the following error, skip for now
+    ## TODO: fix
+    ## /usr/bin/x86_64-linux-gnu-ld: numeric-tests-transform-doctest: too many sections: 1237489 (>= 65280)
+    ## /usr/bin/x86_64-linux-gnu-ld: final link failed: nonrepresentable section on output
+    # set(NMTOOLS_TRANSFORM_TEST_LINEARIZE ON CACHE BOOL "test graph linearizer modules" FORCE)
     set(NMTOOLS_TRANSFORM_TEST_APPLY     ON CACHE BOOL "test graph apply modules"      FORCE)
 endif()
 
@@ -134,16 +145,12 @@ add_test(
     COMMAND ${PROJECT_NAME}-doctest
 )
 
-target_compile_options(${PROJECT_NAME}-doctest PRIVATE -std=c++17)
+target_compile_options(${PROJECT_NAME}-doctest PRIVATE -std=c++17 -mcmodel=large)
+target_link_options(${PROJECT_NAME}-doctest PRIVATE -mcmodel=large -flto -Wl,-allow-multiple-definition)
 if (doctest_FOUND)
     target_link_libraries(${PROJECT_NAME}-doctest PRIVATE doctest::doctest)
 endif()
 
-## TODO: remove
-apply_nmtools(
-    TARGET ${PROJECT_NAME}-doctest
-    COMPILE_OPTIONS -g
-)
 target_include_directories(
     ${PROJECT_NAME}-doctest PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/include
