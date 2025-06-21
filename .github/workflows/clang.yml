@@ -112,6 +112,34 @@ jobs:
         run: |
           ./dockcross-${{ matrix.name }} bash -c 'build/${{ matrix.name }}/tests/transform/numeric-tests-transform-doctest'
 
+  dockcross-clang-compute-graph:
+    name: ${{ matrix.name }}-compute-graph
+    runs-on: ubuntu-22.04
+    strategy:
+      matrix:
+        include:
+          - name: linux-x64-clang
+    steps:
+      - uses: actions/checkout@v2
+      - name: setup dockcross
+        run: docker run --rm dockcross/${{ matrix.name }} > ./dockcross-${{ matrix.name }}; chmod +x ./dockcross-${{ matrix.name }}
+      - uses: actions/cache@v3
+        id: cache
+        with:
+          path: ./build/${{ matrix.name }}
+          key: ${{ github.job }}-${{ matrix.name }}-${{ hashFiles('./**') }}
+      - name: setup doctest
+        run: bash scripts/download_doctest_header.sh -d include/
+      - name: build
+        run: |
+          ./dockcross-${{ matrix.name }} bash -c 'mkdir -p build/${{ matrix.name }} \
+            && cd build/${{ matrix.name }}/ \
+            && cmake -DCMAKE_TOOLCHAIN_FILE=${PWD}/../../cmake/toolchains/clang-werror.cmake -DNMTOOLS_TEST_ALL=OFF -DNMTOOLS_BUILD_COMPUTE_GRAPH_TESTS=ON ../.. \
+            && make -j1 VERBOSE=1 numeric-tests-compute-graph-doctest'
+      - name: run tests
+        run: |
+          ./dockcross-${{ matrix.name }} bash -c 'build/${{ matrix.name }}/tests/graph/numeric-tests-compute-graph-doctest'
+
   dockcross-clang-generic-ndarray:
     name: ${{ matrix.name }}-generic-ndarray
     runs-on: ubuntu-22.04
