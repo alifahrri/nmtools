@@ -6,7 +6,7 @@
 #include "nmtools/testing/array_cast.hpp"
 
 namespace nm = nmtools;
-namespace na = nm::array;
+namespace na = nmtools;
 namespace kind = na::kind;
 
 using nmtools_tuple;

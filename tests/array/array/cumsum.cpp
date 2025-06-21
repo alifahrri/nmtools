@@ -6,11 +6,11 @@
 #include <array>
 
 namespace nm = nmtools;
-namespace na = nm::array;
-namespace array = nm::array;
+namespace na = nmtools;
+namespace array = nmtools;
 
 #define RUN_cumsum_impl(...) \
-nm::array::cumsum(__VA_ARGS__);
+nmtools::cumsum(__VA_ARGS__);
 
 #ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
 #include "nmtools/testing/benchmarks/bench.hpp"

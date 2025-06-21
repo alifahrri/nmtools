@@ -37,7 +37,7 @@ namespace nmtools::view
 #include "nmtools/array/vecdot.hpp"
 #include "nmtools/core/eval.hpp"
 
-namespace nmtools::array
+namespace nmtools
 {
     template <typename output_t=none_t, typename context_t=none_t, typename resolver_t=eval_result_t<>
         , typename lhs_t, typename rhs_t, typename dtype_t=none_t, typename keepdims_t=meta::false_type>
@@ -52,6 +52,6 @@ namespace nmtools::array
             , resolver
         );
     } // vecdot
-} // nmtools::array
+} // nmtools
 
 #endif // NMTOOLS_ARRAY_ARRAY_VECDOT_HPP

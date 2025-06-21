@@ -23,7 +23,7 @@
 #define NMTOOLS_ALWAYS_INLINE __attribute__((always_inline))
 #endif // NMTOOLS_ALWAYS_INLINE
 
-namespace nmtools::array::simd
+namespace nmtools::simd
 {
     template <typename simd_tag_t, typename data_t, typename=void>
     struct simd_op_t
@@ -403,6 +403,6 @@ namespace nmtools::array::simd
             return simd_t::div(lhs,rhs);
         }
     };
-} // namespace nmtools::array::simd
+} // namespace nmtools::simd
 
 #endif // NMTOOLS_ARRAY_EVAL_SIMD_OP_HPP

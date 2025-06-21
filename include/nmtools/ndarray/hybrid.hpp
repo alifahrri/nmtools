@@ -17,7 +17,7 @@
 #include "nmtools/core/ref/initializer_list.hpp"
 #endif
 
-namespace nmtools::array
+namespace nmtools
 {
 
     namespace detail
@@ -383,38 +383,38 @@ namespace nmtools::array
     static inline constexpr auto is_hybrid_ndarray_v = is_hybrid_ndarray<T>::value;
 
     template <typename T, size_t max_elements>
-    constexpr auto size(const array::hybrid_ndarray<T,max_elements,1>& a)
+    constexpr auto size(const hybrid_ndarray<T,max_elements,1>& a)
     {
         return a.shape_[0];
     } // size
 
     template <typename T, size_t max_elements>
-    constexpr auto begin(const array::hybrid_ndarray<T,max_elements,1>& a)
+    constexpr auto begin(const hybrid_ndarray<T,max_elements,1>& a)
     {
         return a.buffer_.data();
     } // begin
 
     template <typename T, size_t max_elements>
-    constexpr auto begin(array::hybrid_ndarray<T,max_elements,1>& a)
+    constexpr auto begin(hybrid_ndarray<T,max_elements,1>& a)
     {
         return a.buffer_.data();
     } // begin
 
     template <typename T, size_t max_elements>
-    constexpr auto end(const array::hybrid_ndarray<T,max_elements,1>& a)
+    constexpr auto end(const hybrid_ndarray<T,max_elements,1>& a)
     {
         return a.buffer_.data() + a.shape_[0];
     } // end
 
     template <typename T, size_t max_elements>
-    constexpr auto end(array::hybrid_ndarray<T,max_elements,1>& a)
+    constexpr auto end(hybrid_ndarray<T,max_elements,1>& a)
     {
         return a.buffer_.data() + a.shape_[0];
     } // end
 
     /** @} */ // end group dynamic
     
-} // namespace nmtools::array
+} // namespace nmtools
 
 namespace nmtools
 {
@@ -426,7 +426,7 @@ namespace nmtools
      * @return auto 
      */
     template <typename T, size_t max_elements, size_t dimension>
-    constexpr auto shape(const array::hybrid_ndarray<T,max_elements,dimension>& a)
+    constexpr auto shape(const hybrid_ndarray<T,max_elements,dimension>& a)
     {
         return a.shape();
     } // shape
@@ -439,7 +439,7 @@ namespace nmtools
      * @return auto 
      */
     template <typename T, size_t max_elements, size_t dimension>
-    constexpr auto dim(const array::hybrid_ndarray<T,max_elements,dimension>& a)
+    constexpr auto dim(const hybrid_ndarray<T,max_elements,dimension>& a)
     {
         return a.dim();
     } // dim
@@ -449,9 +449,9 @@ namespace nmtools
 namespace nmtools::impl
 {
     template <typename T, size_t max_elements, size_t dimension>
-    struct len_t<array::hybrid_ndarray<T,max_elements,dimension>>
+    struct len_t<hybrid_ndarray<T,max_elements,dimension>>
     {
-        using array = const array::hybrid_ndarray<T,max_elements,dimension>&;
+        using array = const hybrid_ndarray<T,max_elements,dimension>&;
 
         constexpr auto operator()(array a) const
         {
@@ -469,18 +469,18 @@ namespace nmtools::meta
      */
 
     template <typename T, size_t max_elements, size_t dimension>
-    struct is_index_array< array::hybrid_ndarray<T,max_elements,dimension>
+    struct is_index_array< hybrid_ndarray<T,max_elements,dimension>
         , meta::enable_if_t<is_index_v<T> && (dimension==1)>
     > : meta::true_type {};
 
     template <typename T, size_t max_elements>
-    struct is_hybrid_index_array< array::hybrid_ndarray<T,max_elements,1>
+    struct is_hybrid_index_array< hybrid_ndarray<T,max_elements,1>
         , meta::enable_if_t<is_index_v<T>>
     > : meta::true_type {};
 
     // TODO: remove
     template <typename T, size_t max_elements>
-    struct hybrid_index_array_max_size< array::hybrid_ndarray<T,max_elements,1>
+    struct hybrid_index_array_max_size< hybrid_ndarray<T,max_elements,1>
         , meta::enable_if_t<is_index_v<T>>
     >
     {
@@ -490,11 +490,11 @@ namespace nmtools::meta
 
     // TODO: remove
     template <typename T, size_t max_elements, size_t new_max_elements>
-    struct resize_hybrid_index_array_max_size< array::hybrid_ndarray<T,max_elements,1>
+    struct resize_hybrid_index_array_max_size< hybrid_ndarray<T,max_elements,1>
         , new_max_elements, meta::enable_if_t<is_index_v<T>>
     >
     {
-        using type = array::hybrid_ndarray<T,new_max_elements,1>;
+        using type = hybrid_ndarray<T,new_max_elements,1>;
     }; // resize_hybrid_index_array_max_size
 
     /**
@@ -503,27 +503,27 @@ namespace nmtools::meta
      * @tparam T element type of hybrid_ndarray
      */
     template <typename T, size_t max_elements, size_t dimension>
-    struct is_ndarray<array::hybrid_ndarray<T,max_elements,dimension>> : true_type {};
+    struct is_ndarray<hybrid_ndarray<T,max_elements,dimension>> : true_type {};
 
     template <typename T, size_t max_elements, size_t dimension>
-    struct is_hybrid_ndarray<array::hybrid_ndarray<T,max_elements,dimension>> : true_type {};
+    struct is_hybrid_ndarray<hybrid_ndarray<T,max_elements,dimension>> : true_type {};
 
     template <typename T, size_t max_elements, size_t dimension>
-    struct fixed_dim<array::hybrid_ndarray<T,max_elements,dimension>>
+    struct fixed_dim<hybrid_ndarray<T,max_elements,dimension>>
     {
         static constexpr auto value = dimension;
         using value_type = size_t;
     };
 
     template <typename T, size_t max_elements, size_t dimension>
-    struct bounded_size<array::hybrid_ndarray<T,max_elements,dimension>>
+    struct bounded_size<hybrid_ndarray<T,max_elements,dimension>>
     {
         static constexpr auto value = max_elements;
         using value_type = size_t;
     }; // bounded_size
 
     template <typename T, size_t max_elements>
-    struct max_len<array::hybrid_ndarray<T,max_elements,1>>
+    struct max_len<hybrid_ndarray<T,max_elements,1>>
     {
         static constexpr auto value = max_elements;
         using value_type = size_t;
@@ -531,7 +531,7 @@ namespace nmtools::meta
 
     // TODO: remove
     template <typename T, size_t max_elements, size_t dimension>
-    struct hybrid_ndarray_max_size<array::hybrid_ndarray<T,max_elements,dimension>>
+    struct hybrid_ndarray_max_size<hybrid_ndarray<T,max_elements,dimension>>
     {
         static constexpr auto value = max_elements;
         using type = size_t;
@@ -546,9 +546,9 @@ namespace nmtools::meta
      * @tparam N new maximum size
      */
     template <typename T, size_t max_elements, auto N, size_t dimension>
-    struct resize_hybrid_ndarray_max_size<array::hybrid_ndarray<T,max_elements,dimension>,N>
+    struct resize_hybrid_ndarray_max_size<hybrid_ndarray<T,max_elements,dimension>,N>
     {
-        using type = array::hybrid_ndarray<T,N,dimension>;
+        using type = hybrid_ndarray<T,N,dimension>;
     }; // resize_hybrid_ndarray_max_size
 
     // TODO: remove
@@ -562,39 +562,39 @@ namespace nmtools::meta
      */
     template <typename T, size_t max_elements, size_t dimension, auto DIM>
     struct resize_hybrid_ndarray_dim<
-        array::hybrid_ndarray<T,max_elements,dimension>, DIM
+        hybrid_ndarray<T,max_elements,dimension>, DIM
     >
     {
-        using type = array::hybrid_ndarray<T,max_elements,DIM>;
+        using type = hybrid_ndarray<T,max_elements,DIM>;
     }; // resize_hybrid_ndarray_dim
 
     template <typename T, size_t max_elements, size_t dimension, auto new_dim>
     struct resize_dim<
-        array::hybrid_ndarray<T,max_elements,dimension>, new_dim
+        hybrid_ndarray<T,max_elements,dimension>, new_dim
     >
     {
-        using type = array::hybrid_ndarray<T,max_elements,new_dim>;
+        using type = hybrid_ndarray<T,max_elements,new_dim>;
     }; // resize_dim
 
     // TODO: use resize_dim by default
     template <typename T, size_t max_elements, size_t dimension, auto new_dim>
     struct resize_bounded_dim<
-        array::hybrid_ndarray<T,max_elements,dimension>, new_dim
+        hybrid_ndarray<T,max_elements,dimension>, new_dim
     >
     {
-        using type = array::hybrid_ndarray<T,max_elements,new_dim>;
+        using type = hybrid_ndarray<T,max_elements,new_dim>;
     };// resize_bounded_dim
 
     template <typename T, size_t max_elements, size_t dimension, auto new_size>
     struct resize_bounded_size<
-        array::hybrid_ndarray<T,max_elements,dimension>, new_size
+        hybrid_ndarray<T,max_elements,dimension>, new_size
     >
     {
-        using type = array::hybrid_ndarray<T,new_size,dimension>;
+        using type = hybrid_ndarray<T,new_size,dimension>;
     };
 
     /**
-     * @brief specialize replace_element_type for array::hybrid_ndarray
+     * @brief specialize replace_element_type for hybrid_ndarray
      * 
      * @tparam T 
      * @tparam U 
@@ -602,9 +602,9 @@ namespace nmtools::meta
      * @tparam shape_storage_type 
      */
     template <typename T, typename U, size_t max_elements, size_t dimension>
-    struct replace_element_type<array::hybrid_ndarray<T,max_elements,dimension>,U,meta::enable_if_t<meta::is_num_v<U>>>
+    struct replace_element_type<hybrid_ndarray<T,max_elements,dimension>,U,meta::enable_if_t<meta::is_num_v<U>>>
     {
-        using type = array::hybrid_ndarray<U,max_elements,dimension>;
+        using type = hybrid_ndarray<U,max_elements,dimension>;
     }; // replace_element_type
 
     /**
@@ -616,9 +616,9 @@ namespace nmtools::meta
      * @tparam dimension 
      */
     template <typename T, typename U, size_t max_elements, size_t dimension>
-    struct replace_value_type<array::hybrid_ndarray<T,max_elements,dimension>,U>
+    struct replace_value_type<hybrid_ndarray<T,max_elements,dimension>,U>
     {
-        using type = array::hybrid_ndarray<U,max_elements,dimension>;
+        using type = hybrid_ndarray<U,max_elements,dimension>;
     }; // replace_element_type
 
     /**
@@ -629,7 +629,7 @@ namespace nmtools::meta
      * @tparam dimension 
      */
     template <typename T, size_t max_elements, size_t dimension>
-    struct get_element_type<array::hybrid_ndarray<T,max_elements,dimension>>
+    struct get_element_type<hybrid_ndarray<T,max_elements,dimension>>
     {
         using type = T;
     }; // get_element_type
@@ -648,13 +648,13 @@ namespace nmtools::meta
     template <typename element_t, auto max_elements, auto dim>
     struct make_hybrid_ndarray
     {
-        using type = array::hybrid_ndarray<element_t,max_elements,dim>;
+        using type = hybrid_ndarray<element_t,max_elements,dim>;
     }; // make_hybrid_ndarray
 
     template <typename element_t, auto max_elements, auto dim>
     using make_hybrid_ndarray_t = type_t<make_hybrid_ndarray<element_t,max_elements,dim>>;
 
-    #define nmtools_hybrid_ndarray ::nmtools::array::hybrid_ndarray
+    #define nmtools_hybrid_ndarray ::nmtools::hybrid_ndarray
 
 #endif // NMTOOLS_HYBRID_NDARRAY
 
@@ -677,7 +677,7 @@ namespace nmtools::meta
      * @tparam T element type of dynamic_ndarrray, deduced automatically
      */
     template <typename T, size_t max_elements, size_t dimension>
-    struct get_ndarray_value_type<array::hybrid_ndarray<T,max_elements,dimension>>
+    struct get_ndarray_value_type<hybrid_ndarray<T,max_elements,dimension>>
     {
         using type = T;
     };
@@ -687,7 +687,7 @@ namespace nmtools::meta
 #include "nmtools/utility/shape.hpp"
 #include "nmtools/utility/isequal.hpp"
 
-namespace nmtools::array
+namespace nmtools
 {
     
     /**
@@ -721,6 +721,6 @@ namespace nmtools::array
         return *this;
     } // operator=
 
-} // namespace nmtools::array
+} // namespace nmtools
 
 #endif // NMTOOLS_ARRAY_NDARRAY_HYBRID_HPP

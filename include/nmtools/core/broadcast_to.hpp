@@ -150,7 +150,7 @@ namespace nmtools::view
     } // broadcast_to
 } // namespace nmtools::view
 
-namespace nmtools::array
+namespace nmtools
 {
     template <typename...args_t, auto max_dim>
     struct as_static_t<
@@ -169,7 +169,7 @@ namespace nmtools::array
             return view::broadcaster(src_shape,dst_shape,origin,bsize);
         }
     };
-} // namespace nmtools::array
+} // namespace nmtools
 
 namespace nmtools::meta
 {

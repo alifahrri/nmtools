@@ -3,7 +3,7 @@
 #include "nmtools/testing/doctest.hpp"
 
 #define RUN_softmax_impl(...) \
-nmtools::array::softmax(__VA_ARGS__);
+nmtools::softmax(__VA_ARGS__);
 
 #ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
 #include "nmtools/testing/benchmarks/bench.hpp"

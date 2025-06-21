@@ -223,7 +223,7 @@ namespace nmtools::functional
 #include "nmtools/array/ufuncs/multiply.hpp"
 #include "nmtools/constants.hpp"
 
-namespace nmtools::array
+namespace nmtools
 {
     namespace fn
     {
@@ -300,6 +300,6 @@ namespace nmtools::array
     } // namespace fn
 
     constexpr inline auto multiply = fn::multiply{};
-} // nmtools::array
+} // nmtools
 
 #endif // NMTOOLS_ARRAY_ARRAY_MULTIPLY_HPP

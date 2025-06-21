@@ -5,7 +5,7 @@
 using nmtools::utils::isclose;
 using nmtools::utils::isequal;
 using nmtools::shape;
-using nmtools::array::fixed_ndarray;
+using nmtools::fixed_ndarray;
 
 static_assert( nmtools::meta::is_ndarray_v<fixed_ndarray<double,1>>);
 static_assert(!nmtools::meta::is_dynamic_ndarray_v<fixed_ndarray<double,1>>);

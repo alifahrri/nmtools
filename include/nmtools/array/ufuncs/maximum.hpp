@@ -162,7 +162,7 @@ namespace nmtools::functional
 #include "nmtools/array/ufuncs/maximum.hpp"
 #include "nmtools/constants.hpp"
 
-namespace nmtools::array
+namespace nmtools
 {
     namespace fn
     {
@@ -225,6 +225,6 @@ namespace nmtools::array
     } // namespace fn
 
     constexpr inline auto maximum = fn::maximum{};
-} // nmtools::array
+} // nmtools
 
 #endif // NMTOOLS_ARRAY_ARRAY_MAXIMUM_HPP

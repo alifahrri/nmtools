@@ -28,8 +28,8 @@
 namespace view = nmtools::view;
 using nmtools::utils::isclose;
 using nmtools::utils::isequal;
-using nmtools::array::fixed_ndarray;
-using nmtools::array::dynamic_ndarray;
+using nmtools::fixed_ndarray;
+using nmtools::dynamic_ndarray;
 
 /**
  * @test test case for const ref view to 1D nmtools_array

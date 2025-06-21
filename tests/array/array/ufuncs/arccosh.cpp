@@ -6,11 +6,11 @@
 #include <array>
 
 namespace nm = nmtools;
-namespace na = nm::array;
+namespace na = nmtools;
 namespace view = nm::view;
 
 #define RUN_arccosh_impl(...) \
-nm::array::arccosh(__VA_ARGS__);
+nmtools::arccosh(__VA_ARGS__);
 
 #ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
 #include "nmtools/testing/benchmarks/bench.hpp"

@@ -8,7 +8,7 @@
 
 namespace nm = nmtools;
 namespace ix = nm::index;
-namespace na = nm::array;
+namespace na = nmtools;
 namespace meta = nm::meta;
 namespace opencl = na::opencl;
 

@@ -284,7 +284,7 @@ namespace nmtools::view
     } // diagonal
 } // nmtools::view
 
-namespace nmtools::array
+namespace nmtools
 {
     template <typename...args_t, auto max_dim>
     struct as_static_t<
@@ -305,7 +305,7 @@ namespace nmtools::array
             return view::diagonal_indexer(src_shape,offset,axis1,axis2,src_size,src_dim);
         }
     }; // as_static_t
-} // namespace nmtools::array
+} // namespace nmtools
 
 #endif // NMTOOLS_ARRAY_VIEW_DIAGONAL_HPP
 
@@ -315,7 +315,7 @@ namespace nmtools::array
 #include "nmtools/array/diagonal.hpp"
 #include "nmtools/core/eval.hpp"
 
-namespace nmtools::array
+namespace nmtools
 {
     template <typename output_t=none_t, typename context_t=none_t, typename resolver_t=eval_result_t<>
         , typename array_t, typename offset_t=meta::ct<0>, typename axis1_t=meta::ct<0>, typename axis2_t=meta::ct<1>>
@@ -330,6 +330,6 @@ namespace nmtools::array
             , resolver
         );
     } // diagonal
-} // namespace nmtools::array
+} // namespace nmtools
 
 #endif // NMTOOLS_ARRAY_ARRAY_DIAGONAL_HPP

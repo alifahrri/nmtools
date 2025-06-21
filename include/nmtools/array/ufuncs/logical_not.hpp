@@ -59,7 +59,7 @@ namespace nmtools::utils::impl
 #include "nmtools/array/ufuncs/logical_not.hpp"
 #include "nmtools/constants.hpp"
 
-namespace nmtools::array
+namespace nmtools
 {
     namespace fn
     {
@@ -81,6 +81,6 @@ namespace nmtools::array
     } // namespace fn
 
     constexpr inline auto logical_not = fn::logical_not{};
-} // nmtools::array
+} // namespace nmtools
 
 #endif // NMTOOLS_ARRAY_ARRAY_LOGICAL_NOT_HPP

@@ -7,10 +7,10 @@
 #include <algorithm> // std::max
 
 namespace nm = nmtools;
-namespace na = nm::array;
+namespace na = nmtools;
 
 #define RUN_greater_equal_impl(...) \
-nm::array::greater_equal(__VA_ARGS__);
+nmtools::greater_equal(__VA_ARGS__);
 
 #ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
 #include "nmtools/testing/benchmarks/bench.hpp"

@@ -9,7 +9,7 @@
 #include <vector>
 
 namespace nm = nmtools;
-namespace na = nm::array;
+namespace na = nmtools;
 namespace kind = na::kind;
 
 #define RUN_impl(...) \
@@ -111,7 +111,7 @@ TEST_CASE("remove_single_dims" * doctest::test_suite("index::remove_single_dims"
     }
     #endif // NMTOOLS_DISABLE_STL
     {
-        auto shape = nm::array::hybrid_ndarray({1,2,3});
+        auto shape = nmtools::hybrid_ndarray({1,2,3});
         auto squeezed = nm::index::remove_single_dims(shape);
         auto expected = nmtools_array{2,3};
         NMTOOLS_ASSERT_EQUAL( squeezed, expected );

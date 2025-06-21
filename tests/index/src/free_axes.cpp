@@ -3,7 +3,7 @@
 #include "nmtools/testing/data/index/free_axes.hpp"
 
 namespace nm = nmtools;
-namespace na = nm::array;
+namespace na = nmtools;
 namespace meta = nm::meta;
 namespace kind = na::kind;
 

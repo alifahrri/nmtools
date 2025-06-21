@@ -16,7 +16,7 @@
 
 // experimental version that combine all three to single class
 
-namespace nmtools::array
+namespace nmtools
 {
     template <
           typename buffer_t
@@ -162,8 +162,8 @@ namespace nmtools::array
     using row_major_ndarray_t = ndarray_t<buffer_t,shape_buffer_t,stride_buffer_t,row_major_offset_t>;
 
     template <typename type, size_t max_size>
-    using static_vector_ndarray_t = array::ndarray_t<nmtools_array<type,max_size>,nmtools_array<size_t,1>>;
-} // namespace nmtools::array
+    using static_vector_ndarray_t = ndarray_t<nmtools_array<type,max_size>,nmtools_array<size_t,1>>;
+} // namespace nmtools
 
 namespace nmtools
 {
@@ -172,9 +172,9 @@ namespace nmtools
         , typename shape_buffer_t
         , template <typename...>typename stride_buffer_t
         , template <typename...>typename offset_compute_t>
-    struct get_t<I,array::ndarray_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t>>
+    struct get_t<I,ndarray_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t>>
     {
-        using array_type = array::ndarray_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t>;
+        using array_type = ndarray_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t>;
 
         static constexpr auto vtype = [](){
             constexpr auto dim = meta::len_v<shape_buffer_t>;
@@ -216,9 +216,9 @@ namespace nmtools::meta
         , typename shape_buffer_t
         , template <typename...>typename stride_buffer_t
         , template <typename...>typename offset_compute_t>
-    struct get_element_type<array::ndarray_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t>>
+    struct get_element_type<ndarray_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t>>
     {
-        using array_type = array::ndarray_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t>;
+        using array_type = ndarray_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t>;
         static constexpr auto vtype = [](){
             using T = typename array_type::value_type;
             if constexpr (is_num_v<T>) {
@@ -236,10 +236,10 @@ namespace nmtools::meta
         , template <typename...>typename stride_buffer_t
         , template <typename...>typename offset_compute_t>
     struct is_ndarray<
-        array::ndarray_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t>
+        ndarray_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t>
     >
     {
-        using array_type = array::ndarray_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t>;
+        using array_type = ndarray_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t>;
         using element_type = typename array_type::value_type;
         static constexpr auto value = is_num_v<element_type>;
     }; // is_ndarray
@@ -250,10 +250,10 @@ namespace nmtools::meta
         , template <typename...>typename stride_buffer_t
         , template <typename...>typename offset_compute_t>
     struct fixed_dim<
-        array::ndarray_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t>
+        ndarray_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t>
     >
     {
-        using array_type = array::ndarray_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t>;
+        using array_type = ndarray_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t>;
         using shape_type = typename array_type::shape_type;
 
         static constexpr auto value = [](){
@@ -273,10 +273,10 @@ namespace nmtools::meta
         , template <typename...>typename stride_buffer_t
         , template <typename...>typename offset_compute_t>
     struct fixed_ndarray_shape<
-        array::ndarray_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t>
+        ndarray_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t>
     >
     {
-        using array_type = array::ndarray_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t>;
+        using array_type = ndarray_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t>;
         using shape_type = typename array_type::shape_type;
 
         static constexpr auto value = [](){
@@ -295,10 +295,10 @@ namespace nmtools::meta
         , template <typename...>typename stride_buffer_t
         , template <typename...>typename offset_compute_t>
     struct fixed_shape<
-        array::ndarray_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t>
+        ndarray_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t>
     >
     {
-        using array_type = array::ndarray_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t>;
+        using array_type = ndarray_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t>;
         using shape_type = typename array_type::shape_type;
 
         static constexpr auto value = [](){
@@ -317,10 +317,10 @@ namespace nmtools::meta
         , template <typename...>typename stride_buffer_t
         , template <typename...>typename offset_compute_t>
     struct fixed_size<
-        array::ndarray_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t>
+        ndarray_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t>
     >
     {
-        using array_type  = array::ndarray_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t>;
+        using array_type  = ndarray_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t>;
         using shape_type  = typename array_type::shape_type;
         using buffer_type = typename array_type::buffer_type;
 
@@ -342,10 +342,10 @@ namespace nmtools::meta
         , template <typename...>typename stride_buffer_t
         , template <typename...>typename offset_compute_t>
     struct bounded_dim<
-        array::ndarray_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t>
+        ndarray_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t>
     >
     {
-        using array_type  = array::ndarray_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t>;
+        using array_type  = ndarray_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t>;
         using shape_type  = typename array_type::shape_type;
         using buffer_type = typename array_type::buffer_type;
 
@@ -368,10 +368,10 @@ namespace nmtools::meta
         , template <typename...>typename stride_buffer_t
         , template <typename...>typename offset_compute_t>
     struct bounded_size<
-        array::ndarray_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t>
+        ndarray_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t>
     >
     {
-        using array_type  = array::ndarray_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t>;
+        using array_type  = ndarray_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t>;
         using shape_type  = typename array_type::shape_type;
         using buffer_type = typename array_type::buffer_type;
 
@@ -394,18 +394,18 @@ namespace nmtools::meta
         , template <typename...>typename offset_compute_t
         , auto...new_shape>
     struct resize_shape<
-        array::ndarray_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t>
+        ndarray_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t>
         , as_type<new_shape...>
     >
     {
-        using array_type  = array::ndarray_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t>;
+        using array_type  = ndarray_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t>;
         using shape_type  = typename array_type::shape_type;
         using buffer_type = typename array_type::buffer_type;
 
         using new_shape_type = nmtools_tuple<ct<new_shape>...>;
 
         // TODO: check if buffer type is sufficient
-        using type = array::ndarray_t<buffer_t,new_shape_type,array::resolve_stride_type_t,offset_compute_t>;
+        using type = ndarray_t<buffer_t,new_shape_type,resolve_stride_type_t,offset_compute_t>;
     };
 
     template <
@@ -415,18 +415,18 @@ namespace nmtools::meta
         , template <typename...>typename offset_compute_t
         , auto new_size>
     struct resize_dim<
-        array::ndarray_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t>
+        ndarray_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t>
         , new_size
     >
     {
-        using array_type  = array::ndarray_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t>;
+        using array_type  = ndarray_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t>;
         using shape_type  = typename array_type::shape_type;
         using buffer_type = typename array_type::buffer_type;
         using index_type  = typename array_type::index_type;
 
         using new_shape_type = nmtools_array<index_type,new_size>;
 
-        using type = array::ndarray_t<buffer_t,new_shape_type,array::resolve_stride_type_t,offset_compute_t>;
+        using type = ndarray_t<buffer_t,new_shape_type,resolve_stride_type_t,offset_compute_t>;
     };
 
     template <
@@ -436,11 +436,11 @@ namespace nmtools::meta
         , template <typename...>typename offset_compute_t
         , auto new_size>
     struct resize_size<
-        array::ndarray_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t>
+        ndarray_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t>
         , new_size
     >
     {
-        using array_type  = array::ndarray_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t>;
+        using array_type  = ndarray_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t>;
         using shape_type  = typename array_type::shape_type;
         using buffer_type = typename array_type::buffer_type;
         using value_type  = typename array_type::value_type;
@@ -448,7 +448,7 @@ namespace nmtools::meta
         using new_buffer_type = nmtools_array<value_type,new_size>;
 
         // TODO: check if shape type is sufficient
-        using type = array::ndarray_t<new_buffer_type,shape_buffer_t,stride_buffer_t,offset_compute_t>;
+        using type = ndarray_t<new_buffer_type,shape_buffer_t,stride_buffer_t,offset_compute_t>;
     };
 
     namespace error
@@ -465,11 +465,11 @@ namespace nmtools::meta
         , template <typename...>typename offset_compute_t
         , auto new_size>
     struct resize_bounded_size<
-        array::ndarray_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t>
+        ndarray_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t>
         , new_size
     >
     {
-        using array_type  = array::ndarray_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t>;
+        using array_type  = ndarray_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t>;
         using shape_type  = typename array_type::shape_type;
         using buffer_type = typename array_type::buffer_type;
         using value_type  = typename array_type::value_type;
@@ -480,8 +480,8 @@ namespace nmtools::meta
 
         static constexpr auto vtype = [](){
             // TODO: consider to replace buffer's size instead of using new_buffer_type, so no need inner brach for is_fixed_size_v
-            using hybrid_type [[maybe_unused]] = array::ndarray_t<new_hybrid_buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t>;
-            using fixed_type [[maybe_unused]]  = array::ndarray_t<new_buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t>;
+            using hybrid_type [[maybe_unused]] = ndarray_t<new_hybrid_buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t>;
+            using fixed_type [[maybe_unused]]  = ndarray_t<new_buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t>;
             if constexpr (is_bounded_size_v<buffer_type> && is_constant_index_array_v<shape_type>) {
                 constexpr auto product = index::product(shape_type{});
                 if constexpr ((new_size >= product) && is_fixed_size_v<buffer_type>) {
@@ -513,11 +513,11 @@ namespace nmtools::meta
         , template <typename...>typename offset_compute_t
         , auto new_dim>
     struct resize_bounded_dim<
-        array::ndarray_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t>
+        ndarray_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t>
         , new_dim
     >
     {
-        using array_type  = array::ndarray_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t>;
+        using array_type  = ndarray_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t>;
         using shape_type  = typename array_type::shape_type;
         using buffer_type = typename array_type::buffer_type;
         using index_type  = typename array_type::index_type;
@@ -531,10 +531,10 @@ namespace nmtools::meta
                 using error_type = error::RESIZE_BOUNDED_DIM_UNSUPPORTED<array_type>;
                 return as_value_v<error_type>;
             } else if constexpr (is_fixed_size_v<shape_type>) {
-                using type = array::ndarray_t<buffer_t,new_fixed_t,array::resolve_stride_type_t,offset_compute_t>;
+                using type = ndarray_t<buffer_t,new_fixed_t,resolve_stride_type_t,offset_compute_t>;
                 return as_value_v<type>;
             } else if constexpr (is_bounded_size_v<shape_type>) {
-                using type = array::ndarray_t<buffer_t,new_shape_t,array::resolve_stride_type_t,offset_compute_t>;
+                using type = ndarray_t<buffer_t,new_shape_t,resolve_stride_type_t,offset_compute_t>;
                 return as_value_v<type>;
             } else {
                 using error_type = error::RESIZE_BOUNDED_DIM_UNSUPPORTED<array_type>;
@@ -551,11 +551,11 @@ namespace nmtools::meta
         , template <typename...>typename stride_buffer_t
         , template <typename...>typename offset_compute_t>
     struct replace_element_type<
-        array::ndarray_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t>, U
+        ndarray_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t>, U
     >
     {
         using buffer_type = replace_element_type_t<buffer_t,U>;
-        using type = array::ndarray_t<buffer_type,shape_buffer_t,stride_buffer_t,offset_compute_t>;
+        using type = ndarray_t<buffer_type,shape_buffer_t,stride_buffer_t,offset_compute_t>;
     }; // replace_element_type
 
     template <
@@ -564,7 +564,7 @@ namespace nmtools::meta
         , template <typename...>typename stride_buffer_t
         , template <typename...>typename offset_compute_t>
     struct is_index_array<
-        array::ndarray_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t>
+        ndarray_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t>
     >
     {
         static constexpr auto value = [](){
@@ -581,9 +581,9 @@ namespace nmtools::meta
         , template <typename...>typename stride_buffer_t
         , template <typename...>typename offset_compute_t>
     struct contiguous_axis<
-        array::ndarray_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t>
+        ndarray_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t>
     > {
-        using array_type  = array::ndarray_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t>;
+        using array_type  = ndarray_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t>;
         using offset_type = typename array_type::offset_type;
         static constexpr auto value = [](){
             if constexpr (is_row_major_offset_v<offset_type>) {
@@ -604,7 +604,7 @@ namespace nmtools::meta
 #define NMTOOLS_CAST_DEFAULT_CLIPPED_VALUE (6)
 #endif // NMTOOLS_CAST_DEFAULT_CLIPPED_VALUE
 
-namespace nmtools::array::kind
+namespace nmtools::kind
 {
     enum class BufferKind {
         CONSTANT, // useful for shape, but should not used for buffer
@@ -637,7 +637,7 @@ namespace nmtools::array::kind
 
 namespace nmtools::meta
 {
-    using array::kind::BufferKind;
+    using kind::BufferKind;
 
     namespace error
     {
@@ -646,11 +646,11 @@ namespace nmtools::meta
     }
 
     template <typename src_t, BufferKind ShapeKind, BufferKind SizeKind, typename...Args>
-    struct resolve_optype<void, cast_kind_t, src_t, array::kind::ndarray_kind_t<ShapeKind,SizeKind,Args...>>
+    struct resolve_optype<void, cast_kind_t, src_t, kind::ndarray_kind_t<ShapeKind,SizeKind,Args...>>
     {
         static constexpr auto vtype = [](){
             using element_type = get_element_type_t<src_t>;
-            using error_type [[maybe_unused]] = error::CAST_NDARRAY_KIND_UNSUPPORTED<src_t,array::kind::ndarray_kind_t<ShapeKind,SizeKind,Args...>>;
+            using error_type [[maybe_unused]] = error::CAST_NDARRAY_KIND_UNSUPPORTED<src_t,kind::ndarray_kind_t<ShapeKind,SizeKind,Args...>>;
             constexpr auto shape  = fixed_shape_v<src_t>;
             constexpr auto dim    = fixed_dim_v<src_t>;
             constexpr auto size   = fixed_size_v<src_t>;
@@ -685,7 +685,7 @@ namespace nmtools::meta
             // bounded shape (for bounded dim)
             constexpr auto b_shape_vtype = [&](){
                 if constexpr (!is_fail_v<b_dim_type>) {
-                    using type = array::static_vector<size_t,b_dim>;
+                    using type = static_vector<size_t,b_dim>;
                     return as_value_v<type>;
                 } else {
                     return as_value_v<error_type>;
@@ -708,7 +708,7 @@ namespace nmtools::meta
                     using args_list = type_list<Args...>;
                     using max_t = at_t<args_list,0>;
                     constexpr auto max = max_t::value;
-                    using type = array::static_vector<clipped_size_t<max>,b_dim>;
+                    using type = static_vector<clipped_size_t<max>,b_dim>;
                     return as_value_v<type>;
                 } else {
                     return as_value_v<error_type>;
@@ -726,7 +726,7 @@ namespace nmtools::meta
             // bounded buffer
             constexpr auto b_buffer_vtype = [&](){
                 if constexpr (!is_fail_v<b_size_type>) {
-                    using type = array::static_vector<element_type,b_size>;
+                    using type = static_vector<element_type,b_size>;
                     return as_value_v<type>;
                 } else {
                     return as_value_v<error_type>;
@@ -749,7 +749,7 @@ namespace nmtools::meta
                 && !(is_fail_v<c_shape_type>)
                 && !(is_fail_v<f_buffer_type>)
             ) {
-                using type = array::ndarray_t<f_buffer_type,c_shape_type>;
+                using type = ndarray_t<f_buffer_type,c_shape_type>;
                 return as_value_v<type>;
             } else if constexpr (
                     (ShapeKind == BufferKind::CONSTANT)
@@ -757,7 +757,7 @@ namespace nmtools::meta
                 && !(is_fail_v<c_shape_type>)
                 && !(is_fail_v<b_buffer_type>)
             ) {
-                using type = array::ndarray_t<b_buffer_type,c_shape_type>;
+                using type = ndarray_t<b_buffer_type,c_shape_type>;
                 return as_value_v<type>;
             } else if constexpr (
                     (ShapeKind == BufferKind::CONSTANT)
@@ -765,7 +765,7 @@ namespace nmtools::meta
                 && !(is_fail_v<c_shape_type>)
                 && !(is_fail_v<d_buffer_type>)
             ) {
-                using type = array::ndarray_t<d_buffer_type,c_shape_type>;
+                using type = ndarray_t<d_buffer_type,c_shape_type>;
                 return as_value_v<type>;
             } else if constexpr (
                     (ShapeKind == BufferKind::FIXED)
@@ -773,7 +773,7 @@ namespace nmtools::meta
                 && !(is_fail_v<f_shape_type>)
                 && !(is_fail_v<f_buffer_type>)
             ) {
-                using type = array::ndarray_t<f_buffer_type,f_shape_type>;
+                using type = ndarray_t<f_buffer_type,f_shape_type>;
                 return as_value_v<type>;
             } else if constexpr (
                     (ShapeKind == BufferKind::FIXED)
@@ -781,7 +781,7 @@ namespace nmtools::meta
                 && !(is_fail_v<f_shape_type>)
                 && !(is_fail_v<b_buffer_type>)
             ) {
-                using type = array::ndarray_t<b_buffer_type,f_shape_type>;
+                using type = ndarray_t<b_buffer_type,f_shape_type>;
                 return as_value_v<type>;
             } else if constexpr (
                     (ShapeKind == BufferKind::FIXED)
@@ -789,7 +789,7 @@ namespace nmtools::meta
                 && !(is_fail_v<f_shape_type>)
                 && !(is_fail_v<d_buffer_type>)
             ) {
-                using type = array::ndarray_t<d_buffer_type,f_shape_type>;
+                using type = ndarray_t<d_buffer_type,f_shape_type>;
                 return as_value_v<type>;
             } else if constexpr (
                     (ShapeKind == BufferKind::HYBRID)
@@ -797,7 +797,7 @@ namespace nmtools::meta
                 && !(is_fail_v<b_shape_type>)
                 && !(is_fail_v<f_buffer_type>)
             ) {
-                using type = array::ndarray_t<f_buffer_type,b_shape_type>;
+                using type = ndarray_t<f_buffer_type,b_shape_type>;
                 return as_value_v<type>;
             } else if constexpr (
                     (ShapeKind == BufferKind::HYBRID)
@@ -805,7 +805,7 @@ namespace nmtools::meta
                 && !(is_fail_v<b_shape_type>)
                 && !(is_fail_v<b_buffer_type>)
             ) {
-                using type = array::ndarray_t<b_buffer_type,b_shape_type>;
+                using type = ndarray_t<b_buffer_type,b_shape_type>;
                 return as_value_v<type>;
             } else if constexpr (
                     (ShapeKind == BufferKind::HYBRID)
@@ -813,7 +813,7 @@ namespace nmtools::meta
                 && !(is_fail_v<b_shape_type>)
                 && !(is_fail_v<d_buffer_type>)
             ) {
-                using type = array::ndarray_t<d_buffer_type,b_shape_type>;
+                using type = ndarray_t<d_buffer_type,b_shape_type>;
                 return as_value_v<type>;
             } else if constexpr (
                     (ShapeKind == BufferKind::DYNAMIC)
@@ -821,7 +821,7 @@ namespace nmtools::meta
                 && !(is_fail_v<d_shape_type>)
                 && !(is_fail_v<f_buffer_type>)
             ) {
-                using type = array::ndarray_t<f_buffer_type,d_shape_type>;
+                using type = ndarray_t<f_buffer_type,d_shape_type>;
                 return as_value_v<type>;
             } else if constexpr (
                     (ShapeKind == BufferKind::DYNAMIC)
@@ -829,7 +829,7 @@ namespace nmtools::meta
                 && !(is_fail_v<d_shape_type>)
                 && !(is_fail_v<b_buffer_type>)
             ) {
-                using type = array::ndarray_t<b_buffer_type,d_shape_type>;
+                using type = ndarray_t<b_buffer_type,d_shape_type>;
                 return as_value_v<type>;
             } else if constexpr (
                     (ShapeKind == BufferKind::DYNAMIC)
@@ -837,7 +837,7 @@ namespace nmtools::meta
                 && !(is_fail_v<d_shape_type>)
                 && !(is_fail_v<d_buffer_type>)
             ) {
-                using type = array::ndarray_t<d_buffer_type,d_shape_type>;
+                using type = ndarray_t<d_buffer_type,d_shape_type>;
                 return as_value_v<type>;
             } else if constexpr (
                    (ShapeKind == BufferKind::CLIPPED)
@@ -845,7 +845,7 @@ namespace nmtools::meta
                 && !(is_fail_v<cl_shape_type>)
                 && !(is_fail_v<f_buffer_type>)
             ) {
-                using type = array::ndarray_t<f_buffer_type,cl_shape_type>;
+                using type = ndarray_t<f_buffer_type,cl_shape_type>;
                 return as_value_v<type>;
             } else if constexpr (
                    (ShapeKind == BufferKind::CLIPPED)
@@ -853,7 +853,7 @@ namespace nmtools::meta
                 && !(is_fail_v<cl_shape_type>)
                 && !(is_fail_v<b_buffer_type>)
             ) {
-                using type = array::ndarray_t<b_buffer_type,cl_shape_type>;
+                using type = ndarray_t<b_buffer_type,cl_shape_type>;
                 return as_value_v<type>;
             } else if constexpr (
                    (ShapeKind == BufferKind::CLIPPED)
@@ -861,7 +861,7 @@ namespace nmtools::meta
                 && !(is_fail_v<cl_shape_type>)
                 && !(is_fail_v<d_buffer_type>)
             ) {
-                using type = array::ndarray_t<d_buffer_type,cl_shape_type>;
+                using type = ndarray_t<d_buffer_type,cl_shape_type>;
                 return as_value_v<type>;
             } else {
                 return as_value_v<error_type>;

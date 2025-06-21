@@ -65,7 +65,7 @@ namespace nmtools::utils::impl
 #include "nmtools/array/ufuncs/logical_or.hpp"
 #include "nmtools/constants.hpp"
 
-namespace nmtools::array
+namespace nmtools
 {
     namespace fn
     {
@@ -87,6 +87,6 @@ namespace nmtools::array
     } // namespace fn
 
     constexpr inline auto logical_or = fn::logical_or{};
-} // nmtools::array
+} // nmtools
 
 #endif // NMTOOLS_ARRAY_ARRAY_LOGICAL_OR_HPP

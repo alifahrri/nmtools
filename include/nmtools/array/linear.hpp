@@ -34,7 +34,7 @@ namespace nmtools::view
 #include "nmtools/array/linear.hpp"
 #include "nmtools/core/eval.hpp"
 
-namespace nmtools::array
+namespace nmtools
 {
     template <typename output_t=none_t, typename context_t=none_t, typename resolver_t=eval_result_t<>
         , typename input_t, typename weight_t, typename bias_t=none_t>
@@ -49,6 +49,6 @@ namespace nmtools::array
             , resolver
         );
     } // linear
-} // nmtools::array
+} // nmtools
 
 #endif // NMTOOLS_ARRAY_ARRAY_LINEAR_HPP

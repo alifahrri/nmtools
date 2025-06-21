@@ -54,7 +54,7 @@ namespace nmtools::functional
 #include "nmtools/array/stack.hpp"
 #include "nmtools/core/eval.hpp"
 
-namespace nmtools::array
+namespace nmtools
 {
     template <typename output_t=none_t, typename context_t=none_t, typename resolver_t=eval_result_t<>,
         typename lhs_array_t, typename rhs_array_t, typename axis_t=meta::ct<0>>
@@ -68,6 +68,6 @@ namespace nmtools::array
             , resolver
         );
     } // stack
-} // namespace nmtools::array
+} // namespace nmtools
 
 #endif // NMTOOLS_ARRAY_ARRAY_STACK_HPP

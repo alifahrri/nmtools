@@ -11,8 +11,8 @@
 using nmtools_list;
 using nmtools_array;
 using nmtools_tuple;
-using nmtools::array::fixed_ndarray;
-using nmtools::array::dynamic_ndarray;
+using nmtools::fixed_ndarray;
+using nmtools::dynamic_ndarray;
 using nmtools::utils::isequal;
 
 namespace meta = nmtools::meta;
@@ -292,7 +292,7 @@ TEST_CASE("isequal(array[2],tuple[2])" * doctest::test_suite("utils"))
 }
 #endif
 
-// TODO: fix  nmtools::impl::error::AT_UNSUPPORTED<const nmtools::array::fixed_ndarray<int, 2, 3>&, long unsigned int>;
+// TODO: fix  nmtools::impl::error::AT_UNSUPPORTED<const nmtools::fixed_ndarray<int, 2, 3>&, long unsigned int>;
 #ifndef NMTOOLS_DISABLE_STL
 TEST_CASE("isequal(fixed_ndarray[2],fixed_ndarray[2])" * doctest::test_suite("utils"))
 {
@@ -482,7 +482,7 @@ TEST_CASE("isequal(int[][][],int[][][])" * doctest::test_suite("utils"))
     }
 }
 
-// TODO: fix  nmtools::impl::error::AT_UNSUPPORTED<const nmtools::array::fixed_ndarray<int, 2, 3>&, long unsigned int>;
+// TODO: fix  nmtools::impl::error::AT_UNSUPPORTED<const nmtools::fixed_ndarray<int, 2, 3>&, long unsigned int>;
 #ifndef NMTOOLS_DISABLE_STL
 TEST_CASE("isequal(fixed_ndarray[3],fixed_ndarray[3])" * doctest::test_suite("utils"))
 {

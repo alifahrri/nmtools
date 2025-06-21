@@ -30,7 +30,7 @@ kernel void test_product(
 #include "nmtools/testing/opencl.hpp"
 #include <cstring>
 
-namespace opencl = nmtools::array::opencl;
+namespace opencl = nmtools::opencl;
 namespace testing = nmtools::testing;
 
 extern unsigned char nm_cl_test_product_spv[];

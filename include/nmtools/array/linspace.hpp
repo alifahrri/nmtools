@@ -292,7 +292,7 @@ namespace nmtools::functional
 #include "nmtools/array/linspace.hpp"
 #include "nmtools/core/eval.hpp"
 
-namespace nmtools::array
+namespace nmtools
 {
     template <typename output_t=none_t, typename context_t=none_t, typename resolver_t=eval_result_t<>
         , typename start_t, typename stop_t, typename num_t=nm_size_t, typename endpoint_t=meta::true_type, typename retstep_t=meta::false_type, typename dtype_t=none_t>
@@ -315,6 +315,6 @@ namespace nmtools::array
                 , resolver);
         }
     } // linspace
-} // nmtools::array
+} // nmtools
 
 #endif // NMTOOLS_ARRAY_ARRAY_LINSPACE_HPP

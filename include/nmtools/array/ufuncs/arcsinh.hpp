@@ -84,7 +84,7 @@ namespace nmtools::functional
 #include "nmtools/array/ufuncs/arcsinh.hpp"
 #include "nmtools/constants.hpp"
 
-namespace nmtools::array
+namespace nmtools
 {
     namespace fn
     {
@@ -106,6 +106,6 @@ namespace nmtools::array
     } // namespace fn
 
     constexpr inline auto arcsinh = fn::arcsinh{};
-} // nmtools::array
+} // namespace nmtools
 
 #endif // NMTOOLS_ARRAY_ARRAY_ARCSINH_HPP

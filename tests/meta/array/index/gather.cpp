@@ -9,7 +9,7 @@
 #include <tuple>
 
 namespace nm = nmtools;
-namespace na = nm::array;
+namespace na = nmtools;
 namespace meta = nm::meta;
 
 TEST_CASE("gather(vector;vector)" * doctest::test_suite("index::gather"))

@@ -95,7 +95,7 @@ namespace nmtools::functional
 #include "nmtools/array/activations/selu.hpp"
 #include "nmtools/core/eval.hpp"
 
-namespace nmtools::array
+namespace nmtools
 {
     /**
      * @brief Eagerly evaluate selu.
@@ -121,6 +121,6 @@ namespace nmtools::array
             ,resolver
         );
     }
-} // namespace nmtools::array
+} // namespace nmtools
 
 #endif // NMTOOLS_ARRAY_ARRAY_ACTIVATIONS_SELU_HPP

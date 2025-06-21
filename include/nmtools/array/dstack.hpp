@@ -124,7 +124,7 @@ namespace nmtools::view
 #include "nmtools/array/dstack.hpp"
 #include "nmtools/core/eval.hpp"
 
-namespace nmtools::array
+namespace nmtools
 {
     template <typename output_t=none_t, typename context_t=none_t, typename resolver_t=eval_result_t<>
         , typename a_t, typename b_t>
@@ -139,6 +139,6 @@ namespace nmtools::array
             , resolver
         );
     }
-} // nmtools::array
+} // nmtools
 
 #endif // NMTOOLS_ARRAY_ARRAY_DSTACK_HPP

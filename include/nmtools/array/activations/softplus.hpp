@@ -153,7 +153,7 @@ namespace nmtools::functional
 #include "nmtools/array/activations/softplus.hpp"
 #include "nmtools/core/eval.hpp"
 
-namespace nmtools::array
+namespace nmtools
 {
     /**
      * @brief Eagerly evaluate element-wise softplus function
@@ -183,6 +183,6 @@ namespace nmtools::array
             ,resolver
         );
     } // softplus
-} // namespace nmtools::array
+} // namespace nmtools
 
 #endif // NMTOOLS_ARRAY_ARRAY_ACTIVATIONS_SOFTPLUS_HPP

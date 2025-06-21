@@ -5,7 +5,7 @@
 #include "nmtools/testing/testing.hpp"
 
 namespace nm = nmtools;
-namespace na = nm::array;
+namespace na = nmtools;
 
 // create slice args from split args
 NMTOOLS_TESTING_DECLARE_CASE(index, split_args)

@@ -1,12 +1,12 @@
 #define NMTOOLS_CONSTEXPR_CAST_ARRAYS_EXTRA(name) \
-constexpr inline auto name##_cs_fb = nmtools::cast(name, nmtools::array::kind::ndarray_cs_fb); \
-constexpr inline auto name##_cs_hb = nmtools::cast(name, nmtools::array::kind::ndarray_cs_hb); \
-constexpr inline auto name##_fs_fb = nmtools::cast(name, nmtools::array::kind::ndarray_fs_fb); \
-constexpr inline auto name##_fs_hb = nmtools::cast(name, nmtools::array::kind::ndarray_fs_hb); \
-constexpr inline auto name##_hs_fb = nmtools::cast(name, nmtools::array::kind::ndarray_hs_fb); \
-constexpr inline auto name##_hs_hb = nmtools::cast(name, nmtools::array::kind::ndarray_hs_hb); \
-constexpr inline auto name##_ls_fb = nmtools::cast(name, nmtools::array::kind::ndarray_ls_fb); \
-constexpr inline auto name##_ls_hb = nmtools::cast(name, nmtools::array::kind::ndarray_ls_hb);
+constexpr inline auto name##_cs_fb = nmtools::cast(name, nmtools::kind::ndarray_cs_fb); \
+constexpr inline auto name##_cs_hb = nmtools::cast(name, nmtools::kind::ndarray_cs_hb); \
+constexpr inline auto name##_fs_fb = nmtools::cast(name, nmtools::kind::ndarray_fs_fb); \
+constexpr inline auto name##_fs_hb = nmtools::cast(name, nmtools::kind::ndarray_fs_hb); \
+constexpr inline auto name##_hs_fb = nmtools::cast(name, nmtools::kind::ndarray_hs_fb); \
+constexpr inline auto name##_hs_hb = nmtools::cast(name, nmtools::kind::ndarray_hs_hb); \
+constexpr inline auto name##_ls_fb = nmtools::cast(name, nmtools::kind::ndarray_ls_fb); \
+constexpr inline auto name##_ls_hb = nmtools::cast(name, nmtools::kind::ndarray_ls_hb);
 
 #include "nmtools/array/broadcast_arrays.hpp"
 #include "nmtools/testing/data/constexpr/broadcast_arrays.hpp"
@@ -14,7 +14,7 @@ constexpr inline auto name##_ls_hb = nmtools::cast(name, nmtools::array::kind::n
 #include "nmtools/testing/doctest.hpp"
 
 namespace nm = nmtools;
-namespace na = nm::array;
+namespace na = nmtools;
 namespace view = nm::view;
 namespace meta = nm::meta;
 
@@ -23,7 +23,7 @@ SUBCASE(#case_name) \
 { \
     NMTOOLS_TESTING_USE_CASE(constexpr_broadcast_arrays, case_name); \
     using namespace args; \
-    constexpr auto results = nmtools::array::broadcast_arrays(__VA_ARGS__); \
+    constexpr auto results = nmtools::broadcast_arrays(__VA_ARGS__); \
     constexpr auto N = meta::len_v<decltype(nm::unwrap(results))>; \
     meta::template_for<N>([&](auto index){ \
         constexpr auto i = decltype(index)::value; \

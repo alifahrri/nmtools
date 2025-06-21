@@ -6,10 +6,10 @@
 #include <array>
 
 namespace nm = nmtools;
-namespace na = nm::array;
+namespace na = nmtools;
 
 #define RUN_log10_impl(...) \
-nm::array::log10(__VA_ARGS__);
+nmtools::log10(__VA_ARGS__);
 
 #ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
 #include "nmtools/testing/benchmarks/bench.hpp"

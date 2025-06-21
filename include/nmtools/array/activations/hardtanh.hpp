@@ -141,7 +141,7 @@ namespace nmtools::functional
 #include "nmtools/array/activations/hardtanh.hpp"
 #include "nmtools/core/eval.hpp"
 
-namespace nmtools::array
+namespace nmtools
 {
     /**
      * @brief Eagerly compute element-wise hardtanh ufunc.
@@ -171,6 +171,6 @@ namespace nmtools::array
             ,resolver
         );
     } // hardtanh
-} // namespace nmtools::array
+} // namespace nmtools
 
 #endif // NMTOOLS_ARRAY_ARRAY_ACTIVATIONS_HARDTANH_HPP

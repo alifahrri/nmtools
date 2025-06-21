@@ -190,7 +190,7 @@ NMTOOLS_TESTING_DECLARE_CASE(index, insert_index)
 }
 
 namespace nm = nmtools;
-namespace na = nm::array;
+namespace na = nmtools;
 
 #define RUN_insert_index_impl(...) \
 nm::index::insert_index(__VA_ARGS__);

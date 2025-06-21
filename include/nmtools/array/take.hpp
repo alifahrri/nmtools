@@ -140,7 +140,7 @@ namespace nmtools::functional
 #include "nmtools/array/take.hpp"
 #include "nmtools/core/eval.hpp"
 
-namespace nmtools::array
+namespace nmtools
 {
     /**
      * @brief Eagerly evaluate take op.
@@ -171,6 +171,6 @@ namespace nmtools::array
             ,resolver
         );
     } // take
-} // namespace nmtools::array
+} // namespace nmtools
 
 #endif // NMTOOLS_ARRAY_ARRAY_TAKE_HPP

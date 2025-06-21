@@ -61,7 +61,7 @@ namespace nmtools::functional
 #include "nmtools/array/expand_dims.hpp"
 #include "nmtools/core/eval.hpp"
 
-namespace nmtools::array
+namespace nmtools
 {
     /**
      * @brief Eagerly expand the shape of an array.
@@ -88,6 +88,6 @@ namespace nmtools::array
             ,resolver
         );
     } // expand_dims
-} // namespace nmtools::array
+} // namespace nmtools
 
 #endif // NMTOOLS_ARRAY_ARRAY_EXPAND_DIMS_HPP

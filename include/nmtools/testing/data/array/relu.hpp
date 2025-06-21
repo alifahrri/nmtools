@@ -5,7 +5,7 @@
 #include "nmtools/testing/array_cast.hpp"
 
 namespace nm = nmtools;
-namespace na = nm::array;
+namespace na = nmtools;
 namespace kind = na::kind;
 
 #ifndef NMTOOLS_BUILD_CONSTEXPR_TESTS

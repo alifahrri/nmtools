@@ -107,7 +107,7 @@ namespace nmtools::functional
 #include "nmtools/array/ufuncs/arctan2.hpp"
 #include "nmtools/constants.hpp"
 
-namespace nmtools::array
+namespace nmtools
 {
     namespace fn
     {
@@ -129,6 +129,6 @@ namespace nmtools::array
     } // namespace fn
 
     constexpr inline auto arctan2 = fn::arctan2{};
-} // nmtools::array
+} // namespace nmtools
 
 #endif // NMTOOLS_ARRAY_ARRAY_ARCTAN2_HPP

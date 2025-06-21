@@ -6,7 +6,7 @@
 #include "nmtools/testing/doctest.hpp"
 
 namespace nm = nmtools;
-namespace na = nm::array;
+namespace na = nmtools;
 
 #define RUN_shape_array_slice_impl(...) \
 nm::index::shape_array_slice(__VA_ARGS__);

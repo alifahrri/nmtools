@@ -6,7 +6,7 @@ namespace nm = nmtools;
 namespace ix = nm::index;
 namespace view = nm::view;
 namespace meta = nm::meta;
-namespace opencl = nm::array::opencl;
+namespace opencl = nmtools::opencl;
 
 #define gather_kernel_name "test_gather"
 

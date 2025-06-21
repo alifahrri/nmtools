@@ -6,7 +6,7 @@
 #include <tuple>
 
 namespace nm = nmtools;
-namespace na = nm::array;
+namespace na = nmtools;
 namespace meta = nm::meta;
 using nm::index::compute_indices_t;
 

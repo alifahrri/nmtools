@@ -18,7 +18,7 @@ __global__ void nm_cuda_run_function(const function_t fun
     , const tuple<operands_t...> operands
 ) {
     namespace meta = nmtools::meta;
-    namespace na = nmtools::array;
+    namespace na = nmtools;
     namespace fn = nmtools::functional;
     auto output = na::create_mutable_array<out_static_dim>(out,out_shape_ptr,out_dim);
     auto result = fn::apply(fun,operands);
@@ -29,7 +29,7 @@ __global__ void nm_cuda_run_function(const function_t fun
     na::assign_result(output,result,thread_id,block_id,block_size);
 }
 
-namespace nmtools::array
+namespace nmtools
 {
     class cuda_exception : public ::nmtools::exception
     {
@@ -49,7 +49,7 @@ namespace nmtools::array
     };
 }
 
-namespace nmtools::array::cuda
+namespace nmtools::cuda
 {
     // TODO: move to nmtools::meta namespace
     namespace helper

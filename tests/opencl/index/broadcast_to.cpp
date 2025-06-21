@@ -6,7 +6,7 @@ namespace nm = nmtools;
 namespace ix = nm::index;
 namespace view = nm::view;
 namespace meta = nm::meta;
-namespace opencl = nm::array::opencl;
+namespace opencl = nmtools::opencl;
 
 #define shape_broadcast_to_kernel_name "test_shape_broadcast_to"
 #define broadcast_to_kernel_name "test_broadcast_to"

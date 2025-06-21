@@ -6,11 +6,11 @@
 #include <array>
 
 namespace nm = nmtools;
-namespace na = nm::array;
+namespace na = nmtools;
 namespace view = nm::view;
 
 #define RUN_arccos_impl(...) \
-nm::array::arccos(__VA_ARGS__);
+nmtools::arccos(__VA_ARGS__);
 
 #ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
 #include "nmtools/testing/benchmarks/bench.hpp"

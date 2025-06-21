@@ -8,7 +8,7 @@
 
 namespace nm = nmtools;
 namespace ix = nm::index;
-namespace na = nm::array;
+namespace na = nmtools;
 namespace opencl = na::opencl;
 
 #define OPENCL_TEST(fn,...) \

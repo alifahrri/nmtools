@@ -15,8 +15,8 @@
 using nmtools_list;
 using nmtools_array;
 using nmtools_tuple;
-using nmtools::array::fixed_ndarray;
-using nmtools::array::dynamic_ndarray;
+using nmtools::fixed_ndarray;
+using nmtools::dynamic_ndarray;
 using nmtools::utils::isclose;
 
 namespace meta = nmtools::meta;

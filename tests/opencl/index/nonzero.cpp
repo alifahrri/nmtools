@@ -28,7 +28,7 @@ kernel void test_nonzero(global int* out_ptr, global const int* inp_ptr, const u
 #include "nmtools/testing/opencl.hpp"
 #include <cstring>
 
-namespace opencl = nmtools::array::opencl;
+namespace opencl = nmtools::opencl;
 namespace testing = nmtools::testing;
 
 extern unsigned char nm_cl_test_nonzero_spv[];

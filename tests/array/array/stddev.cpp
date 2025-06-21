@@ -3,7 +3,7 @@
 #include "nmtools/testing/doctest.hpp"
 
 #define RUN_stddev_impl(...) \
-nmtools::array::stddev(__VA_ARGS__);
+nmtools::stddev(__VA_ARGS__);
 
 #ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
 #include "nmtools/testing/benchmarks/bench.hpp"

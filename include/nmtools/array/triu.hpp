@@ -255,7 +255,7 @@ namespace nmtools::view
     } // triu
 } // namespace nmtools::view
 
-namespace nmtools::array
+namespace nmtools
 {
     template <typename...args_t, auto max_dim>
     struct as_static_t<
@@ -283,7 +283,7 @@ namespace nmtools::array
 #include "nmtools/array/triu.hpp"
 #include "nmtools/core/eval.hpp"
 
-namespace nmtools::array
+namespace nmtools
 {
     template <typename output_t=none_t, typename context_t=none_t, typename resolver_t=eval_result_t<>,
         typename array_t, typename k_t=nm_size_t>
@@ -297,6 +297,6 @@ namespace nmtools::array
             , resolver
         );
     } // triu
-} // namespace nmtools::array
+} // namespace nmtools
 
 #endif // NMTOOLS_ARRAY_ARRAY_TRIU_HPP

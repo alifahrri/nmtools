@@ -7,7 +7,7 @@
 #include <vector>
 
 namespace nm = nmtools;
-namespace na = nmtools::array;
+namespace na = nmtools;
 
 TEST_CASE("cast<array>(double[])" * doctest::test_suite("cast"))
 {

@@ -6,10 +6,10 @@
 #include <array>
 
 namespace nm = nmtools;
-namespace na = nm::array;
+namespace na = nmtools;
 
 #define RUN_right_shift_impl(...) \
-nm::array::right_shift(__VA_ARGS__);
+nmtools::right_shift(__VA_ARGS__);
 
 #ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
 #include "nmtools/testing/benchmarks/bench.hpp"
@@ -60,7 +60,7 @@ TEST_CASE("right_shift(case2)" * doctest::test_suite("view::right_shift"))
 }
 
 #define RUN_reduce_right_shift_impl(...) \
-nm::array::right_shift.reduce(__VA_ARGS__);
+nmtools::right_shift.reduce(__VA_ARGS__);
 
 #ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
 #include "nmtools/testing/benchmarks/bench.hpp"
@@ -163,7 +163,7 @@ TEST_CASE("reduce_right_shift(case8)" * doctest::test_suite("array::reduce_right
 }
 
 #define RUN_accumulate_right_shift_impl(...) \
-nm::array::right_shift.accumulate(__VA_ARGS__);
+nmtools::right_shift.accumulate(__VA_ARGS__);
 
 #ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
 #include "nmtools/testing/benchmarks/bench.hpp"
@@ -226,7 +226,7 @@ TEST_CASE("accumulate_right_shift(case3)" * doctest::test_suite("array::accumula
 }
 
 #define RUN_outer_right_shift_impl(...) \
-nm::array::right_shift.outer(__VA_ARGS__);
+nmtools::right_shift.outer(__VA_ARGS__);
 
 #ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
 #include "nmtools/testing/benchmarks/bench.hpp"

@@ -68,7 +68,7 @@ namespace nmtools::functional
 #include "nmtools/array/softmax.hpp"
 #include "nmtools/core/eval.hpp"
 
-namespace nmtools::array
+namespace nmtools
 {
     /**
      * @brief Eagerly computes softmax function along an axis.
@@ -95,6 +95,6 @@ namespace nmtools::array
             ,resolver
         );
     } // softmax
-} // namespace nmtools::array
+} // namespace nmtools
 
 #endif // NMTOOLS_ARRAY_ARRAY_SOFTMAX_HPP

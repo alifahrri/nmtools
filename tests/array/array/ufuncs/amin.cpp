@@ -3,10 +3,10 @@
 #include "nmtools/testing/doctest.hpp"
 
 namespace nm = nmtools;
-namespace na = nm::array;
+namespace na = nmtools;
 
 #define RUN_amin_impl(...) \
-nm::array::amin(__VA_ARGS__);
+nmtools::amin(__VA_ARGS__);
 
 #ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
 #include "nmtools/testing/benchmarks/bench.hpp"

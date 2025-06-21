@@ -7,7 +7,7 @@
 #include <tuple>
 
 #define RUN_ones_impl(...) \
-nm::array::ones(__VA_ARGS__);
+nmtools::ones(__VA_ARGS__);
 
 #ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
 #include "nmtools/testing/benchmarks/bench.hpp"
@@ -56,7 +56,7 @@ TEST_CASE("ones_traits(case1)" * doctest::test_suite("array::ones_traits"))
     {
         using shape_t = int[3];
         shape_t shape = {2,3,2};
-        auto array = nm::array::ones(shape,nm::float32);
+        auto array = nmtools::ones(shape,nm::float32);
         using array_t = decltype(array);
         constexpr auto is_fixed_shape = nm::meta::is_fixed_size_ndarray_v<array_t>;
         static_assert( !is_fixed_shape );
@@ -64,7 +64,7 @@ TEST_CASE("ones_traits(case1)" * doctest::test_suite("array::ones_traits"))
     {
         using namespace nm::literals;
         auto shape = std::tuple{2_ct,3_ct,2_ct};
-        auto array = nm::array::ones(shape,nm::float32);
+        auto array = nmtools::ones(shape,nm::float32);
         using array_t = decltype(array);
         constexpr auto is_fixed_shape = nm::meta::is_fixed_size_ndarray_v<array_t>;
         static_assert( is_fixed_shape );

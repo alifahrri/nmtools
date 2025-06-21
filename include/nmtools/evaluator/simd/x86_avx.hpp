@@ -7,7 +7,7 @@
 
 #include <x86intrin.h>
 
-namespace nmtools::array::simd
+namespace nmtools::simd
 {
     // simd_tag_t
     struct x86_avx_t {};
@@ -16,15 +16,15 @@ namespace nmtools::array::simd
 namespace nmtools::meta
 {
     template <>
-    struct bit_width<array::simd::x86_avx_t>
+    struct bit_width<simd::x86_avx_t>
     {
         static constexpr auto value = 256;
     };
 }
 
-namespace nmtools::array::simd
+namespace nmtools::simd
 {
-    constexpr inline auto x86_AVX = array::simd_base_t<x86_avx_t>{};
+    constexpr inline auto x86_AVX = simd_base_t<x86_avx_t>{};
 
     using meta::is_same_v;
 
@@ -300,6 +300,6 @@ namespace nmtools::array::simd
     }; // simd_op_t<x86_avx_t,float>
 
 
-} // namespace nmtools::array::simd
+} // namespace nmtools::simd
 
 #endif // NMTOOLS_ARRAY_EVAL_SIMD_X86_AVX_HPP

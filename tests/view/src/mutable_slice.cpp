@@ -4,7 +4,7 @@
 #include "nmtools/testing/doctest.hpp"
 
 namespace nm = nmtools;
-namespace na = nm::array;
+namespace na = nmtools;
 
 NMTOOLS_TESTING_DECLARE_CASE(array, slice)
 {

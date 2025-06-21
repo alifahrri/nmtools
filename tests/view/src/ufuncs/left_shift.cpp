@@ -3,7 +3,7 @@
 #include "nmtools/testing/doctest.hpp"
 
 namespace nm = nmtools;
-namespace na = nm::array;
+namespace na = nmtools;
 namespace view = nm::view;
 
 #define LEFT_SHIFT_SUBCASE(case_name, ...) \

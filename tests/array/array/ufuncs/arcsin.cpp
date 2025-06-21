@@ -6,11 +6,11 @@
 #include <array>
 
 namespace nm = nmtools;
-namespace na = nm::array;
+namespace na = nmtools;
 namespace view = nm::view;
 
 #define RUN_arcsin_impl(...) \
-nm::array::arcsin(__VA_ARGS__);
+nmtools::arcsin(__VA_ARGS__);
 
 #ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
 #include "nmtools/testing/benchmarks/bench.hpp"

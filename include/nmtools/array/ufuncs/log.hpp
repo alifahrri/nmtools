@@ -83,7 +83,7 @@ namespace nmtools::functional
 #include "nmtools/array/ufuncs/log.hpp"
 #include "nmtools/constants.hpp"
 
-namespace nmtools::array
+namespace nmtools
 {
     namespace fn
     {
@@ -105,6 +105,6 @@ namespace nmtools::array
     } // namespace fn
 
     constexpr inline auto log = fn::log{};
-} // nmtools::array
+} // namespace nmtools
 
 #endif // NMTOOLS_ARRAY_ARRAY_LOG_HPP

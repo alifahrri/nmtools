@@ -15,7 +15,7 @@
 #include <iostream>
 #include <memory>
 
-namespace nmtools::array
+namespace nmtools
 {
     template <typename T, auto...accessor_args_t, typename shape_t, typename dim_t>
     struct device_array<::sycl::accessor<T,accessor_args_t...>,shape_t,dim_t>
@@ -317,7 +317,7 @@ namespace nmtools::meta
     }; // bounded_size
 }
 
-namespace nmtools::array::sycl
+namespace nmtools::sycl
 {
     template <typename T>
     using device_mem_ptr = std::shared_ptr<::sycl::buffer<T>>;
@@ -589,7 +589,7 @@ namespace nmtools::array::sycl
             return result;
         }
     };
-} // namespace nmtools::array::sycl
+} // namespace nmtools::sycl
 
 #define PRINT_SYCL_PLATFORM_PROPERTY(platform, prop) \
     std::cout << "- " << #prop << ": " \
@@ -862,7 +862,7 @@ namespace nmtools::utils::impl
     };
 }
 
-namespace nmtools::array::sycl
+namespace nmtools::sycl
 {
     inline auto default_context()
     {

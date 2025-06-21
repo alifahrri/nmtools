@@ -9,7 +9,7 @@ SUBCASE(#case_name) \
 { \
    NMTOOLS_TESTING_USE_CASE( array, expand, case_name ); \
    using namespace args; \
-   auto result = nmtools::array::expand(__VA_ARGS__) ; \
+   auto result = nmtools::expand(__VA_ARGS__) ; \
    NMTOOLS_ASSERT_EQUAL( nm::shape(result), nm::shape(expect::result) ); \
    NMTOOLS_ASSERT_CLOSE_MSG_OPERANDS( result, expect::result, __VA_ARGS__ ); \
 }

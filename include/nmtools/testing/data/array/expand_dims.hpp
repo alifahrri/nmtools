@@ -5,7 +5,7 @@
 #include "nmtools/testing/testing.hpp"
 
 namespace nm = nmtools;
-namespace na = nm::array;
+namespace na = nmtools;
 namespace meta = nm::meta;
 namespace kind = na::kind;
 

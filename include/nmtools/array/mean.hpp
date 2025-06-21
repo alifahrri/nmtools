@@ -189,7 +189,7 @@ namespace nmtools::functional
 #include "nmtools/array/ufuncs/divide.hpp"
 #include "nmtools/core/eval.hpp"
 
-namespace nmtools::array
+namespace nmtools
 {
     /**
      * @brief Eagerly compute mean of an array along the specified axis.
@@ -220,6 +220,6 @@ namespace nmtools::array
             ,resolver
         );
     } // mean
-} // namespace nmtools::array
+} // namespace nmtools
 
 #endif // NMTOOLS_ARRAY_ARRAY_MEAN_HPP

@@ -54,7 +54,7 @@ namespace nmtools::args
     accumulate(args_t...) -> accumulate<args_t...>;
 } // namespace nmtools::args
 
-namespace nmtools::array
+namespace nmtools
 {
     template <auto max_dim, typename...args_t>
     struct as_static_t<
@@ -71,7 +71,7 @@ namespace nmtools::array
             return args::accumulate{axis,attribute.dtype,attribute.op};
         }
     };
-} // nmtools::array
+} // nmtools
 
 namespace nmtools::meta
 {
@@ -221,7 +221,7 @@ namespace nmtools::view
                     using slices_type = nmtools_array<slice_type,(size_t)DIM>;
                     return meta::as_value_v<slices_type>;
                 } else if constexpr (!meta::is_fail_v<decltype(B_DIM)>) {
-                    using slices_type = array::static_vector<slice_type,(size_t)B_DIM>;
+                    using slices_type = static_vector<slice_type,(size_t)B_DIM>;
                     return meta::as_value_v<slices_type>;
                 } else {
                     using slices_type = nmtools_list<slice_type>;

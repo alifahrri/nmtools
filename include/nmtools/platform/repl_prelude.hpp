@@ -7,7 +7,7 @@ namespace nm = nmtools;
 namespace fn = nmtools::functional;
 namespace view = nmtools::view;
 namespace meta = nmtools::meta;
-namespace na = nmtools::array;
+namespace na = nmtools;
 namespace ix = nmtools::index;
 
 using namespace nmtools::literals;

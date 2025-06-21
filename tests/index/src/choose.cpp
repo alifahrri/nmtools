@@ -12,7 +12,7 @@
 #include <vector>
 
 namespace nm = nmtools;
-namespace na = nm::array;
+namespace na = nmtools;
 
 using namespace nm::literals;
 

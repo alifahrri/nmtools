@@ -62,7 +62,7 @@ namespace nmtools::functional
 #include "nmtools/array/moveaxis.hpp"
 #include "nmtools/core/eval.hpp"
 
-namespace nmtools::array
+namespace nmtools
 {
     /**
      * @brief Eagerly move axis of an array to another position
@@ -91,7 +91,7 @@ namespace nmtools::array
             ,resolver
         );
     } // moveaxis
-} // namespace nmtools::array
+} // namespace nmtools
 
 
 #endif // NMTOOLS_ARRAY_ARRAY_MOVEAXIS_HPP

@@ -12,7 +12,7 @@
 #include "nmtools/utility/cast.hpp"
 
 namespace nm = nmtools;
-namespace na = nm::array;
+namespace na = nmtools;
 namespace ix = nm::index;
 namespace meta = nm::meta;
 
@@ -514,7 +514,7 @@ TEST_CASE("ndarray(case9)" * doctest::test_suite("array::ndarray"))
     NMTOOLS_REQUIRE_EQUAL( array.size(), 6 );
 }
 
-using nmtools::array::column_major_offset_t;
+using nmtools::column_major_offset_t;
 
 // custom strides
 namespace case10
@@ -846,7 +846,7 @@ TEST_CASE("ndarray(case14)" * doctest::test_suite("array::ndarray"))
 
 #endif
 
-namespace na = nmtools::array;
+namespace na = nmtools;
 namespace kind = na::kind;
 
 #if 1

@@ -4,7 +4,7 @@
 #include "nmtools/testing/data/index/broadcast_shape.hpp"
 
 namespace nm = nmtools;
-namespace na = nm::array;
+namespace na = nmtools;
 namespace meta = nm::meta;
 
 #define BROADCAST_SHAPE_SUBCASE(case_name, ...) \

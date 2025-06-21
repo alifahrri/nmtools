@@ -4,7 +4,7 @@
 #include "nmtools/constants.hpp"
 
 namespace nm = nmtools;
-namespace na = nm::array;
+namespace na = nmtools;
 namespace kind = na::kind;
 using namespace nm::literals;
 

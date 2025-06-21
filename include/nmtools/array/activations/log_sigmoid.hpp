@@ -93,7 +93,7 @@ namespace nmtools::functional
 #include "nmtools/array/activations/log_sigmoid.hpp"
 #include "nmtools/core/eval.hpp"
 
-namespace nmtools::array
+namespace nmtools
 {
     /**
      * @brief Eagerly compute element-wise log sigmoid
@@ -119,6 +119,6 @@ namespace nmtools::array
             ,resolver
         );
     } // log_sigmoid
-} // namespace nmtools::array
+} // namespace nmtools
 
 #endif // NMTOOLS_ARRAY_ARRAY_ACTIVATIONS_LOG_SIGMOID_HPP

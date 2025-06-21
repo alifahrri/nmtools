@@ -290,7 +290,7 @@ namespace nmtools::view
 #include "nmtools/array/group_norm.hpp"
 #include "nmtools/core/eval.hpp"
 
-namespace nmtools::array
+namespace nmtools
 {
     template <typename output_t=none_t, typename context_t=none_t, typename resolver_t=eval_result_t<>
         , typename input_t, typename num_groups_t, typename weight_t, typename bias_t, typename epsilon_t=float>

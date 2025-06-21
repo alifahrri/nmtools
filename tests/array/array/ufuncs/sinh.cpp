@@ -10,10 +10,10 @@
 #define NMTOOLS_TESTING_PRECISION 7e-5
 
 namespace nm = nmtools;
-namespace na = nm::array;
+namespace na = nmtools;
 
 #define RUN_sinh_impl(...) \
-nm::array::sinh(__VA_ARGS__);
+nmtools::sinh(__VA_ARGS__);
 
 #ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
 #include "nmtools/testing/benchmarks/bench.hpp"

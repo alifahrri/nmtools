@@ -94,7 +94,7 @@ namespace nmtools::functional
 #include "nmtools/array/activations/tanhshrink.hpp"
 #include "nmtools/core/eval.hpp"
 
-namespace nmtools::array
+namespace nmtools
 {
     /**
      * @brief Eagerly evaluate element-wise tanhshrink function
@@ -120,6 +120,6 @@ namespace nmtools::array
             ,resolver
         );
     } // tanhshrink
-} // namespace nmtools::array
+} // namespace nmtools
 
 #endif // NMTOOLS_ARRAY_ARRAY_ACTIVATIONS_TANHSHRINK_HPP

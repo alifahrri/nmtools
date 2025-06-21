@@ -5,7 +5,7 @@
 #include "nmtools/testing/doctest.hpp"
 
 namespace nm = nmtools;
-namespace na = nmtools::array;
+namespace na = nmtools;
 namespace fn = nmtools::functional;
 namespace meta = nm::meta;
 namespace view = nmtools::view;
@@ -36,7 +36,7 @@ SUBCASE(#case_name) \
 { \
     NMTOOLS_TESTING_USE_CASE(array, instance_norm, case_name); \
     using namespace args; \
-    auto result = nmtools::array::instance_norm(__VA_ARGS__); \
+    auto result = nmtools::instance_norm(__VA_ARGS__); \
     NMTOOLS_ASSERT_CLOSE( result, expect::result ); \
 }
 
@@ -45,7 +45,7 @@ SUBCASE(#case_name) \
 { \
     NMTOOLS_TESTING_USE_CASE(array, instance_norm, case_name); \
     using namespace args; \
-    auto result = nmtools::array::instance_norm_1d(__VA_ARGS__); \
+    auto result = nmtools::instance_norm_1d(__VA_ARGS__); \
     NMTOOLS_ASSERT_CLOSE( result, expect::result ); \
 }
 
@@ -54,7 +54,7 @@ SUBCASE(#case_name) \
 { \
     NMTOOLS_TESTING_USE_CASE(array, instance_norm, case_name); \
     using namespace args; \
-    auto result = nmtools::array::instance_norm_2d(__VA_ARGS__); \
+    auto result = nmtools::instance_norm_2d(__VA_ARGS__); \
     NMTOOLS_ASSERT_CLOSE( result, expect::result ); \
 }
 

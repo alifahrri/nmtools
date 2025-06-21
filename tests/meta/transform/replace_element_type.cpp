@@ -7,7 +7,7 @@
 #include <vector>
 
 namespace nm = nmtools;
-namespace na = nmtools::array;
+namespace na = nmtools;
 namespace meta = nmtools::meta;
 
 TEST_CASE("replace_element_type_t" * doctest::test_suite("meta"))

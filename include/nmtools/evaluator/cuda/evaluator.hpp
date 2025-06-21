@@ -6,7 +6,7 @@
 #include "nmtools/evaluator/cuda/context.hpp"
 #include "nmtools/array/functional.hpp"
 
-namespace nmtools::array
+namespace nmtools
 {
     template <typename view_t, typename resolver_t>
     struct evaluator_t<view_t,std::shared_ptr<cuda::context_t>,resolver_t>
@@ -73,6 +73,6 @@ namespace nmtools::array
             return (*this)();
         } // operator()
     };
-} // namespace nmtools::array
+} // namespace nmtools
 
 #endif // NMTOOLS_ARRAY_EVAL_CUDA_EVALUATOR_HPP

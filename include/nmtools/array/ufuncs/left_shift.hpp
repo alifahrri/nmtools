@@ -113,7 +113,7 @@ namespace nmtools::view
 #include "nmtools/array/ufuncs/left_shift.hpp"
 #include "nmtools/constants.hpp"
 
-namespace nmtools::array
+namespace nmtools
 {
     namespace fn
     {
@@ -176,6 +176,6 @@ namespace nmtools::array
     } // namespace fn
 
     constexpr inline auto left_shift = fn::left_shift{};
-} // nmtools::array
+} // nmtools
 
 #endif // NMTOOLS_ARRAY_ARRAY_LEFT_SHIFT_HPP

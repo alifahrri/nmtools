@@ -29,11 +29,11 @@ using nmtools::uint32_t, nmtools::int32_t;
 #endif // nm_size_t
 #endif // nm_cl_size_t
 
-namespace nmtools::array::opencl
+namespace nmtools::opencl
 {
-    using ::nmtools::array::create_vector;
-    using ::nmtools::array::create_array;
-    using ::nmtools::array::create_mutable_array;
+    using ::nmtools::create_vector;
+    using ::nmtools::create_array;
+    using ::nmtools::create_mutable_array;
 
     template <typename mutable_vector_t, typename vector_t>
     auto assign_vector(mutable_vector_t& lhs, const vector_t& rhs)
@@ -70,6 +70,6 @@ namespace nmtools::array::opencl
         }
     }
     #endif // __OPENCL_VERSION__
-} // namespace nmtools::array::opencl
+} // namespace nmtools::opencl
 
 #endif // NMTOOLS_ARRAY_EVAL_OPENCL_KERNEL_HELPER_HPP

@@ -6,10 +6,10 @@
 #include <array>
 
 namespace nm = nmtools;
-namespace na = nm::array;
+namespace na = nmtools;
 
 #define RUN_reciprocal_impl(...) \
-nm::array::reciprocal(__VA_ARGS__);
+nmtools::reciprocal(__VA_ARGS__);
 
 #ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
 #include "nmtools/testing/benchmarks/bench.hpp"

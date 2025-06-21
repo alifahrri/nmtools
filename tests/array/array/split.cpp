@@ -1,20 +1,20 @@
 #if defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
 #define NMTOOLS_CAST_ARRAYS_EXTRA(name) \
-inline auto name##_cs_fb = nmtools::cast(name, nmtools::array::kind::ndarray_cs_fb); \
-inline auto name##_cs_hb = nmtools::cast(name, nmtools::array::kind::ndarray_cs_hb); \
-inline auto name##_cs_db = nmtools::cast(name, nmtools::array::kind::ndarray_cs_db); \
-inline auto name##_fs_fb = nmtools::cast(name, nmtools::array::kind::ndarray_fs_fb); \
-inline auto name##_fs_hb = nmtools::cast(name, nmtools::array::kind::ndarray_fs_hb); \
-inline auto name##_fs_db = nmtools::cast(name, nmtools::array::kind::ndarray_fs_db); \
-inline auto name##_hs_fb = nmtools::cast(name, nmtools::array::kind::ndarray_hs_fb); \
-inline auto name##_hs_hb = nmtools::cast(name, nmtools::array::kind::ndarray_hs_hb); \
-inline auto name##_hs_db = nmtools::cast(name, nmtools::array::kind::ndarray_hs_db); \
-inline auto name##_ds_fb = nmtools::cast(name, nmtools::array::kind::ndarray_ds_fb); \
-inline auto name##_ds_hb = nmtools::cast(name, nmtools::array::kind::ndarray_ds_hb); \
-inline auto name##_ds_db = nmtools::cast(name, nmtools::array::kind::ndarray_ds_db); \
-inline auto name##_ls_fb = nmtools::cast(name, nmtools::array::kind::ndarray_ls_fb); \
-inline auto name##_ls_hb = nmtools::cast(name, nmtools::array::kind::ndarray_ls_hb); \
-inline auto name##_ls_db = nmtools::cast(name, nmtools::array::kind::ndarray_ls_db);
+inline auto name##_cs_fb = nmtools::cast(name, nmtools::kind::ndarray_cs_fb); \
+inline auto name##_cs_hb = nmtools::cast(name, nmtools::kind::ndarray_cs_hb); \
+inline auto name##_cs_db = nmtools::cast(name, nmtools::kind::ndarray_cs_db); \
+inline auto name##_fs_fb = nmtools::cast(name, nmtools::kind::ndarray_fs_fb); \
+inline auto name##_fs_hb = nmtools::cast(name, nmtools::kind::ndarray_fs_hb); \
+inline auto name##_fs_db = nmtools::cast(name, nmtools::kind::ndarray_fs_db); \
+inline auto name##_hs_fb = nmtools::cast(name, nmtools::kind::ndarray_hs_fb); \
+inline auto name##_hs_hb = nmtools::cast(name, nmtools::kind::ndarray_hs_hb); \
+inline auto name##_hs_db = nmtools::cast(name, nmtools::kind::ndarray_hs_db); \
+inline auto name##_ds_fb = nmtools::cast(name, nmtools::kind::ndarray_ds_fb); \
+inline auto name##_ds_hb = nmtools::cast(name, nmtools::kind::ndarray_ds_hb); \
+inline auto name##_ds_db = nmtools::cast(name, nmtools::kind::ndarray_ds_db); \
+inline auto name##_ls_fb = nmtools::cast(name, nmtools::kind::ndarray_ls_fb); \
+inline auto name##_ls_hb = nmtools::cast(name, nmtools::kind::ndarray_ls_hb); \
+inline auto name##_ls_db = nmtools::cast(name, nmtools::kind::ndarray_ls_db);
 #endif
 
 #include "nmtools/array/split.hpp"
@@ -25,7 +25,7 @@ inline auto name##_ls_db = nmtools::cast(name, nmtools::array::kind::ndarray_ls_
 #include "nmtools/utility/apply_to_string.hpp"
 
 #define RUN_split_impl(...) \
-nm::array::split(__VA_ARGS__);
+nmtools::split(__VA_ARGS__);
 
 #ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
 #include "nmtools/testing/benchmarks/bench.hpp"
@@ -61,7 +61,7 @@ SUBCASE(#case_name) \
 
 // TODO: fix utl vector
 /*
-error: use of deleted function ‘nmtools::array::decorator_t<nmtools::array::slice_t, int [9], nmtools::utl::array<nmtools::utl::array<long unsigned int, 2>, 1> >& nmtools::array::decorator_t<nmtools::array::slice_t, int [9], nmtools::utl::array<nmtools::utl::array<long unsigned int, 2>, 1> >::operator=(const nmtools::array::decorator_t<nmtools::array::slice_t, int [9], nmtools::utl::array<nmtools::utl::array<long unsigned int, 2>, 1> >&)’
+error: use of deleted function ‘nmtools::decorator_t<nmtools::slice_t, int [9], nmtools::utl::array<nmtools::utl::array<long unsigned int, 2>, 1> >& nmtools::decorator_t<nmtools::slice_t, int [9], nmtools::utl::array<nmtools::utl::array<long unsigned int, 2>, 1> >::operator=(const nmtools::decorator_t<nmtools::slice_t, int [9], nmtools::utl::array<nmtools::utl::array<long unsigned int, 2>, 1> >&)’
   172 |             buffer_[size_] = t;
 */
 #ifndef NMTOOLS_DISABLE_STL

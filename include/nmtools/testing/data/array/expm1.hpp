@@ -14,7 +14,7 @@
 #define NMTOOLS_TESTING_PRECISION 1e-5
 
 namespace nm = nmtools;
-namespace na = nm::array;
+namespace na = nmtools;
 namespace kind = na::kind;
 
 NMTOOLS_TESTING_DECLARE_CASE(view, expm1)

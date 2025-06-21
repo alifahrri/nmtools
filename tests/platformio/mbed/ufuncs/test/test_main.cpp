@@ -191,7 +191,7 @@
 #include "nmtools/utility/to_string.hpp"
 
 namespace nm = nmtools;
-namespace na = nm::array;
+namespace na = nmtools;
 namespace view = nm::view;
 
 using nm::utils::isclose, nm::utils::isequal;

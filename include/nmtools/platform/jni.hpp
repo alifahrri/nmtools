@@ -6,7 +6,7 @@
 #include "nmtools/array/reshape.hpp"
 #include "nmtools/array/flatten.hpp"
 
-namespace nmtools::array
+namespace nmtools
 {
     template <typename BufferType=none_t,
         typename ShapeType=none_t,
@@ -136,6 +136,6 @@ namespace nmtools::array
             return nmtools_tuple{result,jshape};
         }
     }
-} // namespace nmtools::array
+} // namespace nmtools
 
 #endif // NMTOOLS_ARRAY_UTILITY_JNI_HPP

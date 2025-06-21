@@ -56,7 +56,7 @@ namespace nmtools::functional
 #include "nmtools/array/zeros.hpp"
 #include "nmtools/core/eval.hpp"
 
-namespace nmtools::array
+namespace nmtools
 {
     /**
      * @brief Eagerly evaluate zeros.
@@ -83,6 +83,6 @@ namespace nmtools::array
             ,resolver
         );
     } // zeros
-} // namespace nmtools::array
+} // namespace nmtools
 
 #endif // NMTOOLS_ARRAY_ARRAY_ZEROS_HPP

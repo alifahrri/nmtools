@@ -10,24 +10,24 @@
 #include <tmmintrin.h>
 #include <smmintrin.h>
 
-namespace nmtools::array::simd
+namespace nmtools::simd
 {
     // simd_tag_t
     struct x86_sse_t {};
-} // namespace nmtools::array::simd
+} // namespace nmtools::simd
 
 namespace nmtools::meta
 {
     template <>
-    struct bit_width<array::simd::x86_sse_t>
+    struct bit_width<simd::x86_sse_t>
     {
         static constexpr auto value = 128;
     };
 }
 
-namespace nmtools::array::simd
+namespace nmtools::simd
 {
-    constexpr inline auto x86_SSE = array::simd_base_t<x86_sse_t>{};
+    constexpr inline auto x86_SSE = simd_base_t<x86_sse_t>{};
 
     using meta::is_same_v;
 
@@ -334,6 +334,6 @@ namespace nmtools::array::simd
     }; // simd_op_t<x86_sse_t,float>
 
 
-} // namespace nmtools::array::simd
+} // namespace nmtools::simd
 
 #endif // NMTOOLS_ARRAY_EVAL_SIMD_X86_SSE_HPP

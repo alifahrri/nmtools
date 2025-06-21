@@ -83,7 +83,7 @@ namespace nmtools::functional
 #include "nmtools/array/ufuncs/arccosh.hpp"
 #include "nmtools/constants.hpp"
 
-namespace nmtools::array
+namespace nmtools
 {
     namespace fn
     {
@@ -105,6 +105,6 @@ namespace nmtools::array
     } // namespace fn
 
     constexpr inline auto arccosh = fn::arccosh{};
-} // nmtools::array
+} // namespace nmtools
 
 #endif // NMTOOLS_ARRAY_ARRAY_ARCCOSH_HPP

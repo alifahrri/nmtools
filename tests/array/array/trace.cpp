@@ -6,7 +6,7 @@
 SUBCASE(#case_name) \
 { \
     NMTOOLS_TESTING_USE_CASE( array, trace, case_name ); \
-    auto result = nmtools::array::trace(__VA_ARGS__); \
+    auto result = nmtools::trace(__VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( nmtools::shape(result), nmtools::shape(expect::result) ); \
     NMTOOLS_ASSERT_CLOSE( result, expect::result ); \
 }
@@ -17,7 +17,7 @@ TEST_CASE("trace(case1)" * doctest::test_suite("array::trace"))
     {
         NMTOOLS_TESTING_USE_CASE( array, trace, case1 );
         {
-            auto result = nmtools::array::trace( a );
+            auto result = nmtools::trace( a );
             using result_t = decltype(result);
             NMTOOLS_STATIC_CHECK_TRAIT( meta::is_num, result_t );
         }

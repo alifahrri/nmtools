@@ -89,7 +89,7 @@ namespace nmtools::functional
 #include "nmtools/array/activations/softsign.hpp"
 #include "nmtools/core/eval.hpp"
 
-namespace nmtools::array
+namespace nmtools
 {
     /**
      * @brief Eagerly evaluate element-wise softsign function
@@ -114,6 +114,6 @@ namespace nmtools::array
             ,resolver
         );
     } // softsign
-} // namespace nmtools::array
+} // namespace nmtools
 
 #endif // NMTOOLS_ARRAY_ARRAY_ACTIVATIONS_SOFTSIGN_HPP

@@ -45,7 +45,7 @@ namespace composition
 } // namespace composition
 
 namespace nm = nmtools;
-namespace na = nm::array;
+namespace na = nmtools;
 namespace kind = na::kind;
 
 NMTOOLS_TESTING_DECLARE_CASE(composition, square_sum)

@@ -6,7 +6,7 @@
 SUBCASE(#case_name) \
 { \
     NMTOOLS_TESTING_USE_CASE(array,bilinear,case_name); \
-    auto result = nmtools::array::bilinear(__VA_ARGS__); \
+    auto result = nmtools::bilinear(__VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( nmtools::shape(result), nmtools::shape(expect::result) ); \
     NMTOOLS_ASSERT_CLOSE( result, expect::result ); \
 }

@@ -14,7 +14,7 @@
 
 // experimental version that combine all three to single class
 
-namespace nmtools::array
+namespace nmtools
 {
     template <typename shape_t, typename strides_t>
     struct row_major_offset_t
@@ -153,7 +153,7 @@ namespace nmtools::array
             return offset;
         } // operator()
     };
-} // namespace nmtools::array
+} // namespace nmtools
 
 namespace nmtools::meta
 {
@@ -177,14 +177,14 @@ namespace nmtools::meta
 
     template <typename shape_t, typename strides_t>
     struct is_row_major_offset<
-        array::row_major_offset_t<shape_t,strides_t>
+        row_major_offset_t<shape_t,strides_t>
     > {
         static constexpr auto value = is_index_array_v<shape_t> && is_index_array_v<strides_t>;
     };
 
     template <typename shape_t, typename strides_t>
     struct is_column_major_offset<
-        array::column_major_offset_t<shape_t,strides_t>
+        column_major_offset_t<shape_t,strides_t>
     > {
         static constexpr auto value = is_index_array_v<shape_t> && is_index_array_v<strides_t>;
     };
@@ -196,7 +196,7 @@ namespace nmtools::meta
     constexpr inline auto is_column_major_offset_v = is_column_major_offset<T>::value;
 } // namespace nmtools::meta
 
-namespace nmtools::array
+namespace nmtools
 {
 
     template <typename T>
@@ -331,6 +331,6 @@ namespace nmtools::array
 
     template <typename shape_type>
     using resolve_stride_type_t = meta::resolve_optype_t<index::compute_strides_t,shape_type>;
-} // namespace nmtools::array
+} // namespace nmtools
 
 #endif // NMTOOLS_ARRAY_NDARRAY_BASE_NDARRAY_HPP

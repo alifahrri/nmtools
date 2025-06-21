@@ -83,7 +83,7 @@ namespace nmtools::functional
 #include "nmtools/array/ufuncs/cbrt.hpp"
 #include "nmtools/constants.hpp"
 
-namespace nmtools::array
+namespace nmtools
 {
     namespace fn
     {
@@ -105,6 +105,6 @@ namespace nmtools::array
     } // namespace fn
 
     constexpr inline auto cbrt = fn::cbrt{};
-} // nmtools::array
+} // namespace nmtools
 
 #endif // NMTOOLS_ARRAY_ARRAY_CBRT_HPP

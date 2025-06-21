@@ -7,10 +7,10 @@
 #include <algorithm> // std::ldexp
 
 namespace nm = nmtools;
-namespace na = nm::array;
+namespace na = nmtools;
 
 #define RUN_ldexp_impl(...) \
-nm::array::ldexp(__VA_ARGS__);
+nmtools::ldexp(__VA_ARGS__);
 
 #ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
 #include "nmtools/testing/benchmarks/bench.hpp"

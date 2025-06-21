@@ -38,7 +38,7 @@ namespace nmtools::view
 #include "nmtools/array/ufuncs/amax.hpp"
 #include "nmtools/core/eval.hpp"
 
-namespace nmtools::array
+namespace nmtools
 {
     /**
      * @brief Eagerly computes the maximum of an array the maximum along the given axis.
@@ -71,6 +71,6 @@ namespace nmtools::array
             ,resolver
         );
     } // amax
-} // namespace nmtools::array
+} // namespace nmtools
 
 #endif // NMTOOLS_ARRAY_ARRAY_UFUNCS_AMAX_HPP

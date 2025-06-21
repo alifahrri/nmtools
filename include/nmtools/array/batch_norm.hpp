@@ -94,7 +94,7 @@ namespace nmtools::functional
 #include "nmtools/array/batch_norm.hpp"
 #include "nmtools/core/eval.hpp"
 
-namespace nmtools::array
+namespace nmtools
 {
     /**
      * @brief Eagerly compute batch_norm.
@@ -129,7 +129,7 @@ namespace nmtools::array
             ,resolver
         );
     } // batch_norm
-} // namespace nmtools::array
+} // namespace nmtools
 
 
 #endif // NMTOOLS_ARRAY_ARRAY_BATCH_NORM_HPP

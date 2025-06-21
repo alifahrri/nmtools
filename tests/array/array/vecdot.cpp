@@ -8,7 +8,7 @@ using nmtools::None;
 SUBCASE(#case_name) \
 { \
     NMTOOLS_TESTING_USE_CASE(array,vecdot,case_name); \
-    auto result = nmtools::array::vecdot(__VA_ARGS__); \
+    auto result = nmtools::vecdot(__VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( nmtools::shape(result), nmtools::shape(expect::result) ); \
     NMTOOLS_ASSERT_CLOSE( result, expect::result ); \
 }

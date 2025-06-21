@@ -4,7 +4,7 @@
 #include "nmtools/testing/doctest.hpp"
 
 namespace nm = nmtools;
-namespace na = nm::array;
+namespace na = nmtools;
 
 #define ARANGE_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \

@@ -80,7 +80,7 @@ namespace nmtools::view
     } // tile
 } // namespace nmtools::view
 
-namespace nmtools::array
+namespace nmtools
 {
     template <typename...args_t, auto max_dim>
     struct as_static_t<
@@ -160,7 +160,7 @@ namespace nmtools::functional
 #include "nmtools/array/tile.hpp"
 #include "nmtools/core/eval.hpp"
 
-namespace nmtools::array
+namespace nmtools
 {
     /**
      * @brief Eagerly evaluate tile op.
@@ -187,6 +187,6 @@ namespace nmtools::array
             ,resolver
         );
     } // tile
-} // namespace nmtools::array
+} // namespace nmtools
 
 #endif // NMTOOLS_ARRAY_ARRAY_TILE_HPP

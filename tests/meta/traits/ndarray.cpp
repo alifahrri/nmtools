@@ -47,23 +47,23 @@ TEST_CASE("is_fixed_size_ndarray_v" * doctest::test_suite("array"))
         NMTOOLS_STATIC_CHECK(( !meta::is_fixed_size_ndarray_v<arg_t> ));
     }
     {
-        using arg_t = nmtools::array::fixed_ndarray<double,2,3,4,5>;
+        using arg_t = nmtools::fixed_ndarray<double,2,3,4,5>;
         NMTOOLS_STATIC_CHECK(( meta::is_fixed_size_ndarray_v<arg_t> ));
     }
     {
-        using arg_t = nmtools::array::fixed_ndarray<double,2,3,4>;
+        using arg_t = nmtools::fixed_ndarray<double,2,3,4>;
         NMTOOLS_STATIC_CHECK(( meta::is_fixed_size_ndarray_v<arg_t> ));
     }
     {
-        using arg_t = nmtools::array::fixed_ndarray<double,2,3>;
+        using arg_t = nmtools::fixed_ndarray<double,2,3>;
         NMTOOLS_STATIC_CHECK(( meta::is_fixed_size_ndarray_v<arg_t> ));
     }
     {
-        using arg_t = nmtools::array::fixed_ndarray<double,2>;
+        using arg_t = nmtools::fixed_ndarray<double,2>;
         NMTOOLS_STATIC_CHECK(( meta::is_fixed_size_ndarray_v<arg_t> ));
     }
     {
-        using arg_t = nmtools::array::dynamic_ndarray<double>;
+        using arg_t = nmtools::dynamic_ndarray<double>;
         NMTOOLS_STATIC_CHECK(( !meta::is_fixed_size_ndarray_v<arg_t> ));
     }
     {
@@ -124,19 +124,19 @@ TEST_CASE("fixed_ndarray_dim_v" * doctest::test_suite("array"))
         STATIC_CHECK_IS_SAME( typename result_t::value_type, void );
     }
     {
-        using arg_t = nmtools::array::fixed_ndarray<double,2,3,4,5>;
+        using arg_t = nmtools::fixed_ndarray<double,2,3,4,5>;
         NMTOOLS_STATIC_CHECK( meta::fixed_ndarray_dim_v<arg_t> == 4 );
     }
     {
-        using arg_t = nmtools::array::fixed_ndarray<double,2,3,4>;
+        using arg_t = nmtools::fixed_ndarray<double,2,3,4>;
         NMTOOLS_STATIC_CHECK( meta::fixed_ndarray_dim_v<arg_t> == 3 );
     }
     {
-        using arg_t = nmtools::array::fixed_ndarray<double,2,3>;
+        using arg_t = nmtools::fixed_ndarray<double,2,3>;
         NMTOOLS_STATIC_CHECK( meta::fixed_ndarray_dim_v<arg_t> == 2 );
     }
     {
-        using arg_t = nmtools::array::fixed_ndarray<double,2>;
+        using arg_t = nmtools::fixed_ndarray<double,2>;
         NMTOOLS_STATIC_CHECK( meta::fixed_ndarray_dim_v<arg_t> == 1 );
     }
     {
@@ -161,23 +161,23 @@ TEST_CASE("fixed_ndarray_dim_v" * doctest::test_suite("array"))
         NMTOOLS_STATIC_CHECK( meta::fixed_ndarray_dim_v<arg_t> == 1 );
     }
     {
-        using arg_t = nmtools::array::fixed_ndarray<double,5,4,3,2,1>;
+        using arg_t = nmtools::fixed_ndarray<double,5,4,3,2,1>;
         NMTOOLS_STATIC_CHECK( meta::fixed_ndarray_dim_v<arg_t> == 5 );
     }
     {
-        using arg_t = nmtools::array::fixed_ndarray<double,5,4,3,2>;
+        using arg_t = nmtools::fixed_ndarray<double,5,4,3,2>;
         NMTOOLS_STATIC_CHECK( meta::fixed_ndarray_dim_v<arg_t> == 4 );
     }
     {
-        using arg_t = nmtools::array::fixed_ndarray<double,5,4,3>;
+        using arg_t = nmtools::fixed_ndarray<double,5,4,3>;
         NMTOOLS_STATIC_CHECK( meta::fixed_ndarray_dim_v<arg_t> == 3 );
     }
     {
-        using arg_t = nmtools::array::fixed_ndarray<double,5,4>;
+        using arg_t = nmtools::fixed_ndarray<double,5,4>;
         NMTOOLS_STATIC_CHECK( meta::fixed_ndarray_dim_v<arg_t> == 2 );
     }
     {
-        using arg_t = nmtools::array::fixed_ndarray<double,5>;
+        using arg_t = nmtools::fixed_ndarray<double,5>;
         NMTOOLS_STATIC_CHECK( meta::fixed_ndarray_dim_v<arg_t> == 1 );
     }
 }
@@ -186,9 +186,9 @@ TEST_CASE("fixed_ndarray_shape_v" * doctest::test_suite("array"))
 {
     // using vector_t   = nmtools_array<double,3>;
     using array_t    = nmtools_array<nmtools_array<double,3>,5>;
-    using ndarray_t  = nmtools::array::fixed_ndarray<double,5,3>;
-    using ndarray3_t = nmtools::array::fixed_ndarray<double,5,3,1>;
-    // using dndarray_t = nmtools::array::dynamic_ndarray<double>;
+    using ndarray_t  = nmtools::fixed_ndarray<double,5,3>;
+    using ndarray3_t = nmtools::fixed_ndarray<double,5,3,1>;
+    // using dndarray_t = nmtools::dynamic_ndarray<double>;
 
     {
         constexpr auto shape = nmtools::meta::fixed_ndarray_shape_v<array_t>;
@@ -214,8 +214,8 @@ TEST_CASE("is_ndarray_v" * doctest::test_suite("array"))
     using varray_t  = nmtools_array<double,3>;
     using mvector_t = nmtools_list<double>;
     using marray_t  = nmtools_array<nmtools_array<double,3>,2>;
-    using ftensor_t = nmtools::array::fixed_ndarray<double,2,3,4>;
-    using dtensor_t = nmtools::array::dynamic_ndarray<double>;
+    using ftensor_t = nmtools::fixed_ndarray<double,2,3,4>;
+    using dtensor_t = nmtools::dynamic_ndarray<double>;
 
     {
         using arg_t = vvector_t;
@@ -399,15 +399,15 @@ TEST_CASE("fixed_dim" * doctest::test_suite("array"))
     }
     #endif
     {
-        using arg_t = nm::array::fixed_ndarray<double,1>;
+        using arg_t = nmtools::fixed_ndarray<double,1>;
         NMTOOLS_STATIC_CHECK( meta::fixed_dim_v<arg_t> == 1);
     }
     {
-        using arg_t = nm::array::fixed_ndarray<double,1,2>;
+        using arg_t = nmtools::fixed_ndarray<double,1,2>;
         NMTOOLS_STATIC_CHECK( meta::fixed_dim_v<arg_t> == 2);
     }
     {
-        using arg_t = nm::array::fixed_ndarray<double,2,3,1>;
+        using arg_t = nmtools::fixed_ndarray<double,2,3,1>;
         NMTOOLS_STATIC_CHECK( meta::fixed_dim_v<arg_t> == 3);
     }
 }

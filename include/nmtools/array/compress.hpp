@@ -149,7 +149,7 @@ namespace nmtools::functional
 #include "nmtools/array/compress.hpp"
 #include "nmtools/core/eval.hpp"
 
-namespace nmtools::array
+namespace nmtools
 {
     /**
      * @brief Eagerly select slices of an array along given axis.
@@ -178,6 +178,6 @@ namespace nmtools::array
             ,resolver
         );
     } // compress
-} // namespace nmtools::array
+} // namespace nmtools
 
 #endif // NMTOOLS_ARRAY_ARRAY_COMPRESS_HPP

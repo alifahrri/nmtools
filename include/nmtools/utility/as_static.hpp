@@ -8,7 +8,7 @@
 // #include "nmtools/ndarray.hpp" // for nmtools_static_vector
 #include "nmtools/utl/static_vector.hpp"
 
-namespace nmtools::array
+namespace nmtools
 {
     template <typename attribute_t, auto max_dim=8>
     struct as_static_t
@@ -41,6 +41,6 @@ namespace nmtools::array
         auto mapper = as_static_t<attribute_t,max_dim>{attribute};
         return mapper();
     } // as_static
-} // namespace nmtools::array
+} // namespace nmtools
 
 #endif // NMTOOLS_ARRAY_AS_STATIC_HPP

@@ -3,7 +3,7 @@
 #include "nmtools/testing/doctest.hpp"
 
 namespace nm = nmtools;
-namespace na = nm::array;
+namespace na = nmtools;
 namespace view = nm::view;
 
 #define LOGICAL_AND_SUBCASE(case_name, ...) \

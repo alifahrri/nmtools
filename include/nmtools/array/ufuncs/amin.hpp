@@ -38,10 +38,10 @@ namespace nmtools::view
 #include "nmtools/array/ufuncs/amin.hpp"
 #include "nmtools/core/eval.hpp"
 
-namespace nmtools::array
+namespace nmtools
 {
     /**
-     * @brief Eagerly computes the minimum of an array or the minimum along the gien axis.
+     * @brief Eagerly computes the minimum of an array or the minimum along the given axis.
      * 
      * @tparam output_t 
      * @tparam context_t 
@@ -71,6 +71,6 @@ namespace nmtools::array
             ,resolver
         );
     } // amin
-} // namespace nmtools::array
+} // namespace nmtools
 
 #endif // NMTOOLS_ARRAY_ARRAY_UFUNCS_AMIN_HPP

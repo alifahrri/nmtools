@@ -58,7 +58,7 @@ namespace nmtools::utils::impl
 #include "nmtools/array/ufuncs/bitwise_or.hpp"
 #include "nmtools/constants.hpp"
 
-namespace nmtools::array
+namespace nmtools
 {
     namespace fn
     {
@@ -80,6 +80,6 @@ namespace nmtools::array
     } // namespace fn
 
     constexpr inline auto bitwise_or = fn::bitwise_or{};
-} // nmtools::array
+} // namespace nmtools
 
 #endif // NMTOOLS_ARRAY_ARRAY_BITWISE_OR_HPP

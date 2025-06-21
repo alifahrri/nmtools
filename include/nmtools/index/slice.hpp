@@ -1218,9 +1218,9 @@ namespace nmtools::index
         using element_t = meta::type_t<decltype(element_vtype)>;
         // NOTE: variadic version doesn't handle either type properly
         if constexpr ((N > 0) && !meta::is_either_v<element_t>) {
-            return apply_slice(indices,shape,slices,meta::make_index_sequence<N>{});
+            return index::apply_slice(indices,shape,slices,meta::make_index_sequence<N>{});
         } else {
-            return dynamic_slice(indices,shape,slices);
+            return index::dynamic_slice(indices,shape,slices);
         }
     } // apply_slice
 

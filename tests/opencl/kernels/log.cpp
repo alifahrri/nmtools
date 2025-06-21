@@ -11,7 +11,7 @@
 #define NMTOOLS_TESTING_PRECISION 1e-3
 
 namespace nm = nmtools;
-namespace na = nm::array;
+namespace na = nmtools;
 namespace opencl = na::opencl;
 
 #define OPENCL_TEST(array,fn,...) \

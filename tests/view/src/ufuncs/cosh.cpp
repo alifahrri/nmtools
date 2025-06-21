@@ -7,7 +7,7 @@
 #define NMTOOLS_TESTING_PRECISION 1e-5
 
 namespace nm = nmtools;
-namespace na = nm::array;
+namespace na = nmtools;
 namespace view = nm::view;
 
 #define COSH_SUBCASE(case_name, ...) \

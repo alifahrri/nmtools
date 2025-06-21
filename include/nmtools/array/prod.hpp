@@ -79,7 +79,7 @@ namespace nmtools::functional
 #include "nmtools/array/prod.hpp"
 #include "nmtools/constants.hpp"
 
-namespace nmtools::array
+namespace nmtools
 {
     /**
      * @brief Eagerly evaluate prodduct of array elements over a given axis.
@@ -114,6 +114,6 @@ namespace nmtools::array
             ,resolver
         );
     } // prod
-} // namespace nmtools::array
+} // namespace nmtools
 
 #endif // NMTOOLS_ARRAY_ARRAY_PROD_HPP

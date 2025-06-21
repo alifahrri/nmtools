@@ -6,10 +6,10 @@
 #include <array>
 
 namespace nm = nmtools;
-namespace na = nm::array;
+namespace na = nmtools;
 
 #define RUN_left_shift_impl(...) \
-nm::array::left_shift(__VA_ARGS__);
+nmtools::left_shift(__VA_ARGS__);
 
 #ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
 #include "nmtools/testing/benchmarks/bench.hpp"
@@ -60,7 +60,7 @@ TEST_CASE("left_shift(case2)" * doctest::test_suite("array::left_shift"))
 }
 
 #define RUN_reduce_left_shift_impl(...) \
-nm::array::left_shift.reduce(__VA_ARGS__);
+nmtools::left_shift.reduce(__VA_ARGS__);
 
 #ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
 #include "nmtools/testing/benchmarks/bench.hpp"
@@ -171,7 +171,7 @@ TEST_CASE("reduce_left_shift(case9)" * doctest::test_suite("array::reduce_left_s
 }
 
 #define RUN_accumulate_left_shift_impl(...) \
-nm::array::left_shift.accumulate(__VA_ARGS__);
+nmtools::left_shift.accumulate(__VA_ARGS__);
 
 #ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
 #include "nmtools/testing/benchmarks/bench.hpp"

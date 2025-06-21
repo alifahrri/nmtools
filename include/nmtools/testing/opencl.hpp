@@ -13,7 +13,7 @@ using nmtools::int32_t;
 #define nm_cl_index_t int32_t
 #endif
 
-namespace opencl = nmtools::array::opencl;
+namespace opencl = nmtools::opencl;
 
 namespace nmtools::testing
 {

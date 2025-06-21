@@ -99,7 +99,7 @@ nmtools::utils::to_string_color(array,color_indices,color,nmtools::utils::fmt_st
 #define NMTOOLS_ASSERT_CLOSE_COLORIZED(result,expect) \
 { \
     auto result_ = nmtools::utils::isclose(result,expect,NMTOOLS_TESTING_PRECISION); \
-    auto color   = nmtools::array::greater(nmtools::view::fabs(nmtools::view::subtract(result,expect)),NMTOOLS_TESTING_PRECISION); \
+    auto color   = nmtools::greater(nmtools::view::fabs(nmtools::view::subtract(result,expect)),NMTOOLS_TESTING_PRECISION); \
     auto result_typename = NMTOOLS_TESTING_GET_TYPENAME(decltype(result)); \
     auto expect_typename = NMTOOLS_TESTING_GET_TYPENAME(decltype(expect)); \
     std::string actual_msg = std::string() \
@@ -153,7 +153,7 @@ CHECK_MESSAGE(!nmtools::utils::isequal(result,expect), \
 #define NMTOOLS_ASSERT_EQUAL_COLORIZED(result,expect) \
 { \
     auto result_ = nmtools::utils::isequal(result,expect); \
-    auto color   = nmtools::array::greater(nmtools::array::subtract(result,expect),0); \
+    auto color   = nmtools::greater(nmtools::subtract(result,expect),0); \
     auto result_typename = NMTOOLS_TESTING_GET_TYPENAME(decltype(result)); \
     auto expect_typename = NMTOOLS_TESTING_GET_TYPENAME(decltype(expect)); \
     std::string message {}; \

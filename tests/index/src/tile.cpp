@@ -4,7 +4,7 @@
 #include "nmtools/testing/doctest.hpp"
 
 namespace nm = nmtools;
-namespace na = nm::array;
+namespace na = nmtools;
 
 using namespace nmtools::literals;
 
@@ -424,7 +424,7 @@ TEST_CASE("shape_tile(case5)" * doctest::test_suite("index::constexpr_shape_tile
 #include "nmtools/testing/doctest.hpp"
 
 namespace nm = nmtools;
-namespace na = nm::array;
+namespace na = nmtools;
 namespace kind = na::kind;
 
 NMTOOLS_TESTING_DECLARE_CASE(tile)

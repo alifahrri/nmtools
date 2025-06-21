@@ -58,7 +58,7 @@ namespace nmtools::functional
 #include "nmtools/array/cumprod.hpp"
 #include "nmtools/core/eval.hpp"
 
-namespace nmtools::array
+namespace nmtools
 {
     /**
      * @brief Eagerly evaluate the cumulative product of elements along a given axis.
@@ -87,6 +87,6 @@ namespace nmtools::array
             ,resolver
         );
     } // cumprod
-} // namespace nmtools::array
+} // namespace nmtools
 
 #endif // NMTOOLS_ARRAY_ARRAY_CUMPROD_HPP

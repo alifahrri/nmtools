@@ -23,7 +23,7 @@
 #define nm_stringify(a) #a
 #endif
 
-namespace nmtools::array
+namespace nmtools
 {
     struct create_vector_t {};
 

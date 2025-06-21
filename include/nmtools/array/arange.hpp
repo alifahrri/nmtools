@@ -99,14 +99,14 @@ namespace nmtools::view
     constexpr auto arange(start_t start, stop_t stop, dtype_t<T> dtype=float32)
     {
         using namespace literals;
-        return arange(start,stop,1_ct,dtype);
+        return view::arange(start,stop,1_ct,dtype);
     } // arange
 
     template <typename stop_t, typename T=float>
     constexpr auto arange(stop_t stop, dtype_t<T> dtype=float32)
     {
         using namespace literals;
-        return arange(0_ct,stop,1_ct,dtype);
+        return view::arange(0_ct,stop,1_ct,dtype);
     } // arange
 
 } // namespace nmtools::view
@@ -225,7 +225,7 @@ namespace nmtools::functional
 #include "nmtools/array/arange.hpp"
 #include "nmtools/constants.hpp"
 
-namespace nmtools::array
+namespace nmtools
 {
     /**
      * @brief Eagerly compute arange.
@@ -282,6 +282,6 @@ namespace nmtools::array
             ,resolver
         );
     } // arange
-} // nmtools::array
+} // nmtools
 
 #endif // NMTOOLS_ARRAY_ARRAY_ARANGE

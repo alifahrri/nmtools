@@ -445,7 +445,7 @@ namespace nmtools::view
     } // tiling_window
 }
 
-namespace nmtools::array
+namespace nmtools
 {
     template <typename...args_t, auto max_dim>
     struct as_static_t<
@@ -465,7 +465,7 @@ namespace nmtools::array
             return view::tiling_window_indexer(src_shape,tile_shape,axis);
         }
     };
-} // nmtools::array
+} // nmtools
 
 #if NMTOOLS_HAS_STRING
 
@@ -517,7 +517,7 @@ namespace nmtools::functional
 
 #include "nmtools/core/eval.hpp"
 
-namespace nmtools::array
+namespace nmtools
 {
     template <typename output_t=none_t, typename context_t=none_t, typename resolver_t=eval_result_t<>
         , typename array_t, typename tile_shape_t, typename axis_t=none_t>

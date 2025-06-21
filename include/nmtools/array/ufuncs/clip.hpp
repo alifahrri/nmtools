@@ -64,7 +64,7 @@ namespace nmtools::functional
 #include "nmtools/array/ufuncs/clip.hpp"
 #include "nmtools/constants.hpp"
 
-namespace nmtools::array
+namespace nmtools
 {
     /**
      * @brief Eagerly evaluate clip
@@ -93,6 +93,6 @@ namespace nmtools::array
             ,resolver
         );
     } // clip
-} // nmtools::array
+} // namespace nmtools
 
 #endif // NMTOOLS_ARRAY_ARRAY_CLIP_HPP

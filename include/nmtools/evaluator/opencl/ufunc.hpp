@@ -6,7 +6,7 @@
 #include "nmtools/core/ufunc/ufunc.hpp"
 #include "nmtools/utility/tuple_cat.hpp"
 
-namespace nmtools::array::opencl
+namespace nmtools::opencl
 {
     namespace error
     {
@@ -156,6 +156,6 @@ namespace nmtools::array::opencl
         }
     }; // kernel_t
     #endif
-} // namespace nmtools::array::opencl
+} // namespace nmtools::opencl
 
 #endif // NMTOOLS_ARRAY_EVAL_OPENCL_UFUNC_HPP

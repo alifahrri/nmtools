@@ -5,7 +5,7 @@
 
 namespace nm = nmtools;
 namespace fn = nm::functional;
-namespace na = nmtools::array;
+namespace na = nmtools;
 namespace view = nmtools::view;
 
 #define FUNCTIONAL_SUBCASE(subcase_name, function, ...) \

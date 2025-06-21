@@ -128,7 +128,7 @@ namespace nmtools::functional
 #include "nmtools/array/activations/elu.hpp"
 #include "nmtools/core/eval.hpp"
 
-namespace nmtools::array
+namespace nmtools
 {
     /**
      * @brief Eagerly compute element-wise elu function.
@@ -156,7 +156,6 @@ namespace nmtools::array
             ,resolver
         );
     } // elu
-} // namespace nmtools::view
-
+} // namespace nmtools
 
 #endif // NMTOOLS_ARRAY_ARRAY_ACTIVATIONS_ELU_HPP

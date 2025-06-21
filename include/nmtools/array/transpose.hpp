@@ -103,7 +103,7 @@ namespace nmtools::view
     }
 } // namespace nmtools::view
 
-namespace nmtools::array
+namespace nmtools
 {
     template <typename...args_t, auto max_dim>
     struct as_static_t<
@@ -121,7 +121,7 @@ namespace nmtools::array
             return view::transposer(src_shape,src_size,axes);
         }
     };
-} // namespace nmtools::array
+} // namespace nmtools
 
 #if NMTOOLS_HAS_STRING
 
@@ -186,7 +186,7 @@ namespace nmtools::functional
 #include "nmtools/array/transpose.hpp"
 #include "nmtools/core/eval.hpp"
 
-namespace nmtools::array
+namespace nmtools
 {
     /**
      * @brief Eagerly evaluate transpose op
@@ -213,6 +213,6 @@ namespace nmtools::array
             ,resolver
         );
     } // transpose
-} // namespace nmtools::array
+} // namespace nmtools
 
 #endif // NMTOOLS_ARRAY_ARRAY_TRANSPOSE_HPP

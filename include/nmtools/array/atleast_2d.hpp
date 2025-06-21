@@ -40,7 +40,7 @@ namespace nmtools::functional
 #include "nmtools/array/atleast_2d.hpp"
 #include "nmtools/core/eval.hpp"
 
-namespace nmtools::array
+namespace nmtools
 {
     /**
      * @brief Eagerly compute atleast_2d.
@@ -65,6 +65,6 @@ namespace nmtools::array
             ,resolver
         );
     } // atleast_2d
-} // namespace nmtools::array
+} // namespace nmtools
 
 #endif // NMTOOLS_ARRAY_ARRAY_ATLEAST_2D_HPP

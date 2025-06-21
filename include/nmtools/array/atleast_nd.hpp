@@ -67,7 +67,7 @@ namespace nmtools::functional
 #include "nmtools/array/atleast_nd.hpp"
 #include "nmtools/core/eval.hpp"
 
-namespace nmtools::array
+namespace nmtools
 {
     /**
      * @brief Eagerly compute atleast_nd.
@@ -92,6 +92,6 @@ namespace nmtools::array
             ,resolver
         );
     } // atleast_nd
-} // namespace nmtools::array
+} // namespace nmtools
 
 #endif // NMTOOLS_ARRAY_ARRAY_ATLEAST_ND_HPP

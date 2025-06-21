@@ -6,10 +6,10 @@
 #include <array>
 
 namespace nm = nmtools;
-namespace na = nm::array;
+namespace na = nmtools;
 
 #define RUN_fmod_impl(...) \
-nm::array::fmod(__VA_ARGS__);
+nmtools::fmod(__VA_ARGS__);
 
 #ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
 #include "nmtools/testing/benchmarks/bench.hpp"
@@ -60,7 +60,7 @@ TEST_CASE("fmod(case2)" * doctest::test_suite("array::fmod"))
 }
 
 #define RUN_reduce_fmod_impl(...) \
-nm::array::fmod.reduce(__VA_ARGS__);
+nmtools::fmod.reduce(__VA_ARGS__);
 
 #ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
 #include "nmtools/testing/benchmarks/bench.hpp"
@@ -163,7 +163,7 @@ TEST_CASE("reduce_fmod(case8)" * doctest::test_suite("array::reduce_fmod"))
 }
 
 #define RUN_accumulate_fmod_impl(...) \
-nm::array::fmod.accumulate(__VA_ARGS__);
+nmtools::fmod.accumulate(__VA_ARGS__);
 
 #ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
 #include "nmtools/testing/benchmarks/bench.hpp"
@@ -226,7 +226,7 @@ TEST_CASE("accumulate_fmod(case3)" * doctest::test_suite("array::accumulate_fmod
 }
 
 #define RUN_outer_fmod_impl(...) \
-nm::array::fmod.outer(__VA_ARGS__);
+nmtools::fmod.outer(__VA_ARGS__);
 
 #ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
 #include "nmtools/testing/benchmarks/bench.hpp"

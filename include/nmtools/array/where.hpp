@@ -235,7 +235,7 @@ namespace nmtools::functional
 #include "nmtools/array/where.hpp"
 #include "nmtools/core/eval.hpp"
 
-namespace nmtools::array
+namespace nmtools
 {
     /**
      * @brief Eagerly evaluate where view.
@@ -266,6 +266,6 @@ namespace nmtools::array
             ,resolver
         );
     } // where
-} // namespace nmtools::array
+} // namespace nmtools
 
 #endif // NMTOOLS_ARRAY_ARRAY_WHERE_HPP
