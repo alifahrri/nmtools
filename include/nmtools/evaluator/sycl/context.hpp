@@ -500,9 +500,9 @@ namespace nmtools::sycl
                     auto output = create_mutable_array(&output_accessor[0],&output_shape_accessor[0],output_dim);
                     auto result = functional::apply(f,operands);
                     // TODO: properly get the thread & kernel id and shape
-                    auto thread_id  = array::kernel_size<size_t>{item.get_global_id(),0,0};
-                    auto block_id   = array::kernel_size<size_t>{0,0,0};
-                    auto block_size = array::kernel_size<size_t>{1,1,1};
+                    auto thread_id  = kernel_size<size_t>{item.get_global_id(),0,0};
+                    auto block_id   = kernel_size<size_t>{0,0,0};
+                    auto block_size = kernel_size<size_t>{1,1,1};
 
                     #if 0
                     auto idx = compute_offset(thread_id,block_id,block_size);
