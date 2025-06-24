@@ -195,7 +195,7 @@ namespace nmtools::meta
 {
     template <auto DIM, typename data_t>
     struct resolve_optype<
-        void, array::create_vector_t, as_type<DIM>, data_t
+        void, create_vector_t, as_type<DIM>, data_t
     >
     {
         using data_type = remove_address_space_t<remove_cvref_t<data_t>>;
@@ -221,7 +221,7 @@ namespace nmtools::meta
     struct is_device_array<T&> : is_device_array<T> {};
 
     template <typename data_t, typename shape_t, typename dim_t>
-    struct is_device_array<array::device_array<data_t,shape_t,dim_t>> : true_type {};
+    struct is_device_array<device_array<data_t,shape_t,dim_t>> : true_type {};
 
     template <typename T>
     constexpr inline auto is_device_array_v = is_device_array<T>::value;
@@ -230,9 +230,9 @@ namespace nmtools::meta
 namespace nmtools::meta
 {
     template <typename data_t, typename shape_t, typename dim_t>
-    struct get_element_type<array::device_array<data_t,shape_t,dim_t>>
+    struct get_element_type<device_array<data_t,shape_t,dim_t>>
     {
-        using array_type = array::device_array<data_t,shape_t,dim_t>;
+        using array_type = device_array<data_t,shape_t,dim_t>;
         static constexpr auto vtype = [](){
             using T = typename array_type::value_type;
             if constexpr (is_num_v<T>) {
@@ -246,20 +246,20 @@ namespace nmtools::meta
 
     template <typename data_t, typename shape_t, typename dim_t>
     struct is_ndarray<
-        array::device_array<data_t,shape_t,dim_t>
+        device_array<data_t,shape_t,dim_t>
     >
     {
-        using array_type = array::device_array<data_t,shape_t,dim_t>;
+        using array_type = device_array<data_t,shape_t,dim_t>;
         using element_type = typename array_type::value_type;
         static constexpr auto value = is_num_v<element_type>;
     }; // is_ndarray
 
     template <typename data_t, typename shape_t, typename dim_t>
     struct fixed_dim<
-        array::device_array<data_t,shape_t,dim_t>
+        device_array<data_t,shape_t,dim_t>
     >
     {
-        using array_type = array::device_array<data_t,shape_t,dim_t>;
+        using array_type = device_array<data_t,shape_t,dim_t>;
         using shape_type = typename array_type::shape_type;
 
         static constexpr auto value = [](){
@@ -274,10 +274,10 @@ namespace nmtools::meta
 
     template <typename data_t, typename shape_t, typename dim_t>
     struct fixed_shape<
-        array::device_array<data_t,shape_t,dim_t>
+        device_array<data_t,shape_t,dim_t>
     >
     {
-        using array_type = array::device_array<data_t,shape_t,dim_t>;
+        using array_type = device_array<data_t,shape_t,dim_t>;
         using shape_type = typename array_type::shape_type;
 
         static constexpr auto value = [](){
@@ -292,10 +292,10 @@ namespace nmtools::meta
 
     template <typename data_t, typename shape_t, typename dim_t>
     struct fixed_size<
-        array::device_array<data_t,shape_t,dim_t>
+        device_array<data_t,shape_t,dim_t>
     >
     {
-        using array_type  = array::device_array<data_t,shape_t,dim_t>;
+        using array_type  = device_array<data_t,shape_t,dim_t>;
         using shape_type  = typename array_type::shape_type;
         using buffer_type = typename array_type::buffer_type;
 
@@ -313,10 +313,10 @@ namespace nmtools::meta
 
     template <typename data_t, typename shape_t, typename dim_t>
     struct bounded_dim<
-        array::device_array<data_t,shape_t,dim_t>
+        device_array<data_t,shape_t,dim_t>
     >
     {
-        using array_type  = array::device_array<data_t,shape_t,dim_t>;
+        using array_type  = device_array<data_t,shape_t,dim_t>;
         using shape_type  = typename array_type::shape_type;
         using buffer_type = typename array_type::buffer_type;
 
@@ -335,10 +335,10 @@ namespace nmtools::meta
 
     template <typename data_t, typename shape_t, typename dim_t>
     struct bounded_size<
-        array::device_array<data_t,shape_t,dim_t>
+        device_array<data_t,shape_t,dim_t>
     >
     {
-        using array_type  = array::device_array<data_t,shape_t,dim_t>;
+        using array_type  = device_array<data_t,shape_t,dim_t>;
         using shape_type  = typename array_type::shape_type;
         using buffer_type = typename array_type::buffer_type;
 
@@ -356,10 +356,10 @@ namespace nmtools::meta
 
     template <typename data_t, typename shape_t, typename dim_t>
     struct is_index_array<
-        array::device_array<data_t,shape_t,dim_t>
+        device_array<data_t,shape_t,dim_t>
     >
     {
-        using array_type = array::device_array<data_t,shape_t,dim_t>;
+        using array_type = device_array<data_t,shape_t,dim_t>;
         using shape_type = typename array_type::shape_type;
 
         static constexpr auto value = [](){
@@ -372,9 +372,9 @@ namespace nmtools::meta
 
     template <typename data_t, typename shape_t, typename dim_t>
     struct contiguous_axis<
-        array::device_array<data_t,shape_t,dim_t>
+        device_array<data_t,shape_t,dim_t>
     > {
-        using array_type  = array::device_array<data_t,shape_t,dim_t>;
+        using array_type  = device_array<data_t,shape_t,dim_t>;
         using offset_type = typename array_type::offset_type;
         static constexpr auto value = [](){
             if constexpr (is_row_major_offset_v<offset_type>) {

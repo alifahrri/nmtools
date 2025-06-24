@@ -299,7 +299,7 @@ namespace nmtools::hip
                 static_assert( meta::len_v<operands_t> == 0 );
                 constexpr auto N = meta::len_v<attributes_t>;
                 auto attributes  = meta::template_reduce<N>([&](auto init, auto I){
-                    auto attribute = array::as_static(at(f.attributes,I));
+                    auto attribute = as_static(at(f.attributes,I));
                     return utility::tuple_append(init,attribute);
                 }, nmtools_tuple{});
                 return functional::functor_t<F,operands_t,decltype(attributes)>{
