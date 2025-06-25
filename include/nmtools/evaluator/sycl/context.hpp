@@ -514,7 +514,7 @@ namespace nmtools::sycl
                     ;
                     #endif
 
-                    array::assign_result(output,result,thread_id,block_id,block_size);
+                    assign_result(output,result,thread_id,block_id,block_size);
                 });
             });
 
