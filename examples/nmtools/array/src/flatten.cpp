@@ -13,7 +13,6 @@ std::cout << #x << ":\n" \
     << std::endl; \
 
 namespace nm = nmtools;
-namespace na = nm::array;
 namespace view = nm::view;
 
 int main()
@@ -34,16 +33,16 @@ int main()
         PRINT(array)
         PRINT(flattened)
     }
-    DESC("\n flattening an na::fixed_ndarray")
+    DESC("\n flattening an nm::fixed_ndarray")
     {
-        na::fixed_ndarray array = {{{1,2},{3,4}}};
+        nm::fixed_ndarray array = {{{1,2},{3,4}}};
         auto flattened = view::flatten(array);
         PRINT(array)
         PRINT(flattened)
     }
-    DESC("\n flattening an na::dynamic_ndarray")
+    DESC("\n flattening an nm::dynamic_ndarray")
     {
-        auto array = na::dynamic_ndarray{{{1,2},{3,4}}};
+        auto array = nm::dynamic_ndarray{{{1,2},{3,4}}};
         auto flattened = view::flatten(array);
         PRINT(array)
         PRINT(flattened)

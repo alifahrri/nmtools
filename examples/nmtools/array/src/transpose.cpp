@@ -14,7 +14,6 @@ std::cout << #x << ":\n" \
     << std::endl; \
 
 namespace nm = nmtools;
-namespace na = nm::array;
 namespace view = nm::view;
 
 int main()
@@ -41,9 +40,9 @@ int main()
         PRINT(array)
         PRINT(transposed)
     }
-    DESC("\ntransposing an na::fixed_ndarray")
+    DESC("\ntransposing an nm::fixed_ndarray")
     {
-        auto array = na::fixed_ndarray{{
+        auto array = nm::fixed_ndarray{{
             {
                 {1,2,3},
                 {3,4,5}
@@ -57,9 +56,9 @@ int main()
         PRINT(array)
         PRINT(transposed)
     }
-    DESC("\ntransposing an na::dynamic_ndarray")
+    DESC("\ntransposing an nm::dynamic_ndarray")
     {
-        auto array = na::dynamic_ndarray({
+        auto array = nm::dynamic_ndarray({
             {
                 {1,2,3},
                 {3,4,5}

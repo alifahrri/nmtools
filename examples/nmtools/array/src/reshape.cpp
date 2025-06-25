@@ -13,7 +13,6 @@ std::cout << #x << ":\n" \
     << std::endl; \
 
 namespace nm = nmtools;
-namespace na = nm::array;
 namespace view = nm::view;
 
 int main()
@@ -33,16 +32,16 @@ int main()
         PRINT(array)
         PRINT(reshaped)
     }
-    DESC("\nreshaping an na::fixed_ndarray")
+    DESC("\nreshaping an nm::fixed_ndarray")
     {
-        auto array = na::fixed_ndarray{{1,2,3,4,5,6,7,8,9,10,11,12}};
+        auto array = nm::fixed_ndarray{{1,2,3,4,5,6,7,8,9,10,11,12}};
         auto reshaped = view::reshape(array,newshape);
         PRINT(array)
         PRINT(reshaped)
     }
-    DESC("\nreshaping an na::dynamic_ndarray")
+    DESC("\nreshaping an nm::dynamic_ndarray")
     {
-        auto array = na::dynamic_ndarray({1,2,3,4,5,6,7,8,9,10,11,12});
+        auto array = nm::dynamic_ndarray({1,2,3,4,5,6,7,8,9,10,11,12});
         auto reshaped = view::reshape(array,newshape);
         PRINT(array)
         PRINT(reshaped)

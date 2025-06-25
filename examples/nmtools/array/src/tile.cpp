@@ -13,7 +13,6 @@ std::cout << #x << ":\n" \
     << std::endl; \
 
 namespace nm = nmtools;
-namespace na = nm::array;
 namespace view = nm::view;
 
 using std::tuple;
@@ -35,16 +34,16 @@ int main()
         PRINT(array)
         PRINT(tiled)
     }
-    DESC("\n tiling an na::fixed_ndarray")
+    DESC("\n tiling an nm::fixed_ndarray")
     {
-        auto array = na::fixed_ndarray{{0,1,2}};
+        auto array = nm::fixed_ndarray{{0,1,2}};
         auto tiled = view::tile(array,reps);
         PRINT(array)
         PRINT(tiled)
     }
-    DESC("\n tiling an na::dynamic_ndarray")
+    DESC("\n tiling an nm::dynamic_ndarray")
     {
-        auto array = na::dynamic_ndarray({0,1,2});
+        auto array = nm::dynamic_ndarray({0,1,2});
         auto tiled = view::tile(array,reps);
         PRINT(array)
         PRINT(tiled)
