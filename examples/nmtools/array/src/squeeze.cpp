@@ -13,7 +13,6 @@ std::cout << #x << ":\n" \
     << std::endl; \
 
 namespace nm = nmtools;
-namespace na = nm::array;
 namespace view = nm::view;
 
 int main()
@@ -34,21 +33,21 @@ int main()
         PRINT(array)
         PRINT(squeezed)
     }
-    DESC("\nsqueezing an na::fixed_ndarray")
+    DESC("\nsqueezing an nm::fixed_ndarray")
     {
-        auto array = na::fixed_ndarray<int,3,1>{{{1},{2},{3}}};
+        auto array = nm::fixed_ndarray<int,3,1>{{{1},{2},{3}}};
         auto squeezed = view::squeeze(array);
         PRINT(array)
         PRINT(squeezed)
     }
-    DESC("\nsqueezing an na::dynamic_ndarray")
+    DESC("\nsqueezing an nm::dynamic_ndarray")
     {
         int raw[3][1] = {
             {1},
             {2},
             {3}
         };
-        auto array = na::dynamic_ndarray(std::move(raw));
+        auto array = nm::dynamic_ndarray(std::move(raw));
         auto squeezed = view::squeeze(array);
         PRINT(array)
         PRINT(squeezed)

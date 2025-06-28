@@ -19,10 +19,10 @@
 #ifdef NMTOOLS_OPENCL_BUILD_KERNELS
 
 namespace nm = nmtools;
-namespace na = nmtools::array;
+namespace na = nmtools;
 namespace view = nmtools::view;
 namespace meta = nmtools::meta;
-namespace opencl = nmtools::array::opencl;
+namespace opencl = nmtools::opencl;
 namespace detail = nmtools::view::detail;
 
 #define nmtools_cl_kernel(out_type, inp_type) \
@@ -55,7 +55,7 @@ nmtools_cl_kernel(double,double)
 extern unsigned char nm_cl_transpose_spv[];
 extern unsigned int nm_cl_transpose_spv_len;
 
-namespace nmtools::array::opencl
+namespace nmtools::opencl
 {
     template <typename...args_t>
     struct kernel_t<

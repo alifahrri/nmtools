@@ -202,7 +202,7 @@ namespace nmtools::functional
 #include "nmtools/array/full.hpp"
 #include "nmtools/core/eval.hpp"
 
-namespace nmtools::array
+namespace nmtools
 {
     /**
      * @brief Eagerly compute full.
@@ -229,6 +229,6 @@ namespace nmtools::array
             ,resolver
         );
     } // full
-} // namespace nmtools::array
+} // namespace nmtools
 
 #endif // NMTOOLS_ARRAY_ARRAY_FULL_HPP

@@ -6,7 +6,7 @@
 SUBCASE(#case_name) \
 { \
     NMTOOLS_TESTING_USE_CASE( array, dot, case_name ); \
-    auto result = nmtools::array::dot(__VA_ARGS__); \
+    auto result = nmtools::dot(__VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( nmtools::shape(result), nmtools::shape(expect::result) ); \
     NMTOOLS_ASSERT_CLOSE( result, expect::result ); \
 }

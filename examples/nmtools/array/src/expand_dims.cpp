@@ -13,7 +13,6 @@ std::cout << #x << ":\n" \
     << std::endl; \
 
 namespace nm = nmtools;
-namespace na = nm::array;
 namespace view = nm::view;
 
 int main()
@@ -33,16 +32,16 @@ int main()
         PRINT(array)
         PRINT(expanded)
     }
-    DESC("\nexpanding an na::fixed_ndarray")
+    DESC("\nexpanding an nm::fixed_ndarray")
     {
-        auto array = na::fixed_ndarray{{1,2,3}};
+        auto array = nm::fixed_ndarray{{1,2,3}};
         auto expanded = view::expand_dims(array,axis);
         PRINT(array)
         PRINT(expanded)
     }
-    DESC("\nexpanding an na::dynamic_ndarray")
+    DESC("\nexpanding an nm::dynamic_ndarray")
     {
-        auto array = na::dynamic_ndarray({1,2,3});
+        auto array = nm::dynamic_ndarray({1,2,3});
         auto expanded = view::expand_dims(array,axis);
         PRINT(array)
         PRINT(expanded)

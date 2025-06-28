@@ -1,17 +1,17 @@
 #if 1
 #define NMTOOLS_CAST_ARRAYS_EXTRA(name) \
-inline auto name##_cs_fb = nmtools::cast(name, nmtools::array::kind::ndarray_cs_fb); \
-inline auto name##_cs_hb = nmtools::cast(name, nmtools::array::kind::ndarray_cs_hb); \
-inline auto name##_cs_db = nmtools::cast(name, nmtools::array::kind::ndarray_cs_db); \
-inline auto name##_fs_fb = nmtools::cast(name, nmtools::array::kind::ndarray_cs_fb); \
-inline auto name##_fs_hb = nmtools::cast(name, nmtools::array::kind::ndarray_cs_hb); \
-inline auto name##_fs_db = nmtools::cast(name, nmtools::array::kind::ndarray_cs_db); \
-inline auto name##_hs_fb = nmtools::cast(name, nmtools::array::kind::ndarray_cs_fb); \
-inline auto name##_hs_hb = nmtools::cast(name, nmtools::array::kind::ndarray_cs_hb); \
-inline auto name##_hs_db = nmtools::cast(name, nmtools::array::kind::ndarray_cs_db); \
-inline auto name##_ds_fb = nmtools::cast(name, nmtools::array::kind::ndarray_cs_fb); \
-inline auto name##_ds_hb = nmtools::cast(name, nmtools::array::kind::ndarray_cs_hb); \
-inline auto name##_ds_db = nmtools::cast(name, nmtools::array::kind::ndarray_cs_db);
+inline auto name##_cs_fb = nmtools::cast(name, nmtools::kind::ndarray_cs_fb); \
+inline auto name##_cs_hb = nmtools::cast(name, nmtools::kind::ndarray_cs_hb); \
+inline auto name##_cs_db = nmtools::cast(name, nmtools::kind::ndarray_cs_db); \
+inline auto name##_fs_fb = nmtools::cast(name, nmtools::kind::ndarray_cs_fb); \
+inline auto name##_fs_hb = nmtools::cast(name, nmtools::kind::ndarray_cs_hb); \
+inline auto name##_fs_db = nmtools::cast(name, nmtools::kind::ndarray_cs_db); \
+inline auto name##_hs_fb = nmtools::cast(name, nmtools::kind::ndarray_cs_fb); \
+inline auto name##_hs_hb = nmtools::cast(name, nmtools::kind::ndarray_cs_hb); \
+inline auto name##_hs_db = nmtools::cast(name, nmtools::kind::ndarray_cs_db); \
+inline auto name##_ds_fb = nmtools::cast(name, nmtools::kind::ndarray_cs_fb); \
+inline auto name##_ds_hb = nmtools::cast(name, nmtools::kind::ndarray_cs_hb); \
+inline auto name##_ds_db = nmtools::cast(name, nmtools::kind::ndarray_cs_db);
 #endif
 
 #include "nmtools/array/ufuncs/cos.hpp"
@@ -19,7 +19,7 @@ inline auto name##_ds_db = nmtools::cast(name, nmtools::array::kind::ndarray_cs_
 #include "nmtools/testing/doctest.hpp"
 
 namespace nm = nmtools;
-namespace na = nm::array;
+namespace na = nmtools;
 namespace view = nm::view;
 
 #define COS_SUBCASE(case_name, ...) \

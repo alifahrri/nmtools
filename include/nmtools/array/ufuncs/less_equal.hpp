@@ -58,7 +58,7 @@ namespace nmtools::utils::impl
 #include "nmtools/array/ufuncs/less_equal.hpp"
 #include "nmtools/constants.hpp"
 
-namespace nmtools::array
+namespace nmtools
 {
     namespace fn
     {
@@ -80,6 +80,6 @@ namespace nmtools::array
     } // namespace fn
 
     constexpr inline auto less_equal = fn::less_equal{};
-} // nmtools::array
+} // namespace nmtools
 
 #endif // NMTOOLS_ARRAY_ARRAY_LESS_EQUAL_HPP

@@ -3,7 +3,7 @@
 #include "nmtools/evaluator/kernel_helper.hpp"
 
 namespace nm = nmtools;
-namespace na = nm::array;
+namespace na = nmtools;
 namespace ix = nm::index;
 namespace view = nm::view;
 namespace meta = nm::meta;
@@ -33,7 +33,7 @@ kernel void test_shape_transpose(global int* out_shape_ptr, global const int* in
 #include "nmtools/testing/opencl.hpp"
 #include <cstring>
 
-namespace opencl = nmtools::array::opencl;
+namespace opencl = nmtools::opencl;
 namespace testing = nmtools::testing;
 
 extern unsigned char nm_cl_test_transpose_spv [];

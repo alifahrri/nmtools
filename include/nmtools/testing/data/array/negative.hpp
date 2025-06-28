@@ -10,7 +10,7 @@
 #include <array>
 
 namespace nm = nmtools;
-namespace na = nm::array;
+namespace na = nmtools;
 namespace view = nm::view;
 namespace kind = na::kind;
 

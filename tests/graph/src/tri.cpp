@@ -4,7 +4,7 @@
 #include "nmtools/testing/doctest.hpp"
 
 namespace nm = nmtools;
-namespace na = nmtools::array;
+namespace na = nmtools;
 namespace nk = nmtools::network;
 namespace fn = nmtools::functional;
 namespace view = nmtools::view;

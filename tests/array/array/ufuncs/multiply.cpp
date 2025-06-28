@@ -6,7 +6,7 @@
 #include <array>
 
 namespace nm = nmtools;
-namespace na = nm::array;
+namespace na = nmtools;
 
 #define RUN_multiply_impl(...) \
 nm::view::multiply(__VA_ARGS__);
@@ -60,7 +60,7 @@ TEST_CASE("multiply(case2)" * doctest::test_suite("array::multiply"))
 }
 
 #define RUN_reduce_multiply_impl(...) \
-nm::array::multiply.reduce(__VA_ARGS__);
+nmtools::multiply.reduce(__VA_ARGS__);
 
 #ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
 #include "nmtools/testing/benchmarks/bench.hpp"
@@ -199,7 +199,7 @@ TEST_CASE("reduce_multiply(case13)" * doctest::test_suite("array::reduce_multipl
 }
 
 #define RUN_accumulate_multiply_impl(...) \
-nm::array::multiply.accumulate(__VA_ARGS__);
+nmtools::multiply.accumulate(__VA_ARGS__);
 
 #ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
 #include "nmtools/testing/benchmarks/bench.hpp"
@@ -262,7 +262,7 @@ TEST_CASE("accumulate_multiply(case3)" * doctest::test_suite("array::accumulate_
 }
 
 #define RUN_outer_multiply_impl(...) \
-nm::array::multiply.outer(__VA_ARGS__);
+nmtools::multiply.outer(__VA_ARGS__);
 
 #ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
 #include "nmtools/testing/benchmarks/bench.hpp"

@@ -17,7 +17,7 @@ namespace composition
     } // mean_subtract
 } // composition
 
-namespace na = nm::array;
+namespace na = nmtools;
 namespace kind = na::kind;
 
 

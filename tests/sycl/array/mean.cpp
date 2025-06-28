@@ -5,7 +5,7 @@
 #include "nmtools/testing/doctest.hpp"
 
 namespace nm = nmtools;
-namespace na = nm::array;
+namespace na = nmtools;
 namespace ix = nm::index;
 
 // TODO: fix to accept maybe type

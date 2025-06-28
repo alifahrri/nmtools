@@ -63,7 +63,7 @@ namespace nmtools::args
     reduce(args_t...) -> reduce<args_t...>;
 } // namespace nmtools::args
 
-namespace nmtools::array
+namespace nmtools
 {
     template <auto max_dim, typename...args_t>
     struct as_static_t<
@@ -85,7 +85,7 @@ namespace nmtools::array
             };
         }
     };
-} // nmtools::array
+} // nmtools
 
 namespace nmtools::meta
 {

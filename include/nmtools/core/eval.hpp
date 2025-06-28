@@ -13,7 +13,7 @@
 #include "nmtools/utility/shape.hpp"
 #include "nmtools/utility/tuple_cat.hpp"
 
-namespace nmtools::array
+namespace nmtools
 {
     enum LayoutKind : int
     {
@@ -55,13 +55,13 @@ namespace nmtools::meta
     struct is_eval_context : false_type {};
 
     template <typename T>
-    struct is_eval_context<array::context_t<T>> : true_type {};
+    struct is_eval_context<context_t<T>> : true_type {};
 
     template <typename T>
     struct is_eval_type_resolver : false_type {};
     
     template <typename T>
-    struct is_eval_type_resolver<array::eval_type_resolver_t<T>> : true_type {};
+    struct is_eval_type_resolver<eval_type_resolver_t<T>> : true_type {};
 
     template <typename T>
     constexpr inline auto is_eval_context_v = is_eval_context<T>::value;
@@ -70,7 +70,7 @@ namespace nmtools::meta
     constexpr inline auto is_eval_type_resolver_v = is_eval_type_resolver<T>::value;
 }
 
-namespace nmtools::array
+namespace nmtools
 {
     template <typename array_t>
     decltype(auto) get_array(const array_t& array);
@@ -323,7 +323,7 @@ namespace nmtools::array
         template <typename output_t, typename context_t, typename resolver_t, typename views_t, template<auto...>typename index_sequence, auto...Is>
         constexpr auto apply_eval(const views_t& views, context_t&& context, output_t&& output, [[maybe_unused]] resolver_t resolver, index_sequence<Is...>)
         {
-            return nmtools_tuple{array::eval(nmtools::get<Is>(views)
+            return nmtools_tuple{nmtools::eval(nmtools::get<Is>(views)
                 , nmtools::forward<context_t>(context)
                 , nmtools::forward<output_t>(output)
                 , resolver)
@@ -396,7 +396,7 @@ namespace nmtools::array
         }
     } // apply_eval
 
-} // namespace nmtools::array
+} // namespace nmtools
 
 #include "nmtools/ndarray.hpp"
 
@@ -691,19 +691,19 @@ namespace nmtools::meta
     } // resolve_binary_array_type
 
     // TODO: make this the default eval type resolver
-    template <array::LayoutKind BufferLayout, typename view_t>
+    template <LayoutKind BufferLayout, typename view_t>
     struct resolve_optype<
-        void, array::eval_type_resolver_t<array::default_type_resolver_t<BufferLayout>>, view_t, none_t
+        void, eval_type_resolver_t<default_type_resolver_t<BufferLayout>>, view_t, none_t
     >
     {
         template <typename buffer_t, typename shape_buffer_t>
         static constexpr auto make_ndarray(as_value<buffer_t>, as_value<shape_buffer_t>)
         {
-            if constexpr (BufferLayout == array::LayoutKind::ROW_MAJOR) {
-                using type = array::row_major_ndarray_t<buffer_t,shape_buffer_t>;
+            if constexpr (BufferLayout == LayoutKind::ROW_MAJOR) {
+                using type = row_major_ndarray_t<buffer_t,shape_buffer_t>;
                 return as_value_v<type>;
-            } else if constexpr (BufferLayout == array::LayoutKind::COLUMN_MAJOR) {
-                using type = array::column_major_ndarray_t<buffer_t,shape_buffer_t>;
+            } else if constexpr (BufferLayout == LayoutKind::COLUMN_MAJOR) {
+                using type = column_major_ndarray_t<buffer_t,shape_buffer_t>;
                 return as_value_v<type>;
             } else {
                 using type = error::EVAL_RESULT_UNSUPPORTED<view_t,none_t,as_type<BufferLayout>>;
@@ -903,7 +903,7 @@ namespace nmtools::meta
      */
     template <typename view_t>
     struct resolve_optype<
-        void, array::eval_t, view_t, none_t
+        void, eval_t, view_t, none_t
     >
     {
         using element_t = get_element_type_t<view_t>;

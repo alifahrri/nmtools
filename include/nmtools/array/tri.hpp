@@ -159,7 +159,7 @@ namespace nmtools::view
     } // tri
 } // nmtools::view
 
-namespace nmtools::array
+namespace nmtools
 {
     template <typename...args_t, auto max_dim>
     struct as_static_t<
@@ -211,7 +211,7 @@ namespace nmtools::utils::impl
 #include "nmtools/array/tri.hpp"
 #include "nmtools/core/eval.hpp"
 
-namespace nmtools::array
+namespace nmtools
 {
     template <typename output_t=none_t, typename context_t=none_t, typename resolver_t=eval_result_t<>
         , typename n_t, typename m_t=none_t, typename k_t=nm_index_t, typename T=float>
@@ -226,6 +226,6 @@ namespace nmtools::array
             , resolver
         );
     } // tri
-} // nmtools::array
+} // nmtools
 
 #endif // NMTOOLS_ARRAY_ARRAY_TRI_HPP

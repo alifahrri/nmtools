@@ -147,7 +147,7 @@ namespace nmtools::functional
 #include "nmtools/array/vstack.hpp"
 #include "nmtools/core/eval.hpp"
 
-namespace nmtools::array
+namespace nmtools
 {
     template <typename output_t=none_t, typename context_t=none_t, typename resolver_t=eval_result_t<>,
         typename lhs_array_t, typename rhs_array_t>
@@ -161,6 +161,6 @@ namespace nmtools::array
             , resolver
         );
     } // vstack
-} // namespace nmtools::array
+} // namespace nmtools
 
 #endif // NMTOOLS_ARRAY_ARRAY_VSTACK_HPP

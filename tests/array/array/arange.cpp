@@ -7,7 +7,7 @@
 #include <tuple>
 
 #define RUN_arange_impl(...) \
-nm::array::arange(__VA_ARGS__);
+nmtools::arange(__VA_ARGS__);
 
 #ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
 #include "nmtools/testing/benchmarks/bench.hpp"

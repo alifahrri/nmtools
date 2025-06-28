@@ -94,7 +94,7 @@ namespace nmtools::functional
 #include "nmtools/array/activations/hardswish.hpp"
 #include "nmtools/core/eval.hpp"
 
-namespace nmtools::array
+namespace nmtools
 {
     /**
      * @brief Eagerly compute element-wise hardswish ufunc.
@@ -119,7 +119,7 @@ namespace nmtools::array
             ,resolver
         );
     } // hardswish
-} // namespace nmtools::array
+} // namespace nmtools
 
 
 #endif // NMTOOLS_ARRAY_ARRAY_ACTIVATIONS_HARDSWISH_HPP

@@ -7,7 +7,7 @@ SUBCASE(#case_name) \
 { \
     NMTOOLS_TESTING_USE_CASE( array, vector_norm, case_name ); \
     using namespace args; \
-    auto result = nmtools::array::vector_norm(__VA_ARGS__); \
+    auto result = nmtools::vector_norm(__VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( nmtools::shape(result), nmtools::shape(expect::result) ); \
     NMTOOLS_ASSERT_CLOSE( result, expect::result ); \
 }

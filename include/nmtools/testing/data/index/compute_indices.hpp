@@ -2,7 +2,7 @@
 #define NMTOOLS_TESTING_DATA_INDEX_COMPUTE_INDICES_HPP
 
 #define NMTOOLS_CAST_ARRAYS_EXTRA(name) \
-inline auto name##_ls_fb = nmtools::cast(name, nmtools::array::kind::ndarray_ls_fb); \
+inline auto name##_ls_fb = nmtools::cast(name, nmtools::kind::ndarray_ls_fb); \
 
 #include "nmtools/testing/doctest.hpp"
 

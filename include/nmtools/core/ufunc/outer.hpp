@@ -41,7 +41,7 @@ namespace nmtools::args
     outer(args_t...) -> outer<args_t...>;
 } // namespace nmtools::args
 
-namespace nmtools::array
+namespace nmtools
 {
     template <auto max_dim, typename...args_t>
     struct as_static_t<
@@ -57,7 +57,7 @@ namespace nmtools::array
             return attribute;
         }
     };
-} // nmtools::array
+} // nmtools
 
 namespace nmtools::meta
 {

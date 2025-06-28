@@ -61,7 +61,7 @@ namespace nmtools::utils::impl
 #include "nmtools/array/ufuncs/trunc.hpp"
 #include "nmtools/constants.hpp"
 
-namespace nmtools::array
+namespace nmtools
 {
     namespace fn
     {
@@ -83,6 +83,6 @@ namespace nmtools::array
     } // namespace fn
 
     constexpr inline auto trunc = fn::trunc{};
-} // nmtools::array
+} // nmtools
 
 #endif // NMTOOLS_ARRAY_ARRAY_TRUNC_HPP

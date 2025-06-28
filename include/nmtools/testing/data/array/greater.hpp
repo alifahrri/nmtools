@@ -11,7 +11,7 @@
 #include <algorithm> // std::max
 
 namespace nm = nmtools;
-namespace na = nm::array;
+namespace na = nmtools;
 namespace kind = na::kind;
 
 NMTOOLS_TESTING_DECLARE_CASE(view, greater)

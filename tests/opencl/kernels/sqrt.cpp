@@ -8,7 +8,7 @@
 #include "nmtools/testing/doctest.hpp"
 
 namespace nm = nmtools;
-namespace na = nm::array;
+namespace na = nmtools;
 namespace opencl = na::opencl;
 
 #undef NMTOOLS_TESTING_PRECISION

@@ -141,7 +141,7 @@ namespace nmtools::view
 #include "nmtools/array/inner.hpp"
 #include "nmtools/core/eval.hpp"
 
-namespace nmtools::array
+namespace nmtools
 {
     template <typename output_t=none_t, typename context_t=none_t, typename resolver_t=eval_result_t<>
         , typename lhs_t, typename rhs_t>

@@ -111,7 +111,7 @@ namespace nmtools::view
 
 } // namespace nmtools::view
 
-namespace nmtools::array
+namespace nmtools
 {
     template <typename...args_t, auto max_dim>
     struct as_static_t<

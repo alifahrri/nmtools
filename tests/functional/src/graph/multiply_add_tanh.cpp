@@ -11,7 +11,7 @@
 #include "nmtools/testing/data/array/arange.hpp"
 
 namespace nm = nmtools;
-namespace na = nmtools::array;
+namespace na = nmtools;
 namespace ix = nmtools::index;
 namespace fn = nmtools::functional;
 namespace meta = nm::meta;

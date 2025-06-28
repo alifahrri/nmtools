@@ -4,7 +4,7 @@
 #include "nmtools/utility/unwrap.hpp"
 
 namespace nm = nmtools;
-namespace na = nmtools::array;
+namespace na = nmtools;
 namespace ix = nm::index;
 namespace view = nm::view;
 namespace meta = nm::meta;
@@ -67,7 +67,7 @@ kernel void test_index_resize(
 #include "nmtools/testing/opencl.hpp"
 #include <cstring>
 
-namespace opencl = nmtools::array::opencl;
+namespace opencl = nmtools::opencl;
 namespace testing = nmtools::testing;
 
 extern unsigned char nm_cl_test_resize_spv[];

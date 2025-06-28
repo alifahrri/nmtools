@@ -23,7 +23,7 @@ __global__ void nm_hip_run_function(const function_t fun
     , const tuple<operands_t...> operands
 ) {
     namespace meta = nmtools::meta;
-    namespace na = nmtools::array;
+    namespace na = nmtools;
     namespace fn = nmtools::functional;
     auto output = na::create_mutable_array<out_static_dim>(out,out_shape_ptr,out_dim);
     auto result = fn::apply(fun,operands);
@@ -34,7 +34,7 @@ __global__ void nm_hip_run_function(const function_t fun
     na::assign_result(output,result,thread_id,block_id,block_size);
 }
 
-namespace nmtools::array
+namespace nmtools
 {
     class hip_exception : public ::nmtools::exception
     {
@@ -54,7 +54,7 @@ namespace nmtools::array
     };
 }
 
-namespace nmtools::array::hip
+namespace nmtools::hip
 {
     // TODO: move to nmtools::meta namespace
     namespace helper
@@ -299,7 +299,7 @@ namespace nmtools::array::hip
                 static_assert( meta::len_v<operands_t> == 0 );
                 constexpr auto N = meta::len_v<attributes_t>;
                 auto attributes  = meta::template_reduce<N>([&](auto init, auto I){
-                    auto attribute = array::as_static(at(f.attributes,I));
+                    auto attribute = as_static(at(f.attributes,I));
                     return utility::tuple_append(init,attribute);
                 }, nmtools_tuple{});
                 return functional::functor_t<F,operands_t,decltype(attributes)>{

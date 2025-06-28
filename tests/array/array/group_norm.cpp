@@ -10,7 +10,7 @@ SUBCASE(#case_name) \
 { \
     NMTOOLS_TESTING_USE_CASE(array, group_norm, case_name); \
     using namespace args; \
-    auto result = nmtools::array::group_norm(__VA_ARGS__); \
+    auto result = nmtools::group_norm(__VA_ARGS__); \
     NMTOOLS_ASSERT_CLOSE( result, expect::result ); \
 }
 

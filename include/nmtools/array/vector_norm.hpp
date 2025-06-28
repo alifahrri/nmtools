@@ -40,7 +40,7 @@ namespace nmtools::view
 #include "nmtools/array/vector_norm.hpp"
 #include "nmtools/core/eval.hpp"
 
-namespace nmtools::array
+namespace nmtools
 {
     template <typename output_t=none_t, typename context_t=none_t, typename resolver_t=eval_result_t<>
         , typename array_t, typename axis_t=none_t, typename keepdims_t=meta::false_type, typename ord_t=nm_index_t>
@@ -55,6 +55,6 @@ namespace nmtools::array
             , resolver
         );
     } // vector_norm
-} // nmtools::array
+} // nmtools
 
 #endif // NMTOOLS_ARRAY_ARRAY_VECTOR_NORM_HPP

@@ -10,9 +10,9 @@ using nmtools_list;
 using nmtools_array;
 using nmtools_tuple;
 
-namespace na = nmtools::array;
-using nmtools::array::fixed_ndarray;
-using nmtools::array::dynamic_ndarray;
+namespace na = nmtools;
+using nmtools::fixed_ndarray;
+using nmtools::dynamic_ndarray;
 using nmtools::utils::to_string;
 
 // doctest MESSAGE macro doesnt work with emscripten

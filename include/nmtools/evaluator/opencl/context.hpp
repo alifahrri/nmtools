@@ -14,7 +14,7 @@
 #include <shared_mutex>
 #include <iostream>
 
-namespace nmtools::array::opencl
+namespace nmtools::opencl
 {
     struct buffer_deleter_t
     {
@@ -549,6 +549,6 @@ namespace nmtools::array::opencl
 
     template <typename view_t>
     struct kernel_t;
-} // namespace nmtools::array::opencl
+} // namespace nmtools::opencl
 
 #endif // NMTOOLS_ARRAY_EVAL_OPENCL_CONTEXT_HPP

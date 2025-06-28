@@ -89,7 +89,7 @@ namespace nmtools::functional
 #include "nmtools/array/activations/relu.hpp"
 #include "nmtools/core/eval.hpp"
 
-namespace nmtools::array
+namespace nmtools
 {
     /**
      * @brief Eagerly compute element-wise relu.
@@ -114,6 +114,6 @@ namespace nmtools::array
             ,resolver
         );
     } // relu
-} // namespace nmtools::view
+} // namespace nmtools
 
 #endif // NMTOOLS_ARRAY_ARRAY_ACTIVATIONS_RELU_HPP

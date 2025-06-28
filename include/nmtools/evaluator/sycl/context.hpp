@@ -15,7 +15,7 @@
 #include <iostream>
 #include <memory>
 
-namespace nmtools::array
+namespace nmtools
 {
     template <typename T, auto...accessor_args_t, typename shape_t, typename dim_t>
     struct device_array<::sycl::accessor<T,accessor_args_t...>,shape_t,dim_t>
@@ -117,10 +117,10 @@ namespace nmtools::meta
 {
     template <typename T, auto...accessor_args_t, typename shape_t, typename dim_t>
     struct fixed_dim<
-        array::device_array<::sycl::accessor<T,accessor_args_t...>,shape_t,dim_t>
+        device_array<::sycl::accessor<T,accessor_args_t...>,shape_t,dim_t>
     >
     {
-        using array_type = array::device_array<::sycl::accessor<T,accessor_args_t...>,shape_t,dim_t>;
+        using array_type = device_array<::sycl::accessor<T,accessor_args_t...>,shape_t,dim_t>;
         using shape_type = typename array_type::shape_type;
 
         static constexpr auto value = [](){
@@ -135,10 +135,10 @@ namespace nmtools::meta
 
     template <typename T, auto...accessor_args_t, typename shape_t, typename dim_t>
     struct fixed_shape<
-        array::device_array<::sycl::accessor<T,accessor_args_t...>,shape_t,dim_t>
+        device_array<::sycl::accessor<T,accessor_args_t...>,shape_t,dim_t>
     >
     {
-        using array_type = array::device_array<::sycl::accessor<T,accessor_args_t...>,shape_t,dim_t>;
+        using array_type = device_array<::sycl::accessor<T,accessor_args_t...>,shape_t,dim_t>;
         using shape_type = typename array_type::shape_type;
 
         static constexpr auto value = [](){
@@ -153,10 +153,10 @@ namespace nmtools::meta
 
     template <typename T, auto...accessor_args_t, typename shape_t, typename dim_t>
     struct fixed_size<
-        array::device_array<::sycl::accessor<T,accessor_args_t...>,shape_t,dim_t>
+        device_array<::sycl::accessor<T,accessor_args_t...>,shape_t,dim_t>
     >
     {
-        using array_type  = array::device_array<::sycl::accessor<T,accessor_args_t...>,shape_t,dim_t>;
+        using array_type  = device_array<::sycl::accessor<T,accessor_args_t...>,shape_t,dim_t>;
         using shape_type  = typename array_type::shape_type;
         using buffer_type = typename array_type::buffer_type;
 
@@ -174,10 +174,10 @@ namespace nmtools::meta
 
     template <typename T, auto...accessor_args_t, typename shape_t, typename dim_t>
     struct bounded_dim<
-        array::device_array<::sycl::accessor<T,accessor_args_t...>,shape_t,dim_t>
+        device_array<::sycl::accessor<T,accessor_args_t...>,shape_t,dim_t>
     >
     {
-        using array_type  = array::device_array<::sycl::accessor<T,accessor_args_t...>,shape_t,dim_t>;
+        using array_type  = device_array<::sycl::accessor<T,accessor_args_t...>,shape_t,dim_t>;
         using shape_type  = typename array_type::shape_type;
         using buffer_type = typename array_type::buffer_type;
 
@@ -196,10 +196,10 @@ namespace nmtools::meta
 
     template <typename T, auto...accessor_args_t, typename shape_t, typename dim_t>
     struct bounded_size<
-        array::device_array<::sycl::accessor<T,accessor_args_t...>,shape_t,dim_t>
+        device_array<::sycl::accessor<T,accessor_args_t...>,shape_t,dim_t>
     >
     {
-        using array_type  = array::device_array<::sycl::accessor<T,accessor_args_t...>,shape_t,dim_t>;
+        using array_type  = device_array<::sycl::accessor<T,accessor_args_t...>,shape_t,dim_t>;
         using shape_type  = typename array_type::shape_type;
         using buffer_type = typename array_type::buffer_type;
 
@@ -218,10 +218,10 @@ namespace nmtools::meta
     /* sycl::buffer */
     template <typename T, typename shape_t, typename dim_t>
     struct fixed_dim<
-        array::device_array<::sycl::buffer<T>,shape_t,dim_t>
+        device_array<::sycl::buffer<T>,shape_t,dim_t>
     >
     {
-        using array_type = array::device_array<::sycl::buffer<T>,shape_t,dim_t>;
+        using array_type = device_array<::sycl::buffer<T>,shape_t,dim_t>;
         using shape_type = typename array_type::shape_type;
 
         static constexpr auto value = [](){
@@ -236,10 +236,10 @@ namespace nmtools::meta
 
     template <typename T, typename shape_t, typename dim_t>
     struct fixed_shape<
-        array::device_array<::sycl::buffer<T>,shape_t,dim_t>
+        device_array<::sycl::buffer<T>,shape_t,dim_t>
     >
     {
-        using array_type = array::device_array<::sycl::buffer<T>,shape_t,dim_t>;
+        using array_type = device_array<::sycl::buffer<T>,shape_t,dim_t>;
         using shape_type = typename array_type::shape_type;
 
         static constexpr auto value = [](){
@@ -254,10 +254,10 @@ namespace nmtools::meta
 
     template <typename T, typename shape_t, typename dim_t>
     struct fixed_size<
-        array::device_array<::sycl::buffer<T>,shape_t,dim_t>
+        device_array<::sycl::buffer<T>,shape_t,dim_t>
     >
     {
-        using array_type  = array::device_array<::sycl::buffer<T>,shape_t,dim_t>;
+        using array_type  = device_array<::sycl::buffer<T>,shape_t,dim_t>;
         using shape_type  = typename array_type::shape_type;
         using buffer_type = typename array_type::buffer_type;
 
@@ -275,10 +275,10 @@ namespace nmtools::meta
 
     template <typename T, typename shape_t, typename dim_t>
     struct bounded_dim<
-        array::device_array<::sycl::buffer<T>,shape_t,dim_t>
+        device_array<::sycl::buffer<T>,shape_t,dim_t>
     >
     {
-        using array_type  = array::device_array<::sycl::buffer<T>,shape_t,dim_t>;
+        using array_type  = device_array<::sycl::buffer<T>,shape_t,dim_t>;
         using shape_type  = typename array_type::shape_type;
         using buffer_type = typename array_type::buffer_type;
 
@@ -297,10 +297,10 @@ namespace nmtools::meta
 
     template <typename T, typename shape_t, typename dim_t>
     struct bounded_size<
-        array::device_array<::sycl::buffer<T>,shape_t,dim_t>
+        device_array<::sycl::buffer<T>,shape_t,dim_t>
     >
     {
-        using array_type  = array::device_array<::sycl::buffer<T>,shape_t,dim_t>;
+        using array_type  = device_array<::sycl::buffer<T>,shape_t,dim_t>;
         using shape_type  = typename array_type::shape_type;
         using buffer_type = typename array_type::buffer_type;
 
@@ -317,7 +317,7 @@ namespace nmtools::meta
     }; // bounded_size
 }
 
-namespace nmtools::array::sycl
+namespace nmtools::sycl
 {
     template <typename T>
     using device_mem_ptr = std::shared_ptr<::sycl::buffer<T>>;
@@ -500,9 +500,9 @@ namespace nmtools::array::sycl
                     auto output = create_mutable_array(&output_accessor[0],&output_shape_accessor[0],output_dim);
                     auto result = functional::apply(f,operands);
                     // TODO: properly get the thread & kernel id and shape
-                    auto thread_id  = array::kernel_size<size_t>{item.get_global_id(),0,0};
-                    auto block_id   = array::kernel_size<size_t>{0,0,0};
-                    auto block_size = array::kernel_size<size_t>{1,1,1};
+                    auto thread_id  = kernel_size<size_t>{item.get_global_id(),0,0};
+                    auto block_id   = kernel_size<size_t>{0,0,0};
+                    auto block_size = kernel_size<size_t>{1,1,1};
 
                     #if 0
                     auto idx = compute_offset(thread_id,block_id,block_size);
@@ -514,7 +514,7 @@ namespace nmtools::array::sycl
                     ;
                     #endif
 
-                    array::assign_result(output,result,thread_id,block_id,block_size);
+                    assign_result(output,result,thread_id,block_id,block_size);
                 });
             });
 
@@ -532,7 +532,7 @@ namespace nmtools::array::sycl
             } else {
                 constexpr auto N = meta::len_v<attributes_t>;
                 auto attributes  = meta::template_reduce<N>([&](auto init, auto I){
-                    return utility::tuple_append(init,array::as_static(at(f.attributes,I)));
+                    return utility::tuple_append(init,as_static(at(f.attributes,I)));
                 }, nmtools_tuple{});
                 return functional::functor_t<F,operands_t,decltype(attributes)>{{
                     f.fmap, f.operands, attributes
@@ -589,7 +589,7 @@ namespace nmtools::array::sycl
             return result;
         }
     };
-} // namespace nmtools::array::sycl
+} // namespace nmtools::sycl
 
 #define PRINT_SYCL_PLATFORM_PROPERTY(platform, prop) \
     std::cout << "- " << #prop << ": " \
@@ -862,7 +862,7 @@ namespace nmtools::utils::impl
     };
 }
 
-namespace nmtools::array::sycl
+namespace nmtools::sycl
 {
     inline auto default_context()
     {

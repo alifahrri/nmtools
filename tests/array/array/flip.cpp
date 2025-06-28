@@ -11,7 +11,7 @@ SUBCASE(#case_name) \
 { \
     NMTOOLS_TESTING_USE_CASE(flip, case_name); \
     using namespace args; \
-    auto result = nmtools::array::flip(__VA_ARGS__); \
+    auto result = nmtools::flip(__VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( result, expect::result ); \
 }
 
@@ -20,7 +20,7 @@ SUBCASE(#case_name) \
 { \
     NMTOOLS_TESTING_USE_CASE(fliplr, case_name); \
     using namespace args; \
-    auto result = nmtools::array::fliplr(__VA_ARGS__); \
+    auto result = nmtools::fliplr(__VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( result, expect::result ); \
 }
 
@@ -29,7 +29,7 @@ SUBCASE(#case_name) \
 { \
     NMTOOLS_TESTING_USE_CASE(flipud, case_name); \
     using namespace args; \
-    auto result = nmtools::array::flipud(__VA_ARGS__); \
+    auto result = nmtools::flipud(__VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( result, expect::result ); \
 }
 

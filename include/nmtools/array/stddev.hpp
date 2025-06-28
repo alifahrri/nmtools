@@ -55,7 +55,7 @@ namespace nmtools::functional
 #include "nmtools/array/stddev.hpp"
 #include "nmtools/core/eval.hpp"
 
-namespace nmtools::array
+namespace nmtools
 {
     /**
      * @brief Eagerly compute the standard deviation of an array.
@@ -88,6 +88,6 @@ namespace nmtools::array
             ,resolver
         );
     } // var
-} // namespace nmtools::array
+} // namespace nmtools
 
 #endif // NMTOOLS_ARRAY_ARRAY_STDDEV_HPP

@@ -83,7 +83,7 @@ namespace nmtools::functional
 #include "nmtools/array/activations/relu6.hpp"
 #include "nmtools/core/eval.hpp"
 
-namespace nmtools::array
+namespace nmtools
 {
     /**
      * @brief Eagerly compute element-wise relu6.
@@ -108,6 +108,6 @@ namespace nmtools::array
             ,resolver
         );
     } // relu6
-} // namespace nmtools::view
+} // namespace nmtools
 
 #endif // NMTOOLS_ARRAY_ARRAY_ACTIVATIONS_RELU6_HPP

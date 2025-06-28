@@ -4,7 +4,7 @@
 #include "nmtools/core/broadcast_arrays.hpp"
 #include "nmtools/core/eval.hpp"
 
-namespace nmtools::array
+namespace nmtools
 {
     /**
      * @brief Eagerly broadcast arrays

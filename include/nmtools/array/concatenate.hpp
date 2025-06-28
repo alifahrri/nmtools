@@ -257,7 +257,7 @@ namespace nmtools::view
     } // concatenatev2
 } // namespace nmtools::view
 
-namespace nmtools::array
+namespace nmtools
 {
     template <typename...args_t, auto max_dim>
     struct as_static_t<
@@ -389,7 +389,7 @@ namespace nmtools::functional
 #include "nmtools/array/concatenate.hpp"
 #include "nmtools/core/eval.hpp"
 
-namespace nmtools::array
+namespace nmtools
 {
     /**
      * @brief Eagerly concatenate two array.
@@ -418,6 +418,6 @@ namespace nmtools::array
             ,resolver
         );
     } // concatenate
-} // namespace nmtools::array
+} // namespace nmtools
 
 #endif // NMTOOLS_ARRAY_ARRAY_CONCATENATE_HPP

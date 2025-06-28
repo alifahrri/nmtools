@@ -95,7 +95,7 @@ namespace nmtools::view
     }
 } // namespace nmtools::view
 
-namespace nmtools::array
+namespace nmtools
 {
     template <typename...args_t, auto max_dim>
     struct as_static_t<
@@ -178,7 +178,7 @@ namespace nmtools::functional
 #include "nmtools/array/repeat.hpp"
 #include "nmtools/core/eval.hpp"
 
-namespace nmtools::array
+namespace nmtools
 {
     /**
      * @brief Eagerly evaluate repeat op. Repeats elements of an array.
@@ -207,6 +207,6 @@ namespace nmtools::array
             ,resolver
         );
     } // repeat
-} // namespace nmtools::array
+} // namespace nmtools
 
 #endif // NMTOOLS_ARRAY_ARRAY_REPEAT_HPP

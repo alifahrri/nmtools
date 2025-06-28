@@ -6,10 +6,10 @@
 #include <array>
 
 namespace nm = nmtools;
-namespace na = nm::array;
+namespace na = nmtools;
 
 #define RUN_subtract_impl(...) \
-nm::array::subtract(__VA_ARGS__);
+nmtools::subtract(__VA_ARGS__);
 
 #ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
 #include "nmtools/testing/benchmarks/bench.hpp"
@@ -60,7 +60,7 @@ TEST_CASE("subtract(case2)" * doctest::test_suite("array::subtract"))
 }
 
 #define RUN_reduce_subtract_impl(...) \
-nm::array::subtract.reduce(__VA_ARGS__);
+nmtools::subtract.reduce(__VA_ARGS__);
 
 #ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
 #include "nmtools/testing/benchmarks/bench.hpp"
@@ -163,7 +163,7 @@ TEST_CASE("reduce_subtract(case8)" * doctest::test_suite("array::reduce_subtract
 }
 
 #define RUN_accumulate_subtract_impl(...) \
-nm::array::subtract.accumulate(__VA_ARGS__);
+nmtools::subtract.accumulate(__VA_ARGS__);
 
 #ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
 #include "nmtools/testing/benchmarks/bench.hpp"
@@ -226,7 +226,7 @@ TEST_CASE("accumulate_subtract(case3)" * doctest::test_suite("array::accumulate_
 }
 
 #define RUN_outer_subtract_impl(...) \
-nm::array::subtract.outer(__VA_ARGS__);
+nmtools::subtract.outer(__VA_ARGS__);
 
 #ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
 #include "nmtools/testing/benchmarks/bench.hpp"

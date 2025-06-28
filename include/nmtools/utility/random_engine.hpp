@@ -8,7 +8,7 @@
 
 #include "nmtools/meta.hpp"
 
-namespace nmtools::array
+namespace nmtools
 {
     template <typename T, typename bit_generator_t>
     struct random_engine_t

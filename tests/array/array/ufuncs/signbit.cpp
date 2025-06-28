@@ -7,10 +7,10 @@
 #include <algorithm> // std::max
 
 namespace nm = nmtools;
-namespace na = nm::array;
+namespace na = nmtools;
 
 #define RUN_signbit_impl(...) \
-nm::array::signbit(__VA_ARGS__);
+nmtools::signbit(__VA_ARGS__);
 
 #ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
 #include "nmtools/testing/benchmarks/bench.hpp"

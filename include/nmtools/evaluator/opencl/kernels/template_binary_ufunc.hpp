@@ -33,10 +33,10 @@
 #ifdef NMTOOLS_OPENCL_BUILD_KERNELS
 
 namespace nm = nmtools;
-namespace na = nmtools::array;
+namespace na = nmtools;
 namespace view = nmtools::view;
 namespace meta = nmtools::meta;
-namespace opencl = nmtools::array::opencl;
+namespace opencl = nmtools::opencl;
 namespace detail = nmtools::view::detail;
 
 // TODO: add additional params/attribute here
@@ -71,7 +71,7 @@ nmtools_cl_kernel(double,double,double)
 extern unsigned char nmtools_cl_kernel_bin [];
 extern unsigned int nmtools_cl_kernel_len;
 
-namespace nmtools::array::opencl
+namespace nmtools::opencl
 {
     #ifndef NMTOOLS_UFUNC_OP_HAS_ARGS
     #define NMTOOLS_UFUNC_OP_HAS_ARGS 1

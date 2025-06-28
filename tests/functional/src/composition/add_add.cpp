@@ -29,7 +29,7 @@ NMTOOLS_TESTING_DECLARE_CASE(functional, add_add)
 }
 
 namespace nm = nmtools;
-namespace na = nmtools::array;
+namespace na = nmtools;
 namespace fn = nmtools::functional;
 namespace view = nm::view;
 namespace meta = nm::meta;

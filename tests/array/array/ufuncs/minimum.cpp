@@ -7,10 +7,10 @@
 #include <algorithm> // std::min
 
 namespace nm = nmtools;
-namespace na = nm::array;
+namespace na = nmtools;
 
 #define RUN_minimum_impl(...) \
-nm::array::minimum(__VA_ARGS__);
+nmtools::minimum(__VA_ARGS__);
 
 #ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
 #include "nmtools/testing/benchmarks/bench.hpp"
@@ -61,7 +61,7 @@ TEST_CASE("minimum(case2)" * doctest::test_suite("array::minimum"))
 }
 
 #define RUN_reduce_minimum_impl(...) \
-nm::array::minimum.reduce(__VA_ARGS__);
+nmtools::minimum.reduce(__VA_ARGS__);
 
 #ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
 #include "nmtools/testing/benchmarks/bench.hpp"
@@ -202,7 +202,7 @@ TEST_CASE("reduce_minimum(case12)" * doctest::test_suite("array::reduce_minimum"
 }
 
 #define RUN_accumulate_minimum_impl(...) \
-nm::array::minimum.accumulate(__VA_ARGS__);
+nmtools::minimum.accumulate(__VA_ARGS__);
 
 #ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
 #include "nmtools/testing/benchmarks/bench.hpp"
@@ -265,7 +265,7 @@ TEST_CASE("accumulate_minimum(case3)" * doctest::test_suite("array::accumulate_m
 }
 
 #define RUN_outer_minimum_impl(...) \
-nm::array::minimum.outer(__VA_ARGS__);
+nmtools::minimum.outer(__VA_ARGS__);
 
 #ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
 #include "nmtools/testing/benchmarks/bench.hpp"

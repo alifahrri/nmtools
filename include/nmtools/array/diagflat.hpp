@@ -188,7 +188,7 @@ namespace nmtools::view
 #include "nmtools/array/diagflat.hpp"
 #include "nmtools/core/eval.hpp"
 
-namespace nmtools::array
+namespace nmtools
 {
     template <typename output_t=none_t, typename context_t=none_t, typename resolver_t=eval_result_t<>
         , typename array_t, typename k_t=nm_index_t>
@@ -203,6 +203,6 @@ namespace nmtools::array
             , resolver
         );
     } // diagflat
-} // nmtools::array
+} // nmtools
 
 #endif // NMTOOLS_ARRAY_ARRAY_DIAGFLAT_HPP

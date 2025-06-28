@@ -3,7 +3,7 @@
 #include "nmtools/testing/data/index/logical_not.hpp"
 
 namespace nm = nmtools;
-namespace na = nm::array;
+namespace na = nmtools;
 namespace meta = nm::meta;
 
 #define LOGICAL_NOT_SUBCASE(case_name, ...) \

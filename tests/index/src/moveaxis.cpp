@@ -504,7 +504,7 @@ NMTOOLS_TESTING_DECLARE_CASE(index, constexpr_moveaxis_to_transpose)
 }
 
 namespace nm = nmtools;
-namespace na = nm::array;
+namespace na = nmtools;
 
 #define RUN_moveaxis_to_transpose_impl(...) \
 nm::index::moveaxis_to_transpose(__VA_ARGS__);

@@ -282,7 +282,7 @@ namespace nmtools::args
     expand(args_t...) -> expand<args_t...>;
 } // namespace nmtools::args
 
-namespace nmtools::array
+namespace nmtools
 {
     template <typename...args_t, auto max_dim>
     struct as_static_t<
@@ -300,7 +300,7 @@ namespace nmtools::array
             return args::expand{axis,spacing,attribute.fill_value};
         }
     };
-} // namespace nmtools::array
+} // namespace nmtools
 
 namespace nmtools::meta
 {
@@ -459,7 +459,7 @@ namespace nmtools::view
     }
 } // namespace nmtools::view
 
-namespace nmtools::array
+namespace nmtools
 {
     template <typename...args_t, auto max_dim>
     struct as_static_t<
@@ -545,7 +545,7 @@ namespace nmtools::functional
 #include "nmtools/array/expand.hpp"
 #include "nmtools/core/eval.hpp"
 
-namespace nmtools::array
+namespace nmtools
 {
     /**
      * @brief Eagerly expand the contents of an array.
@@ -572,6 +572,6 @@ namespace nmtools::array
             ,resolver
         );
     } // expand
-} // namespace nmtools::array
+} // namespace nmtools
 
 #endif // NMTOOLS_ARRAY_ARRAY_EXPAND_HPP

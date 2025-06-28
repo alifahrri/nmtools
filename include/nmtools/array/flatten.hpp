@@ -30,7 +30,7 @@ namespace nmtools::functional
 #include "nmtools/core/flatten.hpp"
 #include "nmtools/core/eval.hpp"
 
-namespace nmtools::array
+namespace nmtools
 {
     /**
      * @brief Eagerly evaluate flatten.
@@ -55,6 +55,6 @@ namespace nmtools::array
             ,resolver
         );
     } // flatten
-} // namespace nmtools::array
+} // namespace nmtools
 
 #endif // NMTOOLS_ARRAY_ARRAY_FLATTEN_HPP

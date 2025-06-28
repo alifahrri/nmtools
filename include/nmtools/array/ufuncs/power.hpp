@@ -203,7 +203,7 @@ namespace nmtools::utils::impl
 #include "nmtools/array/ufuncs/power.hpp"
 #include "nmtools/constants.hpp"
 
-namespace nmtools::array
+namespace nmtools
 {
     namespace fn
     {
@@ -266,6 +266,6 @@ namespace nmtools::array
     } // namespace fn
 
     constexpr inline auto power = fn::power{};
-} // nmtools::array
+} // nmtools
 
 #endif // NMTOOLS_ARRAY_ARRAY_POWER_HPP

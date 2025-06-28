@@ -70,7 +70,7 @@ nmtools_cl_kernel(uint64_t,uint64_t)
 extern unsigned char nmtools_cl_kernel_bin [];
 extern unsigned int nmtools_cl_kernel_len;
 
-namespace nmtools::array::opencl
+namespace nmtools::opencl
 {
     // TODO: add variadic template for op args here, if required
     #if 0

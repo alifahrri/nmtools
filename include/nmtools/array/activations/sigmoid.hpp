@@ -101,7 +101,7 @@ namespace nmtools::functional
 #include "nmtools/array/activations/sigmoid.hpp"
 #include "nmtools/core/eval.hpp"
 
-namespace nmtools::array
+namespace nmtools
 {
     /**
      * @brief Eagerly evaluate element-wise sigmoid function.
@@ -127,7 +127,7 @@ namespace nmtools::array
             ,resolver
         );
     } // sigmoid
-} // namespace nmtools::array
+} // namespace nmtools
 
 
 #endif // NMTOOLS_ARRAY_ARRAY_ACTIVATIONS_SIGMOID_HPP

@@ -52,7 +52,7 @@ namespace nmtools::view
         using view_t = decorator_t<random_t, shape_t, T, generator_t&>;
         return view_t{{shape,generator}};
     } // random
-} // namespace nmtools::array
+} // namespace nmtools
 
 namespace nmtools::meta
 {
@@ -77,7 +77,7 @@ namespace nmtools::meta
 #include "nmtools/array/random.hpp"
 #include "nmtools/core/eval.hpp"
 
-namespace nmtools::array
+namespace nmtools
 {
     template <typename output_t=none_t, typename context_t=none_t, typename resolver_t=eval_result_t<>,
         typename shape_t, typename T, typename generator_t>

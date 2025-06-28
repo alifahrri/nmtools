@@ -122,7 +122,7 @@ namespace nmtools::functional
 #include "nmtools/array/activations/prelu.hpp"
 #include "nmtools/core/eval.hpp"
 
-namespace nmtools::array
+namespace nmtools
 {
     /**
      * @brief Eagerly evaluate element-wise prelu
@@ -149,6 +149,6 @@ namespace nmtools::array
             ,resolver
         );
     } // prelu
-} // namespace nmtools::array
+} // namespace nmtools
 
 #endif // NMTOOLS_ARRAY_ARRAY_ACTIVATIONS_PRELU_HPP

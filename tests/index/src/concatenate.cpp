@@ -5,7 +5,7 @@
 #include "nmtools/testing/doctest.hpp"
 
 namespace nm = nmtools;
-namespace na = nm::array;
+namespace na = nmtools;
 namespace kind = na::kind;
 namespace idx  = nm::index;
 using namespace nm::literals;
@@ -323,7 +323,7 @@ TEST_CASE("shape_concatenate(case4)" * doctest::test_suite("index::shape_concate
 #include <tuple>
 
 namespace nm = nmtools;
-namespace na = nm::array;
+namespace na = nmtools;
 namespace kind = na::kind;
 namespace idx = nm::index;
 using namespace nm::literals;

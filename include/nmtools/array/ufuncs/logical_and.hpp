@@ -65,7 +65,7 @@ namespace nmtools::utils::impl
 #include "nmtools/array/ufuncs/logical_and.hpp"
 #include "nmtools/constants.hpp"
 
-namespace nmtools::array
+namespace nmtools
 {
     namespace fn
     {
@@ -87,6 +87,6 @@ namespace nmtools::array
     } // namespace fn
 
     constexpr inline auto logical_and = fn::logical_and{};
-} // nmtools::array
+} // namespace nmtools
 
 #endif // NMTOOLS_ARRAY_ARRAY_LOGICAL_AND_HPP

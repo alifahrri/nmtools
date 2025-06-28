@@ -1038,7 +1038,7 @@ namespace nmtools::functional
 #include "nmtools/array/matmul.hpp"
 #include "nmtools/core/eval.hpp"
 
-namespace nmtools::array
+namespace nmtools
 {
     /**
      * @brief Eagerly computes matrix product of two arrays.
@@ -1068,6 +1068,6 @@ namespace nmtools::array
             ,resolver
         );
     } // matmul
-} // namespace nmtools::array
+} // namespace nmtools
 
 #endif // NMTOOLS_ARRAY_ARRAY_MATMUL_HPP

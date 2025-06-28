@@ -3,7 +3,7 @@
 
 #include "nmtools/evaluator/simd/simde_avx512/simd_op.hpp"
 
-namespace nmtools::array::simd
+namespace nmtools::simd
 {
     template <typename data_t, typename lambda_t>
     struct ufunc_simd_t<view::softshrink_t<lambda_t>,simde_avx512_t,data_t> : simd_op_t<simde_avx512_t,data_t>

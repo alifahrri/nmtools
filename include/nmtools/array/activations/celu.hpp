@@ -132,7 +132,7 @@ namespace nmtools::functional
 #include "nmtools/array/activations/celu.hpp"
 #include "nmtools/core/eval.hpp"
 
-namespace nmtools::array
+namespace nmtools
 {
     /**
      * @brief Eagerly compute element-wise celu function.
@@ -160,7 +160,6 @@ namespace nmtools::array
             ,resolver
         );
     } // celu
-} // namespace nmtools::view
-
+} // namespace nmtools
 
 #endif // NMTOOLS_ARRAY_ARRAY_ACTIVATIONS_CELU_HPP

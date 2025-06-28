@@ -6,7 +6,7 @@
 #include "nmtools/stl.hpp"
 
 namespace nm = nmtools;
-namespace na = nm::array;
+namespace na = nmtools;
 
 using namespace nm::literals;
 

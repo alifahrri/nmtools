@@ -165,7 +165,7 @@ TEST_CASE("apply_at(std::vector<...>)" * doctest::test_suite("utility"))
 
 TEST_CASE("apply_at(dynamic_ndarray<>)" * doctest::test_suite("utility"))
 {
-    using nm::array::dynamic_ndarray;
+    using nmtools::dynamic_ndarray;
     {
         auto a = dynamic_ndarray{{1,2,3,4,5,6}};
         {
@@ -184,7 +184,7 @@ TEST_CASE("apply_at(dynamic_ndarray<>)" * doctest::test_suite("utility"))
 
 TEST_CASE("apply_at(dynamic_ndarray<>)" * doctest::test_suite("utility"))
 {
-    using nm::array::dynamic_ndarray;
+    using nmtools::dynamic_ndarray;
     {
         auto a = dynamic_ndarray{{1,2,3,4,5,6}};
         {
@@ -215,7 +215,7 @@ TEST_CASE("apply_at(dynamic_ndarray<>)" * doctest::test_suite("utility"))
 
 TEST_CASE("apply_at(dynamic_ndarray<>)" * doctest::test_suite("utility"))
 {
-    using nm::array::dynamic_ndarray;
+    using nmtools::dynamic_ndarray;
     {
         auto a = dynamic_ndarray({ {1,2}, {3,4}, {5,6} });
         {
@@ -238,7 +238,7 @@ TEST_CASE("apply_at(dynamic_ndarray<>)" * doctest::test_suite("utility"))
 
 TEST_CASE("apply_at(fixed_ndarray<>)" * doctest::test_suite("utility"))
 {
-    using nm::array::fixed_ndarray;
+    using nmtools::fixed_ndarray;
     {
         // auto a = fixed_ndarray<double,3,2,1>{};
         // a = { {{1},{2}}, {{3},{4}}, {{5},{6}} };

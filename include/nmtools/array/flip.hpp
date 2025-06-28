@@ -97,7 +97,7 @@ namespace nmtools::functional
 #include "nmtools/array/flip.hpp"
 #include "nmtools/constants.hpp"
 
-namespace nmtools::array
+namespace nmtools
 {
     /**
      * @brief Eagerly evaluate flip
@@ -150,6 +150,6 @@ namespace nmtools::array
             ,resolver
         );
     } // flipud
-} // namespace nmtools::array
+} // namespace nmtools
 
 #endif // NMTOOLS_ARRAY_ARRAY_FLIP_HPP

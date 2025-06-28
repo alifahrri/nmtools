@@ -7,7 +7,7 @@
 
 #include <memory>
 
-namespace nmtools::array
+namespace nmtools
 {
     template <typename view_t, typename resolver_t>
     struct evaluator_t<view_t,std::shared_ptr<opencl::context_t>,resolver_t>

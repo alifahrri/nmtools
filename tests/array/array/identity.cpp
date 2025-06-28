@@ -7,7 +7,7 @@ SUBCASE(#case_name) \
 { \
     NMTOOLS_TESTING_USE_CASE( array, identity, case_name ); \
     using namespace args; \
-    auto result = nmtools::array::identity(__VA_ARGS__); \
+    auto result = nmtools::identity(__VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( nmtools::shape(result), nmtools::shape(expect::result) ); \
     NMTOOLS_ASSERT_CLOSE( result, expect::result ); \
 }

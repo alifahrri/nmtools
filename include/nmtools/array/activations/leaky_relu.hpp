@@ -119,7 +119,7 @@ namespace nmtools::functional
 #include "nmtools/array/activations/leaky_relu.hpp"
 #include "nmtools/core/eval.hpp"
 
-namespace nmtools::array
+namespace nmtools
 {
     /**
      * @brief Eagerly compute element-wise leaky relu
@@ -146,6 +146,6 @@ namespace nmtools::array
             ,resolver
         );
     } // leaky_relu
-} // namespace nmtools::array
+} // namespace nmtools
 
 #endif // NMTOOLS_ARRAY_ARRAY_ACTIVATION_LEAKY_RELU_HPP

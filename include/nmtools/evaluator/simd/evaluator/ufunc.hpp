@@ -8,7 +8,7 @@
 #include "nmtools/evaluator/simd/bit_width.hpp"
 #include "nmtools/index/insert_index.hpp"
 
-namespace nmtools::array
+namespace nmtools
 {
     template <typename simd_tag_t>
     struct simd_base_t

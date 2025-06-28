@@ -7,7 +7,7 @@
 #include <vector>
 
 namespace nm = nmtools;
-namespace na = nm::array;
+namespace na = nmtools;
 namespace meta = nm::meta;
 
 TEST_CASE("expand_dims(vector,vector)" * doctest::test_suite("meta::expand_dims"))

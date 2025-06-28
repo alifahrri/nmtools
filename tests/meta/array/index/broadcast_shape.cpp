@@ -7,7 +7,7 @@
 #include <tuple>
 
 namespace nm = nmtools;
-namespace na = nm::array;
+namespace na = nmtools;
 namespace meta = nm::meta;
 
 TEST_CASE("broadcast_shape(vector;vector)" * doctest::test_suite("index::broadcast_shape"))
@@ -123,7 +123,7 @@ TEST_CASE("broadcast_shape(array;any)" * doctest::test_suite("index::broadcast_s
 }
 
 namespace nm = nmtools;
-namespace na = nm::array;
+namespace na = nmtools;
 namespace meta = nm::meta;
 
 using nm::index::broadcast_shape_t;

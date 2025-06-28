@@ -1,7 +1,7 @@
 #ifndef NMTOOLS_ARRAY_KIND_HPP
 #define NMTOOLS_ARRAY_KIND_HPP
 
-namespace nmtools::array::kind
+namespace nmtools::kind
 {
     /**
      * @brief helper tag for easy dispatch
@@ -18,7 +18,7 @@ namespace nmtools::array::kind
     inline constexpr auto fixed   = fixed_t {};
     inline constexpr auto hybrid  = hybrid_t {};
     inline constexpr auto dynamic = dynamic_t {};
-} // namespace nmtools::array::kind
+} // namespace nmtools::kind
 
 #endif // NMTOOLS_ARRAY_KIND_HPP
 
@@ -74,7 +74,7 @@ namespace nmtools
 
 #include "nmtools/utl.hpp"
 
-namespace nmtools::array::kind
+namespace nmtools::kind
 {
     // for testing purpose only
     struct nested_vector_t {};
@@ -92,7 +92,7 @@ namespace nmtools::array::kind
     // only support index for now
     struct static_vec_t {};
     inline constexpr auto static_vec = static_vec_t {};
-} // namespace nmtools::array::kind
+} // namespace nmtools::kind
 
 namespace nmtools
 {
@@ -132,36 +132,36 @@ namespace nmtools
     >
     {
         static constexpr auto vtype = [](){
-            if constexpr (meta::is_fixed_size_ndarray_v<src_t> && meta::is_same_v<kind_t,array::kind::fixed_t>) {
+            if constexpr (meta::is_fixed_size_ndarray_v<src_t> && meta::is_same_v<kind_t,kind::fixed_t>) {
                 using element_t = get_element_type_t<src_t>;
                 static_assert( !meta::is_void_v<element_t>, "internal error" );
                 // start with arbitrary shaped fixed_ndarray, then resize with src
-                using fixed_kind_t = array::fixed_ndarray<element_t,1>;
+                using fixed_kind_t = fixed_ndarray<element_t,1>;
                 using type = resize_fixed_ndarray_t<fixed_kind_t,src_t>;
                 return meta::as_value_v<type>;
             }
-            else if constexpr (meta::is_fixed_size_ndarray_v<src_t> && meta::is_same_v<kind_t,array::kind::hybrid_t>) {
+            else if constexpr (meta::is_fixed_size_ndarray_v<src_t> && meta::is_same_v<kind_t,kind::hybrid_t>) {
                 using element_t = get_element_type_t<src_t>;
                 constexpr auto shape = fixed_ndarray_shape_v<src_t>;
                 constexpr auto numel = index::product(shape);
                 constexpr auto dim = fixed_ndarray_dim_v<src_t>;
-                using type = array::hybrid_ndarray<element_t,numel,dim>;
+                using type = hybrid_ndarray<element_t,numel,dim>;
                 return as_value_v<type>;
             }
-            else if constexpr (meta::is_fixed_size_ndarray_v<src_t> && meta::is_same_v<kind_t,array::kind::nested_array_t>) {
+            else if constexpr (meta::is_fixed_size_ndarray_v<src_t> && meta::is_same_v<kind_t,kind::nested_array_t>) {
                 using type = meta::transform_bounded_array_t<src_t>;
                 return as_value_v<type>;
             }
-            else if constexpr (meta::is_same_v<kind_t,array::kind::dynamic_t>) {
+            else if constexpr (meta::is_same_v<kind_t,kind::dynamic_t>) {
                 using element_t [[maybe_unused]] = get_element_type_t<src_t>;
         #ifndef NMTOOLS_TESTING_DISABLE_DYNAMIC_ALLOCATION
-                using type = array::dynamic_ndarray<element_t>;
+                using type = dynamic_ndarray<element_t>;
         #else
                 using type = ::nmtools::error::TESTING_DYNAMIC_ALLOCATION_DISABLED<cast_kind_t,src_t,kind_t>;
         #endif // NMTOOLS_TESTING_DISABLE_DYNAMIC_ALLOCATION
                 return meta::as_value_v<type>;
             }
-            else if constexpr (meta::is_same_v<kind_t,array::kind::nested_vector_t>) {
+            else if constexpr (meta::is_same_v<kind_t,kind::nested_vector_t>) {
                 using element_t [[maybe_unused]] = get_element_type_t<src_t>;
                 [[maybe_unused]] constexpr auto dim = fixed_dim_v<src_t>;
         #ifndef NMTOOLS_TESTING_DISABLE_DYNAMIC_ALLOCATION
@@ -170,7 +170,7 @@ namespace nmtools
                 using type = ::nmtools::error::TESTING_DYNAMIC_ALLOCATION_DISABLED<cast_kind_t,src_t,kind_t>;
         #endif // NMTOOLS_TESTING_DISABLE_DYNAMIC_ALLOCATION
                 return as_value_v<type>;
-            } else if constexpr (meta::is_same_v<kind_t,array::kind::static_vec_t>) {
+            } else if constexpr (meta::is_same_v<kind_t,kind::static_vec_t>) {
                 using element_t [[maybe_unused]] = get_element_type_t<src_t>;
                 [[maybe_unused]] constexpr auto dim = fixed_dim_v<src_t>;
                 if constexpr (dim != 1) {

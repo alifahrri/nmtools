@@ -7,7 +7,7 @@
 #include "nmtools/testing/doctest.hpp"
 
 namespace nm = nmtools;
-namespace na = nm::array;
+namespace na = nmtools;
 namespace simd = na::simd;
 
 #define SIMD_TEST_EQUAL(result, expect) \

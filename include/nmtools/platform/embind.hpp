@@ -22,7 +22,7 @@ auto array = ::nmtools::view::reshape(array##_data,array##_shape);
 #define NMTOOLS_TO_JS_ARRAY(js, ndarray) \
 using ndarray##_element_t = ::nmtools::meta::get_element_type_t<decltype(ndarray)>; \
 auto js##_rtype = ::nmtools::meta::as_value_v<std::vector<ndarray##_element_t>>; \
-auto js##_rdata = ::nmtools::array::flatten(ndarray,/*context=*/::nmtools::None,js##_rtype); \
+auto js##_rdata = ::nmtools::flatten(ndarray,/*context=*/::nmtools::None,js##_rtype); \
 auto js = ::emscripten::val::object(); \
 js.set("data", ::emscripten::val::array(js##_rdata)); \
 js.set("shape", ::emscripten::val::array(::nmtools::cast(::nmtools::shape(ndarray),::nmtools::meta::as_value_v<std::vector<size_t>>))); \

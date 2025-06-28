@@ -3,7 +3,7 @@
 #include "nmtools/testing/doctest.hpp"
 
 namespace nm = nmtools;
-namespace na = nm::array;
+namespace na = nmtools;
 
 #define RUN_shape_take_along_axis_impl(...) \
 nm::index::shape_take_along_axis(__VA_ARGS__);

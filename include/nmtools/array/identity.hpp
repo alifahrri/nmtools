@@ -21,7 +21,7 @@ namespace nmtools::view
 #include "nmtools/array/identity.hpp"
 #include "nmtools/core/eval.hpp"
 
-namespace nmtools::array
+namespace nmtools
 {
     template <typename output_t=none_t, typename context_t=none_t, typename resolver_t=eval_result_t<>
         , typename n_t, typename T=float>
@@ -36,6 +36,6 @@ namespace nmtools::array
             , resolver
         );
     } // identity
-} // nmtools::array
+} // nmtools
 
 #endif // NMTOOLS_ARRAY_ARRAY_IDENTITY_HPP

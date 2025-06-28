@@ -25,7 +25,7 @@ namespace nmtools::view
 #include "nmtools/array/trace.hpp"
 #include "nmtools/core/eval.hpp"
 
-namespace nmtools::array
+namespace nmtools
 {
     template <typename output_t=none_t, typename context_t=none_t, typename resolver_t=eval_result_t<>
         , typename array_t, typename offset_t=meta::ct<0>, typename axis1_t=meta::ct<0>, typename axis2_t=meta::ct<1>, typename dtype_t=none_t>
@@ -40,6 +40,6 @@ namespace nmtools::array
             , resolver
         );
     } // trace
-} // nmtools::array
+} // nmtools
 
 #endif // NMTOOLS_ARRAY_ARRAY_TRACE_HPP

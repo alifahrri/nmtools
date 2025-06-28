@@ -213,7 +213,7 @@ namespace nmtools::functional
 #include "nmtools/array/ufuncs/subtract.hpp"
 #include "nmtools/constants.hpp"
 
-namespace nmtools::array
+namespace nmtools
 {
     namespace fn
     {
@@ -290,6 +290,6 @@ namespace nmtools::array
     } // namespace fn
 
     constexpr inline auto subtract = fn::subtract{};
-} // nmtools::array
+} // nmtools
 
 #endif // NMTOOLS_ARRAY_ARRAY_SUBTRACT_HPP

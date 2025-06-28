@@ -7,7 +7,7 @@
 
 #include "nmtools/platform/builtin_math.hpp"
 
-namespace nmtools::array::simd
+namespace nmtools::simd
 {
 
     // clang accepts both, but gcc only the latter
@@ -30,13 +30,13 @@ namespace nmtools::array::simd
 namespace nmtools::meta
 {
     template <auto n_bit>
-    struct bit_width<array::simd::vector_t<n_bit>>
+    struct bit_width<simd::vector_t<n_bit>>
     {
         static constexpr auto value = n_bit;
     };
 }
 
-namespace nmtools::array::simd
+namespace nmtools::simd
 {
     using meta::is_same_v;
 

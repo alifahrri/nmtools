@@ -113,7 +113,7 @@ namespace nmtools::view
 #include "nmtools/array/ufuncs/fmax.hpp"
 #include "nmtools/constants.hpp"
 
-namespace nmtools::array
+namespace nmtools
 {
     namespace fn
     {
@@ -130,8 +130,7 @@ namespace nmtools::array
                     ,nmtools::forward<output_t>(output)
                     ,resolver
                 );
-            } // operator()
-
+            }
             template <typename output_t=none_t, typename context_t=none_t, typename resolver_t=eval_result_t<>,
                 typename dtype_t=none_t, typename initial_t=none_t,
                 typename keepdims_t=meta::false_type, typename left_t, typename axis_t>
@@ -145,8 +144,7 @@ namespace nmtools::array
                     ,nmtools::forward<output_t>(output)
                     ,resolver
                 );
-            } // reduce
-
+            }
             template <typename output_t=none_t, typename context_t=none_t, typename resolver_t=eval_result_t<>,
                 typename dtype_t=none_t, typename left_t, typename axis_t>
             static constexpr auto accumulate(const left_t& a, const axis_t& axis, dtype_t dtype=dtype_t{},
@@ -158,8 +156,7 @@ namespace nmtools::array
                     ,nmtools::forward<output_t>(output)
                     ,resolver
                 );
-            } // accumulate
-
+            }
             template <typename output_t=none_t, typename context_t=none_t, typename resolver_t=eval_result_t<>,
                 typename dtype_t=none_t, typename left_t, typename right_t>
             static constexpr auto outer(const left_t& a, const right_t& b, dtype_t dtype=dtype_t{},
@@ -171,11 +168,10 @@ namespace nmtools::array
                     ,nmtools::forward<output_t>(output)
                     ,resolver
                 );
-            } // outer
-        }; // fmax
-    } // namespace fn
-
+            }
+        };
+    }
     constexpr inline auto fmax = fn::fmax{};
-} // nmtools::array
+} // namespace nmtools
 
 #endif // NMTOOLS_ARRAY_ARRAY_FMAX_HPP

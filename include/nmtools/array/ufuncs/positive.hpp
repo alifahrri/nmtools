@@ -78,7 +78,7 @@ namespace nmtools::functional
 #include "nmtools/array/ufuncs/positive.hpp"
 #include "nmtools/constants.hpp"
 
-namespace nmtools::array
+namespace nmtools
 {
     namespace fn
     {
@@ -100,6 +100,6 @@ namespace nmtools::array
     } // namespace fn
 
     constexpr inline auto positive = fn::positive{};
-} // nmtools::array
+} // nmtools
 
 #endif // NMTOOLS_ARRAY_ARRAY_POSITIVE_HPP

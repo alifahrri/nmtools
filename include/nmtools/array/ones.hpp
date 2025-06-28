@@ -56,7 +56,7 @@ namespace nmtools::functional
 #include "nmtools/array/ones.hpp"
 #include "nmtools/core/eval.hpp"
 
-namespace nmtools::array
+namespace nmtools
 {
     /**
      * @brief Eagerly compute ones.
@@ -83,6 +83,6 @@ namespace nmtools::array
             ,resolver
         );
     } // ones
-} // namespace nmtools::array
+} // namespace nmtools
 
 #endif // NMTOOLS_ARRAY_ARRAY_ONES_HPP

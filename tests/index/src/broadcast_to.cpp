@@ -7,7 +7,7 @@
 #include "nmtools/testing/data/array/broadcast_to.hpp"
 
 namespace nm = nmtools;
-namespace na = nm::array;
+namespace na = nmtools;
 namespace meta = nm::meta;
 namespace kind = na::kind;
 

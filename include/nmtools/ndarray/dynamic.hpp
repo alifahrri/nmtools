@@ -17,7 +17,7 @@
 #include <vector>
 #include <initializer_list>
 
-namespace nmtools::array
+namespace nmtools
 {
     using std::initializer_list;
 
@@ -330,14 +330,14 @@ namespace nmtools::array
 
     /** @} */ // end group dynamic
     
-} // namespace nmtools::array
+} // namespace nmtools
 
 namespace nmtools::impl
 {
     template <typename T, template <typename...> typename storage_type, template<typename...> typename shape_storage_type>
-    struct len_t<array::dynamic_ndarray<T,storage_type,shape_storage_type>>
+    struct len_t<dynamic_ndarray<T,storage_type,shape_storage_type>>
     {
-        using array = const array::dynamic_ndarray<T,storage_type,shape_storage_type>&;
+        using array = const dynamic_ndarray<T,storage_type,shape_storage_type>&;
         using type = size_t;
 
         auto operator()(array a) const
@@ -359,7 +359,7 @@ namespace nmtools
      * @return auto 
      */
     template <typename T, template <typename...> typename storage_type, template<typename...> typename shape_storage_type>
-    auto shape(const array::dynamic_ndarray<T,storage_type,shape_storage_type>& a)
+    auto shape(const dynamic_ndarray<T,storage_type,shape_storage_type>& a)
     {
         return a.shape();
     } // shape
@@ -373,7 +373,7 @@ namespace nmtools
      * @return auto 
      */
     template <typename T, template <typename...> typename storage_type, template<typename...> typename shape_storage_type>
-    auto dim(const array::dynamic_ndarray<T,storage_type,shape_storage_type>& a)
+    auto dim(const dynamic_ndarray<T,storage_type,shape_storage_type>& a)
     {
         return a.dim();
     } // dim
@@ -393,7 +393,7 @@ namespace nmtools::meta
      * @tparam T element type of dynamic_ndarray
      */
     template <typename T, template <typename...> typename storage_type, template<typename...> typename shape_storage_type>
-    struct is_ndarray<array::dynamic_ndarray<T,storage_type,shape_storage_type>> : true_type {};
+    struct is_ndarray<dynamic_ndarray<T,storage_type,shape_storage_type>> : true_type {};
 
     /**
      * @brief specialization of is_dynamic_ndarray trait for dynamic_ndarray
@@ -401,14 +401,14 @@ namespace nmtools::meta
      * @tparam T element type of dynamic_ndarray
      */
     template <typename T, template <typename...> typename storage_type, template<typename...> typename shape_storage_type>
-    struct is_dynamic_ndarray<array::dynamic_ndarray<T,storage_type,shape_storage_type>> : true_type {};
+    struct is_dynamic_ndarray<dynamic_ndarray<T,storage_type,shape_storage_type>> : true_type {};
 
     // cant be sure since the number of dimension depends at runtime
     template <typename T, template <typename...> typename storage_type, template<typename...> typename shape_storage_type>
-    struct is_index_array<array::dynamic_ndarray<T,storage_type,shape_storage_type>> : false_type {};
+    struct is_index_array<dynamic_ndarray<T,storage_type,shape_storage_type>> : false_type {};
 
     /**
-     * @brief specialize replace_element_type for array::dynamic_ndarray
+     * @brief specialize replace_element_type for dynamic_ndarray
      * 
      * @tparam T 
      * @tparam U 
@@ -416,16 +416,16 @@ namespace nmtools::meta
      * @tparam shape_storage_type 
      */
     template <typename T, typename U, template <typename...> typename storage_type, template<typename...> typename shape_storage_type>
-    struct replace_element_type<array::dynamic_ndarray<T,storage_type,shape_storage_type>,U,meta::enable_if_t<meta::is_num_v<U>>>
+    struct replace_element_type<dynamic_ndarray<T,storage_type,shape_storage_type>,U,meta::enable_if_t<meta::is_num_v<U>>>
     {
-        using type = array::dynamic_ndarray<U,storage_type,shape_storage_type>;
+        using type = dynamic_ndarray<U,storage_type,shape_storage_type>;
     }; // replace_element_type
 
 #ifndef NMTOOLS_MAKE_DYNAMIC_NDARRAY
 #define NMTOOLS_MAKE_DYNAMIC_NDARRAY
     /**
      * @brief Default definition of make_dynamic_ndarray,
-     * returns nmtools::array::dynamic_ndarray.
+     * returns nmtools::dynamic_ndarray.
      * 
      * @tparam element_t desired element type of resulting array
      * @todo consider to make this metafunction override-able via global macro
@@ -433,7 +433,7 @@ namespace nmtools::meta
     template <typename element_t>
     struct make_dynamic_ndarray
     {
-        using type = array::dynamic_ndarray<element_t>;
+        using type = dynamic_ndarray<element_t>;
     }; // make_dynamic_ndarray
 
     template <typename element_t>
@@ -461,7 +461,7 @@ namespace nmtools::meta
      * @tparam T element type of dynamic_ndarray, deduced automatically
      */
     template <typename T, template <typename...> typename storage_type, template<typename...> typename shape_storage_type>
-    struct get_ndarray_value_type<array::dynamic_ndarray<T,storage_type,shape_storage_type>>
+    struct get_ndarray_value_type<dynamic_ndarray<T,storage_type,shape_storage_type>>
     {
         using type = T;
     };
@@ -471,7 +471,7 @@ namespace nmtools::meta
 #include "nmtools/utility/shape.hpp"
 #include "nmtools/utility/isequal.hpp"
 
-namespace nmtools::array
+namespace nmtools
 {
     
     /**
@@ -504,7 +504,7 @@ namespace nmtools::array
         return *this;
     } // operator=
 
-} // namespace nmtools::array
+} // namespace nmtools
 
 #endif // NMTOOLS_DISABLE_DYNAMIC_ARRAY
 
@@ -520,7 +520,7 @@ namespace nmtools::meta
     }
     /**
      * @brief Default definition of make_dynamic_ndarray,
-     * returns nmtools::array::dynamic_ndarray.
+     * returns nmtools::dynamic_ndarray.
      * 
      * @tparam element_t desired element type of resulting array
      * @todo consider to make this metafunction override-able via global macro

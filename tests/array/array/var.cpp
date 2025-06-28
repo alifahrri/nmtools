@@ -5,7 +5,7 @@
 namespace nm = nmtools;
 
 #define RUN_var_impl(...) \
-nmtools::array::var(__VA_ARGS__);
+nmtools::var(__VA_ARGS__);
 
 #ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
 #include "nmtools/testing/benchmarks/bench.hpp"

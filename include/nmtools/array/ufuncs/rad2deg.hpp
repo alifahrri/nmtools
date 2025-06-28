@@ -23,7 +23,7 @@ namespace nmtools::view
 #include "nmtools/array/ufuncs/rad2deg.hpp"
 #include "nmtools/core/eval.hpp"
 
-namespace nmtools::array
+namespace nmtools
 {
     template <typename output_t=none_t, typename context_t=none_t, typename resolver_t=eval_result_t<>
         , typename array_t>
@@ -38,6 +38,6 @@ namespace nmtools::array
             , resolver
         );
     }
-} // nmtools::array
+} // nmtools
 
 #endif // NMTOOLS_ARRAY_UFUNCS_RAD2DEG_HPP

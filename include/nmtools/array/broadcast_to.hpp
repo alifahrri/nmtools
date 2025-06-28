@@ -31,7 +31,7 @@ namespace nmtools::functional
 #include "nmtools/array/broadcast_to.hpp"
 #include "nmtools/constants.hpp"
 
-namespace nmtools::array
+namespace nmtools
 {
     template <typename output_t=none_t, typename context_t=none_t, typename resolver_t=eval_result_t<>,
         typename array_t, typename shape_t>
@@ -45,6 +45,6 @@ namespace nmtools::array
             ,resolver
         );
     } // broadcast_to
-} // namespace nmtools::array
+} // namespace nmtools
 
 #endif // NMTOOLS_ARRAY_ARRAY_BROADCAST_TO_HPP

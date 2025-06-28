@@ -58,7 +58,7 @@ namespace nmtools::functional
 #include "nmtools/array/cumsum.hpp"
 #include "nmtools/core/eval.hpp"
 
-namespace nmtools::array
+namespace nmtools
 {
     /**
      * @brief Eagerly evaluate the cumulative sum of elements along a given axis.
@@ -87,6 +87,6 @@ namespace nmtools::array
             ,resolver
         );
     } // cumsum
-} // namespace nmtools::array
+} // namespace nmtools
 
 #endif // NMTOOLS_ARRAY_ARRAY_CUMSUM_HPP

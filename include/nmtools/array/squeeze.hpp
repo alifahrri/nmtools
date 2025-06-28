@@ -58,7 +58,7 @@ namespace nmtools::functional
 #include "nmtools/array/squeeze.hpp"
 #include "nmtools/core/eval.hpp"
 
-namespace nmtools::array
+namespace nmtools
 {
     /**
      * @brief Eagerly squeeze an arrray. Removes single dimensions from the array.
@@ -83,6 +83,6 @@ namespace nmtools::array
             ,resolver
         );
     } // reshape
-} // namespace nmtools::array
+} // namespace nmtools
 
 #endif // NMTOOLS_ARRAY_ARRAY_SQUEEZE_HPP

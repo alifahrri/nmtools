@@ -6,7 +6,7 @@
 #include "nmtools/evaluator/simd/bit_width.hpp"
 #include "nmtools/array/matmul.hpp"
 
-namespace nmtools::array
+namespace nmtools
 {
     template <typename simd_tag_t, typename resolver_t, typename...matmul_args_t>
     struct evaluator_t<view::decorator_t<view::matmul_t,matmul_args_t...>, simd_base_t<simd_tag_t>, resolver_t>

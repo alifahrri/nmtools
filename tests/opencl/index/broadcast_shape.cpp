@@ -6,7 +6,7 @@ namespace nm = nmtools;
 namespace ix = nm::index;
 namespace view = nm::view;
 namespace meta = nm::meta;
-namespace opencl = nm::array::opencl;
+namespace opencl = nmtools::opencl;
 
 #define binary_broadcast_shape_kernel_name "test_broadcast_shape_binary"
 #define ternary_broadcast_shape_kernel_name "test_broadcast_shape_ternary"
@@ -43,7 +43,7 @@ kernel void test_broadcast_shape_binary(
     , const nm_cl_index_t bshape_size
 )
 {
-    static_assert( meta::has_address_space_v<const __generic nmtools_maybe<nmtools::array::hybrid_ndarray<int, 8, 1>>> );
+    static_assert( meta::has_address_space_v<const __generic nmtools_maybe<nmtools::hybrid_ndarray<int, 8, 1>>> );
     auto output = view::mutable_ref(out_ptr,out_size);
 
     auto ashape = opencl::create_vector(ashape_ptr,ashape_size);

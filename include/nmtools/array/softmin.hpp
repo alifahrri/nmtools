@@ -51,7 +51,7 @@ namespace nmtools::functional
 #include "nmtools/array/softmin.hpp"
 #include "nmtools/core/eval.hpp"
 
-namespace nmtools::array
+namespace nmtools
 {
     /**
      * @brief Eagerly computes softmin function along an axis.
@@ -78,6 +78,6 @@ namespace nmtools::array
             ,resolver
         );
     } // softmin
-} // namespace nmtools::array
+} // namespace nmtools
 
 #endif // NMTOOLS_ARRAY_ARRAY_SOFTMIN_HPP

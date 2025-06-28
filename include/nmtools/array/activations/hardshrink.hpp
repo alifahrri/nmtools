@@ -125,7 +125,7 @@ namespace nmtools::functional
 #include "nmtools/array/activations/hardshrink.hpp"
 #include "nmtools/core/eval.hpp"
 
-namespace nmtools::array
+namespace nmtools
 {
     /**
      * @brief Eagerly compute element-wise hardshrink function.
@@ -153,7 +153,6 @@ namespace nmtools::array
             ,resolver
         );
     } // hardshrink
-} // namespace nmtools::view
-
+} // namespace nmtools
 
 #endif // NMTOOLS_ARRAY_ARRAY_ACTIVATIONS_HARDSHRINK_HPP

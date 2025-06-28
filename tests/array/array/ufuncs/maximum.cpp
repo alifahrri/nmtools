@@ -7,10 +7,10 @@
 #include <algorithm> // std::max
 
 namespace nm = nmtools;
-namespace na = nm::array;
+namespace na = nmtools;
 
 #define RUN_maximum_impl(...) \
-nm::array::maximum(__VA_ARGS__);
+nmtools::maximum(__VA_ARGS__);
 
 #ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
 #include "nmtools/testing/benchmarks/bench.hpp"
@@ -61,7 +61,7 @@ TEST_CASE("maximum(case2)" * doctest::test_suite("array::maximum"))
 }
 
 #define RUN_reduce_maximum_impl(...) \
-nm::array::maximum.reduce(__VA_ARGS__);
+nmtools::maximum.reduce(__VA_ARGS__);
 
 #ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
 #include "nmtools/testing/benchmarks/bench.hpp"
@@ -202,7 +202,7 @@ TEST_CASE("reduce_maximum(case12)" * doctest::test_suite("array::reduce_maximum"
 }
 
 #define RUN_accumulate_maximum_impl(...) \
-nm::array::maximum.accumulate(__VA_ARGS__);
+nmtools::maximum.accumulate(__VA_ARGS__);
 
 #ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
 #include "nmtools/testing/benchmarks/bench.hpp"
@@ -265,7 +265,7 @@ TEST_CASE("accumulate_maximum(case3)" * doctest::test_suite("array::accumulate_m
 }
 
 #define RUN_outer_maximum_impl(...) \
-nm::array::maximum.outer(__VA_ARGS__);
+nmtools::maximum.outer(__VA_ARGS__);
 
 #ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
 #include "nmtools/testing/benchmarks/bench.hpp"

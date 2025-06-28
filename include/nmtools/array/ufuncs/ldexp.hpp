@@ -60,7 +60,7 @@ namespace nmtools::utils::impl
 #include "nmtools/array/ufuncs/ldexp.hpp"
 #include "nmtools/constants.hpp"
 
-namespace nmtools::array
+namespace nmtools
 {
     namespace fn
     {
@@ -82,6 +82,6 @@ namespace nmtools::array
     } // namespace fn
 
     constexpr inline auto ldexp = fn::ldexp{};
-} // nmtools::array
+} // namespace nmtools
 
 #endif // NMTOOLS_ARRAY_ARRAY_LDEXP_HPP

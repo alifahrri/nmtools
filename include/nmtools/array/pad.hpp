@@ -304,7 +304,7 @@ namespace nmtools::view
     }
 } // namespace nmtools::view
 
-namespace nmtools::array
+namespace nmtools
 {
     template <typename...args_t, auto max_dim>
     struct as_static_t<
@@ -322,7 +322,7 @@ namespace nmtools::array
             return view::padder(src_shape,pads,src_size);
         }
     };
-} // namespace nmtools::array
+} // namespace nmtools
 
 #if NMTOOLS_HAS_STRING
 
@@ -387,7 +387,7 @@ namespace nmtools::functional
 #include "nmtools/array/pad.hpp"
 #include "nmtools/core/eval.hpp"
 
-namespace nmtools::array
+namespace nmtools
 {
     /**
      * @brief Eagerly pad an array
@@ -442,6 +442,6 @@ namespace nmtools::array
             ,resolver
         );
     } // pad3
-} // namespace nmtools::array
+} // namespace nmtools
 
 #endif // NMTOOLS_ARRAY_PAD_HPP

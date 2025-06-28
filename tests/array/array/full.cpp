@@ -7,7 +7,7 @@
 #include <tuple>
 
 #define RUN_full_impl(...) \
-nm::array::full(__VA_ARGS__);
+nmtools::full(__VA_ARGS__);
 
 #ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
 #include "nmtools/testing/benchmarks/bench.hpp"
@@ -57,7 +57,7 @@ TEST_CASE("full_traits(case1)" * doctest::test_suite("array::full_traits"))
         using shape_t = int[3];
         shape_t shape = {2,3,2};
         auto fill_value = 1;
-        auto array = nm::array::full(shape,fill_value);
+        auto array = nmtools::full(shape,fill_value);
         using array_t = decltype(array);
         constexpr auto is_fixed_shape = nm::meta::is_fixed_size_ndarray_v<array_t>;
         static_assert( !is_fixed_shape );
@@ -66,7 +66,7 @@ TEST_CASE("full_traits(case1)" * doctest::test_suite("array::full_traits"))
         using namespace nm::literals;
         auto shape = std::tuple{2_ct,3_ct,2_ct};
         auto fill_value = 1;
-        auto array = nm::array::full(shape,fill_value);
+        auto array = nmtools::full(shape,fill_value);
         using array_t = decltype(array);
         constexpr auto is_fixed_shape = nm::meta::is_fixed_size_ndarray_v<array_t>;
         static_assert( is_fixed_shape );

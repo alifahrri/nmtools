@@ -29,7 +29,7 @@ namespace nmtools::args
     indexing(args_t...) -> indexing<args_t...>;
 } // namespace nmtools::args
 
-namespace nmtools::array
+namespace nmtools
 {
     template <typename indexer_t, auto max_dim>
     struct as_static_t<

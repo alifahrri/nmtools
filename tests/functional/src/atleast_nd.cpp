@@ -7,7 +7,7 @@
 
 namespace nm = nmtools;
 namespace fn = nm::functional;
-namespace na = nm::array;
+namespace na = nmtools;
 namespace view = nmtools::view;
 
 using namespace nm::literals;

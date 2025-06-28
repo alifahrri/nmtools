@@ -78,7 +78,7 @@ namespace nmtools::functional
 #include "nmtools/array/sum.hpp"
 #include "nmtools/constants.hpp"
 
-namespace nmtools::array
+namespace nmtools
 {
     /**
      * @brief Eagerly evaluate sum of array elements over a given axis.
@@ -113,6 +113,6 @@ namespace nmtools::array
             ,resolver
         );
     } // sum
-} // namespace nmtools::array
+} // namespace nmtools
 
 #endif // NMTOOLS_ARRAY_ARRAY_SUM_HPP

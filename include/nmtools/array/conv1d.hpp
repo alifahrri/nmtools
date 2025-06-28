@@ -66,7 +66,7 @@ namespace nmtools::functional
 #include "nmtools/array/conv1d.hpp"
 #include "nmtools/core/eval.hpp"
 
-namespace nmtools::array
+namespace nmtools
 {
     template <typename output_t=none_t, typename context_t=none_t, typename resolver_t=eval_result_t<>
         , typename input_t, typename weight_t, typename bias_t=none_t

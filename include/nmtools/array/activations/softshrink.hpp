@@ -125,10 +125,10 @@ namespace nmtools::functional
 #include "nmtools/array/activations/softshrink.hpp"
 #include "nmtools/core/eval.hpp"
 
-namespace nmtools::array
+namespace nmtools
 {
     /**
-     * @brief Eagerly evaluate element-wise sfortshrink function
+     * @brief Eagerly evaluate element-wise softshrink function
      * 
      * @tparam output_t 
      * @tparam context_t 
@@ -152,7 +152,7 @@ namespace nmtools::array
             ,resolver
         );
     } // softshrink
-} // namespace nmtools::array
+} // namespace nmtools
 
 
 #endif // NMTOOLS_ARRAY_ARRAY_ACTIVATIONS_SOFTSHRINK_HPP

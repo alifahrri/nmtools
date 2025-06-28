@@ -11,7 +11,7 @@
 #include <variant>
 
 namespace nm = nmtools;
-namespace na = nm::array;
+namespace na = nmtools;
 namespace kind = na::kind;
 
 // TODO: rename namespace to (array, multiply)

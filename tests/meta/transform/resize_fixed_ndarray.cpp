@@ -5,7 +5,7 @@
 #include <array>
 
 namespace nm = nmtools;
-namespace na = nm::array;
+namespace na = nmtools;
 namespace meta = nm::meta;
 
 TEST_CASE("resize_fixed_ndarray" * doctest::test_suite("meta"))

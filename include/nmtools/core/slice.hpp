@@ -109,11 +109,11 @@ namespace nmtools::view
     constexpr auto slice(const array_t& array, slices_t...slices)
     {
         auto slices_pack = nmtools_tuple{slices...};
-        return apply_slice(array,slices_pack);
+        return view::apply_slice(array,slices_pack);
     } // slice
 } // namespace nmtools::view
 
-namespace nmtools::array
+namespace nmtools
 {
     template <typename...args_t, auto max_dim>
     struct as_static_t<

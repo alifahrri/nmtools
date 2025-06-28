@@ -7,7 +7,7 @@
 #include "nmtools/testing/data/index/gather.hpp"
 
 namespace nm = nmtools;
-namespace na = nm::array;
+namespace na = nmtools;
 namespace kind = na::kind;
 using namespace nm::literals;
 using nmtools::utils::isequal;

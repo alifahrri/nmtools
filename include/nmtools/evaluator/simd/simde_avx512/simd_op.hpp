@@ -7,7 +7,7 @@
 
 #include <simde/x86/avx512.h>
 
-namespace nmtools::array::simd
+namespace nmtools::simd
 {
     struct simde_avx512_t {};
 }
@@ -15,15 +15,15 @@ namespace nmtools::array::simd
 namespace nmtools::meta
 {
     template <>
-    struct bit_width<array::simd::simde_avx512_t>
+    struct bit_width<simd::simde_avx512_t>
     {
         static constexpr auto value = 512;
     };
 }
 
-namespace nmtools::array::simd
+namespace nmtools::simd
 {
-    constexpr inline auto simde_AVX512 = array::simd_base_t<simde_avx512_t>{};
+    constexpr inline auto simde_AVX512 = simd_base_t<simde_avx512_t>{};
 
     using meta::is_same_v;
 

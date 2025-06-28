@@ -5,7 +5,7 @@
 #include "nmtools/testing/doctest.hpp"
 
 namespace nm = nmtools;
-namespace na = nm::array;
+namespace na = nmtools;
 namespace ix = nm::index;
 
 #define SYCL_CUMPROD_SUBCASE(...) \

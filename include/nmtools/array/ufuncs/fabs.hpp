@@ -83,28 +83,22 @@ namespace nmtools::functional
 #include "nmtools/array/ufuncs/fabs.hpp"
 #include "nmtools/constants.hpp"
 
-namespace nmtools::array
+namespace nmtools
 {
     namespace fn
     {
         struct fabs
         {
-            template <typename output_t=none_t, typename context_t=none_t, typename resolver_t=eval_result_t<>,
-                typename left_t>
-            inline constexpr auto operator()(const left_t& a,
-                context_t&& context=context_t{}, output_t&& output=output_t{},meta::as_value<resolver_t> resolver=meta::as_value_v<resolver_t>) const
+            template <typename output_t=none_t, typename context_t=none_t, typename resolver_t=eval_result_t<>, typename left_t>
+            inline constexpr auto operator()(const left_t& a, context_t&& context=context_t{}, output_t&& output=output_t{}, meta::as_value<resolver_t> resolver=meta::as_value_v<resolver_t>) const
             {
                 auto fabs = view::fabs(a);
-                return eval(fabs
-                    ,nmtools::forward<context_t>(context)
-                    ,nmtools::forward<output_t>(output)
-                    ,resolver
-                );
+                return eval(fabs, nmtools::forward<context_t>(context), nmtools::forward<output_t>(output), resolver);
             } // operator()
         }; // fabs
     } // namespace fn
 
     constexpr inline auto fabs = fn::fabs{};
-} // nmtools::array
+} // nmtools
 
 #endif // NMTOOLS_ARRAY_ARRAY_FABS_HPP

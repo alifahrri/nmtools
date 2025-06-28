@@ -7,11 +7,11 @@
 #include <tuple>
 
 namespace nm = nmtools;
-namespace na = nm::array;
+namespace na = nmtools;
 using std::tuple;
 
 #define RUN_power_impl(...) \
-nm::array::power(__VA_ARGS__);
+nmtools::power(__VA_ARGS__);
 
 #ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
 #include "nmtools/testing/benchmarks/bench.hpp"
@@ -62,7 +62,7 @@ TEST_CASE("power(case2)" * doctest::test_suite("array::power"))
 }
 
 #define RUN_reduce_power_impl(...) \
-nm::array::power.reduce(__VA_ARGS__);
+nmtools::power.reduce(__VA_ARGS__);
 
 #ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
 #include "nmtools/testing/benchmarks/bench.hpp"
@@ -176,7 +176,7 @@ TEST_CASE("reduce_power(case9)" * doctest::test_suite("array::reduce_power"))
 }
 
 #define RUN_accumulate_power_impl(...) \
-nm::array::power.accumulate(__VA_ARGS__);
+nmtools::power.accumulate(__VA_ARGS__);
 
 #ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
 #include "nmtools/testing/benchmarks/bench.hpp"
@@ -231,7 +231,7 @@ TEST_CASE("accumulate_power(case2)" * doctest::test_suite("array::accumulate_pow
 }
 
 #define RUN_outer_power_impl(...) \
-nm::array::power.outer(__VA_ARGS__);
+nmtools::power.outer(__VA_ARGS__);
 
 #ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
 #include "nmtools/testing/benchmarks/bench.hpp"

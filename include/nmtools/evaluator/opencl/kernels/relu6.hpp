@@ -58,7 +58,7 @@ nmtools_cl_kernel(double,double)
 extern unsigned char nmtools_cl_kernel_bin [];
 extern unsigned int nmtools_cl_kernel_len;
 
-namespace nmtools::array::opencl
+namespace nmtools::opencl
 {
     template <typename array_t>
     struct kernel_t<view::decorator_t<view::ufunc_t,view::nmtools_cl_ufunc_type,array_t>>

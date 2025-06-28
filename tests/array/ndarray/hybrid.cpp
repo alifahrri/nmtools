@@ -2,10 +2,10 @@
 #include "nmtools/testing/doctest.hpp"
 
 namespace nm = nmtools;
-namespace na = nm::array;
+namespace na = nmtools;
 namespace meta = nm::meta;
 
-TEST_CASE("hybrid_ndarray(1)" * doctest::test_suite("array::hybrid_ndarray"))
+TEST_CASE("hybrid_ndarray(1)" * doctest::test_suite("hybrid_ndarray"))
 {
     // TODO: fix assignment operator=
     #if 0
@@ -46,7 +46,7 @@ TEST_CASE("hybrid_ndarray(1)" * doctest::test_suite("array::hybrid_ndarray"))
     }
 }
 
-TEST_CASE("hybrid_ndarray(2)" * doctest::test_suite("array::hybrid_ndarray"))
+TEST_CASE("hybrid_ndarray(2)" * doctest::test_suite("hybrid_ndarray"))
 {
     // TODO: fix assignment operator=
     #if 0
@@ -148,7 +148,7 @@ TEST_CASE("hybrid_ndarray(2)" * doctest::test_suite("array::hybrid_ndarray"))
     }
 }
 
-TEST_CASE("hybrid_ndarray(3)" * doctest::test_suite("array::hybrid_ndarray"))
+TEST_CASE("hybrid_ndarray(3)" * doctest::test_suite("hybrid_ndarray"))
 {
     {
         auto array = na::hybrid_ndarray<double,6,3>{};

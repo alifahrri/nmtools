@@ -13,7 +13,6 @@ std::cout << #x << ":\n" \
     << std::endl; \
 
 namespace nm = nmtools;
-namespace na = nm::array;
 namespace view = nm::view;
 
 int main()
@@ -33,16 +32,16 @@ int main()
         PRINT(array)
         PRINT(broadcasted)
     }
-    DESC("\nbroadcasting an na::fixed_ndarray")
+    DESC("\nbroadcasting an nm::fixed_ndarray")
     {
-        auto array = na::fixed_ndarray{{1,2,3}};
+        auto array = nm::fixed_ndarray{{1,2,3}};
         auto broadcasted = view::broadcast_to(array,shape);
         PRINT(array)
         PRINT(broadcasted)
     }
-    DESC("\nbroadcasting an na::dynamic_ndarray")
+    DESC("\nbroadcasting an nm::dynamic_ndarray")
     {
-        auto array = na::dynamic_ndarray({1,2,3});
+        auto array = nm::dynamic_ndarray({1,2,3});
         auto broadcasted = view::broadcast_to(array,shape);
         PRINT(array)
         PRINT(broadcasted)

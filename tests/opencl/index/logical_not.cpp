@@ -33,7 +33,7 @@ kernel void test_logical_not(global bool* out_ptr, global bool* inp_ptr, const u
 
 #include "nmtools/testing/opencl.hpp"
 
-namespace opencl = nmtools::array::opencl;
+namespace opencl = nmtools::opencl;
 namespace testing = nmtools::testing;
 
 extern unsigned char nm_cl_test_logical_not_spv[];

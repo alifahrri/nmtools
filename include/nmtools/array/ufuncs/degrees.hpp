@@ -23,21 +23,19 @@ namespace nmtools::view
 #include "nmtools/array/ufuncs/degrees.hpp"
 #include "nmtools/core/eval.hpp"
 
-namespace nmtools::array
+namespace nmtools
 {
-    template <typename output_t=none_t, typename context_t=none_t, typename resolver_t=eval_result_t<>
-        , typename array_t>
-    constexpr auto degrees(const array_t& array
-        , context_t&& context=context_t{}, output_t&& output=output_t{},meta::as_value<resolver_t> resolver=meta::as_value_v<resolver_t>)
+    template <typename output_t=none_t, typename context_t=none_t, typename resolver_t=eval_result_t<>, typename array_t>
+    constexpr auto degrees(const array_t& array, context_t&& context=context_t{}, output_t&& output=output_t{}, meta::as_value<resolver_t> resolver=meta::as_value_v<resolver_t>)
     {
         auto a = view::degrees(array);
         return eval(
-            a
-            , nmtools::forward<context_t>(context)
-            , nmtools::forward<output_t>(output)
-            , resolver
+            a,
+            nmtools::forward<context_t>(context),
+            nmtools::forward<output_t>(output),
+            resolver
         );
     }
-} // nmtools::array
+} // namespace nmtools
 
 #endif // NMTOOLS_ARRAY_ARRAY_UFUNCS_DEGREES_HPP

@@ -1,11 +1,11 @@
 #define NMTOOLS_BUILD_CONSTEXPR_TESTS
 #define NMTOOLS_CONSTEXPR_CAST_ARRAYS_EXTRA(name) \
-constexpr inline auto name##_cs_fb = nmtools::cast(name, nmtools::array::kind::ndarray_cs_fb); \
-constexpr inline auto name##_cs_hb = nmtools::cast(name, nmtools::array::kind::ndarray_cs_hb); \
-constexpr inline auto name##_fs_fb = nmtools::cast(name, nmtools::array::kind::ndarray_fs_fb); \
-constexpr inline auto name##_fs_hb = nmtools::cast(name, nmtools::array::kind::ndarray_fs_hb); \
-constexpr inline auto name##_hs_fb = nmtools::cast(name, nmtools::array::kind::ndarray_hs_fb); \
-constexpr inline auto name##_hs_hb = nmtools::cast(name, nmtools::array::kind::ndarray_hs_hb);
+constexpr inline auto name##_cs_fb = nmtools::cast(name, nmtools::kind::ndarray_cs_fb); \
+constexpr inline auto name##_cs_hb = nmtools::cast(name, nmtools::kind::ndarray_cs_hb); \
+constexpr inline auto name##_fs_fb = nmtools::cast(name, nmtools::kind::ndarray_fs_fb); \
+constexpr inline auto name##_fs_hb = nmtools::cast(name, nmtools::kind::ndarray_fs_hb); \
+constexpr inline auto name##_hs_fb = nmtools::cast(name, nmtools::kind::ndarray_hs_fb); \
+constexpr inline auto name##_hs_hb = nmtools::cast(name, nmtools::kind::ndarray_hs_hb);
 
 #include "nmtools/array/atleast_1d.hpp"
 #include "nmtools/testing/data/array/atleast_1d.hpp"
@@ -21,10 +21,10 @@ constexpr inline auto name##_hs_hb = nmtools::cast(name, nmtools::array::kind::n
 
 #include "nmtools/testing/arduino.hpp"
 
-using nmtools::array::atleast_1d;
-using nmtools::array::atleast_2d;
-using nmtools::array::transpose;
-using nmtools::array::moveaxis;
+using nmtools::atleast_1d;
+using nmtools::atleast_2d;
+using nmtools::transpose;
+using nmtools::moveaxis;
 
 NM_TEST_SUBCASE(constexpr_atleast_1d, case1)
 {

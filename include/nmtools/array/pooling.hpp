@@ -389,7 +389,7 @@ namespace nmtools::meta
                     constexpr auto DST_SIZE = SRC_DIM * 2;
                     using buffer_t = nmtools_array<nm_size_t,DST_SIZE>;
                     using shape_buffer_t = nmtools_tuple<ct<SRC_DIM>,ct<2>>;
-                    using type = array::ndarray_t<buffer_t,shape_buffer_t>;
+                    using type = ndarray_t<buffer_t,shape_buffer_t>;
                     return as_value_v<type>;
                 } else if constexpr (!is_fail_v<decltype(SRC_B_DIM)>) {
                     constexpr auto DST_B_SIZE = SRC_B_DIM * 2;
@@ -397,13 +397,13 @@ namespace nmtools::meta
                     // doesn't support mixed shape yet
                     // TODO: support mixed shape
                     using shape_buffer_t = nmtools_array<nm_size_t,2>;
-                    using type = array::ndarray_t<buffer_t,shape_buffer_t>;
+                    using type = ndarray_t<buffer_t,shape_buffer_t>;
                     return as_value_v<type>;
                 } else {
                     // TODO: support small vector
                     using buffer_t = nmtools_list<nm_size_t>;
                     using shape_buffer_t = nmtools_array<nm_size_t,2>;
-                    using type = array::ndarray_t<buffer_t,shape_buffer_t>;
+                    using type = ndarray_t<buffer_t,shape_buffer_t>;
                     return as_value_v<type>;
                 }
             }
@@ -615,7 +615,7 @@ namespace nmtools::functional
 #include "nmtools/array/pooling.hpp"
 #include "nmtools/core/eval.hpp"
 
-namespace nmtools::array
+namespace nmtools
 {
     // TODO: implement padding
     // TODO: implement dilation
@@ -762,7 +762,7 @@ namespace nmtools::array
             ,resolver
         );
     } // avg_pool
-} // namespace nmtools::array
+} // namespace nmtools
 
 
 #endif // NMTOOLS_ARRAY_ARRAY_POOLING_HPP

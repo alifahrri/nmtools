@@ -11,7 +11,7 @@
 #include <vector>
 
 namespace nm = nmtools;
-namespace na = nm::array;
+namespace na = nmtools;
 
 #ifndef NMTOOLS_DISABLE_STL
 TEST_CASE("filter(vector)" * doctest::test_suite("index::filter"))

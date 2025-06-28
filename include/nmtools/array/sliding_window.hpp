@@ -1054,7 +1054,7 @@ namespace nmtools::view
     } // sliding_window
 } // namespace nmtools::view
 
-namespace nmtools::array
+namespace nmtools
 {
     template <typename...args_t, auto max_dim>
     struct as_static_t<
@@ -1072,7 +1072,7 @@ namespace nmtools::array
             return view::sliding_window_indexer(src_shape,window_shape,axis);
         }
     };
-} // namespace nmtools::array
+} // namespace nmtools
 
 #if NMTOOLS_HAS_STRING
 
@@ -1135,7 +1135,7 @@ namespace nmtools::functional
 
 #include "nmtools/core/eval.hpp"
 
-namespace nmtools::array
+namespace nmtools
 {
     template <typename output_t=none_t, typename context_t=none_t, typename resolver_t=eval_result_t<>
         , typename array_t, typename window_shape_t, typename axis_t=none_t>
@@ -1150,6 +1150,6 @@ namespace nmtools::array
             , resolver
         );
     } // sliding_window
-} // namespace nmtools::array
+} // namespace nmtools
 
 #endif // NMTOOLS_ARRAY_ARRAY_RESIZE_HPP

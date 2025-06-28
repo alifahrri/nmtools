@@ -15,7 +15,7 @@
  * 
  */
 
-namespace nmtools::array {
+namespace nmtools {
 
     /**
      * @addtogroup Fixed Fixed Array
@@ -208,13 +208,13 @@ namespace nmtools::array {
     fixed_ndarray(T (&&a)[Shape1][Shape2][Shape3][Shape4][Shape5][Shape6][Shape7][Shape8][Shape9][Shape10][Shape11]) -> fixed_ndarray<T,Shape1,Shape2,Shape3,Shape4,Shape5,Shape6,Shape7,Shape8,Shape9,Shape10,Shape11>;
 
     /** @} */ // end group fixed array
-} // namespace nmtools::array
+} // namespace nmtools
 
 namespace nmtools::meta
 {
     template <typename T, size_t Shape1, size_t...ShapeN>
     struct fixed_shape<
-        array::fixed_ndarray<T,Shape1,ShapeN...>
+        fixed_ndarray<T,Shape1,ShapeN...>
     >
     {
         // calling fixed_shape should return constexpr value instead of constant runtime
@@ -224,11 +224,11 @@ namespace nmtools::meta
 
     template <typename T, size_t Shape1, size_t...ShapeN, auto...new_shape>
     struct resize_shape<
-        array::fixed_ndarray<T,Shape1,ShapeN...>
+        fixed_ndarray<T,Shape1,ShapeN...>
         , as_type<new_shape...>
     >
     {
-        using type = array::fixed_ndarray<T,new_shape...>;
+        using type = fixed_ndarray<T,new_shape...>;
     }; // resize_shape
     
 } // namespace nmtools::meta
@@ -251,7 +251,7 @@ namespace nmtools
      * @return constexpr auto 
      */
     template <typename T, size_t Shape1, size_t...ShapeN>
-    constexpr auto shape(const array::fixed_ndarray<T,Shape1,ShapeN...>& a)
+    constexpr auto shape(const fixed_ndarray<T,Shape1,ShapeN...>& a)
     {
         return a.shape();
     } // shape
@@ -266,7 +266,7 @@ namespace nmtools
      * @return constexpr auto 
      */
     template <typename T, size_t...Shape>
-    constexpr auto dim(const array::fixed_ndarray<T,Shape...>& a)
+    constexpr auto dim(const fixed_ndarray<T,Shape...>& a)
     {
         return a.dim();
     } // 
@@ -282,8 +282,8 @@ namespace nmtools
      * @tparam ShapeN number of elements for the rest axes
      */
     template <typename T, size_t Shape1, size_t...ShapeN>
-    struct meta::fixed_ndarray_shape<array::fixed_ndarray<T,Shape1,ShapeN...>>
-        : fixed_shape<array::fixed_ndarray<T,Shape1,ShapeN...>> {};
+    struct meta::fixed_ndarray_shape<fixed_ndarray<T,Shape1,ShapeN...>>
+        : fixed_shape<fixed_ndarray<T,Shape1,ShapeN...>> {};
     #if 0
     {
         static inline constexpr auto value = nmtools_array<size_t,sizeof...(ShapeN)+1>{Shape1,ShapeN...};
@@ -293,19 +293,19 @@ namespace nmtools
 
     // TODO: remove
     template <typename T, size_t N>
-    struct meta::is_index_array< array::fixed_ndarray<T,N>
+    struct meta::is_index_array< fixed_ndarray<T,N>
         , meta::enable_if_t<meta::is_index_v<T>>
     > : meta::true_type {};
 
     // TODO: remove
     template <typename T, size_t N>
-    struct meta::is_fixed_index_array< array::fixed_ndarray<T,N>
+    struct meta::is_fixed_index_array< fixed_ndarray<T,N>
         , meta::enable_if_t<meta::is_index_v<T>>
     > : meta::true_type {};
 
     // TODO: remove
     template <typename T, size_t N>
-    struct meta::fixed_index_array_size< array::fixed_ndarray<T,N>
+    struct meta::fixed_index_array_size< fixed_ndarray<T,N>
         , meta::enable_if_t<meta::is_index_v<T>>
     >
     {
@@ -313,14 +313,14 @@ namespace nmtools
     };
 
     template <typename T, size_t N, auto NEW_SIZE>
-    struct meta::resize_fixed_vector< array::fixed_ndarray<T,N>, NEW_SIZE >
+    struct meta::resize_fixed_vector< fixed_ndarray<T,N>, NEW_SIZE >
     {
-        using type = array::fixed_ndarray<T,NEW_SIZE>;
+        using type = fixed_ndarray<T,NEW_SIZE>;
     };
 
 
     /**
-     * @brief specialize replace_element_type for array::fixed_ndarray
+     * @brief specialize replace_element_type for fixed_ndarray
      * 
      * @tparam T 
      * @tparam U 
@@ -328,9 +328,9 @@ namespace nmtools
      * @tparam ShapeN 
      */
     template <typename T, typename U, size_t Shape1, size_t...ShapeN>
-    struct meta::replace_element_type<array::fixed_ndarray<T,Shape1,ShapeN...>,U,meta::enable_if_t<meta::is_num_v<U>>>
+    struct meta::replace_element_type<fixed_ndarray<T,Shape1,ShapeN...>,U,meta::enable_if_t<meta::is_num_v<U>>>
     {
-        using type = array::fixed_ndarray<U,Shape1,ShapeN...>;
+        using type = fixed_ndarray<U,Shape1,ShapeN...>;
     }; // replace_element_type
 } // namespace nmtools
 
@@ -342,21 +342,21 @@ namespace nmtools::meta
      */
 
     template <typename T, auto N, auto M>
-    struct resize_size<array::fixed_ndarray<T,N>,M>
+    struct resize_size<fixed_ndarray<T,N>,M>
     {
-        using type = array::fixed_ndarray<T,M>;
+        using type = fixed_ndarray<T,M>;
     };
 
     // TODO: remove
     /**
      * @brief specialization of metafunction
-     * nmtools::meta::get_ndarray_value_type for array::fixed_ndarray types
+     * nmtools::meta::get_ndarray_value_type for fixed_ndarray types
      * 
      * @tparam T element type of fixed_ndarray
      * @tparam Shape 
      */
     template <typename T, auto...Shape>
-    struct get_ndarray_value_type<array::fixed_ndarray<T,Shape...>>
+    struct get_ndarray_value_type<fixed_ndarray<T,Shape...>>
     {
         using type = T;
     };
@@ -381,9 +381,9 @@ namespace nmtools::meta
 
     // TODO: remove
     template <typename T, auto...Shapes, template<auto...> typename typelist, auto...NewShapes>
-    struct resize_fixed_ndarray<array::fixed_ndarray<T,Shapes...>,typelist<NewShapes...>>
+    struct resize_fixed_ndarray<fixed_ndarray<T,Shapes...>,typelist<NewShapes...>>
     {
-        using type = array::fixed_ndarray<T,NewShapes...>;
+        using type = fixed_ndarray<T,NewShapes...>;
     }; // resize_fixed_ndarray
 
     /**
@@ -395,7 +395,7 @@ namespace nmtools::meta
      */
     template <typename T, auto...Shapes, typename U>
     struct resize_fixed_ndarray<
-        array::fixed_ndarray<T,Shapes...>, U,
+        fixed_ndarray<T,Shapes...>, U,
         meta::enable_if_t<is_fixed_size_ndarray_v<U> && is_num_v<T>>
     >
     {
@@ -433,7 +433,7 @@ namespace nmtools::meta
             return vshape;
         }();
         using type = resize_fixed_ndarray_t<
-            array::fixed_ndarray<T,Shapes...>,
+            fixed_ndarray<T,Shapes...>,
             type_t<decltype(vshape)>
         >;
     }; // resize_fixed_ndarray
@@ -444,7 +444,7 @@ namespace nmtools::meta
 
     /**
      * @brief Default definition of make_fixed_ndarray.
-     * returns nmtools::array::fixed_ndarray.
+     * returns nmtools::fixed_ndarray.
      * 
      * @tparam element_t desired element type
      * @tparam shape_t   a constant index array type, containing desired shape
@@ -483,7 +483,7 @@ namespace nmtools::meta
             }
         }();
         using type = resize_fixed_ndarray_t<
-            array::fixed_ndarray<element_t,1>,
+            fixed_ndarray<element_t,1>,
             type_t<decltype(vshape)>
         >;
     }; // make_fixed_ndarray
@@ -491,7 +491,7 @@ namespace nmtools::meta
     template <typename element_t, typename shape_t>
     using make_fixed_ndarray_t = type_t<make_fixed_ndarray<element_t,shape_t>>;
 
-    #define nmtools_fixed_ndarray ::nmtools::array::fixed_ndarray
+    #define nmtools_fixed_ndarray ::nmtools::fixed_ndarray
 
 #endif // NMTOOLS_MAKE_FIXED_NDARRAY
 
@@ -503,7 +503,7 @@ namespace nmtools::meta
 #include "nmtools/utility/isequal.hpp"
 #include "nmtools/utility/shape.hpp"
 
-namespace nmtools::array
+namespace nmtools
 {
     /**
      * @brief assignment operator from generic ndarray
@@ -551,12 +551,12 @@ namespace nmtools::array
 
         return *this;
     } // operator=
-} // namespace nmtools::array
+} // namespace nmtools
 
 namespace nmtools::meta
 {
     template <typename T, size_t Shape1, size_t...ShapeN>
-    struct get_element_type<array::fixed_ndarray<T,Shape1,ShapeN...>>
+    struct get_element_type<fixed_ndarray<T,Shape1,ShapeN...>>
     {
         using type = T;
     };

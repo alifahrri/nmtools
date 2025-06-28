@@ -232,7 +232,7 @@ namespace nmtools::view
 #include "nmtools/array/bilinear.hpp"
 #include "nmtools/core/eval.hpp"
 
-namespace nmtools::array
+namespace nmtools
 {
     template <typename output_t=none_t, typename context_t=none_t, typename resolver_t=eval_result_t<>
         , typename lhs_t, typename rhs_t, typename weight_t, typename bias_t=none_t>
@@ -247,6 +247,6 @@ namespace nmtools::array
             , resolver
         );
     } // bilinear
-} // nmtools::array
+} // nmtools
 
 #endif // NMTOOLS_ARRAY_ARRAY_BILINEAR_HPP

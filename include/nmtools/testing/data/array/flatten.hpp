@@ -5,7 +5,7 @@
 #include "nmtools/testing/array_cast.hpp"
 
 namespace nm = nmtools;
-namespace na = nm::array;
+namespace na = nmtools;
 namespace view = nm::view;
 namespace meta = nm::meta;
 namespace kind = na::kind;

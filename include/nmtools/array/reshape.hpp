@@ -30,7 +30,7 @@ namespace nmtools::functional
 #include "nmtools/core/reshape.hpp"
 #include "nmtools/core/eval.hpp"
 
-namespace nmtools::array
+namespace nmtools
 {
     /**
      * @brief Eagerly reshape an array. Note that this will copy array by default.
@@ -57,6 +57,6 @@ namespace nmtools::array
             ,resolver
         );
     } // reshape
-} // namespace nmtools::array
+} // namespace nmtools
 
 #endif // NMTOOLS_ARRAY_ARRAY_RESHAPE_HPP
