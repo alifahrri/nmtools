@@ -1,9 +1,14 @@
 #include "nmtools/network/digraph.hpp"
 #include "nmtools/testing/doctest.hpp"
 
+#include "nmtools/array/flatten.hpp"
+#include "nmtools/array/reshape.hpp"
+#include "nmtools/core/node.hpp"
+
 #include <fstream>
 
 namespace nm = nmtools;
+namespace fn = nmtools::functional;
 namespace meta = nm::meta;
 namespace network = nm::network;
 namespace utils = nm::utils;
@@ -928,6 +933,22 @@ TEST_CASE("digraph_attribute(case4)" * doctest::test_suite("network::digraph"))
     NMTOOLS_ASSERT_EQUAL( digraph.order(), 10 );
     NMTOOLS_ASSERT_EQUAL( digraph.size(), 10 );
     NMTOOLS_ASSERT_EQUAL( digraph.adjacency_list, expected )
+
+    auto graphviz = utils::to_string(digraph,utils::Graphviz);
+    CHECK_MESSAGE( true, graphviz );
+    // write to file for convinient visualizing
+    std::ofstream outputFile;
+    outputFile.open("graphviz.dot", std::ios::out | std::ios::trunc);
+    outputFile << graphviz << std::endl;
+}
+
+TEST_CASE("digraph_attribute(case5)" * doctest::test_suite("network::digraph"))
+{
+    auto functors = fn::reshape[array{3,4}] * fn::flatten;
+    auto adjacency_list = nmtools_tuple<nmtools_tuple<>>{};
+    auto digraph = network::digraph(adjacency_list,nm::None,nmtools_tuple{fn::compute_node_t{functors,nm::None,nm::None,nm::None}});
+
+    NMTOOLS_ASSERT_EQUAL( digraph.order(), 1 );
 
     auto graphviz = utils::to_string(digraph,utils::Graphviz);
     CHECK_MESSAGE( true, graphviz );

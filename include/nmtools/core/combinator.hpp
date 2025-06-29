@@ -115,6 +115,71 @@ namespace nmtools::meta
 
     template <auto N>
     struct is_combinator<functional::fmap_t<combinator::bury_t<N>,N+1,N+1>> : true_type {};
+
+    // TODO: move to meta (?)
+    template <template<auto...>typename, typename C>
+    struct is_same_combinator : false_type {};
+
+    template <template<auto...>typename Kind, typename C>
+    constexpr inline auto is_same_combinator_v = is_same_combinator<Kind,C>::value;
+
+    template <
+        template<auto...>typename kind_t
+        , template<auto...>typename rhs_kind_t
+        , auto...rhs_kind_args, auto...rhs_args>
+    struct is_same_combinator<
+        kind_t
+        , functional::fmap_t<rhs_kind_t<rhs_kind_args...>,rhs_args...>
+    > : is_same<
+        functional::fmap_t<kind_t<rhs_kind_args...>,rhs_args...>
+        , functional::fmap_t<rhs_kind_t<rhs_kind_args...>,rhs_args...>
+    > {};
+
+    // TODO: move to meta (?)
+    namespace error
+    {
+        template<typename...>
+        struct GET_COMBINATOR_ARGS_UNSUPPORTED : detail::fail_t {};
+    }
+
+    template <typename T>
+    struct get_combinator_args
+    {
+        static constexpr auto value = error::GET_COMBINATOR_ARGS_UNSUPPORTED<T>{};
+    };
+
+    template <typename T>
+    struct get_combinator_args<const T> : get_combinator_args<T> {};
+
+    template <typename T>
+    struct get_combinator_args<T&> : get_combinator_args<T> {};
+
+    template <typename T>
+    constexpr inline auto get_combinator_args_v = get_combinator_args<T>::value;
+
+    template <>
+    struct get_combinator_args<functional::fmap_t<combinator::swap_t,2,2>>
+    {
+        static constexpr auto value = 0;
+    };
+
+    template <auto M, auto I, auto N>
+    struct get_combinator_args<functional::fmap_t<combinator::dup_t<M>,I,N>>
+    {
+        static constexpr auto value = M;
+    };
+
+    template <auto N>
+    struct get_combinator_args<functional::fmap_t<combinator::dig_t<N>,N+1,N+1>>
+    {
+        static constexpr auto value = N;
+    };
+
+    template <auto N>
+    struct get_combinator_args<functional::fmap_t<combinator::bury_t<N>,N+1,N+1>>
+    {
+        static constexpr auto value = N;
+    };
 }
 
 #if NMTOOLS_HAS_STRING

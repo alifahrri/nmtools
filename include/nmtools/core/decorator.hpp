@@ -120,6 +120,7 @@ namespace nmtools::view::detail
 
 namespace nmtools::meta
 {
+    // TODO: move to meta/bits/traits (?)
     template <template<typename...>typename,typename>
     struct is_same_view : false_type {};
 

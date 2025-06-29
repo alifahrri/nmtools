@@ -26,10 +26,17 @@ TEST_CASE("get_computational_graph(group_norm)" * doctest::test_suite("transform
     // auto axis   = array{-3,-2,-1};
     auto res    = view::group_norm(input,num_groups,weight,bias);
 
-    auto tree = fn::get_computational_graph(res);
+    auto graph = fn::get_computational_graph(res);
 
-    auto graphviz = utils::to_string(unwrap(tree),utils::Graphviz);
+    auto graphviz = utils::to_string(unwrap(graph),utils::Graphviz);
 
     CHECK_MESSAGE( true, graphviz );
-    NMTOOLS_ASSERT_EQUAL( nk::is_directed_acyclic_graph(tree), true );
+    NMTOOLS_ASSERT_EQUAL( nk::is_directed_acyclic_graph(graph), true );
+    NMTOOLS_ASSERT_EQUAL( nm::meta::is_constant_adjacency_list_v<decltype(unwrap(graph).adjacency_list)>, true );
+
+    constexpr auto graph_v = nm::meta::to_value_v<decltype(unwrap(graph))>;
+    auto graphviz_v = utils::to_string(unwrap(graph_v),utils::Graphviz);
+
+    CHECK_MESSAGE( true, graphviz_v );
+    NMTOOLS_ASSERT_EQUAL( nk::is_directed_acyclic_graph(graph_v), true );
 }

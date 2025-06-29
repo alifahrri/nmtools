@@ -994,7 +994,18 @@ namespace nmtools::utils::impl
                     node_string += " | ";
                     if constexpr (meta::has_to_string_v<node_t>) {
                         auto node_str = node.to_string();
-                        node_string += node_str;
+                        using node_str_t = decltype(node_str);
+                        if constexpr (meta::is_same_v<node_str_t,nmtools_string>) {
+                            node_string += node_str;
+                        } else {
+                            node_string += "[graphviz_record_layout_open] ";
+                            node_string += node_str.at(0);
+                            for (nm_size_t i=1; i<(nm_size_t)node_str.size(); i++) {
+                                node_string += " | ";
+                                node_string += node_str.at(i);
+                            }
+                            node_string += " [graphviz_record_layout_close]";
+                        }
                     } else {
                         node_string += node;
                     }

@@ -38,6 +38,16 @@ namespace nmtools::meta
     using pack_operands_type_t = type_t<pack_operands_type<F,operands_t,new_operands_t...>>;
 } // namespace nmtools::meta
 
+// TODO: move to meta/bits/traits (?)
+namespace nmtools::meta
+{
+    template <typename,typename>
+    struct is_same_functor : false_type {};
+
+    template <typename F, typename rhs_t>
+    constexpr inline auto is_same_functor_v = is_same_functor<F,rhs_t>::value;
+}
+
 namespace nmtools::functional
 {
     // TODO: refactor to not use empty_operands_t & empty_attributes_t
@@ -549,6 +559,21 @@ namespace nmtools::utils
             }
         }
     };
+}
+
+namespace nmtools::meta
+{
+    template <
+        typename F
+        , typename G, typename rhs_operands_t, typename rhs_attributes_t>
+    struct is_same_functor<
+        F, functional::functor_t<G,rhs_operands_t,rhs_attributes_t> 
+    > :
+        is_same<
+            functional::functor_t<F,rhs_operands_t,rhs_attributes_t>
+            , functional::functor_t<G,rhs_operands_t,rhs_attributes_t>
+        > 
+    {};
 }
 
 #endif // NMTOOLS_ARRAY_FUNCTIONAL_FUNCTOR_HPP
