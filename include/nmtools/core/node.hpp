@@ -323,13 +323,57 @@ namespace nmtools::functional
             return (!is_buffer() && !is_combinator() && !is_composition());
         }
 
+        template <
+            auto RHS_MAX_DIM
+            , auto RHS_MAX_COMPOSITION>
+        constexpr auto operator=(const Node<RHS_MAX_DIM,RHS_MAX_COMPOSITION,attributes_t>& other)
+        {
+            this->shape   = other.shape;
+            this->dim     = other.dim;
+            this->max_dim = other.max_dim;
+            this->is_num  = other.is_num;
+            this->kind    = other.kind;
+            this->dtype   = other.dtype;
+            this->layout  = other.layout;
+            this->combinator_type = other.combinator_type;
+            this->combinator_args = other.combinator_args;
+
+            if constexpr (meta::is_same_v<decltype(composition),decltype(other.composition)>) {
+                this->composition = other.composition;
+            }
+            return *this;
+        }
+
         constexpr auto operator*(const Node& other) const
         {
             // compose
             Node result;
 
+            // TODO: assert/throw
             // assume not buffer, only comput/combinator/composition
             
+            auto dst_size = 2;
+            dst_size += (is_composition() ? composition.size()-1 : 0);
+            dst_size += (other.is_composition() ? other.composition.size()-1 : 0);
+            result.composition.resize(dst_size);
+
+            auto idx = 0ul;
+            if (is_composition()) {
+                for (nm_size_t i=0; i<composition.size(); i++) {
+                    at(result.composition,idx++) = at(this->composition,i);
+                }
+            } else {
+                at(result.composition,idx++) = *this;
+            }
+            if (other.is_composition()) {
+                for (nm_size_t i=0; i<other.composition.size(); i++) {
+                    at(result.composition,idx++) = at(other.composition,i);
+                }
+            } else {
+                at(result.composition,idx++) = other;
+            }
+        
+            return result;
         }
 
         #if NMTOOLS_HAS_STRING

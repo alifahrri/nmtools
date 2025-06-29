@@ -390,6 +390,39 @@ TEST_CASE("to_value(case15)" * doctest::test_suite("graph"))
     CHECK_MESSAGE( true, join(NODE.to_string()) );
 }
 
+using Node = fn::Node<>;
+using Kind = fn::Kind;
+using Type = fn::Type;
+using Combinator = fn::Combinator;
+
+TEST_CASE("compose(case1)" * doctest::test_suite("graph"))
+{
+    auto node1 = Node::compute(Kind::INDEXING,array{2,2},Type::Float32);
+    auto node2 = Node::compute(Kind::REDUCE,array{2},Type::Float32);
+
+    auto cnode = node1 * node2;
+
+    CHECK( cnode.is_composition() );
+    CHECK( cnode.composition.size() == 2);
+    CHECK_MESSAGE( true, join(cnode.to_string()) );
+}
+
+TEST_CASE("compose(case2)" * doctest::test_suite("graph"))
+{
+    auto node1 = Node::combinator(Combinator::DUP);
+    auto node2 = Node::compute(Kind::INDEXING,array{2,2},Type::Float32);
+
+    auto node3 = node1 * node2;
+
+    auto node4 = Node::compute(Kind::REDUCE,array{2},Type::Float32);
+
+    auto cnode = node4 * node3;
+
+    CHECK( cnode.is_composition() );
+    CHECK( cnode.composition.size() == 3);
+    CHECK_MESSAGE( true, join(cnode.to_string()) );
+}
+
 enum class RuntimeOpset : int
 {
     INVALID=0,
