@@ -89,7 +89,9 @@ set(GRAPH_TEST_SOURCES
     ${GRAPH_TEST_GRAPH_SOURCES}
 )
 
-add_executable(${PROJECT_NAME}-doctest tests.cpp 
+add_executable(${PROJECT_NAME}-doctest
+    tests.cpp 
+    node.cpp
     ## functional
     ${GRAPH_TEST_SOURCES}
 )
