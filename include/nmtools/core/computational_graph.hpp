@@ -4,6 +4,7 @@
 #include "nmtools/meta.hpp"
 #include "nmtools/utility.hpp"
 #include "nmtools/core/functor.hpp"
+#include "nmtools/core/node.hpp"
 #include "nmtools/network/digraph.hpp"
 
 #if 0
@@ -12,171 +13,6 @@
 
 namespace nmtools::functional
 {
-    template <typename input_t, typename shape_t, typename element_t=none_t>
-    struct buffer_node_t
-    {
-        // TODO: input must be buffered array or num
-        using input_type = meta::conditional_t<meta::is_num_v<input_t>,input_t,const input_t*>;
-        using shape_type = const shape_t;
-        using element_type = element_t;
-
-        input_type input;
-        shape_type shape;
-
-        #if NMTOOLS_HAS_STRING
-        auto to_string() const noexcept
-        {
-            auto str = nmtools_string();
-
-            str += utils::to_string(input,utils::Compact);
-            if constexpr (!is_none_v<shape_t>) {
-                str += " | ";
-                str += utils::to_string(shape,utils::Compact);
-            }
-            return str;
-        }
-        #endif
-    };
-
-    template <typename input_t>
-    constexpr auto buffer_node(const input_t& input)
-    {
-        if constexpr (meta::is_maybe_v<input_t>) {
-            using result_t = decltype(buffer_node(unwrap(input)));
-            using return_t = nmtools_maybe<result_t>;
-            // TODO: make sure unwrap return reference
-            return (has_value(input)
-                ? return_t{buffer_node(unwrap(input))}
-                : return_t{meta::Nothing}
-            );
-        } else {
-            auto shape = nmtools::shape<true>(input);
-            using element_t = meta::get_element_type_t<input_t>;
-            using shape_t   = meta::remove_cvref_t<decltype(shape)>;
-            using node_t    = buffer_node_t<input_t,shape_t,element_t>;
-            if constexpr (meta::is_num_v<input_t>) {
-                return node_t{input,shape};
-            } else {
-                return node_t{&input,shape};
-            }
-        }
-    }
-
-    template <typename functor_t, typename operands_t, typename output_shape_t=nmtools_tuple<>, typename output_element_t=none_t>
-    struct compute_node_t
-    {
-        // TODO: assert functor_t is functor or functor composition
-        // TODO: assert operands_t is tuple of integral constant
-
-        using functor_type  = functor_t;
-        using operands_type = operands_t;
-        using output_shape_type   = output_shape_t;
-        using output_element_type = output_element_t;
-
-        functor_type        functor;
-        operands_type       operands;
-        output_shape_type   output_shape   = {};
-        output_element_type output_element = {};
-
-        #if NMTOOLS_HAS_STRING
-        auto to_string() const noexcept
-        {
-            auto str = nmtools_string("");
-
-            {
-                using attributes_t = meta::remove_cvref_t<decltype(functor.attributes)>;
-                auto fmap_str = utils::to_string(functor.fmap,utils::Compact);
-
-                auto attr_str = nmtools_string("");
-                constexpr auto N = meta::len_v<attributes_t>;
-                meta::template_for<N>([&](auto index){
-                    attr_str += utils::to_string(nmtools::at(functor.attributes,index),utils::Compact);
-                    if (index < (N-1)) {
-                        attr_str += ",";
-                    }
-                });
-
-                str += fmap_str;
-                str += " ";
-                str += attr_str;
-            }
-
-            {
-                auto operands_str = nmtools_string("operands: ");
-                constexpr auto N = meta::len_v<operands_type>;
-                meta::template_for<N>([&](auto I){
-                    operands_str += utils::to_string(at(operands,I),utils::Compact);
-                    if (I < (N-1)) {
-                        operands_str += ", ";
-                    }
-                });
-                str += " | ";
-                str += operands_str;
-            }
-
-            if constexpr (!is_none_v<output_shape_type> && !meta::is_same_v<output_shape_type,nmtools_tuple<>>) {
-                str += " | ";
-                str += utils::to_string(output_shape,utils::Compact);
-            }
-
-            return str;
-        }
-        #endif
-    };
-
-    template <typename functor_t, typename operands_t, typename output_shape_t=nmtools_tuple<>, typename output_element_t=none_t>
-    constexpr auto compute_node(const functor_t& functor
-        , const operands_t& operands
-        , const output_shape_t& output_shape=output_shape_t{}
-        , const output_element_t& output_element=output_element_t{})
-    {
-        using node_t = compute_node_t<functor_t,operands_t,output_shape_t,output_element_t>;
-        return node_t{functor,operands,output_shape,output_element};
-    }
-
-    template <typename view_t>
-    constexpr auto compute_node(const view_t& view)
-    {
-        if constexpr (meta::is_maybe_v<view_t>) {
-            using result_t = decltype(compute_node(unwrap(view)));
-            using return_t = nmtools_maybe<result_t>;
-            return (has_value(view)
-                ? return_t{compute_node(unwrap(view))}
-                : return_t{meta::Nothing}
-            );
-        } else {
-            auto functor   = get_function(view);
-            auto operands  = view.operands_ids;
-            auto shape     = nmtools::shape<true>(view);
-            using output_t = meta::get_element_type_t<view_t>;
-            auto node = compute_node(functor,operands,shape,meta::as_value_v<output_t>);
-            return node;
-        }
-    }
-
-    template <typename input_t>
-    constexpr auto node(const input_t& input)
-    {
-        if constexpr (meta::is_maybe_v<input_t>) {
-            using result_t = decltype(node(unwrap(input)));
-            using return_t = meta::conditional_t<meta::is_maybe_v<result_t>,result_t,nmtools_maybe<result_t>>;
-            return (has_value(input)
-                ? return_t{node(unwrap(input))}
-                : return_t{meta::Nothing}
-            );
-        } else if constexpr (meta::is_same_view_v<view::alias_t,input_t>) {
-            if constexpr (meta::is_pointer_v<decltype(input.array)>) {
-                return buffer_node(*(input.array));
-            } else {
-                return buffer_node(input.array);
-            }
-        } else if constexpr (meta::is_view_v<input_t>) {
-            return compute_node(input);
-        } else {
-            return buffer_node(input);
-        }
-    }
-
     template <typename view_t>
     struct get_computational_graph_t;
 
@@ -285,6 +121,46 @@ namespace nmtools::functional
 
             return merged_graph;
         }
+    };
+} // nmtools::functional
+
+namespace nmtools::meta
+{
+    template <typename adjacency_list_t
+        , typename node_ids_t
+        , typename node_attributes_t
+        , typename edge_attributes_t>
+    struct to_value<
+        network::digraph_t<adjacency_list_t,node_ids_t,node_attributes_t,edge_attributes_t>
+    > {
+        using digraph_type = network::digraph_t<adjacency_list_t,node_ids_t,node_attributes_t,edge_attributes_t>;
+
+        static constexpr auto value = [](){
+            if constexpr (!is_constant_adjacency_list_v<adjacency_list_t>
+                || !(is_constant_index_array_v<node_ids_t> || is_none_v<node_ids_t>)
+            ) {
+                using type = error::TO_VALUE_UNSUPPORTED<digraph_type>;
+                return type{};
+            } else {
+                // TODO: support edge attributes
+                static_assert( is_none_v<edge_attributes_t> );
+
+                constexpr auto adjacency_list = to_value_v<adjacency_list_t>;
+                constexpr auto node_ids = to_value_v<node_ids_t>;
+                // assume node attirbutes
+                constexpr auto N = len_v<node_attributes_t>;
+                using dst_node_attributes_t = nmtools_array<functional::Node<>,N>;
+                auto attributes = dst_node_attributes_t{};
+                using nmtools::at;
+                template_for<N>([&](auto index){
+                    constexpr auto I = decltype(index)::value;
+                    using type_i = at_t<node_attributes_t,I>;
+                    auto node = to_value_v<type_i>;
+                    at(attributes,I) = node;
+                });
+                return network::digraph(adjacency_list,node_ids,attributes);
+            }
+        }();
     };
 }
 

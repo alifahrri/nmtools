@@ -18,8 +18,8 @@ namespace nmtools
     enum LayoutKind : int
     {
         UNKNOWN_LAYOUT=-999,
-        ROW_MAJOR=-1,
-        COLUMN_MAJOR=0,
+        RowMajor=-1,
+        ColumnMajor=0,
     };
 
     template <typename ctx_t>
@@ -36,17 +36,17 @@ namespace nmtools
     struct eval_t {};
 
     // special tag to resolve eval return type
-    template <auto BufferLayout=LayoutKind::ROW_MAJOR>
+    template <auto BufferLayout=LayoutKind::RowMajor>
     struct default_type_resolver_t {};
 
     template <typename resolver_t>
     struct eval_type_resolver_t : resolver_t {};
 
-    template <auto BufferLayout=LayoutKind::ROW_MAJOR>
+    template <auto BufferLayout=LayoutKind::RowMajor>
     using eval_result_t = eval_type_resolver_t<default_type_resolver_t<BufferLayout>>;
 
-    constexpr inline auto RowMajorResolver = meta::as_value_v<eval_result_t<LayoutKind::ROW_MAJOR>>;
-    constexpr inline auto ColumnMajorResolver = meta::as_value_v<eval_result_t<LayoutKind::COLUMN_MAJOR>>;
+    constexpr inline auto RowMajorResolver = meta::as_value_v<eval_result_t<LayoutKind::RowMajor>>;
+    constexpr inline auto ColumnMajorResolver = meta::as_value_v<eval_result_t<LayoutKind::ColumnMajor>>;
 }
 
 namespace nmtools::meta
@@ -699,10 +699,10 @@ namespace nmtools::meta
         template <typename buffer_t, typename shape_buffer_t>
         static constexpr auto make_ndarray(as_value<buffer_t>, as_value<shape_buffer_t>)
         {
-            if constexpr (BufferLayout == LayoutKind::ROW_MAJOR) {
+            if constexpr (BufferLayout == LayoutKind::RowMajor) {
                 using type = row_major_ndarray_t<buffer_t,shape_buffer_t>;
                 return as_value_v<type>;
-            } else if constexpr (BufferLayout == LayoutKind::COLUMN_MAJOR) {
+            } else if constexpr (BufferLayout == LayoutKind::ColumnMajor) {
                 using type = column_major_ndarray_t<buffer_t,shape_buffer_t>;
                 return as_value_v<type>;
             } else {
