@@ -347,7 +347,7 @@ namespace nmtools::functional
         constexpr auto operator*(const Node& other) const
         {
             // compose
-            Node result;
+            auto result = Node{};
 
             // TODO: assert/throw
             // assume not buffer, only comput/combinator/composition
@@ -536,10 +536,10 @@ namespace nmtools::functional
             } else if (is_composition()) {
                 // composition_type maybe none, to avoid blowing up the recursion
                 if constexpr (!is_none_v<composition_type>) {
-                    strs.push_back(composition.at(0).to_string().front());
-                    for (nm_size_t i=1; i<(nm_size_t)composition.size(); i++) {
-                        strs.push_back(composition.at(i).to_string().front());
+                    for (nm_index_t i=1; i<(nm_index_t)composition.size(); i++) {
+                        strs.push_back(at(composition,-i).to_string().front());
                     }
+                    strs.push_back(composition.at(0).to_string().front());
                 }
             }
 

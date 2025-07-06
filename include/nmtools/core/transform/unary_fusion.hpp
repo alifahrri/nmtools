@@ -4,6 +4,11 @@
 #include "nmtools/meta.hpp"
 #include "nmtools/utility/ct_digraph.hpp"
 #include "nmtools/core/functor.hpp"
+#include "nmtools/network/cast.hpp"
+#include "nmtools/network/digraph.hpp"
+#include "nmtools/network/filter_node_arity.hpp"
+#include "nmtools/network/predecessors.hpp"
+#include "nmtools/core/node.hpp"
 
 namespace nmtools::functional
 {
@@ -62,6 +67,79 @@ namespace nmtools::functional
             }
         }
     }
+
+    template <typename adjacency_list_t
+        , typename node_ids_t
+        , typename node_attributes_t
+        , typename edge_attributes_t
+        , typename n_repeats_t=meta::ct<1>>
+    constexpr auto transform_unary_fusion(
+        const network::digraph_t<adjacency_list_t,node_ids_t,node_attributes_t,edge_attributes_t>& digraph
+        , [[maybe_unused]] n_repeats_t n_repeats = n_repeats_t{})
+    {
+        // assume node_attributes is functional::Node
+        // TODO: assert node_attributes is functional::Node & edge is None
+        auto m_unary_nodes = network::filter_node_arity(digraph,1);
+        auto unary_nodes = unwrap(m_unary_nodes);
+
+        constexpr auto M_MAX_NUM_NODES = meta::max_len_v<adjacency_list_t>;
+        constexpr auto MAX_NUM_NODES = (M_MAX_NUM_NODES >= 0 ? M_MAX_NUM_NODES : 0);
+
+        using adjacency_list_type = meta::conditional_t<(MAX_NUM_NODES > 0)
+            , nmtools_static_vector<nmtools_static_vector<nm_index_t,MAX_NUM_NODES>,MAX_NUM_NODES>
+            , nmtools_list<nmtools_list<nm_index_t>>>;
+
+        using node_ids_type = meta::conditional_t<(MAX_NUM_NODES > 0)
+            , nmtools_static_vector<nm_index_t,MAX_NUM_NODES>
+            , nmtools_list<nm_index_t>>;
+        using attribute_type = meta::get_value_type_t<node_attributes_t>;
+        using node_attributes_type = meta::conditional_t<(MAX_NUM_NODES > 0)
+            , nmtools_static_vector<attribute_type,MAX_NUM_NODES>
+            , nmtools_list<attribute_type>>;
+
+        auto adj_list = network::cast<adjacency_list_type>(digraph.adjacency_list);
+        auto node_ids = network::cast_node_ids<node_ids_type>(digraph.node_ids);
+        auto node_attributes = network::cast_node_attributes<node_attributes_type>(digraph.node_attributes);
+        auto src_digraph = network::digraph(adj_list,node_ids,node_attributes);
+
+        if (!unary_nodes.size()) {
+            return src_digraph;
+        } else {
+            // skip if node is buffer
+            // buffer can't be fused with compute/composition/combinator
+            auto to = nm_index_t{-1};
+            for (nm_size_t i=0; i<(nm_size_t)unary_nodes.size(); i++) {
+                auto idx = at(unary_nodes,i);
+                if (digraph.nodes(idx).is_buffer()) {
+                    continue;
+                } else {
+                    to = idx;
+                }
+            }
+            if (to < 0) {
+                return src_digraph;
+            }
+            auto preds = network::predecessors(digraph,to);
+
+            // TODO: propagate error
+            auto from = at(unwrap(preds),meta::ct_v<0>);
+            if (digraph.nodes(from).is_buffer()) {
+                return src_digraph;
+            }
+
+            // following functor, the functor evaluation is from the right to the left
+            auto fused = digraph.nodes(to) * digraph.nodes(from);
+            auto m_contracted = network::contracted_edge(digraph,nmtools_array{from,to},fused);
+
+            // TODO: propagate error
+            auto contracted = unwrap(m_contracted);
+
+            auto adj_list = network::cast<adjacency_list_type>(contracted.adjacency_list);
+            auto node_ids = network::cast_node_ids<node_ids_type>(contracted.node_ids);
+            auto node_attributes = network::cast_node_attributes<node_attributes_type>(contracted.node_attributes);
+            return network::digraph(adj_list,node_ids,node_attributes);
+        }
+    } // transform_unary_fusion
 } // namespace nmtools::functional
 
 #endif // NMTOOLS_ARRAY_FUNCTIONAL_TRANSFORM_UNARY_FUSION_HPP
