@@ -7,9 +7,12 @@
 #include "nmtools/index/index_of.hpp"
 #include "nmtools/network/add_edge.hpp"
 #include "nmtools/network/compose.hpp"
+#include "nmtools/network/contracted_edge.hpp"
 #include "nmtools/network/filter_nodes.hpp"
+#include "nmtools/network/filter_node_arity.hpp"
 #include "nmtools/network/is_directed_acyclic_graph.hpp"
 #include "nmtools/network/out_edges.hpp"
+#include "nmtools/network/predecessors.hpp"
 #include "nmtools/network/topological_generations.hpp"
 #include "nmtools/network/topological_sort.hpp"
 #include "nmtools/network/map_ids.hpp"
@@ -838,6 +841,60 @@ namespace nmtools::network
     constexpr auto is_directed_acyclic_graph(const digraph_t<adjacency_list_t,node_ids_t,node_attributes_t,edge_attribute_t>& digraph)
     {
         return network::is_directed_acyclic_graph(digraph.adjacency_list);
+    }
+
+    template <typename adjacency_list_t
+        , typename node_ids_t
+        , typename node_attributes_t
+        , typename edge_attribute_t
+        , typename edge_t
+        , typename contracted_t
+        , typename self_loops_t=meta::true_type>
+    constexpr auto contracted_edge(
+        const digraph_t<adjacency_list_t,node_ids_t,node_attributes_t,edge_attribute_t>& digraph
+        , const edge_t& edge
+        , const contracted_t& contracted
+        , self_loops_t self_loops=self_loops_t{})
+    {
+        auto src_node_ids = digraph.node_ids;
+        auto edge_indices = index::index_of(src_node_ids,edge);
+        auto contracted_adj_list = network::contracted_edge(digraph.adjacency_list,edge_indices,self_loops);
+        auto contracted_node_ids = network::filter_contracted_ids(src_node_ids,edge);
+        auto contracted_nodes    = network::filter_contracted_nodes(digraph.node_attributes,src_node_ids,edge,contracted);
+        return network::digraph(contracted_adj_list,contracted_node_ids,contracted_nodes);
+    } // contracted_edge
+
+    // networkx' name is predecessor, we choose predecessors for consistency
+    template <typename adjacency_list_t
+        , typename node_ids_t
+        , typename node_attributes_t
+        , typename edge_attribute_t
+        , typename source_t=none_t>
+    constexpr auto predecessors(
+        const digraph_t<adjacency_list_t,node_ids_t,node_attributes_t,edge_attribute_t>& digraph
+        , source_t source=source_t{})
+    {
+        auto predecessor = [&](){
+            if constexpr (!is_none_v<source_t>) {
+                return network::predecessors(digraph.adjacency_list,index::index_of(digraph.node_ids,source));
+            } else {
+                return network::predecessors(digraph.adjacency_list);
+            }
+        }();
+        return network::map_ids(predecessor,digraph.node_ids);
+    } // predcessors
+
+    template <typename adjacency_list_t
+        , typename node_ids_t
+        , typename node_attributes_t
+        , typename edge_attribute_t
+        , typename arity_t>
+    constexpr auto filter_node_arity(
+        const digraph_t<adjacency_list_t,node_ids_t,node_attributes_t,edge_attribute_t>& digraph
+        , arity_t arity)
+    {
+        auto filtered = network::filter_node_arity(digraph.adjacency_list,arity);
+        return network::map_ids(filtered,digraph.node_ids);
     }
 } // namespace nmtools::network
 
