@@ -101,7 +101,7 @@ namespace nmtools::view
 #define NMTOOLS_ARRAY_FUNCTIONAL_ACTIVATIONS_PRELU_HPP
 
 #include "nmtools/core/functor.hpp"
-#include "nmtools/array/activations/prelu.hpp"
+#include "nmtools/array/prelu.hpp"
 #include "nmtools/core/ufunc/ufunc.hpp"
 
 namespace nmtools::functional
@@ -119,7 +119,7 @@ namespace nmtools::functional
 #ifndef NMTOOLS_ARRAY_ARRAY_ACTIVATIONS_PRELU_HPP
 #define NMTOOLS_ARRAY_ARRAY_ACTIVATIONS_PRELU_HPP
 
-#include "nmtools/array/activations/prelu.hpp"
+#include "nmtools/array/prelu.hpp"
 #include "nmtools/core/eval.hpp"
 
 namespace nmtools

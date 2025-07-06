@@ -107,7 +107,7 @@ namespace nmtools::utils::impl
 #define NMTOOLS_ARRAY_FUNCTIONAL_ACTIVATIONS_CELU_HPP
 
 #include "nmtools/core/functor.hpp"
-#include "nmtools/array/activations/celu.hpp"
+#include "nmtools/array/celu.hpp"
 #include "nmtools/core/ufunc/ufunc.hpp"
 
 namespace nmtools::functional
@@ -129,7 +129,7 @@ namespace nmtools::functional
 #ifndef NMTOOLS_ARRAY_ARRAY_ACTIVATIONS_CELU_HPP
 #define NMTOOLS_ARRAY_ARRAY_ACTIVATIONS_CELU_HPP
 
-#include "nmtools/array/activations/celu.hpp"
+#include "nmtools/array/celu.hpp"
 #include "nmtools/core/eval.hpp"
 
 namespace nmtools

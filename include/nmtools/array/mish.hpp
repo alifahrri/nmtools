@@ -3,7 +3,7 @@
 
 #include "nmtools/core/ufunc.hpp"
 #include "nmtools/utility/to_string/to_string.hpp"
-#include "nmtools/array/activations/softplus.hpp"
+#include "nmtools/array/softplus.hpp"
 #include "nmtools/math.hpp"
 
 namespace nmtools::view::fun
@@ -72,7 +72,7 @@ namespace nmtools::view
 #define NMTOOLS_ARRAY_FUNCTIONAL_ACTIVATIONS_MISH_HPP
 
 #include "nmtools/core/functor.hpp"
-#include "nmtools/array/activations/mish.hpp"
+#include "nmtools/array/mish.hpp"
 #include "nmtools/core/ufunc/ufunc.hpp"
 
 namespace nmtools::functional
@@ -91,7 +91,7 @@ namespace nmtools::functional
 #ifndef NMTOOLS_ARRAY_ARRAY_ACTIVATIONS_MISH_HPP
 #define NMTOOLS_ARRAY_ARRAY_ACTIVATIONS_MISH_HPP
 
-#include "nmtools/array/activations/mish.hpp"
+#include "nmtools/array/mish.hpp"
 #include "nmtools/core/eval.hpp"
 
 namespace nmtools

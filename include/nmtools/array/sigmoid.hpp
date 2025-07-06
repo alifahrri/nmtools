@@ -1,26 +1,35 @@
-#ifndef NMTOOLS_ARRAY_VIEW_ACTIVATIONS_SILU_HPP
-#define NMTOOLS_ARRAY_VIEW_ACTIVATIONS_SILU_HPP
+#ifndef NMTOOLS_ARRAY_VIEW_ACTIVATIONS_SIGMOID_HPP
+#define NMTOOLS_ARRAY_VIEW_ACTIVATIONS_SIGMOID_HPP
 
 #include "nmtools/utility/to_string/to_string.hpp"
 #include "nmtools/core/ufunc.hpp"
-#include "nmtools/array/activations/sigmoid.hpp"
+#include "nmtools/math.hpp"
 
 namespace nmtools::view::fun
 {
     /**
-     * @brief Function object for silu ufunc
+     * @brief Function object for sigmoid ufunc
      * 
      */
-    struct silu : sigmoid
+    struct sigmoid
     {
+        template <typename T>
+        nmtools_func_attribute
+        NMTOOLS_UFUNC_CONSTEXPR
+        static auto eval(const T& t)
+        {
+            auto one = static_cast<T>(1);
+            return one / (one + math::exp(-t));
+        } // sigmoid
+
         template <typename T>
         nmtools_func_attribute
         NMTOOLS_UFUNC_CONSTEXPR
         auto operator()(const T& t) const
         {
-            return t * sigmoid::eval(t);
+            return eval(t);
         } // operator()
-    }; // silu
+    }; // sigmoid
 } // namespace nmtools::view::fun
 
 #if NMTOOLS_HAS_STRING
@@ -28,15 +37,15 @@ namespace nmtools::view::fun
 namespace nmtools::utils::impl
 {
     template <auto...fmt_args>
-    struct to_string_t<view::fun::silu,fmt_string_t<fmt_args...>>
+    struct to_string_t<view::fun::sigmoid,fmt_string_t<fmt_args...>>
     {
         using result_type = nmtools_string;
 
-        auto operator()(view::fun::silu) const
+        auto operator()(view::fun::sigmoid) const
         {
             nmtools_string str;
 
-            str += "silu";
+            str += "sigmoid";
 
             return str;
         }
@@ -47,10 +56,10 @@ namespace nmtools::utils::impl
 
 namespace nmtools::view
 {
-    using silu_t = fun::silu;
+    using sigmoid_t = fun::sigmoid;
 
     /**
-     * @brief Create element-wise Sigmoid Linear Unit (SiLU) ufunc view.
+     * @brief Create element-wise sigmoid ufunc view
      * 
      * @tparam array_t 
      * @param array     input array
@@ -59,45 +68,43 @@ namespace nmtools::view
     template <typename array_t>
     nmtools_func_attribute
     NMTOOLS_UFUNC_CONSTEXPR
-    auto silu(const array_t& array)
+    auto sigmoid(const array_t& array)
     {
-        return ufunc(silu_t{},array);
-    } // silu
+        return ufunc(sigmoid_t{},array);
+    } // sigmoid
 } // namespace nmtools::view
 
+#endif // NMTOOLS_ARRAY_VIEW_ACTIVATIONS_SIGMOID_HPP
 
-#endif // NMTOOLS_ARRAY_VIEW_ACTIVATIONS_SILU_HPP
-
-#ifndef NMTOOLS_ARRAY_FUNCTIONAL_ACTIVATIONS_SILU_HPP
-#define NMTOOLS_ARRAY_FUNCTIONAL_ACTIVATIONS_SILU_HPP
+#ifndef NMTOOLS_ARRAY_FUNCTIONAL_ACTIVATIONS_SIGMOID_HPP
+#define NMTOOLS_ARRAY_FUNCTIONAL_ACTIVATIONS_SIGMOID_HPP
 
 #include "nmtools/core/functor.hpp"
-#include "nmtools/array/activations/silu.hpp"
+#include "nmtools/array/sigmoid.hpp"
 #include "nmtools/core/ufunc/ufunc.hpp"
 
 namespace nmtools::functional
 {
     namespace fun
     {
-        using silu = fun::unary_ufunc<view::silu_t>;
+        using sigmoid = fun::unary_ufunc<view::sigmoid_t>;
     }
-
-    constexpr inline auto silu = functor_t{unary_fmap_t<fun::silu>{}};
+    constexpr inline auto sigmoid = functor_t{unary_fmap_t<fun::sigmoid>{}};
 } // namespace nmtools::functional
 
 
-#endif // NMTOOLS_ARRAY_FUNCTIONAL_ACTIVATIONS_SILU_HPP
+#endif // NMTOOLS_ARRAY_FUNCTIONAL_ACTIVATIONS_SIGMOID_HPP
 
-#ifndef NMTOOLS_ARRAY_ARRAY_ACTIVATIONS_SILU_HPP
-#define NMTOOLS_ARRAY_ARRAY_ACTIVATIONS_SILU_HPP
+#ifndef NMTOOLS_ARRAY_ARRAY_ACTIVATIONS_SIGMOID_HPP
+#define NMTOOLS_ARRAY_ARRAY_ACTIVATIONS_SIGMOID_HPP
 
-#include "nmtools/array/activations/silu.hpp"
+#include "nmtools/array/sigmoid.hpp"
 #include "nmtools/core/eval.hpp"
 
 namespace nmtools
 {
     /**
-     * @brief Eagerly evaluate element-wise silu function
+     * @brief Eagerly evaluate element-wise sigmoid function.
      * 
      * @tparam output_t 
      * @tparam context_t 
@@ -110,16 +117,17 @@ namespace nmtools
     template <typename output_t=none_t, typename context_t=none_t, typename resolver_t=eval_result_t<>,
         typename array_t>
     NMTOOLS_UFUNC_CONSTEXPR
-    auto silu(const array_t& array,
+    auto sigmoid(const array_t& array,
         context_t&& context=context_t{}, output_t&& output=output_t{},meta::as_value<resolver_t> resolver=meta::as_value_v<resolver_t>)
     {
-        auto a = view::silu(array);
+        auto a = view::sigmoid(array);
         return eval(a
             ,nmtools::forward<context_t>(context)
             ,nmtools::forward<output_t>(output)
             ,resolver
         );
-    } // silu
+    } // sigmoid
 } // namespace nmtools
 
-#endif // NMTOOLS_ARRAY_ARRAY_ACTIVATIONS_SILU_HPP
+
+#endif // NMTOOLS_ARRAY_ARRAY_ACTIVATIONS_SIGMOID_HPP
