@@ -1,7 +1,7 @@
 #ifndef NMTOOLS_ARRAY_EVAL_OPENCL_KERNELS_PRELU_HPP
 #define NMTOOLS_ARRAY_EVAL_OPENCL_KERNELS_PRELU_HPP
 
-#include "nmtools/array/activations/prelu.hpp"
+#include "nmtools/array/prelu.hpp"
 
 #if 1
 #define nmtools_cl_kernel_bin prelu_spv

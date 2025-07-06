@@ -1,4 +1,4 @@
-#include "nmtools/array/activations/leaky_relu.hpp"
+#include "nmtools/array/leaky_relu.hpp"
 #include "nmtools/testing/data/array/leaky_relu.hpp"
 #include "nmtools/testing/doctest.hpp"
 

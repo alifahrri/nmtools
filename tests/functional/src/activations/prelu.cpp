@@ -1,4 +1,4 @@
-#include "nmtools/array/activations/prelu.hpp"
+#include "nmtools/array/prelu.hpp"
 #include "nmtools/testing/data/array/prelu.hpp"
 #include "nmtools/testing/doctest.hpp"
 

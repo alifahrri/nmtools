@@ -17,7 +17,7 @@ inline auto name##_ls_hb = nmtools::cast(name, nmtools::kind::ndarray_ls_hb); \
 inline auto name##_ls_db = nmtools::cast(name, nmtools::kind::ndarray_ls_db);
 #endif
 
-#include "nmtools/array/activations/selu.hpp"
+#include "nmtools/array/selu.hpp"
 #include "nmtools/testing/data/array/selu.hpp"
 #include "nmtools/testing/doctest.hpp"
 

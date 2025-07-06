@@ -1,6 +1,6 @@
 // TODO: adjust the following params
 #if 0
-#include "nmtools/array/activations/relu6.hpp"
+#include "nmtools/array/relu6.hpp"
 
 #if 0
 #undef nmtools_cl_kernel_bin

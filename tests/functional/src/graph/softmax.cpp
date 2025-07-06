@@ -1,7 +1,7 @@
 #include "nmtools/array/arange.hpp"
 #include "nmtools/array/reshape.hpp"
 #include "nmtools/core/ufunc/ufunc.hpp"
-#include "nmtools/array/activations/relu.hpp"
+#include "nmtools/array/relu.hpp"
 #include "nmtools/array/softmax.hpp"
 #include "nmtools/testing/doctest.hpp"
 

@@ -17,7 +17,7 @@ inline auto name##_ls_hb = nmtools::cast(name, nmtools::kind::ndarray_ls_hb); \
 inline auto name##_ls_db = nmtools::cast(name, nmtools::kind::ndarray_ls_db);
 #endif
 
-#include "nmtools/array/activations/tanhshrink.hpp"
+#include "nmtools/array/tanhshrink.hpp"
 #include "nmtools/testing/data/array/tanhshrink.hpp"
 #include "nmtools/testing/doctest.hpp"
 

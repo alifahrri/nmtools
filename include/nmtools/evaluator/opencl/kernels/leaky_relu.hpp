@@ -3,7 +3,7 @@
 
 // TODO: adjust the following params
 #if 1
-#include "nmtools/array/activations/leaky_relu.hpp"
+#include "nmtools/array/leaky_relu.hpp"
 
 #undef nmtools_cl_kernel_bin
 #undef nmtools_cl_kernel_len

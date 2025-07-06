@@ -1,4 +1,4 @@
-#include "nmtools/array/activations/tanhshrink.hpp"
+#include "nmtools/array/tanhshrink.hpp"
 #include "nmtools/testing/data/array/tanhshrink.hpp"
 #include "nmtools/testing/doctest.hpp"
 

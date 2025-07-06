@@ -3,7 +3,7 @@
 
 // TODO: adjust the following params
 #if 1
-#include "nmtools/array/activations/softsign.hpp"
+#include "nmtools/array/softsign.hpp"
 
 #undef nmtools_cl_kernel_bin
 #undef nmtools_cl_kernel_len
