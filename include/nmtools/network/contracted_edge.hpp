@@ -9,6 +9,8 @@
 namespace nmtools::tag
 {
     struct contracted_edge_t {};
+    struct filter_contracted_ids_t {};
+    struct filter_contracted_nodes_t {};
 }
 
 namespace nmtools::network
@@ -102,6 +104,117 @@ namespace nmtools::network
             return result;
         }
     } // namespace contracted_edge
+
+    template <typename src_node_ids_t, typename edge_t>
+    constexpr auto filter_contracted_ids(const src_node_ids_t& src_node_ids, const edge_t& edge)
+    {
+        if constexpr (meta::is_maybe_v<src_node_ids_t> || meta::is_maybe_v<edge_t>) {
+            using result_t = decltype(filter_contracted_ids(unwrap(src_node_ids),unwrap(edge)));
+            using return_t = meta::conditional_t<meta::is_maybe_v<result_t>,result_t,nmtools_maybe<result_t>>;
+            return (has_value(src_node_ids) && has_value(edge)
+                ? return_t{filter_contracted_ids(unwrap(src_node_ids),unwrap(edge))}
+                : return_t{meta::Nothing}
+            );
+        } else {
+            using result_t = meta::resolve_optype_t<tag::filter_contracted_ids_t,src_node_ids_t,edge_t>;
+            
+            auto result = result_t {};
+
+            if constexpr (!meta::is_fail_v<result_t>
+                && !meta::is_constant_index_array_v<result_t>
+            ) {
+                // TODO: what happened if from or to in edge doesn't exists in src_node_ids?
+
+                auto num_nodes = len(src_node_ids);
+
+                if constexpr (meta::is_resizable_v<result_t>) {
+                    result.resize(num_nodes);
+                }
+
+                const auto from = at(edge,meta::ct_v<0>);
+
+                auto idx = 0;
+                for (nm_size_t i=0; i<(nm_size_t)num_nodes; i++) {
+                    auto node_id = at(src_node_ids,i);
+                    if ((nm_index_t)from == (nm_index_t)node_id) {
+                        continue;
+                    }
+                    at(result,idx++) = node_id;
+                }
+
+                if constexpr (meta::is_resizable_v<result_t>) {
+                    result.resize(idx+1);
+                }
+            }
+
+            return result;
+        }
+    } // filter_contracted_ids
+
+    template <typename node_attributes_t, typename src_node_ids_t, typename edge_t, typename node_t=none_t>
+    constexpr auto filter_contracted_nodes(const node_attributes_t& node_attributes
+        , const src_node_ids_t& src_node_ids
+        , const edge_t& edge
+        , const node_t& node=node_t{})
+    {
+        if constexpr (meta::is_maybe_v<edge_t>
+            || meta::is_maybe_v<node_attributes_t>
+            || meta::is_maybe_v<src_node_ids_t>
+            || meta::is_maybe_v<node_t>
+        ) {
+            using result_t = decltype(filter_contracted_nodes(
+                unwrap(node_attributes)
+                , unwrap(src_node_ids)
+                , unwrap(edge)
+                , unwrap(node)));
+            using return_t = meta::conditional_t<meta::is_maybe_v<result_t>,result_t,nmtools_maybe<result_t>>;
+            return (has_value(node_attributes) && has_value(src_node_ids) && has_value(edge) && has_value(node)
+                ? return_t{filter_contracted_nodes(
+                    unwrap(node_attributes)
+                    , unwrap(src_node_ids)
+                    , unwrap(edge)
+                    , unwrap(node))
+                } : return_t{meta::Nothing}
+            );
+        } else {
+            using result_t = meta::resolve_optype_t<tag::filter_contracted_nodes_t,node_attributes_t,src_node_ids_t,edge_t,node_t>;
+
+            auto result = result_t {};
+
+            if constexpr (!meta::is_fail_v<result_t>) {
+                // assume len(node_attributes) == len(src_node_ids)
+                const auto num_nodes = len(src_node_ids);
+
+                if constexpr (meta::is_resizable_v<result_t>) {
+                    result.resize(num_nodes);
+                }
+
+                const auto from = at(edge,meta::ct_v<0>);
+                const auto to   = at(edge,meta::ct_v<1>);
+
+                auto idx = 0;
+                // TODO: handle tuple
+                for (nm_size_t i=0; i<(nm_size_t)num_nodes; i++) {
+                    auto node_id = at(src_node_ids,i);
+                    auto node_i  = at(node_attributes,i);
+                    if ((nm_index_t)from == (nm_index_t)node_id) {
+                        continue;
+                    } else if (((nm_index_t)to == (nm_index_t)node_id)) {
+                        if constexpr (!is_none_v<node_t>) {
+                            node_i = node;
+                        }
+                    }
+                    at(result,idx++) = node_i;
+                }
+
+                if constexpr (meta::is_resizable_v<result_t>) {
+                    result.resize(idx+1);
+                }
+            }
+
+            return result;
+        }
+    } // filter_contracted_nodes
 } // namespace nmtools::network
 
 namespace nmtools::meta
@@ -110,6 +223,10 @@ namespace nmtools::meta
     {
         template <typename...>
         struct CONTRACTED_EDGE_UNSUPPORTED : detail::fail_t {};
+        template <typename...>
+        struct FILTER_CONTRACTED_IDS_UNSUPPORTED : detail::fail_t {};
+        template <typename...>
+        struct FILTER_CONTRACTED_NODES_UNSUPPORTED : detail::fail_t {};
     }
 
     template <typename adjacency_list_t, typename edge_t, typename self_loops_t>
@@ -176,6 +293,84 @@ namespace nmtools::meta
         }();
         using type = type_t<decltype(vtype)>;
     }; // tag::contracted_edge_t
+
+    template <typename src_node_ids_t, typename edge_t>
+    struct resolve_optype<
+        void, tag::filter_contracted_ids_t, src_node_ids_t, edge_t
+    > {
+        static constexpr auto vtype = [](){
+            if constexpr (!is_index_array_v<edge_t>
+                || !is_index_array_v<src_node_ids_t>
+            ) {
+                using type = error::FILTER_CONTRACTED_IDS_UNSUPPORTED<src_node_ids_t,edge_t>;
+                return as_value_v<type>;
+            } else if constexpr (is_constant_index_array_v<edge_t>
+                && is_constant_index_array_v<src_node_ids_t>
+            ) {
+                constexpr auto src_node_ids = to_value_v<src_node_ids_t>;
+                constexpr auto edge     = to_value_v<edge_t>;
+                constexpr auto m_result = network::filter_contracted_ids(src_node_ids,edge);
+                constexpr auto result   = unwrap(m_result);
+                using nmtools::at, nmtools::len;
+                return template_reduce<len(result)>([&](auto init, auto index){
+                    constexpr auto I = decltype(index)::value;
+                    using init_t = type_t<decltype(init)>;
+                    using type = append_type_t<init_t,ct<(nm_size_t)at(result,I)>>;
+                    return as_value_v<type>;
+                }, as_value_v<nmtools_tuple<>>);
+            } else {
+                [[maybe_unused]]
+                constexpr auto B_NUM_NODES = max_len_v<src_node_ids_t>;
+                constexpr auto NUM_NODES   = len_v<src_node_ids_t>;
+                if constexpr (NUM_NODES >= 0) {
+                    using type = nmtools_array<nm_size_t,NUM_NODES-1>;
+                    return as_value_v<type>;
+                } else if constexpr (B_NUM_NODES >= 0) {
+                    using type = nmtools_static_vector<nm_size_t,B_NUM_NODES-1>;
+                    return as_value_v<type>;
+                } else {
+                    // TODO: use small vector
+                    using type = nmtools_list<nm_size_t>;
+                    return as_value_v<type>;
+                }
+            }
+        }();
+        using type = type_t<decltype(vtype)>;
+    }; // tag::filter_contracted_ids_t
+
+    template <typename node_attributes_t, typename src_node_ids_t, typename edge_t, typename node_t>
+    struct resolve_optype<
+        void, tag::filter_contracted_nodes_t, node_attributes_t, src_node_ids_t, edge_t, node_t
+    > {
+        static constexpr auto vtype = [](){
+            if constexpr (!is_index_array_v<edge_t>
+                || !is_index_array_v<src_node_ids_t>
+                || !(is_tuple_v<node_attributes_t> || has_value_type_v<node_attributes_t>)
+                // TODO: constraints on node_t
+            ) {
+                using type = error::FILTER_CONTRACTED_NODES_UNSUPPORTED<node_attributes_t,src_node_ids_t,edge_t,node_t>;
+                return as_value_v<type>;
+            } else {
+                // TODO: handle tuple
+                using value_type = get_value_type_t<node_attributes_t>;
+                [[maybe_unused]]
+                constexpr auto B_NUM_NODES = max_len_v<src_node_ids_t>;
+                constexpr auto NUM_NODES   = len_v<src_node_ids_t>;
+                if constexpr (NUM_NODES >= 0) {
+                    using type = nmtools_array<value_type,NUM_NODES-1>;
+                    return as_value_v<type>;
+                } else if constexpr (B_NUM_NODES >= 0) {
+                    using type = nmtools_static_vector<value_type,B_NUM_NODES-1>;
+                    return as_value_v<type>;
+                } else {
+                    // TODO: use small vector
+                    using type = nmtools_list<value_type>;
+                    return as_value_v<type>;
+                }
+            }
+        }();
+        using type = type_t<decltype(vtype)>;
+    }; // tag::filter_contracted_nodes_t
 } // namespace nmtools::meta
 
 #endif // NMTOOLS_NETWORK_CONTRACTED_EDGE_HPP

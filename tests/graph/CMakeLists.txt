@@ -46,6 +46,7 @@ add_definitions(-DNMTOOLS_TESTING_DOCTEST_DISABLE_BENCH)
 option(NMTOOLS_COMPUTE_GRAPH_TEST_ALL "test all graph modules" ON)
 
 option(NMTOOLS_COMPUTE_GRAPH_TEST_GRAPH     "test all expression graph modules"      OFF)
+option(NMTOOLS_COMPUTE_GRAPH_TEST_TRANSFORM "test all graph transform modules"       OFF)
 
 set(GRAPH_TEST_GRAPH_SOURCES
     src/add.cpp
@@ -77,23 +78,29 @@ set(GRAPH_TEST_GRAPH_SOURCES
     src/vstack.cpp
 )
 
+set(GRAPH_TEST_TRANSFORM_SOURCES
+    transform/unary.cpp
+)
+
 if (NMTOOLS_COMPUTE_GRAPH_TEST_ALL)
     set(NMTOOLS_COMPUTE_GRAPH_TEST_GRAPH      ON CACHE BOOL "test expression graph modules"  FORCE)
+    set(NMTOOLS_COMPUTE_GRAPH_TEST_TRANSFORM  ON CACHE BOOL "test graph transform modules"   FORCE)
 endif()
 
 if (NOT ${NMTOOLS_COMPUTE_GRAPH_TEST_GRAPH})
     set(GRAPH_TEST_GRAPH_SOURCES "")
 endif()
 
-set(GRAPH_TEST_SOURCES
-    ${GRAPH_TEST_GRAPH_SOURCES}
-)
+if (NOT ${NMTOOLS_COMPUTE_GRAPH_TEST_TRANSFORM})
+    set(GRAPH_TEST_TRANSFORM_SOURCES "")
+endif()
 
 add_executable(${PROJECT_NAME}-doctest
     tests.cpp 
     node.cpp
     ## functional
-    ${GRAPH_TEST_SOURCES}
+    ${GRAPH_TEST_GRAPH_SOURCES}
+    ${GRAPH_TEST_TRANSFORM_SOURCES}
 )
 add_test(
     NAME ${PROJECT_NAME}-doctest

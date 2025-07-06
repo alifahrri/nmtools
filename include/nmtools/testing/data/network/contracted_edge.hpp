@@ -41,6 +41,9 @@ NMTOOLS_TESTING_DECLARE_CASE(network, contracted_edge)
         constexpr inline auto edge_to_contract_ct = nmtools_tuple{0_ct,1_ct};
         constexpr inline auto self_loops_flag_ct  = 1_ct;
 
+        constexpr inline auto src_node_ids = nmtools_tuple{10_ct,11_ct,12_ct,13_ct};
+        inline auto node_attributes = nmtools_array<nmtools_string,4>{"n10","n11","n12","n13"};
+
         NMTOOLS_CAST_NETWORK(list)
         NMTOOLS_CONSTEXPR_CAST_NETWORK(list)
     }
@@ -59,6 +62,7 @@ NMTOOLS_TESTING_DECLARE_CASE(network, contracted_edge)
             array{0, 2},       // New Node 1 (was Original 2)
             array{0, 1}        // New Node 2 (was Original 3)
         };
+        constexpr inline auto dst_node_ids = nmtools_tuple{11_ct,12_ct,13_ct};
     }
 
     //----------------------------------------------------
@@ -78,6 +82,9 @@ NMTOOLS_TESTING_DECLARE_CASE(network, contracted_edge)
         constexpr inline auto edge_to_contract_ct = nmtools_tuple{0_ct,1_ct};
         constexpr inline auto self_loops_flag_ct  = 0_ct;
 
+        constexpr inline auto src_node_ids = nmtools_tuple{10_ct,11_ct,12_ct,13_ct};
+        inline auto node_attributes = nmtools_array<nmtools_string,4>{"n10","n11","n12","n13"};
+
         NMTOOLS_CAST_NETWORK(list)
         NMTOOLS_CONSTEXPR_CAST_NETWORK(list)
     }
@@ -89,6 +96,7 @@ NMTOOLS_TESTING_DECLARE_CASE(network, contracted_edge)
             array{0, 2},       // New Node 1 (was Original 2)
             array{0, 1}        // New Node 2 (was Original 3)
         };
+        constexpr inline auto dst_node_ids = nmtools_tuple{11_ct,12_ct,13_ct};
     }
 
     //----------------------------------------------------
@@ -111,6 +119,9 @@ NMTOOLS_TESTING_DECLARE_CASE(network, contracted_edge)
         constexpr inline auto edge_to_contract_ct = nmtools_tuple{0_ct,1_ct};
         constexpr inline auto self_loops_flag_ct  = 1_ct;
 
+        constexpr inline auto src_node_ids = nmtools_tuple{11_ct,12_ct,13_ct};
+        inline auto node_attributes = nmtools_array<nmtools_string,3>{"n11","n12","n13"};
+
         NMTOOLS_CAST_NETWORK(list)
         NMTOOLS_CONSTEXPR_CAST_NETWORK(list)
     }
@@ -125,6 +136,7 @@ NMTOOLS_TESTING_DECLARE_CASE(network, contracted_edge)
             array{1},          // New Node 0 (was Original 0)
             array<int,0>{}     // New Node 1 (was Original 2)
         };
+        inline auto dst_node_ids = nmtools_tuple{12_ct,13_ct};
     }
 
     //----------------------------------------------------
@@ -147,6 +159,9 @@ NMTOOLS_TESTING_DECLARE_CASE(network, contracted_edge)
 
         constexpr inline auto edge_to_contract_ct = nmtools_tuple{1_ct,0_ct};
         constexpr inline auto self_loops_flag_ct  = 1_ct;
+
+        constexpr inline auto src_node_ids = nmtools_tuple{11_ct,12_ct,13_ct};
+        inline auto node_attributes = nmtools_array<nmtools_string,3>{"n11","n12","n13"};
 
         NMTOOLS_CAST_NETWORK(list)
         NMTOOLS_CONSTEXPR_CAST_NETWORK(list)
@@ -174,6 +189,8 @@ NMTOOLS_TESTING_DECLARE_CASE(network, contracted_edge)
             array{1},          // New Node 0 (was Original 1)
             array<int,0>{}     // New Node 1 (was Original 2)
         };
+
+        inline auto dst_node_ids = nmtools_tuple{11_ct,13_ct};
     }
     //----------------------------------------------------
     // Test Case 5: Test Case 4 with self_loops = false
@@ -192,6 +209,9 @@ NMTOOLS_TESTING_DECLARE_CASE(network, contracted_edge)
         constexpr inline auto edge_to_contract_ct = nmtools_tuple{1_ct,0_ct};
         constexpr inline auto self_loops_flag_ct  = 0_ct;
 
+        constexpr inline auto src_node_ids = nmtools_tuple{11_ct,12_ct,13_ct};
+        inline auto node_attributes = nmtools_array<nmtools_string,3>{"n11","n12","n13"};
+
         NMTOOLS_CAST_NETWORK(list)
         NMTOOLS_CONSTEXPR_CAST_NETWORK(list)
     }
@@ -201,6 +221,8 @@ NMTOOLS_TESTING_DECLARE_CASE(network, contracted_edge)
             array{1},
             array<int,0>{}
         };
+
+        inline auto dst_node_ids = nmtools_tuple{11_ct,13_ct};
     }
 
 
@@ -223,6 +245,9 @@ NMTOOLS_TESTING_DECLARE_CASE(network, contracted_edge)
         constexpr inline auto edge_to_contract_ct = nmtools_tuple{0_ct,1_ct};
         constexpr inline auto self_loops_flag_ct = 1_ct;
 
+        constexpr inline auto src_node_ids = nmtools_tuple{100_ct,200_ct};
+        inline auto node_attributes = nmtools_array<nmtools_string,3>{"n11","n12"};
+
         NMTOOLS_CAST_NETWORK(list)
         NMTOOLS_CONSTEXPR_CAST_NETWORK(list)
     }
@@ -235,6 +260,8 @@ NMTOOLS_TESTING_DECLARE_CASE(network, contracted_edge)
         constexpr inline auto contracted_list = nmtools_tuple{
             array{0}           // New Node 0 (was Original 0)
         };
+
+        inline auto dst_node_ids = nmtools_tuple{200_ct};
     }
 
     //----------------------------------------------------
@@ -252,6 +279,9 @@ NMTOOLS_TESTING_DECLARE_CASE(network, contracted_edge)
         constexpr inline auto edge_to_contract_ct = nmtools_tuple{0_ct,1_ct};
         constexpr inline auto self_loops_flag_ct  = 0_ct;
 
+        constexpr inline auto src_node_ids = nmtools_tuple{100_ct,200_ct};
+        inline auto node_attributes = nmtools_array<nmtools_string,3>{"n11","n12"};
+
         NMTOOLS_CAST_NETWORK(list)
         NMTOOLS_CONSTEXPR_CAST_NETWORK(list)
     }
@@ -261,6 +291,8 @@ NMTOOLS_TESTING_DECLARE_CASE(network, contracted_edge)
         constexpr inline auto contracted_list = nmtools_tuple{
             array<int,0>{}     // New Node 0 (was Original 0)
         };
+
+        inline auto dst_node_ids = nmtools_tuple{200_ct};
     }
 
 } // NMTOOLS_TESTING_DECLARE_CASE

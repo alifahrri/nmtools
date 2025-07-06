@@ -12,6 +12,8 @@ namespace nmtools::tag
 
 namespace nmtools::network
 {
+    // given an associated node_attributes - src_node_ids,
+    // return a new node_attributes that the ids is associated with dst_node_ids
     template <typename node_attributes_t, typename src_node_ids_t, typename dst_node_ids_t>
     constexpr auto filter_nodes(const node_attributes_t& node_attributes
         , const src_node_ids_t& src_node_ids
