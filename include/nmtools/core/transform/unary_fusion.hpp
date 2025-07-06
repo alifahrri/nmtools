@@ -114,6 +114,7 @@ namespace nmtools::functional
                     continue;
                 } else {
                     to = idx;
+                    break;
                 }
             }
             if (to < 0) {
