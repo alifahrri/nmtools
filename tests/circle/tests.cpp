@@ -4,7 +4,7 @@
 #include "nmtools/meta.hpp"
 #include "nmtools/ndarray.hpp"
 #include "nmtools/evaluator/kernel_helper.hpp"
-#include "nmtools/array/activations/relu.hpp"
+#include "nmtools/array/relu.hpp"
 #include "nmtools/exception.hpp"
 #include <cstdio>
 

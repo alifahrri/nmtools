@@ -1,4 +1,4 @@
-#include "nmtools/array/activations/hardtanh.hpp"
+#include "nmtools/array/hardtanh.hpp"
 #include "nmtools/testing/data/array/hardtanh.hpp"
 #include "nmtools/testing/doctest.hpp"
 

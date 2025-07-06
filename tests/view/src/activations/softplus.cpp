@@ -1,4 +1,4 @@
-#include "nmtools/array/activations/softplus.hpp"
+#include "nmtools/array/softplus.hpp"
 #include "nmtools/testing/data/array/softplus.hpp"
 #include "nmtools/testing/doctest.hpp"
 

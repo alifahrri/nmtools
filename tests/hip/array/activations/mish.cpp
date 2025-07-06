@@ -15,7 +15,7 @@ inline auto name##_ls_fb = nmtools::cast(name, nmtools::kind::ndarray_ls_fb); \
 inline auto name##_ls_hb = nmtools::cast(name, nmtools::kind::ndarray_ls_hb); \
 inline auto name##_ls_db = nmtools::cast(name, nmtools::kind::ndarray_ls_db);
 
-#include "nmtools/array/activations/mish.hpp"
+#include "nmtools/array/mish.hpp"
 #include "nmtools/testing/doctest.hpp"
 #include "nmtools/evaluator/hip.hpp"
 #include "nmtools/testing/data/array/mish.hpp"

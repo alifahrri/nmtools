@@ -1,6 +1,6 @@
 // TODO: adjust the following params
 #if 1
-#include "nmtools/array/activations/hardshrink.hpp"
+#include "nmtools/array/hardshrink.hpp"
 
 #define nmtools_cl_kernel_bin hardshrink_spv
 #define nmtools_cl_kernel_len hardshrink_spv_len

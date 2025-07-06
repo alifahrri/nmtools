@@ -1,4 +1,4 @@
-#include "nmtools/array/activations/softshrink.hpp"
+#include "nmtools/array/softshrink.hpp"
 #include "nmtools/testing/data/array/softshrink.hpp"
 #include "nmtools/testing/doctest.hpp"
 

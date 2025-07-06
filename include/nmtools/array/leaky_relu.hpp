@@ -99,7 +99,7 @@ namespace nmtools::view
 #define NMTOOLS_ARRAY_FUNCTIONAL_ACTIVATIONS_LEAKY_RELU_HPP
 
 #include "nmtools/core/functor.hpp"
-#include "nmtools/array/activations/leaky_relu.hpp"
+#include "nmtools/array/leaky_relu.hpp"
 #include "nmtools/core/ufunc/ufunc.hpp"
 
 namespace nmtools::functional
@@ -116,7 +116,7 @@ namespace nmtools::functional
 #ifndef NMTOOLS_ARRAY_ARRAY_ACTIVATION_LEAKY_RELU_HPP
 #define NMTOOLS_ARRAY_ARRAY_ACTIVATION_LEAKY_RELU_HPP
 
-#include "nmtools/array/activations/leaky_relu.hpp"
+#include "nmtools/array/leaky_relu.hpp"
 #include "nmtools/core/eval.hpp"
 
 namespace nmtools

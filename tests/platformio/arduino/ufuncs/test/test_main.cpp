@@ -1,7 +1,7 @@
 #include "nmtools/meta.hpp"
 
 #include "nmtools/array/ufuncs/add.hpp"
-#include "nmtools/array/activations/relu.hpp"
+#include "nmtools/array/relu.hpp"
 #include "nmtools/array/mean.hpp"
 #include "nmtools/array/matmul.hpp"
 

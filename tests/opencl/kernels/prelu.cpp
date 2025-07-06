@@ -4,7 +4,7 @@
 #include "nmtools/evaluator/opencl/evaluator.hpp"
 #include "nmtools/array/arange.hpp"
 #include "nmtools/array/ones.hpp"
-#include "nmtools/array/activations/prelu.hpp"
+#include "nmtools/array/prelu.hpp"
 #include "nmtools/testing/doctest.hpp"
 
 namespace nm = nmtools;

@@ -3,7 +3,7 @@
 
 // TODO: adjust the following params
 #if 1
-#include "nmtools/array/activations/celu.hpp"
+#include "nmtools/array/celu.hpp"
 
 #define nmtools_cl_kernel_bin celu_spv
 #define nmtools_cl_kernel_len celu_spv_len

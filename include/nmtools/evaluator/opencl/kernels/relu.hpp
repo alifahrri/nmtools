@@ -1,7 +1,7 @@
 #ifndef NMTOOLS_ARRAY_EVAL_OPENCL_KERNELS_RELU_CL_HPP
 #define NMTOOLS_ARRAY_EVAL_OPENCL_KERNELS_RELU_CL_HPP
 
-#include "nmtools/array/activations/relu.hpp"
+#include "nmtools/array/relu.hpp"
 
 #define nmtools_cl_kernel_bin relu_spv
 #define nmtools_cl_kernel_len relu_spv_len

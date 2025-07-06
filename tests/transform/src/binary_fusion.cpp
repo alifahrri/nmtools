@@ -14,7 +14,7 @@
 #include "nmtools/array/ufuncs/tanh.hpp"
 #include "nmtools/array/ufuncs/exp.hpp"
 #include "nmtools/array/ufuncs/maximum.hpp"
-#include "nmtools/array/activations/relu.hpp"
+#include "nmtools/array/relu.hpp"
 #include "nmtools/array/tile.hpp"
 #include "nmtools/array/transpose.hpp"
 #include "nmtools/array/reshape.hpp"

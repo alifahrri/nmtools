@@ -1,4 +1,4 @@
-#include "nmtools/array/activations/selu.hpp"
+#include "nmtools/array/selu.hpp"
 #include "nmtools/testing/data/array/selu.hpp"
 #include "nmtools/testing/doctest.hpp"
 

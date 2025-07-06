@@ -3,7 +3,7 @@
 
 // TODO: adjust the following params
 #if 1
-#include "nmtools/array/activations/elu.hpp"
+#include "nmtools/array/elu.hpp"
 
 #define nmtools_cl_kernel_bin elu_spv
 #define nmtools_cl_kernel_len elu_spv_len

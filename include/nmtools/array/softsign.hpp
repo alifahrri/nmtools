@@ -67,7 +67,7 @@ namespace nmtools::view
 #define NMTOOLS_ARRAY_FUNCTIONAL_ACTIVATIONS_SOFTSIGN_HPP
 
 #include "nmtools/core/functor.hpp"
-#include "nmtools/array/activations/softsign.hpp"
+#include "nmtools/array/softsign.hpp"
 #include "nmtools/core/ufunc/ufunc.hpp"
 
 namespace nmtools::functional
@@ -86,7 +86,7 @@ namespace nmtools::functional
 #ifndef NMTOOLS_ARRAY_ARRAY_ACTIVATIONS_SOFTSIGN_HPP
 #define NMTOOLS_ARRAY_ARRAY_ACTIVATIONS_SOFTSIGN_HPP
 
-#include "nmtools/array/activations/softsign.hpp"
+#include "nmtools/array/softsign.hpp"
 #include "nmtools/core/eval.hpp"
 
 namespace nmtools

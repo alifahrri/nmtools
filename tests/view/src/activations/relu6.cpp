@@ -1,4 +1,4 @@
-#include "nmtools/array/activations/relu6.hpp"
+#include "nmtools/array/relu6.hpp"
 #include "nmtools/testing/data/array/relu6.hpp"
 #include "nmtools/testing/doctest.hpp"
 
