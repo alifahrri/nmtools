@@ -108,23 +108,25 @@ namespace nmtools::functional
             // skip if node is buffer
             // buffer can't be fused with compute/composition/combinator
             auto to = nm_index_t{-1};
+            auto from = nm_index_t{-1};
+            auto valid = false;
             for (nm_size_t i=0; i<(nm_size_t)unary_nodes.size(); i++) {
-                auto idx = at(unary_nodes,i);
-                if (digraph.nodes(idx).is_buffer()) {
+                auto id = at(unary_nodes,i);
+                if (digraph.nodes(id).is_buffer()) {
                     continue;
                 } else {
-                    to = idx;
+                    // TODO: propagate error
+                    to = id;
+                    auto preds = network::predecessors(digraph,to);
+                    from = at(unwrap(preds),meta::ct_v<0>);
+                    if (digraph.nodes(from).is_buffer()) {
+                        continue;
+                    }
+                    valid = true;
                     break;
                 }
             }
-            if (to < 0) {
-                return src_digraph;
-            }
-            auto preds = network::predecessors(digraph,to);
-
-            // TODO: propagate error
-            auto from = at(unwrap(preds),meta::ct_v<0>);
-            if (digraph.nodes(from).is_buffer()) {
+            if (!valid) {
                 return src_digraph;
             }
 
