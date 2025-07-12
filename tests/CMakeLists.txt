@@ -142,6 +142,11 @@ if (NMTOOLS_BUILD_NETWORK_TESTS)
     add_subdirectory(network)
 endif (NMTOOLS_BUILD_NETWORK_TESTS)
 
+option(NMTOOLS_BUILD_OBJECT_TESTS "build object test programs" OFF)
+if (NMTOOLS_BUILD_OBJECT_TESTS)
+    add_subdirectory(object)
+endif (NMTOOLS_BUILD_OBJECT_TESTS)
+
 option(NMTOOLS_BUILD_TRANSFORM_TESTS "build transform test programs" OFF)
 if (NMTOOLS_BUILD_TRANSFORM_TESTS)
     add_subdirectory(transform)

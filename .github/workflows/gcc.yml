@@ -395,3 +395,27 @@ jobs:
       - name: run tests
         run: |
           ./dockcross-${{ matrix.name }} bash -c 'build/${{ matrix.name }}/tests/constexpr/numeric-tests-constexpr-doctest'
+
+  dockcross-gcc-object:
+    name: ${{ matrix.name }}-object
+    runs-on: ubuntu-22.04
+    strategy:
+      matrix:
+        include:
+          - name: linux-x64
+    steps:
+      - uses: actions/checkout@v2
+      - name: setup dockcross
+        run: docker run --rm dockcross/${{ matrix.name }} > ./dockcross-${{ matrix.name }}; chmod +x ./dockcross-${{ matrix.name }}
+      - uses: actions/cache@v3
+        id: cache
+        with:
+          path: ./build/${{ matrix.name }}
+          key: ${{ github.job }}-${{ matrix.name }}-${{ hashFiles('./**') }}
+      - name: setup doctest
+        run: bash scripts/download_doctest_header.sh -d include/
+      - name: build
+        run: ./dockcross-${{ matrix.name }} bash -c 'mkdir -p build/${{ matrix.name }} && cd build/${{ matrix.name }}/ && cmake -DNMTOOLS_TEST_ALL=OFF -DNMTOOLS_BUILD_OBJECT_TESTS=ON ../.. && make -j1 numeric-tests-object-doctest VERBOSE=1'
+      - name: run tests
+        run: |
+          ./dockcross-${{ matrix.name }} bash -c 'build/${{ matrix.name }}/tests/object/numeric-tests-object-doctest'

@@ -82,8 +82,8 @@ namespace nmtools::view
         }
     }
 
-    template <typename array_t, typename repeats_t, typename axis_t>
-    constexpr auto repeat(const array_t& array, const repeats_t& repeats, const axis_t& axis)
+    template <typename array_t, typename repeats_t, typename axis_t=none_t>
+    constexpr auto repeat(const array_t& array, const repeats_t& repeats, const axis_t& axis=axis_t{})
     {
         auto f = [](const auto& array, const auto& repeats, const auto& axis){
             auto src_shape = shape<true>(array);
@@ -196,9 +196,9 @@ namespace nmtools
      * @return constexpr auto 
      */
     template <typename output_t=none_t, typename context_t=none_t, typename resolver_t=eval_result_t<>,
-        typename array_t, typename repeats_t, typename axis_t>
-    constexpr auto repeat(const array_t& array, repeats_t repeats, axis_t axis,
-        context_t&& context=context_t{}, output_t&& output=output_t{},meta::as_value<resolver_t> resolver=meta::as_value_v<resolver_t>)
+        typename array_t, typename repeats_t, typename axis_t=none_t>
+    constexpr auto repeat(const array_t& array, const repeats_t& repeats, axis_t axis=axis_t{}
+        , context_t&& context=context_t{}, output_t&& output=output_t{},meta::as_value<resolver_t> resolver=meta::as_value_v<resolver_t>)
     {
         auto repeated = view::repeat(array,repeats,axis);
         return eval(repeated

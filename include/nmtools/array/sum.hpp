@@ -23,32 +23,12 @@ namespace nmtools::view
      * @param keepdims if true, the reduced axis are kept in the results.
      * @return constexpr auto 
      */
-    template <typename left_t, typename axis_t, typename dtype_t, typename initial_t, typename keepdims_t>
-    constexpr auto sum(const left_t& a, const axis_t& axis, dtype_t dtype, initial_t initial, keepdims_t keepdims)
+    template <typename left_t, typename axis_t=none_t, typename dtype_t=none_t, typename initial_t=none_t, typename keepdims_t=meta::false_type>
+    constexpr auto sum(const left_t& a, const axis_t& axis=axis_t{}, dtype_t dtype=dtype_t{}, initial_t initial=initial_t{}, keepdims_t keepdims=keepdims_t{})
     {
         using res_t = get_dtype_t<dtype_t>;
         using op_t  = add_t<none_t,none_t,res_t>;
         return reduce(op_t{},a,axis,dtype,initial,keepdims);
-    } // add
-
-    template <typename left_t, typename axis_t, typename dtype_t, typename initial_t>
-    constexpr auto sum(const left_t& a, const axis_t& axis, dtype_t dtype, initial_t initial)
-    {
-        using res_t = get_dtype_t<dtype_t>;
-        using op_t  = add_t<none_t,none_t,res_t>;
-        return reduce(op_t{},a,axis,dtype,initial);
-    } // add
-
-    template <typename left_t, typename axis_t, typename dtype_t>
-    constexpr auto sum(const left_t& a, const axis_t& axis, dtype_t dtype)
-    {
-        return view::sum(a,axis,dtype,None);
-    } // add
-
-    template <typename left_t, typename axis_t>
-    constexpr auto sum(const left_t& a, const axis_t& axis)
-    {
-        return view::sum(a,axis,None,None);
     } // add
 } // namespace nmtools::view
 
@@ -101,8 +81,8 @@ namespace nmtools
      */
     template <typename output_t=none_t, typename context_t=none_t, typename resolver_t=eval_result_t<>,
         typename dtype_t=none_t, typename initial_t=none_t,
-        typename keepdims_t=meta::false_type, typename array_t, typename axis_t>
-    constexpr auto sum(const array_t& a, const axis_t& axis, dtype_t dtype=dtype_t{},
+        typename keepdims_t=meta::false_type, typename array_t, typename axis_t=none_t>
+    constexpr auto sum(const array_t& a, const axis_t& axis=axis_t{}, dtype_t dtype=dtype_t{},
         initial_t initial=initial_t{}, keepdims_t keepdims=keepdims_t{},
         context_t&& context=context_t{}, output_t&& output=output_t{},meta::as_value<resolver_t> resolver=meta::as_value_v<resolver_t>)
     {

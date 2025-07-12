@@ -447,8 +447,12 @@ namespace nmtools::view
                 return return_type{meta::Nothing};
             }
         } else {
-            using view_t = decorator_t<accumulate_t,op_t,array_t,axis_t,dtype_t>;
-            return view_t{{op,array,axis,dtype}};
+            auto src_dim = dim<true>(array);
+            auto m_axis  = index::normalize_axis(axis,src_dim);
+            auto axis_   = unwrap(m_axis);
+            using axis_type = decltype(axis_);
+            using view_t = decorator_t<accumulate_t,op_t,array_t,axis_type,dtype_t>;
+            return view_t{{op,array,axis_,dtype}};
         }
     } // accumulate
 

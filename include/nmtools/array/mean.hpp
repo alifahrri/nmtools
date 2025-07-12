@@ -120,8 +120,8 @@ namespace nmtools::view
      * @param keepdims  set if the reduced axis are to be kept.
      * @return constexpr auto 
      */
-    template <typename array_t, typename axis_t, typename dtype_t=none_t, typename keepdims_t=meta::false_type>
-    constexpr auto mean(const array_t& array, const axis_t& axis, dtype_t dtype=dtype_t{}, keepdims_t keepdims=keepdims_t{})
+    template <typename array_t, typename axis_t=none_t, typename dtype_t=none_t, typename keepdims_t=meta::false_type>
+    constexpr auto mean(const array_t& array, const axis_t& axis=axis_t{}, dtype_t dtype=dtype_t{}, keepdims_t keepdims=keepdims_t{})
     {
         // note that this mean view is created not by create new view type,
         // but by composing two view (add.reduce + divide) instead
@@ -209,8 +209,8 @@ namespace nmtools
      * @return constexpr auto 
      */
     template <typename output_t=none_t, typename context_t=none_t, typename resolver_t=eval_result_t<>,
-        typename array_t, typename axis_t, typename dtype_t=none_t, typename keepdims_t=meta::false_type>
-    constexpr auto mean(const array_t& array, const axis_t& axis, dtype_t dtype=dtype_t{}, keepdims_t keepdims=keepdims_t{},
+        typename array_t, typename axis_t=none_t, typename dtype_t=none_t, typename keepdims_t=meta::false_type>
+    constexpr auto mean(const array_t& array, const axis_t& axis=axis_t{}, dtype_t dtype=dtype_t{}, keepdims_t keepdims=keepdims_t{},
         context_t&& context=context_t{}, output_t&& output=output_t{},meta::as_value<resolver_t> resolver=meta::as_value_v<resolver_t>)
     {
         auto a = view::mean(array, axis, dtype, keepdims);
