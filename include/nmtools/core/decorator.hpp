@@ -328,51 +328,16 @@ namespace nmtools::view
             }, nmtools_tuple{});
         }();
 
-        #if 0
-        // check for "free"/"unnamed" operands, which we can NOT assign the id freely
-        static constexpr auto unnamed_operands = [](){
-            return meta::template_reduce<arity>([&](auto init, auto index){
-                constexpr auto I = decltype(index)::value;
-                using operand_type = meta::remove_cvref_t<meta::at_t<operands_type,I>>;
-                if constexpr (is_view_v<operand_type>) {
-                    return utility::tuple_append(init,meta::ct_v<0>);
-                } else {
-                    return utility::tuple_append(init,meta::ct_v<1>);
-                }
-            }, nmtools_tuple{});
-        }();
-
-        static constexpr auto id_vtype = [](){
-            if constexpr (meta::has_id_type_v<view_type>) {
-                return meta::as_value_v<typename view_type::id_type>;
-            } else if constexpr (meta::is_tuple_v<meta::remove_cvref_pointer_t<operands_type>>) {
-                constexpr auto operands_ids = meta::template_reduce<arity>([&](auto init, auto index){
-                    constexpr auto I = decltype(index)::value;
-                    using operand_i_type = meta::remove_cvref_pointer_t<meta::at_t<operands_type,I>>;
-                    if constexpr (is_view_v<operand_i_type>) {
-                        return utility::tuple_append(init,typename operand_i_type::id_type{});
-                    } else {
-                        return init;
-                    }
-                }, nmtools_tuple{});
-                using operands_ids_t = meta::remove_cvref_t<meta::remove_address_space_t<decltype(operands_ids)>>;
-                if constexpr (meta::len_v<operands_ids_t> > 0) {
-                    constexpr auto increment = index::sum(meta::to_value_v<decltype(unnamed_operands)>) + 1;
-                    constexpr auto id = index::max(meta::to_value_v<operands_ids_t>);
-                    return meta::as_value_v<meta::ct<(int)id+increment>>;
-                } else {
-                    return meta::as_value_v<meta::ct<(int)arity>>;
-                }
-            } else {
-                return meta::as_value_v<meta::ct<(int)arity>>;
-            }
-        }();
-
-        #else
         static constexpr auto id_vtype = [](){
             if constexpr (meta::has_id_type_v<view_type>) {
                 using type = typename view_type::id_type;
-                return meta::as_value_v<type>;
+                if constexpr (is_none_v<type>) {
+                    constexpr auto id = meta::generate_view_id(operands_ids,meta::as_value_v<view_type>);
+                    using type = meta::ct<meta::remove_cvref_pointer_t<decltype(id)>::value>;
+                    return meta::as_value_v<type>;
+                } else {
+                    return meta::as_value_v<type>;
+                }
             } else {
                 // constexpr auto type_id = meta::get_type_id_v<view_type>;
                 // constexpr auto id_sequence = index::append(operands_ids,type_id);
@@ -382,7 +347,6 @@ namespace nmtools::view
                 return meta::as_value_v<type>;
             }
         }();
-        #endif
 
         using id_type = meta::type_t<decltype(id_vtype)>;
 
@@ -401,11 +365,6 @@ namespace nmtools::view
         decorator_t(const view_type& view)
             : view(view)
         {}
-        #endif
-
-        #if 0
-        nmtools_func_attribute
-        ~decorator_t() = default;
         #endif
 
         /**

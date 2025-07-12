@@ -42,34 +42,19 @@ namespace nmtools::view
         return broadcast_binary_ufunc(minimum_t<>{},a,b);
     } // minimum
 
-    template <typename left_t, typename axis_t, typename dtype_t, typename initial_t, typename keepdims_t>
-    constexpr auto reduce_minimum(const left_t& a, const axis_t& axis, dtype_t dtype, initial_t initial, keepdims_t keepdims)
+    template <typename left_t, typename axis_t=none_t, typename dtype_t=none_t, typename initial_t=none_t, typename keepdims_t=meta::false_type>
+    constexpr auto reduce_minimum(const left_t& a, const axis_t& axis=axis_t{}, dtype_t dtype=dtype_t{}, initial_t initial=initial_t{}, keepdims_t keepdims=keepdims_t{})
     {
         using res_t = get_dtype_t<dtype_t>;
         using op_t  = minimum_t<none_t,none_t,res_t>;
         return reduce(op_t{},a,axis,dtype,initial,keepdims);
     } // reduce_minimum
 
-    template <typename left_t, typename axis_t, typename dtype_t, typename initial_t>
-    constexpr auto reduce_minimum(const left_t& a, const axis_t& axis, dtype_t dtype, initial_t initial)
+    template <typename left_t, typename axis_t=none_t, typename dtype_t=none_t, typename initial_t=none_t, typename keepdims_t=meta::false_type>
+    constexpr auto min(const left_t& a, const axis_t& axis=axis_t{}, dtype_t dtype=dtype_t{}, initial_t initial=initial_t{}, keepdims_t keepdims=keepdims_t{})
     {
-        using res_t = get_dtype_t<dtype_t>;
-        using op_t  = minimum_t<none_t,none_t,res_t>;
-        return reduce(op_t{},a,axis,dtype,initial);
-    } // reduce_minimum
-
-    template <typename left_t, typename axis_t, typename dtype_t>
-    constexpr auto reduce_minimum(const left_t& a, const axis_t& axis, dtype_t dtype)
-    {
-        return reduce_minimum(a,axis,dtype,None);
-    } // reduce_minimum
-
-    // TODO: use default args instead of overload!
-    template <typename left_t, typename axis_t>
-    constexpr auto reduce_minimum(const left_t& a, const axis_t& axis)
-    {
-        return reduce_minimum(a,axis,None,None);
-    } // reduce_minimum
+        return reduce_minimum(a,axis,dtype,initial,keepdims);
+    }
 
     template <typename left_t, typename axis_t, typename dtype_t>
     auto accumulate_minimum(const left_t& a, const axis_t& axis, dtype_t dtype)
@@ -194,6 +179,19 @@ namespace nmtools
     } // namespace fn
 
     constexpr inline auto minimum = fn::minimum{};
+
+    template <typename output_t=none_t, typename context_t=none_t, typename resolver_t=eval_result_t<>
+        , typename left_t, typename axis_t=none_t, typename dtype_t=none_t, typename initial_t=none_t, typename keepdims_t=meta::false_type>
+    constexpr auto min(const left_t& a, const axis_t& axis=axis_t{}, dtype_t dtype=dtype_t{}, initial_t initial=initial_t{}, keepdims_t keepdims=keepdims_t{}
+        , context_t&& context=context_t{}, output_t&& output=output_t{},meta::as_value<resolver_t> resolver=meta::as_value_v<resolver_t>)
+    {
+        auto maximum = view::reduce_minimum(a,axis,dtype,initial,keepdims);
+        return eval(maximum
+            ,nmtools::forward<context_t>(context)
+            ,nmtools::forward<output_t>(output)
+            ,resolver
+        );
+    }
 } // nmtools
 
 #endif // NMTOOLS_ARRAY_ARRAY_MINIMUM_HPP

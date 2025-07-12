@@ -72,9 +72,11 @@ namespace nmtools::meta
 
 namespace nmtools
 {
+    // TODO: remove, should use get_operands
     template <typename array_t>
     decltype(auto) get_array(const array_t& array);
 
+    // TODO: remove, should use get_operands
     template <typename array_t>
     struct get_array_t
     {
@@ -112,6 +114,7 @@ namespace nmtools
         }
     }; // get_array_t
 
+    // TODO: remove, should use get_operands
     template <typename array_t>
     decltype(auto) get_array(const array_t& array)
     {

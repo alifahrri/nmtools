@@ -18,18 +18,12 @@ namespace nmtools::view
      * @param dtype desired data type
      * @return constexpr auto 
      */
-    template <typename array_t, typename axis_t, typename dtype_t>
-    constexpr auto cumprod(const array_t& a, axis_t axis, dtype_t)
+    template <typename array_t, typename axis_t=none_t, typename dtype_t=none_t>
+    constexpr auto cumprod(const array_t& a, axis_t axis=axis_t{}, dtype_t=dtype_t{})
     {
         using res_t = get_dtype_t<dtype_t>;
         using op_t  = multiply_t<none_t,none_t,res_t>;
         return view::accumulate(op_t{},a,axis);
-    } // cumprod
-
-    template <typename array_t, typename axis_t>
-    constexpr auto cumprod(const array_t& a, axis_t axis)
-    {
-        return view::cumprod(a,axis,None);
     } // cumprod
 } // namespace nmtools::view
 
@@ -76,8 +70,8 @@ namespace nmtools
      * @return constexpr auto 
      */
     template <typename output_t=none_t, typename context_t=none_t, typename resolver_t=eval_result_t<>,
-        typename array_t, typename axis_t, typename dtype_t=none_t>
-    constexpr auto cumprod(const array_t& a, axis_t axis, dtype_t dtype=dtype_t{},
+        typename array_t, typename axis_t=none_t, typename dtype_t=none_t>
+    constexpr auto cumprod(const array_t& a, axis_t axis=axis_t{}, dtype_t dtype=dtype_t{},
         context_t&& context=context_t{}, output_t&& output=output_t{},meta::as_value<resolver_t> resolver=meta::as_value_v<resolver_t>)
     {
         auto array = view::cumprod(a,axis,dtype);
