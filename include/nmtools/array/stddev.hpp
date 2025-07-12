@@ -6,6 +6,7 @@
 
 namespace nmtools::view
 {
+    // TODO: rename to std
     /**
      * @brief Create a view that computes standard deviation.
      * 
@@ -21,11 +22,17 @@ namespace nmtools::view
      * @param keepdims  keep the dimension of the result, makes broadcasting with original array work properly
      * @return constexpr auto 
      */
-    template <typename array_t, typename axis_t, typename dtype_t=none_t, typename ddof_t=size_t, typename keepdims_t=meta::false_type>
-    constexpr auto stddev(const array_t& array, const axis_t& axis, dtype_t dtype=dtype_t{}, ddof_t ddof=ddof_t{0}, keepdims_t keepdims=keepdims_t{})
+    template <typename array_t, typename axis_t=none_t, typename dtype_t=none_t, typename ddof_t=size_t, typename keepdims_t=meta::false_type>
+    constexpr auto stddev(const array_t& array, const axis_t& axis=axis_t{}, dtype_t dtype=dtype_t{}, ddof_t ddof=ddof_t{0}, keepdims_t keepdims=keepdims_t{})
     {
         auto a = view::var(array,axis,dtype,ddof,keepdims);
         return view::sqrt(a);
+    } // stddev
+
+    template <typename array_t, typename axis_t=none_t, typename dtype_t=none_t, typename ddof_t=size_t, typename keepdims_t=meta::false_type>
+    constexpr auto std(const array_t& array, const axis_t& axis=axis_t{}, dtype_t dtype=dtype_t{}, ddof_t ddof=ddof_t{0}, keepdims_t keepdims=keepdims_t{})
+    {
+        return view::stddev(array,axis,dtype,ddof,keepdims);
     } // stddev
 } // namespace nmtools::view
 
@@ -77,8 +84,8 @@ namespace nmtools
      * @return constexpr auto 
      */
     template <typename output_t=none_t, typename context_t=none_t, typename resolver_t=eval_result_t<>,
-        typename array_t, typename axis_t, typename dtype_t=none_t, typename ddof_t=size_t, typename keepdims_t=meta::false_type>
-    constexpr auto stddev(const array_t& array, const axis_t& axis, dtype_t dtype=dtype_t{}, ddof_t ddof=ddof_t{0}, keepdims_t keepdims=keepdims_t{},
+        typename array_t, typename axis_t=none_t, typename dtype_t=none_t, typename ddof_t=size_t, typename keepdims_t=meta::false_type>
+    constexpr auto stddev(const array_t& array, const axis_t& axis=axis_t{}, dtype_t dtype=dtype_t{}, ddof_t ddof=ddof_t{0}, keepdims_t keepdims=keepdims_t{},
         context_t&& context=context_t{}, output_t&& output=output_t{},meta::as_value<resolver_t> resolver=meta::as_value_v<resolver_t>)
     {
         auto a = view::stddev(array,axis,dtype,ddof,keepdims);
@@ -87,7 +94,15 @@ namespace nmtools
             ,nmtools::forward<output_t>(output)
             ,resolver
         );
-    } // var
+    } // stddev
+
+    template <typename output_t=none_t, typename context_t=none_t, typename resolver_t=eval_result_t<>,
+        typename array_t, typename axis_t=none_t, typename dtype_t=none_t, typename ddof_t=size_t, typename keepdims_t=meta::false_type>
+    constexpr auto std(const array_t& array, const axis_t& axis=axis_t{}, dtype_t dtype=dtype_t{}, ddof_t ddof=ddof_t{0}, keepdims_t keepdims=keepdims_t{},
+        context_t&& context=context_t{}, output_t&& output=output_t{},meta::as_value<resolver_t> resolver=meta::as_value_v<resolver_t>)
+    {
+        return stddev(array,axis,dtype,ddof,keepdims,context,output,resolver);
+    } // std
 } // namespace nmtools
 
 #endif // NMTOOLS_ARRAY_ARRAY_STDDEV_HPP
