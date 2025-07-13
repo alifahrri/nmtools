@@ -7,6 +7,12 @@
 #include "nmtools/core/combinator.hpp"
 #include "nmtools/index/contains.hpp"
 
+#include "nmtools/network/cast.hpp"
+#include "nmtools/network/digraph.hpp"
+#include "nmtools/network/filter_node_arity.hpp"
+#include "nmtools/network/predecessors.hpp"
+#include "nmtools/core/node.hpp"
+
 namespace nmtools::functional
 {
     template <typename adjacency_list_t>
@@ -344,6 +350,151 @@ namespace nmtools::functional
             auto g2 = utility::contracted_edge(g1,nmtools_tuple{rhs_ct,to_ct},to_ct,fused);
             return g2;
             #endif
+        }
+    }
+
+    template <typename adjacency_list_t
+        , typename node_ids_t
+        , typename node_attributes_t
+        , typename edge_attributes_t
+        , typename n_repeats_t=meta::ct<1>>
+    constexpr auto transform_binary_fusion(
+        const network::digraph_t<adjacency_list_t,node_ids_t,node_attributes_t,edge_attributes_t>& digraph
+        , [[maybe_unused]] n_repeats_t n_repeats=n_repeats_t{})
+    {
+        using Node = nmtools::functional::Node<>;
+        using Combinator = nmtools::functional::Combinator;
+
+        constexpr auto M_MAX_NUM_NODES = meta::max_len_v<adjacency_list_t>;
+        constexpr auto MAX_NUM_NODES = (M_MAX_NUM_NODES >= 0 ? M_MAX_NUM_NODES : 0);
+
+        using adjacency_list_type = meta::conditional_t<(MAX_NUM_NODES > 0)
+            , nmtools_static_vector<nmtools_static_vector<nm_index_t,MAX_NUM_NODES>,MAX_NUM_NODES>
+            , nmtools_list<nmtools_list<nm_index_t>>>;
+
+        using node_ids_type = meta::conditional_t<(MAX_NUM_NODES > 0)
+            , nmtools_static_vector<nm_index_t,MAX_NUM_NODES>
+            , nmtools_list<nm_index_t>>;
+        using attribute_type = meta::get_value_type_t<node_attributes_t>;
+        using node_attributes_type = meta::conditional_t<(MAX_NUM_NODES > 0)
+            , nmtools_static_vector<attribute_type,MAX_NUM_NODES>
+            , nmtools_list<attribute_type>>;
+
+        auto adj_list = network::cast<adjacency_list_type>(digraph.adjacency_list);
+        auto node_ids = network::cast_node_ids<node_ids_type>(digraph.node_ids);
+        auto node_attributes = network::cast_node_attributes<node_attributes_type>(digraph.node_attributes);
+        auto src_digraph = network::digraph(adj_list,node_ids,node_attributes);
+
+        auto m_binary_nodes = network::filter_node_arity(digraph,2);
+        auto binary_nodes = unwrap(m_binary_nodes);
+
+        if (!binary_nodes.size()) {
+            return src_digraph;
+        } else {
+            auto dst = nm_index_t{-1};
+            auto lhs = nm_index_t{-1};
+            auto rhs = nm_index_t{-1};
+            auto valid = false;
+            auto fuse_case = -1;
+            for (nm_size_t i=0; i<(nm_size_t)binary_nodes.size(); i++) {
+                auto id = at(binary_nodes,i);
+                if (digraph.nodes(id).is_buffer()) {
+                    continue;
+                } else {
+                    dst = id;
+                    auto preds = network::predecessors(digraph,dst);
+                    // assume all predecessors must not be bufferred
+                    // preds must be 2
+                    lhs = at(unwrap(preds),meta::ct_v<0>);
+                    rhs = at(unwrap(preds),meta::ct_v<1>);
+                    // assume lhs & rhs only have 1 successor each
+                    // TODO: handle lhs/rhs with multiple successor
+                    if (!digraph.nodes(lhs).is_buffer() && !digraph.nodes(rhs).is_buffer()) {
+                        fuse_case = 1; // simple swap
+                    } else if (!digraph.nodes(lhs).is_buffer() && digraph.nodes(rhs).is_buffer()) {
+                        fuse_case = 2;
+                    } else if (digraph.nodes(lhs).is_buffer() && !digraph.nodes(rhs).is_buffer()) {
+                        fuse_case = 3;
+                    } else {
+                        continue;
+                    }
+
+                    valid = true;
+                    break;
+                }
+            }
+            if (!valid) {
+                return src_digraph;
+            }
+            switch (fuse_case) {
+                case 1:
+                {
+                    auto fused = digraph.nodes(dst)
+                        * Node::combinator(Combinator::SWAP)
+                        * digraph.nodes(rhs)
+                        * Node::combinator(Combinator::SWAP)
+                        * digraph.nodes(lhs)
+                    ;
+                    auto m_contracted = network::contracted_edge(
+                        network::contracted_edge(digraph,nmtools_array{rhs,dst},fused),
+                        nmtools_array{lhs,dst}, fused
+                    );
+                    auto contracted = unwrap(m_contracted);
+
+                    auto adj_list = network::cast<adjacency_list_type>(contracted.adjacency_list);
+                    auto node_ids = network::cast_node_ids<node_ids_type>(contracted.node_ids);
+                    auto node_attributes = network::cast_node_attributes<node_attributes_type>(contracted.node_attributes);
+                    auto result = network::digraph(adj_list,node_ids,node_attributes);
+                    auto repeat = (nm_index_t)n_repeats-1;
+                    if (repeat != 0) {
+                        return transform_binary_fusion(result,repeat);
+                    } else {
+                        return result;
+                    }
+                }
+                case 2:
+                {
+                    auto fused = digraph.nodes(dst)
+                        * digraph.nodes(lhs)
+                    ;
+                    auto m_contracted = network::contracted_edge(digraph,nmtools_array{lhs,dst},fused);
+                    auto contracted = unwrap(m_contracted);
+
+                    auto adj_list = network::cast<adjacency_list_type>(contracted.adjacency_list);
+                    auto node_ids = network::cast_node_ids<node_ids_type>(contracted.node_ids);
+                    auto node_attributes = network::cast_node_attributes<node_attributes_type>(contracted.node_attributes);
+                    auto result = network::digraph(adj_list,node_ids,node_attributes);
+                    auto repeat = (nm_index_t)n_repeats-1;
+                    if (repeat != 0) {
+                        return transform_binary_fusion(result,repeat);
+                    } else {
+                        return result;
+                    }
+                }
+                case 3:
+                {
+                    auto fused = digraph.nodes(dst)
+                        * Node::combinator(Combinator::SWAP)
+                        * digraph.nodes(rhs)
+                        * Node::combinator(Combinator::SWAP)
+                    ;
+                    auto m_contracted = network::contracted_edge(digraph,nmtools_array{rhs,dst},fused);
+                    auto contracted = unwrap(m_contracted);
+
+                    auto adj_list = network::cast<adjacency_list_type>(contracted.adjacency_list);
+                    auto node_ids = network::cast_node_ids<node_ids_type>(contracted.node_ids);
+                    auto node_attributes = network::cast_node_attributes<node_attributes_type>(contracted.node_attributes);
+                    auto result = network::digraph(adj_list,node_ids,node_attributes);
+                    auto repeat = (nm_index_t)n_repeats-1;
+                    if (repeat != 0) {
+                        return transform_binary_fusion(result,repeat);
+                    } else {
+                        return result;
+                    }
+                }
+                default:
+                return src_digraph;
+            }
         }
     }
 } // namespace nmtools::functional
