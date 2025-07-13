@@ -110,7 +110,7 @@ TEST_CASE("unary(case5)" * doctest::test_suite("transform"))
     UNARY_SUBCASE( case5, adjacency_list_v_v, node_ids, node_attributes, n_repeats );
 }
 
-TEST_CASE("constexpe_unary(case5)" * doctest::test_suite("transform"))
+TEST_CASE("constexpr_unary(case5)" * doctest::test_suite("transform"))
 {
     CONSTEXPR_UNARY_SUBCASE( case5, adjacency_list_a_sv_ct, node_ids, node_attributes, n_repeats );
     CONSTEXPR_UNARY_SUBCASE( case5, adjacency_list_sv_sv_ct, node_ids, node_attributes, n_repeats );
