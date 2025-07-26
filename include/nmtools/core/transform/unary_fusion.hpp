@@ -122,6 +122,10 @@ namespace nmtools::functional
                     if (digraph.nodes(from).is_buffer()) {
                         continue;
                     }
+                    auto outgoing = digraph.out_edges(from);
+                    if (len(unwrap(outgoing)) != 1) {
+                        continue;
+                    }
                     valid = true;
                     break;
                 }
@@ -140,7 +144,14 @@ namespace nmtools::functional
             auto adj_list = network::cast<adjacency_list_type>(contracted.adjacency_list);
             auto node_ids = network::cast_node_ids<node_ids_type>(contracted.node_ids);
             auto node_attributes = network::cast_node_attributes<node_attributes_type>(contracted.node_attributes);
-            return network::digraph(adj_list,node_ids,node_attributes);
+
+            auto result = network::digraph(adj_list,node_ids,node_attributes);
+            auto repeat = (nm_index_t)n_repeats-1;
+            if (repeat != 0) {
+                return transform_unary_fusion(result,repeat);
+            } else {
+                return result;
+            }
         }
     } // transform_unary_fusion
 } // namespace nmtools::functional

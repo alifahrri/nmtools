@@ -6,6 +6,7 @@
 #include "nmtools/index/contains.hpp"
 #include "nmtools/index/index_of.hpp"
 #include "nmtools/network/add_edge.hpp"
+#include "nmtools/network/common.hpp"
 #include "nmtools/network/compose.hpp"
 #include "nmtools/network/contracted_edge.hpp"
 #include "nmtools/network/filter_nodes.hpp"
@@ -17,59 +18,14 @@
 #include "nmtools/network/topological_sort.hpp"
 #include "nmtools/network/map_ids.hpp"
 
-// given a constexpr result, convert it to type
-#define nmtools_adjacency_list_vtype(result) \
-meta::template_reduce<len(result)>([&](auto init, auto index){ \
-    using nmtools::len, nmtools::at; \
-    constexpr auto I = decltype(index)::value; \
-    using init_t = meta::type_t<decltype(init)>; \
-    constexpr auto neighbors = at(result,I); \
-    constexpr auto NUM_NEIGHBORS = len(neighbors); \
-    constexpr auto neighbors_vtype = meta::template_reduce<NUM_NEIGHBORS>([neighbors](auto init, auto index){ \
-        constexpr auto J = decltype(index)::value; \
-        using init_t = meta::type_t<decltype(init)>; \
-        using neighbor_t = meta::ct<at(neighbors,J)>; \
-        using type = meta::append_type_t<init_t,neighbor_t>; \
-        return meta::as_value_v<type>; \
-    }, meta::as_value_v<nmtools_tuple<>>); \
-    using neighbors_t = meta::type_t<decltype(neighbors_vtype)>; \
-    using type = meta::append_type_t<init_t,neighbors_t>; \
-    return meta::as_value_v<type>; \
-}, meta::as_value_v<nmtools_tuple<>>)
-
 namespace nmtools::network
 {
-    struct generate_node_ids_t {};
-
-    template <typename adjacency_list_t>
-    constexpr auto generate_node_ids(const adjacency_list_t& adj_list)
-    {
-        using result_t = meta::resolve_optype_t<generate_node_ids_t,adjacency_list_t>;
-
-        auto result = result_t {};
-
-        if constexpr (!meta::is_fail_v<result_t>
-            && !meta::is_constant_index_array_v<result_t>
-        ) {
-            auto num_nodes = len(adj_list);
-            if constexpr (meta::is_resizable_v<result_t>) {
-                result.resize(num_nodes);
-            }
-
-            for (nm_size_t i=0; i<(nm_size_t)num_nodes; i++) {
-                at(result,i) = i;
-            }
-        }
-
-        return result;
-    }
-
     template <typename edge_attributes_t=none_t
         , typename node_attributes_t=none_t
         , typename node_ids_t=none_t
         , typename adjacency_list_t=none_t>
     constexpr auto digraph([[maybe_unused]] const adjacency_list_t& adj_list=adjacency_list_t{}
-        , const node_ids_t& node_ids=node_ids_t{}
+        , [[maybe_unused]] const node_ids_t& node_ids=node_ids_t{}
         , [[maybe_unused]] const node_attributes_t& node_attributes=node_attributes_t{}
         , [[maybe_unused]] const edge_attributes_t& edge_attributes=edge_attributes_t{}
     );
@@ -348,18 +304,6 @@ namespace nmtools::network
             if constexpr (meta::is_constant_index_v<node_id_t> &&
                 meta::is_constant_adjacency_list_v<adjacency_list_type>
             ) {
-                #if 0
-                constexpr auto result = [](){
-                    auto dst_adj_list = to_value<adjacency_list_type,1>();
-                    auto NODE_ID = node_id_t::value;
-                    dst_adj_list.add_node(NODE_ID);
-                    return dst_adj_list;
-                }();
-
-                auto vtype = nmtools_adjacency_list_vtype(result.adjacency_list);
-                using type = meta::type_t<decltype(vtype)>;
-                return digraph(type{});
-                #else
                 auto dst_adj_list = utility::tuple_append(adjacency_list,nmtools_tuple{});
                 if constexpr (!is_none_v<node_ids_type> && !is_none_v<attribute_t>) {
                     auto dst_node_ids = utility::tuple_append(node_ids,node_id);
@@ -376,7 +320,6 @@ namespace nmtools::network
                 } else {
                     return digraph(dst_adj_list);
                 }
-                #endif
             } else {
                 auto num_nodes = len(adjacency_list);
                 auto dst_num_nodes = num_nodes + 1;
@@ -424,20 +367,6 @@ namespace nmtools::network
             , [[maybe_unused]] const attribute_t& attribute=attribute_t{})
         {
             if constexpr (meta::is_constant_adjacency_list_v<adjacency_list_type>) {
-                #if 0
-                constexpr auto result = [](){
-                    auto dst_adj_list = to_value<adjacency_list_type,2>();
-
-                    constexpr auto FROM = from_t::value;
-                    constexpr auto TO   = to_t::value;
-                    dst_adj_list.add_edge(FROM,TO);
-                    return dst_adj_list;
-                }();
-
-                auto vtype = nmtools_adjacency_list_vtype(result.adjacency_list);
-                using type = meta::type_t<decltype(vtype)>;
-                return digraph(type{});
-                #else
                 constexpr auto HAS_FROM = decltype(has_node(from))::value;
                 constexpr auto HAS_TO   = decltype(has_node(from))::value;
                 auto digraph = [&](){
@@ -463,7 +392,6 @@ namespace nmtools::network
                 auto vtype = nmtools_adjacency_list_vtype(dst_adj_list);
                 using type = meta::type_t<decltype(vtype)>;
                 return network::digraph(type{},digraph.node_ids,digraph.node_attributes);
-                #endif
             } else {
                 if (!has_node(from)) {
                     add_node(from);
@@ -642,7 +570,8 @@ namespace nmtools::network
             }
         }
 
-        constexpr decltype(auto) out_edges() const noexcept
+        template <typename nbunch_t=none_t>
+        constexpr decltype(auto) out_edges(const nbunch_t& nbunch=nbunch_t{}) const noexcept
         {
             // TODO: support nbunch
             if constexpr (meta::is_constant_adjacency_list_v<adjacency_list_type>
@@ -657,12 +586,19 @@ namespace nmtools::network
                 using type = meta::type_t<decltype(vtype)>;
                 return type{};
             } else {
+                auto m_nbunch = [&](){
+                    if constexpr (is_none_v<nbunch_t>) {
+                        return nbunch;
+                    } else {
+                        return index::index_of(node_ids,nbunch);
+                    }
+                }();
                 auto out_edges = [&](){
                     if constexpr (meta::is_constant_adjacency_list_v<adjacency_list_type>) {
                         constexpr auto adj_list = meta::to_value_v<adjacency_list_type>;
-                        return network::out_edges(adj_list);
+                        return network::out_edges(adj_list,m_nbunch);
                     } else {
-                        return network::out_edges(adjacency_list);
+                        return network::out_edges(adjacency_list,m_nbunch);
                     }
                 }();
                 return network::map_ids(out_edges,node_ids);
@@ -897,56 +833,6 @@ namespace nmtools::network
         return network::map_ids(filtered,digraph.node_ids);
     }
 } // namespace nmtools::network
-
-namespace nmtools::meta
-{
-    namespace error
-    {
-        template <typename...>
-        struct GENERATE_NODE_IDS_UNSUPPORTED : detail::fail_t {};
-    }
-
-    template <typename adjacency_list_t>
-    struct resolve_optype<
-        void, network::generate_node_ids_t, adjacency_list_t
-    > {
-        static constexpr auto vtype = [](){
-            if constexpr (!is_adjacency_list_v<adjacency_list_t>) {
-                using type = error::GENERATE_NODE_IDS_UNSUPPORTED<adjacency_list_t>;
-                return as_value_v<type>;
-            } else if constexpr (is_constant_adjacency_list_v<adjacency_list_t>) {
-                constexpr auto adj_list = to_value_v<adjacency_list_t>;
-                constexpr auto result = network::generate_node_ids(adj_list);
-                using nmtools::at, nmtools::len;
-                return template_reduce<len(result)>([&](auto init, auto index){
-                    using init_t = type_t<decltype(init)>;
-                    constexpr auto I = decltype(index)::value;
-                    using type = append_type_t<init_t,ct<at(result,I)>>;
-                    return as_value_v<type>;
-                }, as_value_v<nmtools_tuple<>>);
-            } else {
-                // TODO: read index_t from adjacency_list_t (e.g. keep int8 as int8)
-                using index_t = nm_size_t;
-                [[maybe_unused]]
-                constexpr auto MAX_NODES = max_len_v<adjacency_list_t>;
-                constexpr auto NUM_NODES = len_v<adjacency_list_t>;
-                // now -1 indicates failure, 0 may means 0-tuple
-                if constexpr (NUM_NODES >= 0) {
-                    using type = nmtools_array<index_t,NUM_NODES>;
-                    return as_value_v<type>;
-                } else if constexpr (MAX_NODES >= 0) {
-                    using type = nmtools_static_vector<index_t,MAX_NODES>;
-                    return as_value_v<type>;
-                } else {
-                    // TODO: use small vector
-                    using type = nmtools_list<index_t>;
-                    return as_value_v<type>;
-                }
-            }
-        }();
-        using type = type_t<decltype(vtype)>;
-    };
-} // namespace nmtools::meta
 
 #if NMTOOLS_HAS_STRING
 namespace nmtools::utils::impl

@@ -143,7 +143,7 @@ namespace nmtools::network
                 }
 
                 if constexpr (meta::is_resizable_v<result_t>) {
-                    result.resize(idx+1);
+                    result.resize(idx);
                 }
             }
 

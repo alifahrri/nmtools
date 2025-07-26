@@ -3,6 +3,7 @@
 
 #include "nmtools/meta.hpp"
 #include "nmtools/utility.hpp"
+#include "nmtools/index/index_of.hpp"
 
 namespace nmtools::tag
 {
@@ -12,18 +13,18 @@ namespace nmtools::tag
 namespace nmtools::network
 {
     // NOTE: not accepting node_ids because returning a transformed out edges will results in inconsistent indexing of src & dst
-    template <typename adjacency_list_t>
-    constexpr auto out_edges(const adjacency_list_t& adj_list)
+    template <typename adjacency_list_t, typename nbunch_t=none_t>
+    constexpr auto out_edges(const adjacency_list_t& adj_list, const nbunch_t& nbunch=nbunch_t{})
     {
-        if constexpr (meta::is_maybe_v<adjacency_list_t>) {
-            using result_t = decltype(out_edges(unwrap(adj_list)));
+        if constexpr (meta::is_maybe_v<adjacency_list_t> || meta::is_maybe_v<nbunch_t>) {
+            using result_t = decltype(out_edges(unwrap(adj_list),unwrap(nbunch)));
             using return_t = meta::conditional_t<meta::is_maybe_v<result_t>,result_t,nmtools_maybe<result_t>>;
-            return (has_value(adj_list)
-                ? return_t{out_edges(unwrap(adj_list))}
+            return (has_value(adj_list) && has_value(nbunch)
+                ? return_t{out_edges(unwrap(adj_list),unwrap(nbunch))}
                 : return_t{meta::Nothing}
             );
         } else {
-            using result_t = meta::resolve_optype_t<tag::out_edges_t,adjacency_list_t>;
+            using result_t = meta::resolve_optype_t<tag::out_edges_t,adjacency_list_t,nbunch_t>;
 
             auto result = result_t {};
 
@@ -53,6 +54,16 @@ namespace nmtools::network
                     auto node_id = I;
                     const auto& neighbors = at(adj_list,I);
                     auto num_neighbors = len(neighbors);
+                    if constexpr (meta::is_index_array_v<nbunch_t>) {
+                        auto node_idx = index::index_of(nbunch,node_id);
+                        if (!has_value(node_idx)) {
+                            return;
+                        }
+                    } else if constexpr (meta::is_index_v<nbunch_t>) {
+                        if ((nm_size_t)nbunch != (nm_size_t)node_id) {
+                            return;
+                        }
+                    }
                     for (nm_size_t j=0; j<(nm_size_t)num_neighbors; j++) {
                         auto from = node_id;
                         auto to = at(neighbors,j);
@@ -71,6 +82,10 @@ namespace nmtools::network
                         inner_loop(i);
                     }
                 }
+
+                if constexpr (meta::is_resizable_v<result_t>) {
+                    result.resize(res_i);
+                }
             }
 
             return result;
@@ -86,17 +101,22 @@ namespace nmtools::meta
         struct OUT_EDGES_UNSUPPORTED : detail::fail_t {};
     }
 
-    template <typename adjacency_list_t>
+    template <typename adjacency_list_t, typename nbunch_t>
     struct resolve_optype<
-        void, tag::out_edges_t, adjacency_list_t
+        void, tag::out_edges_t, adjacency_list_t, nbunch_t
     > {
         static constexpr auto vtype = [](){
-            if constexpr (!is_adjacency_list_v<adjacency_list_t>) {
-                using type = error::OUT_EDGES_UNSUPPORTED<adjacency_list_t>;
+            if constexpr (!is_adjacency_list_v<adjacency_list_t>
+                || !(is_none_v<nbunch_t> || is_index_array_v<nbunch_t> || is_index_v<nbunch_t>)
+            ) {
+                using type = error::OUT_EDGES_UNSUPPORTED<adjacency_list_t,nbunch_t>;
                 return as_value_v<type>;
-            } else if constexpr (is_constant_adjacency_list_v<adjacency_list_t>) {
+            } else if constexpr (is_constant_adjacency_list_v<adjacency_list_t>
+                && (is_none_v<nbunch_t> || is_constant_index_array_v<nbunch_t> || is_constant_index_v<nbunch_t>)
+            ) {
                 constexpr auto adjacency_list = to_value_v<adjacency_list_t>;
-                constexpr auto result = network::out_edges(adjacency_list);
+                constexpr auto nbunch = to_value_v<nbunch_t>;
+                constexpr auto result = network::out_edges(adjacency_list,nbunch);
                 using nmtools::at, nmtools::len;
                 return template_reduce<len(result)>([&](auto init, auto index){
                     using init_t = type_t<decltype(init)>;
