@@ -42,6 +42,30 @@ NMTOOLS_TESTING_DECLARE_CASE(network, out_edges)
         };
     }
 
+    NMTOOLS_TESTING_DECLARE_ARGS(case1b)
+    {
+        // Graph: 0 -> {1, 2}, 1 -> {2}, 2 -> {}
+        constexpr inline auto list = nmtools_tuple{
+            nmtools_tuple{1_ct, 2_ct},
+            nmtools_tuple{2_ct},
+            nmtools_tuple{}
+        };
+        constexpr auto nbunch = 0;
+        constexpr auto nbunch_ct = 0_ct;
+
+        // No node_idx, implies all edges
+        NMTOOLS_CAST_NETWORK(list)
+        NMTOOLS_CONSTEXPR_CAST_NETWORK(list)
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case1b)
+    {
+        // All out-edges: (0,1), (0,2), (1,2). Expected sorted.
+        constexpr inline auto edges = nmtools_array{
+            edge_t{0, 1},
+            edge_t{0, 2},
+        };
+    }
+
     //----------------------------------------------------
     // Test Case 2: All out-edges for the same simple graph
     // (Previously: Out-edges from a specific node 1)
