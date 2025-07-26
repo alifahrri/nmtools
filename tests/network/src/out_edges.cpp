@@ -38,6 +38,11 @@ TEST_CASE("constexpr_out_edges(case1)" * doctest::test_suite("network::out_edges
     CONSTEXPR_OUT_EDGES_SUBCASE( case1, list_sv_sv_ct );
 }
 
+TEST_CASE("out_edges(case1b)" * doctest::test_suite("network::out_edges"))
+{
+    OUT_EDGES_SUBCASE(case1b, list_a_sv, nbunch );
+}
+
 TEST_CASE("out_edges(case2)" * doctest::test_suite("network::out_edges"))
 {
     OUT_EDGES_SUBCASE(case2, list_a_sv );
