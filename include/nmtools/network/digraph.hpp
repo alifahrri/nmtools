@@ -368,7 +368,7 @@ namespace nmtools::network
         {
             if constexpr (meta::is_constant_adjacency_list_v<adjacency_list_type>) {
                 constexpr auto HAS_FROM = decltype(has_node(from))::value;
-                constexpr auto HAS_TO   = decltype(has_node(from))::value;
+                constexpr auto HAS_TO   = decltype(has_node(to))::value;
                 auto digraph = [&](){
                     if constexpr (HAS_FROM && HAS_TO) {
                         return *this;
@@ -479,7 +479,7 @@ namespace nmtools::network
                 constexpr auto N_PAIRS = meta::len_v<edges_t>;
                 auto loop = [&](auto i){
                     const auto& edge = at(edges,i);
-                        auto from = at(edge,meta::ct_v<0>);
+                    auto from = at(edge,meta::ct_v<0>);
                     auto to   = at(edge,meta::ct_v<1>);
                     add_edge(from,to);
                 };
@@ -673,103 +673,15 @@ namespace nmtools::network
         static_assert( !is_none_v<g_node_ids_t> && !is_none_v<h_node_ids_t>
             , "can't compose two nodes with none ids" );
 
-        auto fuse_node_attributes = [&](const auto& G, const auto& H){
-            if constexpr (is_none_v<g_node_attributes_t> && is_none_v<h_node_attributes_t>) {
-                return None;
-            } else if constexpr (meta::is_tuple_v<g_node_attributes_t>
-                && meta::is_tuple_v<h_node_attributes_t>
-            ) {
-                return utility::tuple_cat(G.node_attributes,H.node_attributes);
-            } else {
-                // assume same node type & has value_type
-                auto vtype = [](){
-                    using g_value_t = meta::get_value_type_t<g_node_attributes_t>;
-                    using h_value_t = meta::get_value_type_t<h_node_attributes_t>;
-                
-                    using value_type = g_value_t;
-
-                    static_assert( meta::is_same_v<g_value_t,h_value_t> && !meta::is_fail_v<g_value_t>
-                        , "invalid type for G's or H's node attributes" );
-
-                    constexpr auto B_NUM_G_NODES = meta::max_len_v<g_node_attributes_t>;
-                    constexpr auto B_NUM_H_NODES = meta::max_len_v<h_node_attributes_t>;
-                    if constexpr ((B_NUM_G_NODES >= 0) && (B_NUM_H_NODES >= 0)) {
-                        using type = nmtools_static_vector<value_type,B_NUM_G_NODES+B_NUM_H_NODES>;
-                        return meta::as_value_v<type>;
-                    } else {
-                        using type = nmtools_list<value_type>;
-                        return meta::as_value_v<type>;
-                    }
-                }();
-                using type = meta::type_t<decltype(vtype)>;
-
-                auto attributes = type {};
-
-                auto g_num_nodes = len(G.node_attributes);
-                auto h_num_nodes = len(H.node_attributes);
-                auto dst_num_nodes = g_num_nodes + h_num_nodes;
-                if constexpr (meta::is_resizable_v<type>) {
-                    attributes.resize(dst_num_nodes);
-                }
-
-                for (nm_size_t i=0; i<(nm_size_t)g_num_nodes; i++) {
-                    at(attributes,i) = at(G.node_attributes,i);
-                }
-                for (nm_size_t i=0; i<(nm_size_t)h_num_nodes; i++) {
-                    at(attributes,i+g_num_nodes) = at(H.node_attributes,i);
-                }
-
-                return attributes;
-            }
-        };
-        auto fuse_node_ids = [&](const auto& G, const auto& H){
-            if constexpr (meta::is_constant_index_array_v<g_node_ids_t>
-                && meta::is_constant_index_array_v<h_node_ids_t>
-            ) {
-                return utility::tuple_cat(G.node_ids,H.node_ids);
-            } else {
-                auto vtype = [](){
-                    using index_t = nm_size_t;
-                    constexpr auto B_NUM_G_NODES = meta::max_len_v<g_node_ids_t>;
-                    constexpr auto B_NUM_H_NODES = meta::max_len_v<h_node_ids_t>;
-                    if constexpr ((B_NUM_G_NODES >= 0) && (B_NUM_H_NODES >= 0)) {
-                        using type = nmtools_static_vector<index_t,B_NUM_G_NODES+B_NUM_H_NODES>;
-                        return meta::as_value_v<type>;
-                    } else {
-                        using type = nmtools_list<index_t>;
-                        return meta::as_value_v<type>;
-                    }
-                }();
-                using type = meta::type_t<decltype(vtype)>;
-
-                auto node_ids = type {};
-
-                auto g_num_nodes = len(G.node_ids);
-                auto h_num_nodes = len(H.node_ids);
-                auto dst_num_nodes = g_num_nodes + h_num_nodes;
-                if constexpr (meta::is_resizable_v<type>) {
-                    node_ids.resize(dst_num_nodes);
-                }
-
-                for (nm_size_t i=0; i<(nm_size_t)g_num_nodes; i++) {
-                    at(node_ids,i) = at(G.node_ids,i);
-                }
-                for (nm_size_t i=0; i<(nm_size_t)h_num_nodes; i++) {
-                    at(node_ids,i+g_num_nodes) = at(H.node_ids,i);
-                }
-
-                return node_ids;
-            }
-        };
-
         auto result_pair = network::compose(G.adjacency_list,H.adjacency_list,G.node_ids,H.node_ids);
         const auto& adj_list = nmtools::get<0>(result_pair);
         const auto& node_ids = nmtools::get<1>(result_pair);
 
         // networkx will take the attribute of H for any overlapping node
-        auto node_attributes = fuse_node_attributes(H,G);
-        auto src_node_ids = fuse_node_ids(H,G);
-        auto node_data = network::filter_nodes(node_attributes,src_node_ids,node_ids);
+        auto node_attributes = network::compose_node_attributes(H.node_attributes,G.node_attributes);
+        auto src_node_ids    = network::compose_node_ids(H.node_ids,G.node_ids);
+        auto node_data       = network::filter_nodes(node_attributes,src_node_ids,node_ids);
+        // TODO: compose edge attributes
         return digraph(adj_list,node_ids,node_data);
     } // compose
 
