@@ -12,21 +12,22 @@ namespace nmtools::tag
 
 namespace nmtools::network
 {
-    template <typename adjacency_list_t, typename from_t, typename to_t>
-    constexpr auto add_edge(const adjacency_list_t& adj_list, from_t from, to_t to)
+    template <typename adjacency_list_t, typename from_t, typename to_t, typename multi_t=meta::false_type>
+    constexpr auto add_edge(const adjacency_list_t& adj_list, from_t from, to_t to, multi_t multi=multi_t{})
     {
         if constexpr (meta::is_maybe_v<to_t> 
             || meta::is_maybe_v<from_t> 
             || meta::is_maybe_v<adjacency_list_t>
+            || meta::is_maybe_v<multi_t>
         ) {
-            using result_t = decltype(add_edge(unwrap(adj_list),unwrap(from),unwrap(to)));
+            using result_t = decltype(add_edge(unwrap(adj_list),unwrap(from),unwrap(to),unwrap(multi)));
             using return_t = meta::conditional_t<meta::is_maybe_v<result_t>,result_t,nmtools_maybe<result_t>>;
-            return (has_value(adj_list) && has_value(from) && has_value(to)
-                ? return_t{add_edge(unwrap(adj_list),unwrap(from),unwrap(to))}
+            return (has_value(adj_list) && has_value(from) && has_value(to) && has_value(multi)
+                ? return_t{add_edge(unwrap(adj_list),unwrap(from),unwrap(to),unwrap(multi))}
                 : return_t{meta::Nothing}
             );
         } else {
-            using result_t = meta::resolve_optype_t<tag::add_edge_t,adjacency_list_t,from_t,to_t>;
+            using result_t = meta::resolve_optype_t<tag::add_edge_t,adjacency_list_t,from_t,to_t,multi_t>;
 
             auto result = result_t {};
 
@@ -46,8 +47,10 @@ namespace nmtools::network
 
                     auto src_num_neighbors = len(src_neighbors);
                     auto dst_num_neighbors = src_num_neighbors;
-                    if ((i == (nm_size_t)from) && !(index::contains(src_neighbors,to))) {
-                        dst_num_neighbors += 1;
+                    if (i == (nm_size_t)from) {
+                        if (!(index::contains(src_neighbors,to)) || multi) {
+                            dst_num_neighbors += 1;
+                        }
                     }
 
                     if constexpr (meta::is_resizable_v<decltype(dst_neighbors)>) {
@@ -57,7 +60,7 @@ namespace nmtools::network
                     for (nm_size_t j=0; j<(nm_size_t)src_num_neighbors; j++) {
                         at(dst_neighbors,j) = at(src_neighbors,j);
                     }
-                    if (dst_num_neighbors > src_num_neighbors) {
+                    if ((dst_num_neighbors > src_num_neighbors)) {
                         at(dst_neighbors,dst_num_neighbors-1) = to;
                     }
                 }
@@ -76,25 +79,28 @@ namespace nmtools::meta
         struct ADD_EDGE_UNSUPPORTED : detail::fail_t {};
     }
 
-    template <typename adjacency_list_t, typename from_t, typename to_t>
+    template <typename adjacency_list_t, typename from_t, typename to_t, typename multi_t>
     struct resolve_optype<
-        void, tag::add_edge_t, adjacency_list_t, from_t, to_t
+        void, tag::add_edge_t, adjacency_list_t, from_t, to_t, multi_t
     > {
         static constexpr auto vtype = [](){
             if constexpr (!is_index_v<to_t>
                 || !is_index_v<from_t>
                 || !is_adjacency_list_v<adjacency_list_t>
+                || !is_index_v<multi_t>
             ) {
-                using type = error::ADD_EDGE_UNSUPPORTED<adjacency_list_t,from_t,to_t>;
+                using type = error::ADD_EDGE_UNSUPPORTED<adjacency_list_t,from_t,to_t,multi_t>;
                 return as_value_v<type>;
             } else if constexpr (is_constant_index_v<to_t>
                 && is_constant_index_v<from_t>
                 && is_constant_adjacency_list_v<adjacency_list_t>
+                && is_constant_index_v<multi_t>
             ) {
                 constexpr auto adj_list = to_value_v<adjacency_list_t>;
-                constexpr auto from = to_value_v<from_t>;
-                constexpr auto to   = to_value_v<to_t>;
-                constexpr auto m_result = network::add_edge(adj_list,from,to);
+                constexpr auto from  = to_value_v<from_t>;
+                constexpr auto to    = to_value_v<to_t>;
+                constexpr auto multi = to_value_v<multi_t>;
+                constexpr auto m_result = network::add_edge(adj_list,from,to,multi);
                 constexpr auto result   = unwrap(m_result);
                 using nmtools::len, nmtools::at;
                 return template_reduce<len(result)>([&](auto init, auto index){
