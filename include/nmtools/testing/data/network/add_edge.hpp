@@ -102,6 +102,32 @@ NMTOOLS_TESTING_DECLARE_CASE(network, add_edge)
         };
     }
 
+    NMTOOLS_TESTING_DECLARE_ARGS(case3b)
+    {
+        constexpr inline auto list = nmtools_tuple{
+            nmtools_tuple{1_ct},
+            nmtools_tuple<>{}
+        };
+        constexpr inline int u = 0;
+        constexpr inline int v = 1;
+
+        constexpr inline auto u_ct = 0_ct;
+        constexpr inline auto v_ct = 1_ct;
+
+        constexpr inline auto multi = true;
+        constexpr inline auto multi_ct = 1_ct;
+
+        NMTOOLS_CAST_NETWORK(list)
+        NMTOOLS_CONSTEXPR_CAST_NETWORK(list)
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case3b)
+    {
+        constexpr inline auto result = nmtools_tuple{
+            nmtools_array{1},
+            nmtools_array<int,0>{}
+        };
+    }
+
     //----------------------------------------------------
     // Test Case 4: Add a Self-Loop
     //----------------------------------------------------

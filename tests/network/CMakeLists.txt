@@ -59,6 +59,7 @@ set(NETWORK_TEST_DIGRAPH_SOURCES
     src/topological_sort.cpp
 
     src/digraph.cpp
+    src/multi_digraph.cpp
     src/expression_tree.cpp
 )
 
