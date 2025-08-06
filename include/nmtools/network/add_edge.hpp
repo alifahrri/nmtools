@@ -36,9 +36,18 @@ namespace nmtools::network
             ) {
                 auto num_nodes = len(adj_list);
 
+                auto dst_num_nodes = num_nodes;
+
+                if ((nm_index_t)from >= (nm_index_t)num_nodes) {
+                    dst_num_nodes += (from - num_nodes + 1);
+                }
+                if ((nm_index_t)to >= (nm_index_t)dst_num_nodes) {
+                    dst_num_nodes += (to - dst_num_nodes + 1);
+                }
+
                 // TODO: add from & to if not exists already
                 if constexpr (meta::is_resizable_v<result_t>) {
-                    result.resize(num_nodes);
+                    result.resize(dst_num_nodes);
                 }
 
                 for (nm_size_t i=0; i<(nm_size_t)num_nodes; i++) {
@@ -63,6 +72,11 @@ namespace nmtools::network
                     if ((dst_num_neighbors > src_num_neighbors)) {
                         at(dst_neighbors,dst_num_neighbors-1) = to;
                     }
+                }
+
+                // add edge from non-existent node
+                if ((nm_index_t)from >= (nm_index_t)num_nodes) {
+                    at(result,from).push_back(to);
                 }
             }
 
@@ -126,13 +140,15 @@ namespace nmtools::meta
                 // TODO: deduce index type from adjacency_list_t
                 using index_t = nm_index_t;
                 if constexpr (NUM_NODES >= 0) {
-                    using inner_t = nmtools_static_vector<index_t,NUM_NODES*2>;
-                    using outer_t = nmtools_static_vector<inner_t,NUM_NODES+2>;
+                    constexpr auto DST_NUM_NODES = NUM_NODES + 2;
+                    using inner_t = nmtools_static_vector<index_t,DST_NUM_NODES*2>;
+                    using outer_t = nmtools_static_vector<inner_t,DST_NUM_NODES>;
                     using type = outer_t;
                     return as_value_v<type>;
                 } else if constexpr (B_NUM_NODES >= 0) {
-                    using inner_t = nmtools_static_vector<index_t,B_NUM_NODES*2>;
-                    using outer_t = nmtools_static_vector<inner_t,B_NUM_NODES+2>;
+                    constexpr auto DST_B_NUM_NODES = B_NUM_NODES + 2;
+                    using inner_t = nmtools_static_vector<index_t,DST_B_NUM_NODES*2>;
+                    using outer_t = nmtools_static_vector<inner_t,DST_B_NUM_NODES>;
                     using type = outer_t;
                     return as_value_v<type>;
                 } else {

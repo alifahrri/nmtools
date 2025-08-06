@@ -6,13 +6,16 @@
 #include "nmtools/index/contains.hpp"
 #include "nmtools/index/index_of.hpp"
 #include "nmtools/network/add_edge.hpp"
+#include "nmtools/network/cast.hpp"
 #include "nmtools/network/compose.hpp"
 #include "nmtools/network/contracted_edge.hpp"
 #include "nmtools/network/filter_nodes.hpp"
 #include "nmtools/network/filter_node_arity.hpp"
 #include "nmtools/network/is_directed_acyclic_graph.hpp"
+#include "nmtools/network/number_of_edges.hpp"
 #include "nmtools/network/out_edges.hpp"
 #include "nmtools/network/predecessors.hpp"
+#include "nmtools/network/remove_edge.hpp"
 #include "nmtools/network/topological_generations.hpp"
 #include "nmtools/network/topological_sort.hpp"
 #include "nmtools/network/map_ids.hpp"
@@ -184,6 +187,7 @@ namespace nmtools::network
         node_ids_type        node_ids;
         node_attributes_type node_attributes;
         edge_attributes_type edge_attributes;
+        static constexpr auto multi = multi_type{};
 
         constexpr base_digraph_t() {}
 
@@ -281,33 +285,12 @@ namespace nmtools::network
             return num_edges;
         }
 
-        constexpr auto number_of_edges() const noexcept
-        {
-            return size();
-        }
-
-        template <typename node_id_t>
-        constexpr auto has_node([[maybe_unused]] node_id_t node_id) const noexcept
-        {
-            if constexpr (is_none_v<node_ids_type>
-                && meta::is_constant_adjacency_list_v<adjacency_list_type>
-                && meta::is_constant_index_v<node_id_t>
-            ) {
-                constexpr auto NUM_NODES = meta::len_v<adjacency_list_type>;
-                constexpr auto NODE_ID   = node_id_t::value;
-                constexpr auto HAS_NODE  = ((nm_index_t)NODE_ID < (nm_index_t)NUM_NODES);
-                return meta::ct_v<HAS_NODE>;
-            } else if constexpr (is_none_v<node_ids_type>) {
-                return ((nm_index_t)node_id < (nm_index_t)len(adjacency_list));
-            } else {
-                return index::contains(node_ids,node_id);
-            }
-        }
-
         template <typename id_t>
         constexpr auto get_index([[maybe_unused]] id_t id) const noexcept
         {
-            if constexpr (!is_none_v<node_ids_type>) {
+            if constexpr (is_none_v<id_t>) {
+                return None;
+            } else if constexpr (!is_none_v<node_ids_type>) {
                 return index::index_of(node_ids,id);
             } else if constexpr (is_none_v<node_ids_type>
                 && meta::is_constant_index_v<id_t>
@@ -326,6 +309,32 @@ namespace nmtools::network
                     ? result_t{id}
                     : result_t{meta::Nothing}
                 );
+            }
+        }
+
+        template <typename from_t=none_t, typename to_t=none_t>
+        constexpr auto number_of_edges(from_t from=from_t{}, to_t to=to_t{}) const noexcept
+        {
+            auto from_idx = get_index(from);
+            auto to_idx   = get_index(to);
+            return network::number_of_edges(adjacency_list,from_idx,to_idx);
+        }
+
+        template <typename node_id_t>
+        constexpr auto has_node([[maybe_unused]] node_id_t node_id) const noexcept
+        {
+            if constexpr (is_none_v<node_ids_type>
+                && meta::is_constant_adjacency_list_v<adjacency_list_type>
+                && meta::is_constant_index_v<node_id_t>
+            ) {
+                constexpr auto NUM_NODES = meta::len_v<adjacency_list_type>;
+                constexpr auto NODE_ID   = node_id_t::value;
+                constexpr auto HAS_NODE  = ((nm_index_t)NODE_ID < (nm_index_t)NUM_NODES);
+                return meta::ct_v<HAS_NODE>;
+            } else if constexpr (is_none_v<node_ids_type>) {
+                return ((nm_index_t)node_id < (nm_index_t)len(adjacency_list));
+            } else {
+                return index::contains(node_ids,node_id);
             }
         }
 
@@ -436,7 +445,6 @@ namespace nmtools::network
                 constexpr auto TO   = to_idx_t::value;
                 constexpr auto src_adj_list = meta::to_value_v<decltype(digraph.adjacency_list)>;
                 // for multi digraph, multiple edges is allowed
-                constexpr auto multi = multi_type{};
                 constexpr auto dst_adj_list = network::add_edge(src_adj_list,FROM,TO,multi);
 
                 auto vtype = nmtools_adjacency_list_vtype(dst_adj_list);
@@ -548,6 +556,24 @@ namespace nmtools::network
             }
         }
 
+        template <typename from_t, typename to_t, typename key_t=none_t>
+        constexpr decltype(auto) remove_edge(from_t from, to_t to, key_t key=key_t{})
+        {
+            if constexpr (meta::is_constant_adjacency_list_v<adjacency_list_type>) {
+
+            } else {
+                auto from_idx = unwrap(get_index(from));
+                auto to_idx   = unwrap(get_index(to));
+                auto dst_adjacency_list  = network::remove_edge(adjacency_list,from_idx,to_idx,multi,key);
+                auto dst_edge_attributes = network::remove_edge_attributes(adjacency_list,edge_attributes,from_idx,to_idx,key);
+
+                adjacency_list  = network::cast<adjacency_list_type>(dst_adjacency_list);
+                edge_attributes = network::cast_edge_attributes<edge_attributes_type>(dst_edge_attributes);
+
+                return *this;
+            }
+        }
+
         template <typename node_id_t=none_t>
         constexpr decltype(auto) nodes(node_id_t node_id=node_id_t{}) const
         {
@@ -576,8 +602,10 @@ namespace nmtools::network
             }
         }
 
-        template <typename from_t, typename to_t>
-        constexpr decltype(auto) edges(from_t from, to_t to) const
+        // TODO: return a proxy iterator object, similar to networkx
+        // TODO: support nbunch
+        template <typename from_t, typename to_t, typename key_t=none_t>
+        constexpr decltype(auto) edges(from_t from, to_t to, [[maybe_unused]] key_t key=key_t{}) const
         {
             if constexpr (!is_none_v<edge_attributes_type>) {
                 auto from_idx = get_index(from);
@@ -590,9 +618,20 @@ namespace nmtools::network
                     );
                 }
                 auto& neighbors = at(adjacency_list,unwrap(from_idx));
-                auto edge_idx = index::index_of(neighbors,to_idx);
                 auto& edges = at(edge_attributes,unwrap(from_idx));
-                return at(edges,unwrap(edge_idx));
+                auto edge_idx = unwrap(index::index_of(neighbors,to_idx,multi));
+                auto idx = [&](){
+                    if constexpr (multi) {
+                        auto idx = at(edge_idx,0);
+                        if constexpr (!is_none_v<key_t>) {
+                            idx = at(edge_idx,key);
+                        }
+                        return idx;
+                    } else {
+                        return edge_idx;
+                    }
+                }();
+                return at(edges,idx);
             } else {
                 return None;
             }
@@ -644,15 +683,18 @@ namespace nmtools::network
                         return index::index_of(node_ids,nbunch);
                     }
                 }();
-                auto out_edges = [&](){
-                    if constexpr (meta::is_constant_adjacency_list_v<adjacency_list_type>) {
-                        constexpr auto adj_list = meta::to_value_v<adjacency_list_type>;
-                        return network::out_edges(adj_list,m_nbunch);
+                if constexpr (meta::is_constant_adjacency_list_v<adjacency_list_type>) {
+                    constexpr auto adj_list = meta::to_value_v<adjacency_list_type>;
+                    auto out_edges = network::out_edges(adj_list,m_nbunch,multi);
+                    return network::map_ids(out_edges,node_ids);
+                } else {
+                    if constexpr (multi) {
+                        return network::out_edges(adjacency_list,m_nbunch,multi,node_ids);
                     } else {
-                        return network::out_edges(adjacency_list,m_nbunch);
+                        auto out_edges = network::out_edges(adjacency_list,m_nbunch,multi);
+                        return network::map_ids(out_edges,node_ids);
                     }
-                }();
-                return network::map_ids(out_edges,node_ids);
+                }
             }
         }
     };
@@ -878,6 +920,7 @@ namespace nmtools::utils::impl
                 const auto& out_edge = at(out_edges,i);
                 auto src_edge = nmtools::get<0>(out_edge);
                 auto dst_edge = nmtools::get<1>(out_edge);
+                using out_edge_t = meta::remove_cvref_t<decltype(out_edge)>;
 
                 edge_string += to_string(src_edge,utils::Compact);
                 edge_string += " -> ";
@@ -885,7 +928,14 @@ namespace nmtools::utils::impl
                 edge_string += ":";
                 edge_string += to_string(src_edge,utils::Compact);
 
-                const auto& edge = digraph.edges(src_edge,dst_edge);
+                const auto& edge = [&](){
+                    if constexpr (meta::len_v<out_edge_t> == 2) {
+                        return digraph.edges(src_edge,dst_edge);
+                    } else {
+                        auto key = nmtools::get<2>(out_edge);
+                        return digraph.edges(src_edge,dst_edge,key);
+                    }
+                }();
                 using edge_t = meta::remove_cvref_t<decltype(edge)>;
                 if constexpr (!is_none_v<edge_t>
                     && (meta::has_to_string_v<edge_t> || meta::is_same_v<edge_t,nmtools_string>)
