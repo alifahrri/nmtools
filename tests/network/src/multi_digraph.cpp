@@ -166,7 +166,7 @@ TEST_CASE("multi_digraph(case4)" * doctest::test_suite("network::multi_digraph")
     multi_digraph.add_nodes_from(array{1,2}).add_edge(1,2);
 
     auto expected = nmtools_list{
-        nmtools_array{1,2}
+        nmtools_array{1,2,0}
     };
 
     NMTOOLS_ASSERT_EQUAL( multi_digraph.out_edges(), expected )
@@ -532,11 +532,11 @@ TEST_CASE("constexpr_digraph(case4)" * doctest::test_suite("network::multi_digra
     }();
 
     auto expected = nmtools_list{
-        nmtools_array{1,2},
-        nmtools_array{1,3},
-        nmtools_array{1,1},
-        nmtools_array{2,3},
-        nmtools_array{3,4},
+        nmtools_array{1,2,0},
+        nmtools_array{1,3,0},
+        nmtools_array{1,1,0},
+        nmtools_array{2,3,0},
+        nmtools_array{3,4,0},
     };
 
     NMTOOLS_ASSERT_EQUAL( multi_digraph.out_edges(), expected );
@@ -615,14 +615,14 @@ TEST_CASE("constexpr_digraph(case7)" * doctest::test_suite("network::multi_digra
     static_assert( meta::is_constant_adjacency_list_v<decltype(result.adjacency_list)> );
 
     auto expected = nmtools_list{
-        nmtools_array{0,1},
-        nmtools_array{0,3},
-        nmtools_array{1,0},
-        nmtools_array{1,2},
-        nmtools_array{2,1},
-        nmtools_array{2,3},
-        nmtools_array{3,0},
-        nmtools_array{3,2},
+        nmtools_array{0,1,0},
+        nmtools_array{0,3,0},
+        nmtools_array{1,0,0},
+        nmtools_array{1,2,0},
+        nmtools_array{2,1,0},
+        nmtools_array{2,3,0},
+        nmtools_array{3,0,0},
+        nmtools_array{3,2,0},
     };
 
     NMTOOLS_ASSERT_EQUAL( result.out_edges(), expected );

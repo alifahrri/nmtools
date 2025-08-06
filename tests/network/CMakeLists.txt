@@ -55,6 +55,7 @@ set(NETWORK_TEST_DIGRAPH_SOURCES
     src/out_degree.cpp
     src/out_edges.cpp
     src/predecessors.cpp
+    src/remove_edge.cpp
     src/topological_generations.cpp
     src/topological_sort.cpp
 
