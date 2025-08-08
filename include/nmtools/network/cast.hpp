@@ -2,6 +2,7 @@
 #define NMTOOLS_NETWORK_CAST_HPP
 
 #include "nmtools/meta.hpp"
+#include "nmtools/utility.hpp"
 
 namespace nmtools::network::kind
 {
@@ -23,11 +24,12 @@ namespace nmtools::tag
 namespace nmtools::network
 {
     template <typename result_t, typename adjacency_list_t>
-    constexpr auto cast(const adjacency_list_t& adj_list)
+    constexpr auto cast(const adjacency_list_t& m_adj_list)
     {
         auto result = result_t {};
 
         if constexpr (!meta::is_fail_v<result_t>) {
+            const auto& adj_list = unwrap(m_adj_list);
             [[maybe_unused]]
             auto num_nodes = len(adj_list);
 
@@ -124,6 +126,32 @@ namespace nmtools::network
             at(dst_node_attributes,i) = at(src_node_attributes,i);
         }
         return dst_node_attributes;
+    }
+
+    template <typename dst_edge_attributes_t, typename src_edge_attributes_t>
+    constexpr auto cast_edge_attributes([[maybe_unused]] const src_edge_attributes_t& src_edge_attributes)
+    {
+        auto result = dst_edge_attributes_t {};
+
+        if constexpr (!is_none_v<dst_edge_attributes_t>) {
+            // assume both inner and outer has push_back
+            using inner_t = meta::get_value_type_t<dst_edge_attributes_t>;
+            
+            auto num_nodes = len(src_edge_attributes);
+
+            for (nm_size_t i=0; i<(nm_size_t)num_nodes; i++) {
+                const auto& src_edges = at(src_edge_attributes,i);
+                auto dst_edges = inner_t {};
+                const auto num_edges = len(src_edges);
+                for (nm_size_t j=0; j<(nm_size_t)num_edges; j++) {
+                    const auto& edge = at(src_edges,j);
+                    dst_edges.push_back(edge);
+                }
+                result.push_back(dst_edges);
+            }
+        }
+
+        return result;
     }
 }
 

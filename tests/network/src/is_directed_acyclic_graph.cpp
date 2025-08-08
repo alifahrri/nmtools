@@ -1,5 +1,6 @@
 #include "nmtools/network/is_directed_acyclic_graph.hpp"
 #include "nmtools/network/digraph.hpp"
+#include "nmtools/network/multi_digraph.hpp"
 #include "nmtools/testing/data/network/is_directed_acyclic_graph.hpp"
 #include "nmtools/testing/doctest.hpp"
 
@@ -27,6 +28,16 @@ SUBCASE(#case_name) \
     NMTOOLS_TESTING_USE_CASE(network, is_directed_acyclic_graph, case_name); \
     using namespace args; \
     auto digraph = nmtools::network::digraph(adj_list); \
+    auto result = nmtools::network::is_directed_acyclic_graph(digraph); \
+    NMTOOLS_ASSERT_EQUAL( result, expect::result ); \
+}
+
+#define MULTI_DIGRAPH_IS_DIRECTED_ACYCLIC_GRAPH_SUBCASE(case_name, adj_list) \
+SUBCASE(#case_name) \
+{ \
+    NMTOOLS_TESTING_USE_CASE(network, is_directed_acyclic_graph, case_name); \
+    using namespace args; \
+    auto digraph = nmtools::network::multi_digraph(adj_list); \
     auto result = nmtools::network::is_directed_acyclic_graph(digraph); \
     NMTOOLS_ASSERT_EQUAL( result, expect::result ); \
 }
@@ -61,6 +72,18 @@ TEST_CASE("digraph_is_directed_acyclic_graph(case1)" * doctest::test_suite("netw
     DIGRAPH_IS_DIRECTED_ACYCLIC_GRAPH_SUBCASE( case1, list );
 }
 
+TEST_CASE("multi_digraph_is_directed_acyclic_graph(case1)" * doctest::test_suite("network::is_directed_acyclic_graph"))
+{
+    MULTI_DIGRAPH_IS_DIRECTED_ACYCLIC_GRAPH_SUBCASE( case1, list_a_sv );
+    MULTI_DIGRAPH_IS_DIRECTED_ACYCLIC_GRAPH_SUBCASE( case1, list_a_v );
+    MULTI_DIGRAPH_IS_DIRECTED_ACYCLIC_GRAPH_SUBCASE( case1, list_sv_sv );
+    MULTI_DIGRAPH_IS_DIRECTED_ACYCLIC_GRAPH_SUBCASE( case1, list_sv_v );
+    MULTI_DIGRAPH_IS_DIRECTED_ACYCLIC_GRAPH_SUBCASE( case1, list_v_sv );
+    MULTI_DIGRAPH_IS_DIRECTED_ACYCLIC_GRAPH_SUBCASE( case1, list_v_v );
+
+    MULTI_DIGRAPH_IS_DIRECTED_ACYCLIC_GRAPH_SUBCASE( case1, list );
+}
+
 TEST_CASE("is_directed_acyclic_graph(case2)" * doctest::test_suite("network::is_directed_acyclic_graph"))
 {
     IS_DIRECTED_ACYCLIC_GRAPH_SUBCASE( case2, list_a_sv );
@@ -91,6 +114,18 @@ TEST_CASE("digraph_is_directed_acyclic_graph(case2)" * doctest::test_suite("netw
     DIGRAPH_IS_DIRECTED_ACYCLIC_GRAPH_SUBCASE( case2, list );
 }
 
+TEST_CASE("multi_digraph_is_directed_acyclic_graph(case2)" * doctest::test_suite("network::is_directed_acyclic_graph"))
+{
+    MULTI_DIGRAPH_IS_DIRECTED_ACYCLIC_GRAPH_SUBCASE( case2, list_a_sv );
+    MULTI_DIGRAPH_IS_DIRECTED_ACYCLIC_GRAPH_SUBCASE( case2, list_a_v );
+    MULTI_DIGRAPH_IS_DIRECTED_ACYCLIC_GRAPH_SUBCASE( case2, list_sv_sv );
+    MULTI_DIGRAPH_IS_DIRECTED_ACYCLIC_GRAPH_SUBCASE( case2, list_sv_v );
+    MULTI_DIGRAPH_IS_DIRECTED_ACYCLIC_GRAPH_SUBCASE( case2, list_v_sv );
+    MULTI_DIGRAPH_IS_DIRECTED_ACYCLIC_GRAPH_SUBCASE( case2, list_v_v );
+
+    MULTI_DIGRAPH_IS_DIRECTED_ACYCLIC_GRAPH_SUBCASE( case2, list );
+}
+
 TEST_CASE("is_directed_acyclic_graph(case3)" * doctest::test_suite("network::is_directed_acyclic_graph"))
 {
     IS_DIRECTED_ACYCLIC_GRAPH_SUBCASE( case3, list_a_sv );
@@ -119,6 +154,18 @@ TEST_CASE("digraph_is_directed_acyclic_graph(case3)" * doctest::test_suite("netw
     DIGRAPH_IS_DIRECTED_ACYCLIC_GRAPH_SUBCASE( case3, list_v_v );
 
     DIGRAPH_IS_DIRECTED_ACYCLIC_GRAPH_SUBCASE( case3, list );
+}
+
+TEST_CASE("multi_digraph_is_directed_acyclic_graph(case3)" * doctest::test_suite("network::is_directed_acyclic_graph"))
+{
+    MULTI_DIGRAPH_IS_DIRECTED_ACYCLIC_GRAPH_SUBCASE( case3, list_a_sv );
+    MULTI_DIGRAPH_IS_DIRECTED_ACYCLIC_GRAPH_SUBCASE( case3, list_a_v );
+    MULTI_DIGRAPH_IS_DIRECTED_ACYCLIC_GRAPH_SUBCASE( case3, list_sv_sv );
+    MULTI_DIGRAPH_IS_DIRECTED_ACYCLIC_GRAPH_SUBCASE( case3, list_sv_v );
+    MULTI_DIGRAPH_IS_DIRECTED_ACYCLIC_GRAPH_SUBCASE( case3, list_v_sv );
+    MULTI_DIGRAPH_IS_DIRECTED_ACYCLIC_GRAPH_SUBCASE( case3, list_v_v );
+
+    MULTI_DIGRAPH_IS_DIRECTED_ACYCLIC_GRAPH_SUBCASE( case3, list );
 }
 
 TEST_CASE("is_directed_acyclic_graph(case4)" * doctest::test_suite("network::is_directed_acyclic_graph"))
