@@ -102,6 +102,32 @@ NMTOOLS_TESTING_DECLARE_CASE(network, add_edge)
         };
     }
 
+    NMTOOLS_TESTING_DECLARE_ARGS(case3b)
+    {
+        constexpr inline auto list = nmtools_tuple{
+            nmtools_tuple{1_ct},
+            nmtools_tuple<>{}
+        };
+        constexpr inline int u = 0;
+        constexpr inline int v = 1;
+
+        constexpr inline auto u_ct = 0_ct;
+        constexpr inline auto v_ct = 1_ct;
+
+        constexpr inline auto multi = true;
+        constexpr inline auto multi_ct = 1_ct;
+
+        NMTOOLS_CAST_NETWORK(list)
+        NMTOOLS_CONSTEXPR_CAST_NETWORK(list)
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case3b)
+    {
+        constexpr inline auto result = nmtools_tuple{
+            nmtools_array{1,1},
+            nmtools_array<int,0>{}
+        };
+    }
+
     //----------------------------------------------------
     // Test Case 4: Add a Self-Loop
     //----------------------------------------------------
@@ -256,6 +282,103 @@ NMTOOLS_TESTING_DECLARE_CASE(network, add_edge)
         };
     }
 
+    //====================================================================
+    // MultiDiGraph Behavior Test Cases
+    //====================================================================
+
+    //----------------------------------------------------
+    // Test Case 9: Add a Parallel Edge (MultiDiGraph behavior)
+    //----------------------------------------------------
+    NMTOOLS_TESTING_DECLARE_ARGS(case9)
+    {
+        // Initial Graph: 0 -> 1
+        constexpr inline auto list = nmtools_tuple{
+            nmtools_tuple{1_ct},
+            nmtools_tuple<>{}
+        };
+        // Add edge: 0 -> 1 (which already exists)
+        constexpr inline int u = 0;
+        constexpr inline int v = 1;
+        // Specify multi-graph behavior
+        constexpr inline bool multi = true;
+
+        constexpr inline auto u_ct = 0_ct;
+        constexpr inline auto v_ct = 1_ct;
+        constexpr inline auto multi_ct = True;
+
+        NMTOOLS_CAST_NETWORK(list)
+        NMTOOLS_CONSTEXPR_CAST_NETWORK(list)
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case9)
+    {
+        // Expected Graph: 0 -> {1, 1}
+        constexpr inline auto result = nmtools_tuple{
+            nmtools_array{1, 1},
+            nmtools_array<int,0>{}
+        };
+    }
+
+    //----------------------------------------------------
+    // Test Case 10: Add a Parallel Self-Loop (MultiDiGraph behavior)
+    //----------------------------------------------------
+    NMTOOLS_TESTING_DECLARE_ARGS(case10)
+    {
+        // Initial Graph: 0 -> 0
+        constexpr inline auto list = nmtools_tuple<nmtools_tuple<meta::ct<0>>>{};
+        // Add edge: 0 -> 0 (which already exists)
+        constexpr inline int u = 0;
+        constexpr inline int v = 0;
+        // Specify multi-graph behavior
+        constexpr inline bool multi = true;
+
+        constexpr inline auto u_ct = 0_ct;
+        constexpr inline auto v_ct = 0_ct;
+        constexpr inline auto multi_ct = True;
+
+        NMTOOLS_CAST_NETWORK(list)
+        NMTOOLS_CONSTEXPR_CAST_NETWORK(list)
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case10)
+    {
+        // Expected Graph: 0 -> {0, 0}
+        constexpr inline auto result = nmtools_tuple{
+            nmtools_array{0, 0}
+        };
+    }
+
+    //----------------------------------------------------
+    // Test Case 11: Add Parallel Edge to Node with Existing Edges (MultiDiGraph behavior)
+    //----------------------------------------------------
+    NMTOOLS_TESTING_DECLARE_ARGS(case11)
+    {
+        // Initial Graph: 0 -> {1, 2}
+        constexpr inline auto list = nmtools_tuple{
+            nmtools_tuple{1_ct, 2_ct},
+            nmtools_tuple<>{},
+            nmtools_tuple<>{}
+        };
+        // Add edge: 0 -> 1 (which already exists)
+        constexpr inline int u = 0;
+        constexpr inline int v = 1;
+        // Specify multi-graph behavior
+        constexpr inline bool multi = true;
+
+        constexpr inline auto u_ct = 0_ct;
+        constexpr inline auto v_ct = 1_ct;
+        constexpr inline auto multi_ct = True;
+
+        NMTOOLS_CAST_NETWORK(list)
+        NMTOOLS_CONSTEXPR_CAST_NETWORK(list)
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case11)
+    {
+        // Expected Graph: 0 -> {1, 1, 2} (sorted)
+        constexpr inline auto result = nmtools_tuple{
+            nmtools_array{1, 2, 1},
+            nmtools_array<int,0>{},
+            nmtools_array<int,0>{}
+        };
+    }
 } // NMTOOLS_TESTING_DECLARE_CASE
 
 #endif // NMTOOLS_TESTING_DATA_NETWORK_ADD_EDGE_HPP

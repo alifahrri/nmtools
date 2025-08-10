@@ -29,7 +29,7 @@ struct node_attribute
     OpType kind;
     float weight;
 
-    auto to_string() const noexcept
+    inline auto to_string() const noexcept
     {
         auto str = nmtools_string();
 
@@ -66,7 +66,7 @@ struct edge_attribute
 {
     float weight;
 
-    auto to_string() const noexcept
+    inline auto to_string() const noexcept
     {
         auto str = nmtools_string();
 
@@ -78,6 +78,16 @@ struct edge_attribute
         return str;
     }
 };
+
+// TODO: how to stringify filename
+#define WRITE_GRAPHVIZ( digraph ) \
+{ \
+    auto graphviz = utils::to_string(digraph,utils::Graphviz); \
+    CHECK_MESSAGE( true, graphviz ); \
+    std::ofstream outputFile; \
+    outputFile.open("graphviz.dot", std::ios::out | std::ios::trunc); \
+    outputFile << graphviz << std::endl; \
+}
 
 /*==================================================================*/
 
@@ -102,12 +112,7 @@ TEST_CASE("digraph(case1)" * doctest::test_suite("network::digraph"))
     NMTOOLS_ASSERT_EQUAL( digraph.number_of_edges(), 1 );
     NMTOOLS_ASSERT_EQUAL( digraph.adjacency_list, expected )
 
-    auto graphviz = utils::to_string(digraph,utils::Graphviz);
-    CHECK_MESSAGE( true, graphviz );
-    // write to file for convinient visualizing
-    std::ofstream outputFile;
-    outputFile.open("graphviz.dot", std::ios::out | std::ios::trunc);
-    outputFile << graphviz << std::endl;
+    WRITE_GRAPHVIZ( digraph );
 }
 
 TEST_CASE("digraph(case2)" * doctest::test_suite("network::digraph"))
@@ -129,12 +134,7 @@ TEST_CASE("digraph(case2)" * doctest::test_suite("network::digraph"))
     NMTOOLS_ASSERT_EQUAL( digraph.size(), 1 );
     NMTOOLS_ASSERT_EQUAL( digraph.adjacency_list, expected )
 
-    auto graphviz = utils::to_string(digraph,utils::Graphviz);
-    CHECK_MESSAGE( true, graphviz );
-    // write to file for convinient visualizing
-    std::ofstream outputFile;
-    outputFile.open("graphviz.dot", std::ios::out | std::ios::trunc);
-    outputFile << graphviz << std::endl;
+    WRITE_GRAPHVIZ( digraph );
 }
 
 TEST_CASE("digraph(case3)" * doctest::test_suite("network::digraph"))
@@ -155,12 +155,7 @@ TEST_CASE("digraph(case3)" * doctest::test_suite("network::digraph"))
     NMTOOLS_ASSERT_EQUAL( digraph.size(), 1 );
     NMTOOLS_ASSERT_EQUAL( digraph.adjacency_list, expected )
 
-    auto graphviz = utils::to_string(digraph,utils::Graphviz);
-    CHECK_MESSAGE( true, graphviz );
-    // write to file for convinient visualizing
-    std::ofstream outputFile;
-    outputFile.open("graphviz.dot", std::ios::out | std::ios::trunc);
-    outputFile << graphviz << std::endl;
+    WRITE_GRAPHVIZ( digraph );
 }
 
 TEST_CASE("digraph(case4)" * doctest::test_suite("network::digraph"))
@@ -176,12 +171,7 @@ TEST_CASE("digraph(case4)" * doctest::test_suite("network::digraph"))
 
     NMTOOLS_ASSERT_EQUAL( digraph.out_edges(), expected )
 
-    auto graphviz = utils::to_string(digraph,utils::Graphviz);
-    CHECK_MESSAGE( true, graphviz );
-    // write to file for convinient visualizing
-    std::ofstream outputFile;
-    outputFile.open("graphviz.dot", std::ios::out | std::ios::trunc);
-    outputFile << graphviz << std::endl;
+    WRITE_GRAPHVIZ( digraph );
 }
 
 TEST_CASE("digraph(case5)" * doctest::test_suite("network::digraph"))
@@ -191,12 +181,7 @@ TEST_CASE("digraph(case5)" * doctest::test_suite("network::digraph"))
 
     digraph.add_nodes_from(array{1,2});
 
-    auto graphviz = utils::to_string(digraph,utils::Graphviz);
-    CHECK_MESSAGE( true, graphviz );
-    // write to file for convinient visualizing
-    std::ofstream outputFile;
-    outputFile.open("graphviz.dot", std::ios::out | std::ios::trunc);
-    outputFile << graphviz << std::endl;
+    WRITE_GRAPHVIZ( digraph );
 }
 
 TEST_CASE("digraph(case6)" * doctest::test_suite("network::digraph"))
@@ -224,12 +209,7 @@ TEST_CASE("digraph(case6)" * doctest::test_suite("network::digraph"))
     NMTOOLS_ASSERT_EQUAL( digraph.size(), 5 );
     NMTOOLS_ASSERT_EQUAL( digraph.adjacency_list, expected )
 
-    auto graphviz = utils::to_string(digraph,utils::Graphviz);
-    CHECK_MESSAGE( true, graphviz );
-    // write to file for convinient visualizing
-    std::ofstream outputFile;
-    outputFile.open("graphviz.dot", std::ios::out | std::ios::trunc);
-    outputFile << graphviz << std::endl;
+    WRITE_GRAPHVIZ( digraph );
 }
 
 TEST_CASE("digraph(case7)" * doctest::test_suite("network::digraph"))
@@ -260,12 +240,7 @@ TEST_CASE("digraph(case7)" * doctest::test_suite("network::digraph"))
     NMTOOLS_ASSERT_EQUAL( digraph.size(), 5 );
     NMTOOLS_ASSERT_EQUAL( digraph.adjacency_list, expected )
 
-    auto graphviz = utils::to_string(digraph,utils::Graphviz);
-    CHECK_MESSAGE( true, graphviz );
-    // write to file for convinient visualizing
-    std::ofstream outputFile;
-    outputFile.open("graphviz.dot", std::ios::out | std::ios::trunc);
-    outputFile << graphviz << std::endl;
+    WRITE_GRAPHVIZ( digraph );
 }
 
 using namespace nmtools::literals;
@@ -299,12 +274,7 @@ TEST_CASE("digraph(case8)" * doctest::test_suite("network::digraph"))
     NMTOOLS_ASSERT_EQUAL( digraph.size(), 8 );
     NMTOOLS_ASSERT_EQUAL( digraph.adjacency_list, expected )
 
-    auto graphviz = utils::to_string(digraph,utils::Graphviz);
-    CHECK_MESSAGE( true, graphviz );
-    // write to file for convinient visualizing
-    std::ofstream outputFile;
-    outputFile.open("graphviz.dot", std::ios::out | std::ios::trunc);
-    outputFile << graphviz << std::endl;
+    WRITE_GRAPHVIZ( digraph );
 }
 
 TEST_CASE("digraph(case9)" * doctest::test_suite("network::digraph"))
@@ -337,12 +307,7 @@ TEST_CASE("digraph(case9)" * doctest::test_suite("network::digraph"))
     NMTOOLS_ASSERT_EQUAL( digraph.size(), 7 );
     NMTOOLS_ASSERT_EQUAL( digraph.adjacency_list, expected )
 
-    auto graphviz = utils::to_string(digraph,utils::Graphviz);
-    CHECK_MESSAGE( true, graphviz );
-    // write to file for convinient visualizing
-    std::ofstream outputFile;
-    outputFile.open("graphviz.dot", std::ios::out | std::ios::trunc);
-    outputFile << graphviz << std::endl;
+    WRITE_GRAPHVIZ( digraph );
 }
 
 TEST_CASE("digraph(case10)" * doctest::test_suite("network::digraph"))
@@ -380,12 +345,7 @@ TEST_CASE("digraph(case10)" * doctest::test_suite("network::digraph"))
     NMTOOLS_ASSERT_EQUAL( digraph.size(), 10 );
     NMTOOLS_ASSERT_EQUAL( digraph.adjacency_list, expected )
 
-    auto graphviz = utils::to_string(digraph,utils::Graphviz);
-    CHECK_MESSAGE( true, graphviz );
-    // write to file for convinient visualizing
-    std::ofstream outputFile;
-    outputFile.open("graphviz.dot", std::ios::out | std::ios::trunc);
-    outputFile << graphviz << std::endl;
+    WRITE_GRAPHVIZ( digraph );
 }
 
 // trie
@@ -449,12 +409,7 @@ TEST_CASE("digraph(case11)" * doctest::test_suite("network::digraph"))
     NMTOOLS_ASSERT_EQUAL( digraph.size(), 10 );
     NMTOOLS_ASSERT_EQUAL( digraph.adjacency_list, adjacency_list )
 
-    auto graphviz = utils::to_string(digraph,utils::Graphviz);
-    CHECK_MESSAGE( true, graphviz );
-    // write to file for convinient visualizing
-    std::ofstream outputFile;
-    outputFile.open("graphviz.dot", std::ios::out | std::ios::trunc);
-    outputFile << graphviz << std::endl;
+    WRITE_GRAPHVIZ( digraph );
 }
 
 /*=================================================================== */
@@ -483,12 +438,7 @@ TEST_CASE("constexpr_digraph(case1)" * doctest::test_suite("network::digraph"))
     NMTOOLS_ASSERT_EQUAL( digraph.size(), 1 );
     NMTOOLS_ASSERT_EQUAL( digraph.adjacency_list, expected )
 
-    auto graphviz = utils::to_string(digraph,utils::Graphviz);
-    CHECK_MESSAGE( true, graphviz );
-    // write to file for convinient visualizing
-    std::ofstream outputFile;
-    outputFile.open("graphviz.dot", std::ios::out | std::ios::trunc);
-    outputFile << graphviz << std::endl;
+    WRITE_GRAPHVIZ( digraph );
 }
 
 TEST_CASE("constexpr_digraph(case2)" * doctest::test_suite("network::digraph"))
@@ -522,12 +472,7 @@ TEST_CASE("constexpr_digraph(case2)" * doctest::test_suite("network::digraph"))
     NMTOOLS_ASSERT_EQUAL( digraph.size(), 5 );
     NMTOOLS_ASSERT_EQUAL( digraph.adjacency_list, expected )
 
-    auto graphviz = utils::to_string(digraph,utils::Graphviz);
-    CHECK_MESSAGE( true, graphviz );
-    // write to file for convinient visualizing
-    std::ofstream outputFile;
-    outputFile.open("graphviz.dot", std::ios::out | std::ios::trunc);
-    outputFile << graphviz << std::endl;
+    WRITE_GRAPHVIZ( digraph );
 }
 
 TEST_CASE("constexpr_digraph(case3)" * doctest::test_suite("network::digraph"))
@@ -562,12 +507,7 @@ TEST_CASE("constexpr_digraph(case3)" * doctest::test_suite("network::digraph"))
     NMTOOLS_ASSERT_EQUAL( digraph.size(), 5 );
     NMTOOLS_ASSERT_EQUAL( digraph.adjacency_list, expected )
 
-    auto graphviz = utils::to_string(digraph,utils::Graphviz);
-    CHECK_MESSAGE( true, graphviz );
-    // write to file for convinient visualizing
-    std::ofstream outputFile;
-    outputFile.open("graphviz.dot", std::ios::out | std::ios::trunc);
-    outputFile << graphviz << std::endl;
+    WRITE_GRAPHVIZ( digraph );
 }
 
 TEST_CASE("constexpr_digraph(case4)" * doctest::test_suite("network::digraph"))
@@ -601,12 +541,7 @@ TEST_CASE("constexpr_digraph(case4)" * doctest::test_suite("network::digraph"))
 
     NMTOOLS_ASSERT_EQUAL( digraph.out_edges(), expected );
 
-    auto graphviz = utils::to_string(digraph,utils::Graphviz);
-    CHECK_MESSAGE( true, graphviz );
-    // write to file for convinient visualizing
-    std::ofstream outputFile;
-    outputFile.open("graphviz.dot", std::ios::out | std::ios::trunc);
-    outputFile << graphviz << std::endl;
+    WRITE_GRAPHVIZ( digraph );
 }
 
 TEST_CASE("constexpr_digraph(case5)" * doctest::test_suite("network::digraph"))
@@ -632,12 +567,7 @@ TEST_CASE("constexpr_digraph(case5)" * doctest::test_suite("network::digraph"))
 
     CHECK_MESSAGE( true, utils::to_string(digraph,utils::Graphviz) );
 
-    auto graphviz = utils::to_string(digraph,utils::Graphviz);
-    CHECK_MESSAGE( true, graphviz );
-    // write to file for convinient visualizing
-    std::ofstream outputFile;
-    outputFile.open("graphviz.dot", std::ios::out | std::ios::trunc);
-    outputFile << graphviz << std::endl;
+    WRITE_GRAPHVIZ( digraph );
 }
 
 TEST_CASE("constexpr_digraph(case6)" * doctest::test_suite("network::digraph"))
@@ -667,12 +597,7 @@ TEST_CASE("constexpr_digraph(case6)" * doctest::test_suite("network::digraph"))
     NMTOOLS_ASSERT_EQUAL( nm::len(result.adjacency_list), 5 )
     NMTOOLS_ASSERT_EQUAL( result.adjacency_list, expected )
 
-    auto graphviz = utils::to_string(digraph,utils::Graphviz);
-    CHECK_MESSAGE( true, graphviz );
-    // write to file for convinient visualizing
-    std::ofstream outputFile;
-    outputFile.open("graphviz.dot", std::ios::out | std::ios::trunc);
-    outputFile << graphviz << std::endl;
+    WRITE_GRAPHVIZ( digraph );
 }
 
 TEST_CASE("constexpr_digraph(case7)" * doctest::test_suite("network::digraph"))
@@ -702,12 +627,7 @@ TEST_CASE("constexpr_digraph(case7)" * doctest::test_suite("network::digraph"))
 
     NMTOOLS_ASSERT_EQUAL( result.out_edges(), expected );
 
-    auto graphviz = utils::to_string(digraph,utils::Graphviz);
-    CHECK_MESSAGE( true, graphviz );
-    // write to file for convinient visualizing
-    std::ofstream outputFile;
-    outputFile.open("graphviz.dot", std::ios::out | std::ios::trunc);
-    outputFile << graphviz << std::endl;
+    WRITE_GRAPHVIZ( digraph );
 }
 
 TEST_CASE("constexpr_digraph(case8)" * doctest::test_suite("network::digraph"))
@@ -724,12 +644,7 @@ TEST_CASE("constexpr_digraph(case8)" * doctest::test_suite("network::digraph"))
     auto result = digraph.add_node(meta::ct_v<4>);
     static_assert( meta::is_constant_adjacency_list_v<decltype(result.adjacency_list)> );
 
-    auto graphviz = utils::to_string(digraph,utils::Graphviz);
-    CHECK_MESSAGE( true, graphviz );
-    // write to file for convinient visualizing
-    std::ofstream outputFile;
-    outputFile.open("graphviz.dot", std::ios::out | std::ios::trunc);
-    outputFile << graphviz << std::endl;
+    WRITE_GRAPHVIZ( digraph );
 }
 
 TEST_CASE("constexpr_digraph(case9)" * doctest::test_suite("network::digraph"))
@@ -767,12 +682,7 @@ TEST_CASE("constexpr_digraph(case9)" * doctest::test_suite("network::digraph"))
     };
     NMTOOLS_ASSERT_EQUAL( result.adjacency_list, expected )
 
-    auto graphviz = utils::to_string(digraph,utils::Graphviz);
-    CHECK_MESSAGE( true, graphviz );
-    // write to file for convinient visualizing
-    std::ofstream outputFile;
-    outputFile.open("graphviz.dot", std::ios::out | std::ios::trunc);
-    outputFile << graphviz << std::endl;
+    WRITE_GRAPHVIZ( digraph );
 }
 
 /*=================================================================*/
@@ -801,12 +711,7 @@ TEST_CASE("digraph_attribute(case1)" * doctest::test_suite("network::digraph"))
     CHECK( digraph.nodes(3).kind == OpType::UNKNOWN );
     CHECK( digraph.nodes(4).kind == OpType::UNKNOWN );
 
-    auto graphviz = utils::to_string(digraph,utils::Graphviz);
-    CHECK_MESSAGE( true, graphviz );
-    // write to file for convinient visualizing
-    std::ofstream outputFile;
-    outputFile.open("graphviz.dot", std::ios::out | std::ios::trunc);
-    outputFile << graphviz << std::endl;
+    WRITE_GRAPHVIZ( digraph );
 }
 
 TEST_CASE("digraph_attribute(case2)" * doctest::test_suite("network::digraph"))
@@ -850,12 +755,7 @@ TEST_CASE("digraph_attribute(case2)" * doctest::test_suite("network::digraph"))
     CHECK( digraph.nodes(2).kind == OpType::UNKNOWN );
     CHECK( digraph.nodes(3).kind == OpType::UNKNOWN );
 
-    auto graphviz = utils::to_string(digraph,utils::Graphviz);
-    CHECK_MESSAGE( true, graphviz );
-    // write to file for convinient visualizing
-    std::ofstream outputFile;
-    outputFile.open("graphviz.dot", std::ios::out | std::ios::trunc);
-    outputFile << graphviz << std::endl;
+    WRITE_GRAPHVIZ( digraph );
 }
 
 TEST_CASE("digraph_attribute(case3)" * doctest::test_suite("network::digraph"))
@@ -889,12 +789,7 @@ TEST_CASE("digraph_attribute(case3)" * doctest::test_suite("network::digraph"))
     CHECK( digraph.nodes(3).kind == OpType::UNKNOWN );
     CHECK( digraph.nodes(4).kind == OpType::UNKNOWN );
 
-    auto graphviz = utils::to_string(digraph,utils::Graphviz);
-    CHECK_MESSAGE( true, graphviz );
-    // write to file for convinient visualizing
-    std::ofstream outputFile;
-    outputFile.open("graphviz.dot", std::ios::out | std::ios::trunc);
-    outputFile << graphviz << std::endl;
+    WRITE_GRAPHVIZ( digraph );
 }
 
 TEST_CASE("digraph_attribute(case4)" * doctest::test_suite("network::digraph"))
@@ -934,12 +829,7 @@ TEST_CASE("digraph_attribute(case4)" * doctest::test_suite("network::digraph"))
     NMTOOLS_ASSERT_EQUAL( digraph.size(), 10 );
     NMTOOLS_ASSERT_EQUAL( digraph.adjacency_list, expected )
 
-    auto graphviz = utils::to_string(digraph,utils::Graphviz);
-    CHECK_MESSAGE( true, graphviz );
-    // write to file for convinient visualizing
-    std::ofstream outputFile;
-    outputFile.open("graphviz.dot", std::ios::out | std::ios::trunc);
-    outputFile << graphviz << std::endl;
+    WRITE_GRAPHVIZ( digraph );
 }
 
 TEST_CASE("digraph_attribute(case5)" * doctest::test_suite("network::digraph"))
@@ -950,10 +840,5 @@ TEST_CASE("digraph_attribute(case5)" * doctest::test_suite("network::digraph"))
 
     NMTOOLS_ASSERT_EQUAL( digraph.order(), 1 );
 
-    auto graphviz = utils::to_string(digraph,utils::Graphviz);
-    CHECK_MESSAGE( true, graphviz );
-    // write to file for convinient visualizing
-    std::ofstream outputFile;
-    outputFile.open("graphviz.dot", std::ios::out | std::ios::trunc);
-    outputFile << graphviz << std::endl;
+    WRITE_GRAPHVIZ( digraph );
 }
