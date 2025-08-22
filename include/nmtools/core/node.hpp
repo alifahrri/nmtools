@@ -376,6 +376,11 @@ namespace nmtools::functional
             return result;
         }
 
+        constexpr auto operator|(const Node& other) const
+        {
+            return other * *this;
+        }
+
         #if NMTOOLS_HAS_STRING
         inline auto to_string() const
         {

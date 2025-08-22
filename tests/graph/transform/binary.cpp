@@ -78,3 +78,23 @@ TEST_CASE("binary(case2)" * doctest::test_suite("transform"))
     BINARY_SUBCASE( case2, adjacency_list_v_sv, node_ids, node_attributes, n_repeats );
     BINARY_SUBCASE( case2, adjacency_list_v_v, node_ids, node_attributes, n_repeats );
 }
+
+TEST_CASE("binary(case3a)" * doctest::test_suite("transform"))
+{
+    BINARY_SUBCASE( case3a, adjacency_list_a_sv, node_ids, node_attributes, n_repeats );
+    BINARY_SUBCASE( case3a, adjacency_list_a_v, node_ids, node_attributes, n_repeats );
+    BINARY_SUBCASE( case3a, adjacency_list_sv_sv, node_ids, node_attributes, n_repeats );
+    BINARY_SUBCASE( case3a, adjacency_list_sv_v, node_ids, node_attributes, n_repeats );
+    BINARY_SUBCASE( case3a, adjacency_list_v_sv, node_ids, node_attributes, n_repeats );
+    BINARY_SUBCASE( case3a, adjacency_list_v_v, node_ids, node_attributes, n_repeats );
+}
+
+TEST_CASE("binary(case3b)" * doctest::test_suite("transform"))
+{
+    BINARY_SUBCASE( case3b, adjacency_list_a_sv, node_ids, node_attributes, n_repeats );
+    BINARY_SUBCASE( case3b, adjacency_list_a_v, node_ids, node_attributes, n_repeats );
+    BINARY_SUBCASE( case3b, adjacency_list_sv_sv, node_ids, node_attributes, n_repeats );
+    BINARY_SUBCASE( case3b, adjacency_list_sv_v, node_ids, node_attributes, n_repeats );
+    BINARY_SUBCASE( case3b, adjacency_list_v_sv, node_ids, node_attributes, n_repeats );
+    BINARY_SUBCASE( case3b, adjacency_list_v_v, node_ids, node_attributes, n_repeats );
+}
