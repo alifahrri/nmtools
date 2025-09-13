@@ -1,4 +1,5 @@
 #include "nmtools/core/computational_graph.hpp"
+#include "nmtools/network/multi_digraph.hpp"
 #include "nmtools/core/transform/binary_fusion.hpp"
 #include "nmtools/array/random.hpp"
 #include "nmtools/testing/doctest.hpp"
@@ -9,7 +10,7 @@ SUBCASE(#case_name) \
 { \
     NMTOOLS_TESTING_USE_CASE( functional, transform_binary_fusion, case_name ); \
     using namespace args; \
-    auto graph = nmtools::network::digraph( adj_list, src_node_ids, node_attributes ); \
+    auto graph = nmtools::network::multi_digraph( adj_list, src_node_ids, node_attributes ); \
     { \
         auto src_graphviz = nmtools::utils::to_string(nmtools::unwrap(graph),nmtools::utils::Graphviz); \
         CHECK_MESSAGE( true, src_graphviz ); \
@@ -17,7 +18,7 @@ SUBCASE(#case_name) \
         src_dot.open("src-graphviz.dot", std::ios::out | std::ios::trunc); \
         src_dot << src_graphviz << std::endl; \
     } \
-    auto exp_graph = nmtools::network::digraph( expect::adjacency_list, expect::node_ids, expect::node_attributes ); \
+    auto exp_graph = nmtools::network::multi_digraph( expect::adjacency_list, expect::node_ids, expect::node_attributes ); \
     { \
         auto exp_graphviz = nmtools::utils::to_string(nmtools::unwrap(exp_graph),nmtools::utils::Graphviz); \
         CHECK_MESSAGE( true, exp_graphviz ); \
@@ -97,4 +98,34 @@ TEST_CASE("binary(case3b)" * doctest::test_suite("transform"))
     BINARY_SUBCASE( case3b, adjacency_list_sv_v, node_ids, node_attributes, n_repeats );
     BINARY_SUBCASE( case3b, adjacency_list_v_sv, node_ids, node_attributes, n_repeats );
     BINARY_SUBCASE( case3b, adjacency_list_v_v, node_ids, node_attributes, n_repeats );
+}
+
+TEST_CASE("binary(case3c)" * doctest::test_suite("transform"))
+{
+    BINARY_SUBCASE( case3c, adjacency_list_a_sv, node_ids, node_attributes, n_repeats );
+    BINARY_SUBCASE( case3c, adjacency_list_a_v, node_ids, node_attributes, n_repeats );
+    BINARY_SUBCASE( case3c, adjacency_list_sv_sv, node_ids, node_attributes, n_repeats );
+    BINARY_SUBCASE( case3c, adjacency_list_sv_v, node_ids, node_attributes, n_repeats );
+    BINARY_SUBCASE( case3c, adjacency_list_v_sv, node_ids, node_attributes, n_repeats );
+    BINARY_SUBCASE( case3c, adjacency_list_v_v, node_ids, node_attributes, n_repeats );
+}
+
+TEST_CASE("binary(case3d)" * doctest::test_suite("transform"))
+{
+    BINARY_SUBCASE( case3d, adjacency_list_a_sv, node_ids, node_attributes, n_repeats );
+    BINARY_SUBCASE( case3d, adjacency_list_a_v, node_ids, node_attributes, n_repeats );
+    BINARY_SUBCASE( case3d, adjacency_list_sv_sv, node_ids, node_attributes, n_repeats );
+    BINARY_SUBCASE( case3d, adjacency_list_sv_v, node_ids, node_attributes, n_repeats );
+    BINARY_SUBCASE( case3d, adjacency_list_v_sv, node_ids, node_attributes, n_repeats );
+    BINARY_SUBCASE( case3d, adjacency_list_v_v, node_ids, node_attributes, n_repeats );
+}
+
+TEST_CASE("binary(case3e)" * doctest::test_suite("transform"))
+{
+    BINARY_SUBCASE( case3e, adjacency_list_a_sv, node_ids, node_attributes, n_repeats );
+    BINARY_SUBCASE( case3e, adjacency_list_a_v, node_ids, node_attributes, n_repeats );
+    BINARY_SUBCASE( case3e, adjacency_list_sv_sv, node_ids, node_attributes, n_repeats );
+    BINARY_SUBCASE( case3e, adjacency_list_sv_v, node_ids, node_attributes, n_repeats );
+    BINARY_SUBCASE( case3e, adjacency_list_v_sv, node_ids, node_attributes, n_repeats );
+    BINARY_SUBCASE( case3e, adjacency_list_v_v, node_ids, node_attributes, n_repeats );
 }
