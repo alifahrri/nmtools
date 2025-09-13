@@ -413,12 +413,12 @@ namespace nmtools::functional
                     auto rhs_predecessors = network::predecessors(digraph,rhs);
                     if (
                         !digraph.nodes(lhs).is_buffer() && digraph.nodes(rhs).is_buffer()
-                        && index::contains(lhs_predecessors,rhs)
+                        && unwrap(index::contains(lhs_predecessors,rhs))
                     ) {
                         fuse_case = 4;
                     } else if (
                         !digraph.nodes(rhs).is_buffer() && digraph.nodes(lhs).is_buffer()
-                        && index::contains(rhs_predecessors,lhs)
+                        && unwrap(index::contains(rhs_predecessors,lhs))
                     ) {
                         fuse_case = 5;
                     } else if (!digraph.nodes(lhs).is_buffer() && !digraph.nodes(rhs).is_buffer()) {

@@ -97,7 +97,7 @@ namespace nmtools::functional
                 if constexpr (meta::is_broadcast_view_v<operand_t>) {
                     // TODO: refactor ufuncs
                     // skip broadcasting
-                    const auto& sub_operand = at(get_operands(operand),meta::ct_v<0>);
+                    const auto sub_operand = at(get_operands(operand),meta::ct_v<0>);
                     static_assert( !meta::is_fail_v<decltype(sub_operand)> );
                     using sub_operand_t = meta::remove_pointer_t<meta::remove_cvref_t<decltype(sub_operand)>>;
                     if constexpr (meta::is_same_view_v<view::alias_t,sub_operand_t>) {
