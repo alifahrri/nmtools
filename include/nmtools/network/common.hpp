@@ -16,6 +16,7 @@
 #include "nmtools/network/out_edges.hpp"
 #include "nmtools/network/predecessors.hpp"
 #include "nmtools/network/remove_edge.hpp"
+#include "nmtools/network/remove_node.hpp"
 #include "nmtools/network/topological_generations.hpp"
 #include "nmtools/network/topological_sort.hpp"
 #include "nmtools/network/map_ids.hpp"
@@ -560,7 +561,7 @@ namespace nmtools::network
         constexpr decltype(auto) remove_edge(from_t from, to_t to, key_t key=key_t{})
         {
             if constexpr (meta::is_constant_adjacency_list_v<adjacency_list_type>) {
-
+                // TODO: implement
             } else {
                 auto from_idx = unwrap(get_index(from));
                 auto to_idx   = unwrap(get_index(to));
@@ -569,6 +570,25 @@ namespace nmtools::network
 
                 adjacency_list  = network::cast<adjacency_list_type>(dst_adjacency_list);
                 edge_attributes = network::cast_edge_attributes<edge_attributes_type>(dst_edge_attributes);
+
+                return *this;
+            }
+        }
+
+        template <typename node_id_t>
+        constexpr decltype(auto) remove_node([[maybe_unused]] node_id_t node_id)
+        {
+            if constexpr (meta::is_constant_adjacency_list_v<adjacency_list_type>) {
+                // TODO: implement
+            } else {
+                auto idx = unwrap(get_index(node_id));
+                auto dst_adjacency_list  = network::remove_node(adjacency_list,idx);
+                auto dst_node_ids        = network::remove_node_id(node_ids,idx);
+                auto dst_node_attributes = network::remove_node_attributes(node_attributes,idx);
+
+                adjacency_list  = network::cast<adjacency_list_type>(dst_adjacency_list);
+                node_ids        = network::cast_node_ids<node_ids_type>(dst_node_ids);
+                node_attributes = network::cast_node_attributes<node_attributes_type>(dst_node_attributes);
 
                 return *this;
             }
