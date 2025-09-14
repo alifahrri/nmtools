@@ -253,7 +253,7 @@ namespace nmtools::utl
         constexpr auto substr(size_type pos, size_type count=npos) const
         {
             auto substring = string_base();
-            count = (count = npos ? this->size() - pos : count);
+            count = (count == npos ? this->size() - pos : count);
             substring.resize(count);
             for (nm_size_t i=0; i<(nm_size_t)count; i++) {
                 substring[i] = this->at(pos+i);
