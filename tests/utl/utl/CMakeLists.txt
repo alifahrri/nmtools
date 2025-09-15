@@ -15,6 +15,8 @@ add_executable(${PROJECT_NAME} tests.cpp
     src/static_queue.cpp
     src/static_vector.cpp
     src/static_stack.cpp
+    src/static_string.cpp
+    src/string.cpp
     src/tuplev2.cpp
 )
 add_test(
