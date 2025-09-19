@@ -20,7 +20,7 @@ NMTOOLS_TESTING_DECLARE_CASE(network, add_edge)
         constexpr inline auto list = nmtools_tuple{
             nmtools_tuple{1_ct},
             nmtools_tuple{2_ct},
-            nmtools_tuple<>{}
+            nmtools_tuple{}
         };
         // Add edge: 0 -> 2
         constexpr inline int u = 0;
@@ -50,8 +50,8 @@ NMTOOLS_TESTING_DECLARE_CASE(network, add_edge)
         // Initial Graph: 0 -> 1, 2 is isolated
         constexpr inline auto list = nmtools_tuple{
             nmtools_tuple{1_ct},
-            nmtools_tuple<>{},
-            nmtools_tuple<>{}
+            nmtools_tuple{},
+            nmtools_tuple{}
         };
         // Add edge: 2 -> 0
         constexpr inline int u = 2;
@@ -81,7 +81,7 @@ NMTOOLS_TESTING_DECLARE_CASE(network, add_edge)
         // Initial Graph: 0 -> 1
         constexpr inline auto list = nmtools_tuple{
             nmtools_tuple{1_ct},
-            nmtools_tuple<>{}
+            nmtools_tuple{}
         };
         // Add edge: 0 -> 1 (already exists)
         constexpr inline int u = 0;
@@ -106,7 +106,7 @@ NMTOOLS_TESTING_DECLARE_CASE(network, add_edge)
     {
         constexpr inline auto list = nmtools_tuple{
             nmtools_tuple{1_ct},
-            nmtools_tuple<>{}
+            nmtools_tuple{}
         };
         constexpr inline int u = 0;
         constexpr inline int v = 1;
@@ -136,7 +136,7 @@ NMTOOLS_TESTING_DECLARE_CASE(network, add_edge)
         // Initial Graph: 0 -> 1
         constexpr inline auto list = nmtools_tuple{
             nmtools_tuple{1_ct},
-            nmtools_tuple<>{}
+            nmtools_tuple{}
         };
         // Add edge: 1 -> 1
         constexpr inline int u = 1;
@@ -165,8 +165,8 @@ NMTOOLS_TESTING_DECLARE_CASE(network, add_edge)
         // Initial Graph: 0 -> 1, node 2 is isolated
         constexpr inline auto list = nmtools_tuple{
             nmtools_tuple{1_ct},
-            nmtools_tuple<>{},
-            nmtools_tuple<>{}
+            nmtools_tuple{},
+            nmtools_tuple{}
         };
         // Add edge: 2 -> 1
         constexpr inline int u = 2;
@@ -196,7 +196,7 @@ NMTOOLS_TESTING_DECLARE_CASE(network, add_edge)
         // Initial Graph has 2 nodes (0, 1). list.size() = 2
         constexpr inline auto list = nmtools_tuple{
             nmtools_tuple{1_ct},
-            nmtools_tuple<>{}
+            nmtools_tuple{}
         };
         // Add edge from new node 2 to existing node 0
         // u = 2 is within list.size() + 2 constraint
@@ -227,7 +227,7 @@ NMTOOLS_TESTING_DECLARE_CASE(network, add_edge)
         // Initial Graph has 2 nodes (0, 1). list.size() = 2
         constexpr inline auto list = nmtools_tuple{
             nmtools_tuple{1_ct},
-            nmtools_tuple<>{}
+            nmtools_tuple{}
         };
         // Add edge from existing node 0 to new node 2
         // v = 2 is within list.size() + 2 constraint
@@ -258,7 +258,7 @@ NMTOOLS_TESTING_DECLARE_CASE(network, add_edge)
         // Initial Graph has 2 nodes (0, 1). list.size() = 2
         constexpr inline auto list = nmtools_tuple{
             nmtools_tuple{1_ct},
-            nmtools_tuple<>{}
+            nmtools_tuple{}
         };
         // Add edge from new node 2 to new node 3
         // u=2, v=3 are within list.size() + 2 constraint
@@ -294,7 +294,7 @@ NMTOOLS_TESTING_DECLARE_CASE(network, add_edge)
         // Initial Graph: 0 -> 1
         constexpr inline auto list = nmtools_tuple{
             nmtools_tuple{1_ct},
-            nmtools_tuple<>{}
+            nmtools_tuple{}
         };
         // Add edge: 0 -> 1 (which already exists)
         constexpr inline int u = 0;
@@ -354,8 +354,8 @@ NMTOOLS_TESTING_DECLARE_CASE(network, add_edge)
         // Initial Graph: 0 -> {1, 2}
         constexpr inline auto list = nmtools_tuple{
             nmtools_tuple{1_ct, 2_ct},
-            nmtools_tuple<>{},
-            nmtools_tuple<>{}
+            nmtools_tuple{},
+            nmtools_tuple{}
         };
         // Add edge: 0 -> 1 (which already exists)
         constexpr inline int u = 0;

@@ -295,7 +295,7 @@ namespace nmtools::functional
                         , utility::tuple_append(operand_ids,NODE_ID)
                     };
                 }
-            }, nmtools_tuple{compute_graph_t<>(),nmtools_tuple<>{}});
+            }, nmtools_tuple{compute_graph_t<>(),nmtools_tuple{}});
 
             auto sub_graph = nmtools::get<0>(sub_graph_and_ids);
             auto operand_ids = nmtools::get<1>(sub_graph_and_ids);

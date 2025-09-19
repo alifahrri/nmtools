@@ -17,13 +17,13 @@ NMTOOLS_TESTING_DECLARE_CASE(network, compose)
     {
         // Graph G: 10 -> 20
         constexpr inline auto g_list = nmtools_tuple{
-            nmtools_tuple{1_ct}, nmtools_tuple<>{}
+            nmtools_tuple{1_ct}, nmtools_tuple{}
         };
         constexpr inline auto g_map_id = nmtools_tuple{10_ct, 20_ct};
 
         // Graph H: 30 -> 40
         constexpr inline auto h_list = nmtools_tuple{
-            nmtools_tuple{1_ct}, nmtools_tuple<>{}
+            nmtools_tuple{1_ct}, nmtools_tuple{}
         };
         constexpr inline auto h_map_id = nmtools_tuple{30_ct, 40_ct};
 
@@ -55,13 +55,13 @@ NMTOOLS_TESTING_DECLARE_CASE(network, compose)
     {
         // Graph G: 10 -> 20
         constexpr inline auto g_list = nmtools_tuple{
-            nmtools_tuple{1_ct}, nmtools_tuple<>{}
+            nmtools_tuple{1_ct}, nmtools_tuple{}
         };
         constexpr inline auto g_map_id = nmtools_tuple{10_ct, 20_ct};
 
         // Graph H: 20 -> 30
         constexpr inline auto h_list = nmtools_tuple{
-            nmtools_tuple{1_ct}, nmtools_tuple<>{}
+            nmtools_tuple{1_ct}, nmtools_tuple{}
         };
         constexpr inline auto h_map_id = nmtools_tuple{20_ct, 30_ct};
 
@@ -92,13 +92,13 @@ NMTOOLS_TESTING_DECLARE_CASE(network, compose)
     {
         // Graph G: 10 -> 20
         constexpr inline auto g_list = nmtools_tuple{
-            nmtools_tuple{1_ct}, nmtools_tuple<>{}
+            nmtools_tuple{1_ct}, nmtools_tuple{}
         };
         constexpr inline auto g_map_id = nmtools_tuple{10_ct, 20_ct};
 
         // Graph H: 10 -> 20, 20 -> 30
         constexpr inline auto h_list = nmtools_tuple{
-            nmtools_tuple{1_ct}, nmtools_tuple{2_ct}, nmtools_tuple<>{}
+            nmtools_tuple{1_ct}, nmtools_tuple{2_ct}, nmtools_tuple{}
         };
         constexpr inline auto h_map_id = nmtools_tuple{10_ct, 20_ct, 30_ct};
 
@@ -129,12 +129,12 @@ NMTOOLS_TESTING_DECLARE_CASE(network, compose)
     {
         // Graph G: 1 -> 2
         constexpr inline auto g_list = nmtools_tuple{
-            nmtools_tuple{1_ct}, nmtools_tuple<>{}
+            nmtools_tuple{1_ct}, nmtools_tuple{}
         };
         constexpr inline auto g_map_id = nmtools_tuple{1_ct, 2_ct};
 
         // Graph H: Empty
-        constexpr inline auto h_list = nmtools_tuple<>{};
+        constexpr inline auto h_list = nmtools_tuple{};
         constexpr inline auto h_map_id = nmtools_array<int,0>{};
 
         NMTOOLS_CAST_NETWORK(g_list)
@@ -161,13 +161,13 @@ NMTOOLS_TESTING_DECLARE_CASE(network, compose)
     {
         // Graph G: Nodes {1,2,3}, Edges 1->2, 1->3
         constexpr inline auto g_list = nmtools_tuple{
-            nmtools_tuple{1_ct, 2_ct}, nmtools_tuple<>{}, nmtools_tuple<>{}
+            nmtools_tuple{1_ct, 2_ct}, nmtools_tuple{}, nmtools_tuple{}
         };
         constexpr inline auto g_map_id = nmtools_tuple{1_ct, 2_ct, 3_ct};
 
         // Graph H: Nodes {3,4,5}, Edges 3->4, 4->5
         constexpr inline auto h_list = nmtools_tuple{
-            nmtools_tuple{1_ct}, nmtools_tuple{2_ct}, nmtools_tuple<>{}
+            nmtools_tuple{1_ct}, nmtools_tuple{2_ct}, nmtools_tuple{}
         };
         constexpr inline auto h_map_id = nmtools_tuple{3_ct, 4_ct, 5_ct};
 
@@ -219,7 +219,7 @@ NMTOOLS_TESTING_DECLARE_CASE(network, compose)
     {
         // Graph G: Nodes {1,2,3}, Edges 1->2, 1->3
         constexpr inline auto g_list = nmtools_tuple{
-            nmtools_tuple{1_ct, 2_ct}, nmtools_tuple<>{}, nmtools_tuple<>{}
+            nmtools_tuple{1_ct, 2_ct}, nmtools_tuple{}, nmtools_tuple{}
         };
         constexpr inline auto g_map_id = nmtools_tuple{1_ct, 2_ct, 3_ct};
         inline auto g_attributes = nmtools_tuple{
@@ -230,7 +230,7 @@ NMTOOLS_TESTING_DECLARE_CASE(network, compose)
 
         // Graph H: Nodes {3,4,5}, Edges 3->4, 4->5
         constexpr inline auto h_list = nmtools_tuple{
-            nmtools_tuple{1_ct}, nmtools_tuple{2_ct}, nmtools_tuple<>{}
+            nmtools_tuple{1_ct}, nmtools_tuple{2_ct}, nmtools_tuple{}
         };
         constexpr inline auto h_map_id = nmtools_tuple{3_ct, 4_ct, 5_ct};
         inline auto h_attributes = nmtools_tuple{

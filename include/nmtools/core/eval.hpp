@@ -92,7 +92,7 @@ namespace nmtools
                     return meta::template_reduce<N>([&](auto init, auto index){
                         constexpr auto I = decltype(index)::value;
                         return utility::tuple_append(init,get_array(nmtools::get<I>(array)));
-                    }, nmtools_tuple<>{});
+                    }, nmtools_tuple{});
                 }
             } else if constexpr (meta::is_pointer_v<array_t>) {
                 return array;

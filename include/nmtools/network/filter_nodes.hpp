@@ -76,7 +76,7 @@ namespace nmtools::network
                     constexpr auto I = decltype(index)::value;
                     constexpr auto m_idx = index::index_of(src_node_ids,at(dst_node_ids,I));
                     return utility::tuple_append(init,at(node_attributes,meta::ct_v<unwrap(m_idx)>));
-                },nmtools_tuple<>{});
+                },nmtools_tuple{});
             } else {
                 auto result = result_t {};
 

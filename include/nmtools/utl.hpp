@@ -8,7 +8,6 @@
 
 #include "nmtools/utl/array.hpp"
 #include "nmtools/utl/tuple.hpp"
-#include "nmtools/utl/tuplev2.hpp"
 #include "nmtools/utl/either.hpp"
 #include "nmtools/utl/maybe.hpp"
 #include "nmtools/utl/queue.hpp"
@@ -26,14 +25,8 @@
 #define nmtools_either ::nmtools::utl::either
 #endif // nmtools_either
 
-#define NMTOOLS_UTL_USE_TUPLEV2
-
 #ifndef nmtools_tuple
-#ifdef NMTOOLS_UTL_USE_TUPLEV2
-#define nmtools_tuple ::nmtools::utl::tuplev2
-#else
 #define nmtools_tuple ::nmtools::utl::tuple
-#endif // NMTOOLS_UTL_USE_TUPLEV2
 #endif // nmtools_tuple
 
 #ifndef nmtools_maybe
