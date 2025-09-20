@@ -76,6 +76,8 @@ namespace nmtools::utl
             : buffer(other.buffer)
             , size_(other.size_)
         {}
+        #else
+        constexpr static_vector(const static_vector& other) = default;
         #endif
 
         constexpr void resize(size_type new_size)

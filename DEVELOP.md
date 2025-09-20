@@ -391,6 +391,6 @@ Build the tests:
 ```
 mkdir -p build/gcc-9
 cd build/gcc-9
-cmake ../..
+cmake -DCMAKE_TOOLCHAIN_FILE=cmake/toolchains/gcc-werror.cmake ../..
 clear && make -j16
 ```
