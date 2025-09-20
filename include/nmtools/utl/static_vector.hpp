@@ -16,7 +16,7 @@
 
 // Found internal compiler error in gcc9 when implementing static_string
 #ifdef __GNUC__
-#if __GNUC__ == 9
+#if __GNUC__ <= 14
 #define NMTOOLS_GCC_ICE_STATIC_STRING
 #endif
 #endif // __GNUC__
