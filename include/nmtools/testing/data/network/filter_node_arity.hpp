@@ -16,7 +16,7 @@ NMTOOLS_TESTING_DECLARE_CASE(network, filter_node_arity)
     //----------------------------------------------------
     NMTOOLS_TESTING_DECLARE_ARGS(case1)
     {
-        constexpr inline auto list = nmtools_tuple<>{};
+        constexpr inline auto list = nmtools_tuple{};
         constexpr inline int arity = 0;
         constexpr inline auto arity_ct = 0_ct;
         NMTOOLS_CAST_NETWORK(list)
@@ -32,7 +32,7 @@ NMTOOLS_TESTING_DECLARE_CASE(network, filter_node_arity)
     //----------------------------------------------------
     NMTOOLS_TESTING_DECLARE_ARGS(case2)
     {
-        constexpr inline auto list = nmtools_tuple<>{};
+        constexpr inline auto list = nmtools_tuple{};
         constexpr inline int arity = 1;
         constexpr inline auto arity_ct = 1_ct;
         NMTOOLS_CAST_NETWORK(list)

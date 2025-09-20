@@ -18,13 +18,13 @@ NMTOOLS_TESTING_DECLARE_CASE(network, topological_generations)
     // From test_01_empty_graph
     NMTOOLS_TESTING_DECLARE_ARGS(case1)
     {
-        constexpr inline auto list = nmtools_tuple<>{};
+        constexpr inline auto list = nmtools_tuple{};
         NMTOOLS_CAST_NETWORK(list)
         NMTOOLS_CONSTEXPR_CAST_NETWORK(list)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case1)
     {
-        constexpr inline auto generations = nmtools_tuple<>{};
+        constexpr inline auto generations = nmtools_tuple{};
     }
 
     // From test_02_single_node_graph
@@ -44,7 +44,7 @@ NMTOOLS_TESTING_DECLARE_CASE(network, topological_generations)
     {
         // 0 -> 1 -> 2 -> 3
         constexpr inline auto list = nmtools_tuple{
-            nmtools_tuple{1_ct}, nmtools_tuple{2_ct}, nmtools_tuple{3_ct}, nmtools_tuple<>{}
+            nmtools_tuple{1_ct}, nmtools_tuple{2_ct}, nmtools_tuple{3_ct}, nmtools_tuple{}
         };
         NMTOOLS_CAST_NETWORK(list)
         NMTOOLS_CONSTEXPR_CAST_NETWORK(list)
@@ -61,7 +61,7 @@ NMTOOLS_TESTING_DECLARE_CASE(network, topological_generations)
     {
         // 0 -> 2, 1 -> 2, 2 -> 3
         constexpr inline auto list = nmtools_tuple{
-            nmtools_tuple{2_ct}, nmtools_tuple{2_ct}, nmtools_tuple{3_ct}, nmtools_tuple<>{}
+            nmtools_tuple{2_ct}, nmtools_tuple{2_ct}, nmtools_tuple{3_ct}, nmtools_tuple{}
         };
         NMTOOLS_CAST_NETWORK(list)
         NMTOOLS_CONSTEXPR_CAST_NETWORK(list)
@@ -78,7 +78,7 @@ NMTOOLS_TESTING_DECLARE_CASE(network, topological_generations)
     {
         // 0 -> 1, 0 -> 2
         constexpr inline auto list = nmtools_tuple{
-            nmtools_tuple{1_ct, 2_ct}, nmtools_tuple<>{}, nmtools_tuple<>{}
+            nmtools_tuple{1_ct, 2_ct}, nmtools_tuple{}, nmtools_tuple{}
         };
         NMTOOLS_CAST_NETWORK(list)
         NMTOOLS_CONSTEXPR_CAST_NETWORK(list)
@@ -95,7 +95,7 @@ NMTOOLS_TESTING_DECLARE_CASE(network, topological_generations)
     {
         //   0 -> {1,2}, 1 -> 3, 2 -> 3
         constexpr inline auto list = nmtools_tuple{
-            nmtools_tuple{1_ct, 2_ct}, nmtools_tuple{3_ct}, nmtools_tuple{3_ct}, nmtools_tuple<>{}
+            nmtools_tuple{1_ct, 2_ct}, nmtools_tuple{3_ct}, nmtools_tuple{3_ct}, nmtools_tuple{}
         };
         NMTOOLS_CAST_NETWORK(list)
         NMTOOLS_CONSTEXPR_CAST_NETWORK(list)
@@ -112,7 +112,7 @@ NMTOOLS_TESTING_DECLARE_CASE(network, topological_generations)
     {
         // 0->1; 2->3; 4 (isolated)
         constexpr inline auto list = nmtools_tuple{
-            nmtools_tuple{1_ct}, nmtools_tuple<>{}, nmtools_tuple{3_ct}, nmtools_tuple<>{}, nmtools_tuple<>{}
+            nmtools_tuple{1_ct}, nmtools_tuple{}, nmtools_tuple{3_ct}, nmtools_tuple{}, nmtools_tuple{}
         };
         NMTOOLS_CAST_NETWORK(list)
         NMTOOLS_CONSTEXPR_CAST_NETWORK(list)
@@ -136,8 +136,8 @@ NMTOOLS_TESTING_DECLARE_CASE(network, topological_generations)
             nmtools_tuple{8_ct},          // Node 5
             nmtools_tuple{8_ct, 9_ct},    // Node 6
             nmtools_tuple{9_ct},          // Node 7
-            nmtools_tuple<>{},           // Node 8
-            nmtools_tuple<>{}            // Node 9
+            nmtools_tuple{},           // Node 8
+            nmtools_tuple{}            // Node 9
         };
         NMTOOLS_CAST_NETWORK(list)
         NMTOOLS_CONSTEXPR_CAST_NETWORK(list)
@@ -184,7 +184,7 @@ NMTOOLS_TESTING_DECLARE_CASE(network, topological_generations)
     {
         // 0 -> 1, 1 -> 2, 2 -> 1 (cycle 1-2), 2 -> 3
         constexpr inline auto list = nmtools_tuple{
-            nmtools_tuple{1_ct}, nmtools_tuple{2_ct}, nmtools_tuple{1_ct, 3_ct}, nmtools_tuple<>{}
+            nmtools_tuple{1_ct}, nmtools_tuple{2_ct}, nmtools_tuple{1_ct, 3_ct}, nmtools_tuple{}
         };
         NMTOOLS_CAST_NETWORK(list)
         NMTOOLS_CONSTEXPR_CAST_NETWORK(list)

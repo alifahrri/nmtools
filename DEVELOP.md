@@ -2,17 +2,22 @@
 
 Cheatsheet for development build and tests.
 
-1. [Basic Building & Testing (CPU)](#basic-testing-cpu)
-1. [Build & Test `web-wasm`](#build--test-web-wasm)
-1. [Build & Test `sycl` OpenMP](#build--test-sycl-openmp)
-1. [Build & Test `sycl` OpenCL](#build--test-sycl-opencl)
-1. [Build & Test `sycl` `cuda`](#build--test-sycl-cuda)
-1. [Build & Test `cuda`](#build--test-cuda)
-1. [Build & Test `hip`](#build--test-hip)
-1. [Build & Test (Ubuntu20.04)](#build--test-ubuntu2004)
-1. [Run Interactive Notebook](#run-interactive-notebook)
-1. [Run clang-repl](#run-clang-repl)
-1. [Build with ditstcc](#setup-distcc)
+- [Development Guide](#development-guide)
+  - [Basic Building \& Testing (CPU)](#basic-building--testing-cpu)
+    - [Build Unit Tests](#build-unit-tests)
+    - [Configuring the tests](#configuring-the-tests)
+    - [Run Unit Tests](#run-unit-tests)
+  - [Build \& Test `web-wasm`](#build--test-web-wasm)
+  - [Build \& Test `sycl` OpenMP](#build--test-sycl-openmp)
+  - [Build \& Test `sycl` OpenCL](#build--test-sycl-opencl)
+  - [Build \& Test `sycl` `cuda`](#build--test-sycl-cuda)
+  - [Build \& Test (Ubuntu20.04)](#build--test-ubuntu2004)
+  - [Build \& Test `cuda`](#build--test-cuda)
+  - [Build \& Test `hip`](#build--test-hip)
+  - [Run Interactive Notebook](#run-interactive-notebook)
+  - [Run Clang-Repl](#run-clang-repl)
+  - [Setup `distcc`](#setup-distcc)
+  - [Build with devcontainer](#build-with-devcontainer)
 
 ## Basic Building & Testing (CPU)
 
@@ -340,4 +345,52 @@ export DISTCC_VERBOSE=0
 export DISTCC_PAUSE_TIME_MSEC=10
 export DISTCC_HOSTS="192.168.1.11/24,lzo localhost/32,lzo"
 clear && make -j56 VERBOSE=1 all
+```
+
+## Build with devcontainer
+Build with devcontainer in terminal, useful when trying some version of environment with specific version of compiler.
+
+Install npm if needed:
+```
+sudo apt install npm
+```
+Install devcontainer
+```
+sudo npm install -g @devcontainers/cli
+```
+power up the container
+```
+devcontainer --workspace-folder . up
+```
+run the container
+```
+devcontainer exec --workspace-folder . zsh
+```
+A devcontainer.json is provided
+```json
+    // ...
+    // DOCKERFILE: ubuntu focal (for gcc 9)
+	"name": "GCC 9",
+	"dockerFile": "../docker/focal.dockerfile",
+		"args": {
+            "USERNAME": "${localEnv:USER}",
+        },
+        "target": "dev"  
+	},
+
+    // DOCKERFILE: ubuntu jammy (22.04)
+    // "name": "ubuntu jammy - gcc11, clang14",
+	// "dockerFile": "../docker/jammy.dockerfile",
+
+    // DOCKERFILE: ubuntu jammy (22.04)
+    // "name": "ubuntu lunar",
+	// "dockerFile": "../docker/lunar.dockerfile",
+    // ...
+```
+Build the tests:
+```
+mkdir -p build/gcc-9
+cd build/gcc-9
+cmake ../..
+clear && make -j16
 ```

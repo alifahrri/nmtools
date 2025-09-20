@@ -90,7 +90,7 @@ NMTOOLS_TESTING_DECLARE_CASE(network, topological_sort)
     //----------------------------------------------------
     NMTOOLS_TESTING_DECLARE_ARGS(case4)
     {
-        constexpr inline auto list = nmtools_tuple<>{}; // Empty adjacency list
+        constexpr inline auto list = nmtools_tuple{}; // Empty adjacency list
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case4)
     {

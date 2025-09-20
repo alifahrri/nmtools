@@ -58,7 +58,7 @@ NMTOOLS_TESTING_DECLARE_CASE(network, number_of_edges)
     //----------------------------------------------------
     NMTOOLS_TESTING_DECLARE_ARGS(case3)
     {
-        constexpr inline auto list = nmtools_tuple<>{};
+        constexpr inline auto list = nmtools_tuple{};
         NMTOOLS_CAST_NETWORK(list)
         NMTOOLS_CONSTEXPR_CAST_NETWORK(list)
     }
@@ -80,7 +80,7 @@ NMTOOLS_TESTING_DECLARE_CASE(network, number_of_edges)
         constexpr inline auto list = nmtools_tuple{
             nmtools_tuple{1_ct},
             nmtools_tuple{2_ct},
-            nmtools_tuple<>{}
+            nmtools_tuple{}
         };
         // Count edges from 0 to 1
         constexpr inline int u = 0;
@@ -103,7 +103,7 @@ NMTOOLS_TESTING_DECLARE_CASE(network, number_of_edges)
         constexpr inline auto list = nmtools_tuple{
             nmtools_tuple{1_ct},
             nmtools_tuple{2_ct},
-            nmtools_tuple<>{}
+            nmtools_tuple{}
         };
         // Count edges from 1 to 0 (which don't exist)
         constexpr inline int u = 1;
@@ -147,7 +147,7 @@ NMTOOLS_TESTING_DECLARE_CASE(network, number_of_edges)
         // Graph: 0->0, 0->0, 0->1
         constexpr inline auto list = nmtools_tuple{
             nmtools_tuple{0_ct, 0_ct, 1_ct},
-            nmtools_tuple<>{}
+            nmtools_tuple{}
         };
         // Count self-loops on node 0
         constexpr inline int u = 0;

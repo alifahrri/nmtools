@@ -118,7 +118,7 @@ NMTOOLS_TESTING_DECLARE_CASE(network, in_degree)
     //----------------------------------------------------
     NMTOOLS_TESTING_DECLARE_ARGS(case6)
     {
-        constexpr inline auto list = nmtools_tuple<>{}; // Empty adjacency list
+        constexpr inline auto list = nmtools_tuple{}; // Empty adjacency list
         NMTOOLS_CAST_NETWORK(list)
         NMTOOLS_CONSTEXPR_CAST_NETWORK(list)
     }

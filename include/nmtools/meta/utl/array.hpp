@@ -24,13 +24,6 @@ namespace nmtools::meta
         static constexpr auto value = sizeof...(Args);
     };
 
-    // TODO: remove this specialization
-    template <typename...Args>
-    struct len<utl::tuplev2<Args...>>
-    {
-        static constexpr auto value = sizeof...(Args);
-    };
-
     template <typename T, size_t Capacity>
     struct max_len<utl::static_vector<T,Capacity>>
     {
@@ -70,15 +63,8 @@ namespace nmtools::meta
         static constexpr auto value = N;
     };
 
-    // TODO: remove this specialization
     template <typename...Ts>
     struct fixed_index_array_size<utl::tuple<Ts...>,enable_if_t<(is_index_v<Ts> && ...)>>
-    {
-        static constexpr auto value = sizeof...(Ts);
-    };
-
-    template <typename...Ts>
-    struct fixed_index_array_size<utl::tuplev2<Ts...>,enable_if_t<(is_index_v<Ts> && ...)>>
     {
         static constexpr auto value = sizeof...(Ts);
     };
@@ -127,19 +113,6 @@ namespace nmtools::meta
                 return nmtools_array{sizeof...(Ts)};
             } else {
                 return error::FIXED_SHAPE_UNSUPPORTED<utl::tuple<Ts...>>{};
-            }
-        }();
-    };
-
-    // TODO: remove this specialization
-    template <typename...Ts>
-    struct fixed_shape<utl::tuplev2<Ts...>>
-    {
-        static constexpr auto value = [](){
-            if constexpr ((is_constant_index_v<Ts> && ...)) {
-                return nmtools_array{sizeof...(Ts)};
-            } else {
-                return error::FIXED_SHAPE_UNSUPPORTED<utl::tuplev2<Ts...>>{};
             }
         }();
     };

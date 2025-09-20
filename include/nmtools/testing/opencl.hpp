@@ -94,7 +94,7 @@ namespace nmtools::testing
                     auto cl_sizes_   = utility::tuple_append(cl_sizes,size);
                     return nmtools_tuple{cl_buffers_,cl_sizes_};
                 }
-            }, nmtools_tuple{nmtools_tuple<>{},nmtools_tuple<>{}});
+            }, nmtools_tuple{nmtools_tuple{},nmtools_tuple{}});
 
             auto cl_buffers = utility::tuple_cat(nmtools_tuple{out_buffer},args_cl_buffers);
             auto cl_sizes = utility::tuple_cat(nmtools_tuple{(nm_cl_index_t)out_size},args_cl_sizes);

@@ -320,7 +320,7 @@ namespace nmtools
                 }();
                 using type = meta::type_t<decltype(vtype)>;
                 return utility::tuple_append(init,type(I));
-            }, nmtools_tuple<>{});
+            }, nmtools_tuple{});
         }
     }
 

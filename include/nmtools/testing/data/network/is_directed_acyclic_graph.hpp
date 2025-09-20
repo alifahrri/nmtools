@@ -20,7 +20,7 @@ NMTOOLS_TESTING_DECLARE_CASE(network, is_directed_acyclic_graph)
         constexpr inline auto list = nmtools_tuple{
             nmtools_tuple{1_ct},
             nmtools_tuple{2_ct},
-            nmtools_tuple<>{}
+            nmtools_tuple{}
         };
         NMTOOLS_CAST_NETWORK(list)
         NMTOOLS_CONSTEXPR_CAST_NETWORK(list)
@@ -72,7 +72,7 @@ NMTOOLS_TESTING_DECLARE_CASE(network, is_directed_acyclic_graph)
     //----------------------------------------------------
     NMTOOLS_TESTING_DECLARE_ARGS(case4)
     {
-        constexpr inline auto list = nmtools_tuple<>{};
+        constexpr inline auto list = nmtools_tuple{};
         NMTOOLS_CAST_NETWORK(list)
         NMTOOLS_CONSTEXPR_CAST_NETWORK(list)
     }
@@ -87,7 +87,7 @@ NMTOOLS_TESTING_DECLARE_CASE(network, is_directed_acyclic_graph)
     NMTOOLS_TESTING_DECLARE_ARGS(case5)
     {
         constexpr inline auto list = nmtools_tuple{
-            nmtools_tuple<>{}
+            nmtools_tuple{}
         };
         NMTOOLS_CAST_NETWORK(list)
         NMTOOLS_CONSTEXPR_CAST_NETWORK(list)
@@ -107,7 +107,7 @@ NMTOOLS_TESTING_DECLARE_CASE(network, is_directed_acyclic_graph)
             nmtools_tuple{1_ct, 2_ct},
             nmtools_tuple{3_ct},
             nmtools_tuple{3_ct},
-            nmtools_tuple<>{}
+            nmtools_tuple{}
         };
         NMTOOLS_CAST_NETWORK(list)
         NMTOOLS_CONSTEXPR_CAST_NETWORK(list)
@@ -125,9 +125,9 @@ NMTOOLS_TESTING_DECLARE_CASE(network, is_directed_acyclic_graph)
         // Graph: 0 -> 1 and 2 -> 3
         constexpr inline auto list = nmtools_tuple{
             nmtools_tuple{1_ct},
-            nmtools_tuple<>{},
+            nmtools_tuple{},
             nmtools_tuple{3_ct},
-            nmtools_tuple<>{}
+            nmtools_tuple{}
         };
         NMTOOLS_CAST_NETWORK(list)
         NMTOOLS_CONSTEXPR_CAST_NETWORK(list)
@@ -145,7 +145,7 @@ NMTOOLS_TESTING_DECLARE_CASE(network, is_directed_acyclic_graph)
         // Graph: 0 -> 1 and 2 -> 3 -> 2
         constexpr inline auto list = nmtools_tuple{
             nmtools_tuple{1_ct},
-            nmtools_tuple<>{},
+            nmtools_tuple{},
             nmtools_tuple{3_ct},
             nmtools_tuple{2_ct}
         };
@@ -167,7 +167,7 @@ NMTOOLS_TESTING_DECLARE_CASE(network, is_directed_acyclic_graph)
             nmtools_tuple{3_ct},
             nmtools_tuple{3_ct},
             nmtools_tuple{3_ct},
-            nmtools_tuple<>{}
+            nmtools_tuple{}
         };
         NMTOOLS_CAST_NETWORK(list)
         NMTOOLS_CONSTEXPR_CAST_NETWORK(list)
@@ -185,9 +185,9 @@ NMTOOLS_TESTING_DECLARE_CASE(network, is_directed_acyclic_graph)
         // Graph: 0 -> {1, 2, 3}
         constexpr inline auto list = nmtools_tuple{
             nmtools_tuple{1_ct, 2_ct, 3_ct},
-            nmtools_tuple<>{},
-            nmtools_tuple<>{},
-            nmtools_tuple<>{}
+            nmtools_tuple{},
+            nmtools_tuple{},
+            nmtools_tuple{}
         };
         NMTOOLS_CAST_NETWORK(list)
         NMTOOLS_CONSTEXPR_CAST_NETWORK(list)

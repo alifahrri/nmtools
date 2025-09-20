@@ -182,7 +182,7 @@ NMTOOLS_TESTING_DECLARE_CASE(network, has_path)
     //----------------------------------------------------
     NMTOOLS_TESTING_DECLARE_ARGS(case8)
     {
-        constexpr inline auto list = nmtools_tuple<>{}; // Empty adjacency list
+        constexpr inline auto list = nmtools_tuple{}; // Empty adjacency list
         constexpr inline auto source_node = 0;
         constexpr inline auto target_node = 0;
 

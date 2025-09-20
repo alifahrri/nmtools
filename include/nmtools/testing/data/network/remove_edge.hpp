@@ -24,7 +24,7 @@ NMTOOLS_TESTING_DECLARE_CASE(network, remove_edge)
         constexpr inline auto list = nmtools_tuple{
             nmtools_tuple{1_ct, 2_ct},
             nmtools_tuple{2_ct},
-            nmtools_tuple<>{}
+            nmtools_tuple{}
         };
         // Remove edge: 0 -> 1
         constexpr inline int u = 0;
@@ -54,7 +54,7 @@ NMTOOLS_TESTING_DECLARE_CASE(network, remove_edge)
         // Initial Graph: 0 -> 1
         constexpr inline auto list = nmtools_tuple{
             nmtools_tuple{1_ct},
-            nmtools_tuple<>{}
+            nmtools_tuple{}
         };
         // Remove edge: 1 -> 0 (does not exist)
         constexpr inline int u = 1;
@@ -83,7 +83,7 @@ NMTOOLS_TESTING_DECLARE_CASE(network, remove_edge)
         // Initial Graph: 0 -> {0, 1}
         constexpr inline auto list = nmtools_tuple{
             nmtools_tuple{0_ct, 1_ct},
-            nmtools_tuple<>{}
+            nmtools_tuple{}
         };
         // Remove edge: 0 -> 0
         constexpr inline int u = 0;
@@ -116,7 +116,7 @@ NMTOOLS_TESTING_DECLARE_CASE(network, remove_edge)
         // Initial Graph: 0 -> {1, 1}
         constexpr inline auto list = nmtools_tuple{
             nmtools_tuple{1_ct, 1_ct},
-            nmtools_tuple<>{}
+            nmtools_tuple{}
         };
         // Remove edge: 0 -> 1
         constexpr inline int u = 0;
@@ -148,8 +148,8 @@ NMTOOLS_TESTING_DECLARE_CASE(network, remove_edge)
         // Initial Graph: 0 -> {1, 2, 1}
         constexpr inline auto list = nmtools_tuple{
             nmtools_tuple{1_ct, 2_ct, 1_ct},
-            nmtools_tuple<>{},
-            nmtools_tuple<>{}
+            nmtools_tuple{},
+            nmtools_tuple{}
         };
         // Remove edge: 0 -> 1
         constexpr inline int u = 0;
@@ -181,7 +181,7 @@ NMTOOLS_TESTING_DECLARE_CASE(network, remove_edge)
         // Initial Graph: 0 -> {0, 0, 1}
         constexpr inline auto list = nmtools_tuple{
             nmtools_tuple{0_ct, 0_ct, 1_ct},
-            nmtools_tuple<>{}
+            nmtools_tuple{}
         };
         // Remove edge: 0 -> 0
         constexpr inline int u = 0;
@@ -210,8 +210,8 @@ NMTOOLS_TESTING_DECLARE_CASE(network, remove_edge)
         // Initial Graph: 0 -> {1, 2, 1}
         constexpr inline auto list = nmtools_tuple{
             nmtools_tuple{1_ct, 2_ct, 1_ct},
-            nmtools_tuple<>{},
-            nmtools_tuple<>{}
+            nmtools_tuple{},
+            nmtools_tuple{}
         };
         // Remove edge: 0 -> 1
         constexpr inline int u = 0;

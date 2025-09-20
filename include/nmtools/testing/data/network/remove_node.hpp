@@ -20,7 +20,7 @@ NMTOOLS_TESTING_DECLARE_CASE(network, remove_node)
         constexpr inline auto list = nmtools_tuple{
             nmtools_tuple{1_ct},
             nmtools_tuple{2_ct},
-            nmtools_tuple<>{}
+            nmtools_tuple{}
         };
         // Remove node 1
         constexpr inline int node_to_remove = 1;
@@ -48,7 +48,7 @@ NMTOOLS_TESTING_DECLARE_CASE(network, remove_node)
             nmtools_tuple{1_ct, 2_ct},
             nmtools_tuple{3_ct},
             nmtools_tuple{3_ct},
-            nmtools_tuple<>{}
+            nmtools_tuple{}
         };
         // Remove node 0
         constexpr inline int node_to_remove = 0;
@@ -76,7 +76,7 @@ NMTOOLS_TESTING_DECLARE_CASE(network, remove_node)
         constexpr inline auto list = nmtools_tuple{
             nmtools_tuple{2_ct},
             nmtools_tuple{2_ct},
-            nmtools_tuple<>{}
+            nmtools_tuple{}
         };
         // Remove node 2
         constexpr inline int node_to_remove = 2;
@@ -137,7 +137,7 @@ NMTOOLS_TESTING_DECLARE_CASE(network, remove_node)
     NMTOOLS_TESTING_DECLARE_EXPECT(case5)
     {
         // Expected Graph: Empty
-        constexpr inline auto result = nmtools_tuple<>{};
+        constexpr inline auto result = nmtools_tuple{};
     }
 
     //----------------------------------------------------
@@ -149,7 +149,7 @@ NMTOOLS_TESTING_DECLARE_CASE(network, remove_node)
         constexpr inline auto list = nmtools_tuple{
             nmtools_tuple{1_ct, 1_ct},
             nmtools_tuple{2_ct, 2_ct},
-            nmtools_tuple<>{}
+            nmtools_tuple{}
         };
         // Remove node 1
         constexpr inline int node_to_remove = 1;
@@ -175,8 +175,8 @@ NMTOOLS_TESTING_DECLARE_CASE(network, remove_node)
         // Initial Graph: 0->1, node 2 is isolated
         constexpr inline auto list = nmtools_tuple{
             nmtools_tuple{1_ct},
-            nmtools_tuple<>{},
-            nmtools_tuple<>{}
+            nmtools_tuple{},
+            nmtools_tuple{}
         };
         // Remove node 2
         constexpr inline int node_to_remove = 2;

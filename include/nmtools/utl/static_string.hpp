@@ -60,6 +60,17 @@ namespace nmtools::utl
             return init;
         }
 
+        template <nm_size_t OtherCapacity>
+        constexpr auto operator==(const static_string_base<OtherCapacity,T>& other) const
+        {
+            auto init = this->size() == other.size();
+            auto N = this->size();
+            for (nm_size_t i=0; (i<(nm_size_t)N) && (init); i++) {
+                init = init && (this->at(i) == other.at(i));
+            }
+            return init;
+        }
+
         template <auto N>
         constexpr auto operator+(const T (&other)[N]) const
         {

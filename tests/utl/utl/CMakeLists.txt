@@ -5,19 +5,19 @@ option(NMTOOLS_UTL_TEST_ALL "test all utl modules" ON)
 
 add_executable(${PROJECT_NAME} tests.cpp
     src/array.cpp
-    src/tuple.cpp
     src/maybe.cpp
     src/either.cpp
     src/vector.cpp
     src/clipped_integer.cpp
     src/queue.cpp
     src/stack.cpp
+    src/static_map.cpp
     src/static_queue.cpp
     src/static_vector.cpp
     src/static_stack.cpp
     src/static_string.cpp
     src/string.cpp
-    src/tuplev2.cpp
+    src/tuple.cpp
 )
 add_test(
     NAME ${PROJECT_NAME}
