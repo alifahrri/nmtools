@@ -187,7 +187,7 @@ NMTOOLS_TESTING_DECLARE_CASE(network, predecessors)
     //----------------------------------------------------
     NMTOOLS_TESTING_DECLARE_ARGS(case7)
     {
-        constexpr inline auto list = nmtools_tuple<>{}; // Empty adjacency list
+        constexpr inline auto list = nmtools_tuple{}; // Empty adjacency list
         constexpr inline auto node_idx = 0; // Node 0
         constexpr inline auto src_node_ids = nmtools_array{100};
     }

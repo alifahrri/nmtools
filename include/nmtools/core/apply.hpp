@@ -55,7 +55,7 @@ namespace nmtools::functional
                     // apply
                     if constexpr (meta::is_same_v<attributes_t,meta::empty_attributes_t>) {
                         // NOTE: avoid passing empty_attributes_t to fmap, use empty tuple instead
-                        return function.fmap(nmtools_tuple<>{},function.operands);
+                        return function.fmap(nmtools_tuple{},function.operands);
                     } else {
                         return function.fmap(function.attributes,function.operands);
                     }

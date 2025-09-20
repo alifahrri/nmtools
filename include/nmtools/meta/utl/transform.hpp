@@ -66,30 +66,6 @@ namespace nmtools::meta
         using type = utl::tuple<Ts...,new_type>;
     };
 
-    // TODO: remove this specialization
-    template <typename...Ts, typename new_type>
-    struct append_type<utl::tuplev2<Ts...>,new_type>
-    {
-        using type = utl::tuplev2<Ts...,new_type>;
-    };
-
-    // TODO: remove
-    template <typename...Ts>
-    struct tuple_to_array<utl::tuple<Ts...>>
-    {
-        using common_t = typename common_type<Ts...>::type;
-        static constexpr auto value_vtype = [](){
-            if constexpr (is_integral_constant_v<common_t>) {
-                return as_value_v<typename common_t::value_type>;
-            } else {
-                return as_value_v<common_t>;
-            }
-        }();
-        using value_type = remove_cvref_t<type_t<decltype(value_vtype)>>;
-        // TODO: check if common_type fail, only return array if common_type is valid
-        using type = utl::array<value_type,sizeof...(Ts)>;
-    };
-
     // TODO: consider to remove, abstract away the either impl. and using is_either to decide
     template <typename left_t, typename right_t, typename Left, typename Right>
     struct replace_either<utl::either<left_t,right_t>,Left,Right>
@@ -114,14 +90,6 @@ namespace nmtools::meta
     struct type_at<utl::tuple<Ts...>,I>
     {
         using tuple_t = utl::tuple<Ts...>;
-        using type = utl::tuple_element_t<I,tuple_t>;
-    };
-
-    // TODO: remove this specialization
-    template <typename...Ts, size_t I>
-    struct type_at<utl::tuplev2<Ts...>,I>
-    {
-        using tuple_t = utl::tuplev2<Ts...>;
         using type = utl::tuple_element_t<I,tuple_t>;
     };
 

@@ -305,7 +305,7 @@ namespace nmtools::cuda
                     auto device_array = create_array(*arg_i);
                     return utility::tuple_append(init,device_array);
                 }
-            }, nmtools_tuple<>{});
+            }, nmtools_tuple{});
 
             using sequence_t = meta::make_index_sequence<meta::len_v<decltype(gpu_args_pack)>>;
             this->run_(output,f,gpu_args_pack,sequence_t{});
