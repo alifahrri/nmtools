@@ -12,8 +12,10 @@
 #include "nmtools/utl/maybe.hpp"
 #include "nmtools/utl/queue.hpp"
 #include "nmtools/utl/stack.hpp"
+#include "nmtools/utl/static_map.hpp"
 #include "nmtools/utl/static_queue.hpp"
 #include "nmtools/utl/static_stack.hpp"
+#include "nmtools/utl/static_string.hpp"
 #include "nmtools/utl/static_vector.hpp"
 #include "nmtools/utl/vector.hpp"
 

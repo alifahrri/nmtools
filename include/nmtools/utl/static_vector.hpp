@@ -14,6 +14,13 @@
 #define NMTOOLS_DEFAULT_STATIC_VECTOR_MAX_SIZE 8
 #endif // NMTOOLS_DEFAULT_STATIC_VECTOR_MAX_SIZE
 
+// Found internal compiler error in gcc9 when implementing static_string
+#ifdef __GNUC__
+#if __GNUC__ == 9
+#define NMTOOLS_GCC_ICE_STATIC_STRING
+#endif
+#endif // __GNUC__
+
 namespace nmtools::utl
 {
     // TODO: fix utl::static_vector with tuple on C++forOpenCL
@@ -64,10 +71,12 @@ namespace nmtools::utl
             , size_(sizeof...(ts)+2)
         {}
 
+        #ifndef NMTOOLS_GCC_ICE_STATIC_STRING
         constexpr static_vector(const static_vector& other)
             : buffer(other.buffer)
             , size_(other.size_)
         {}
+        #endif
 
         constexpr void resize(size_type new_size)
         {
