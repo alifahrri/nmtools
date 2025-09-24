@@ -36,8 +36,8 @@ namespace nmtools::meta
     template <typename T>
     struct to_value <T&> : to_value<T> {};
 
-    template <typename T>
-    constexpr inline auto to_value_v = to_value<T>::value;
+    template <typename T, typename U=void>
+    constexpr inline auto to_value_v = to_value<T,U>::value;
 
     template <typename T, auto v>
     struct to_value<integral_constant<T,v>>
