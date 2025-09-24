@@ -3,9 +3,11 @@
 
 #include "nmtools/def.hpp"
 #include "nmtools/platform.hpp"
+#include "nmtools/assert.hpp"
 #include "nmtools/utl/common.hpp"
 #include "nmtools/utl/array.hpp"
 #include "nmtools/utl/static_vector.hpp"
+#include "nmtools/meta/bits/traits/is_string.hpp"
 
 #ifndef NMTOOLS_DEFAULT_STATIC_STRING_MAX_SIZE
 #define NMTOOLS_DEFAULT_STATIC_STRING_MAX_SIZE (64)
@@ -34,9 +36,31 @@ namespace nmtools::utl
             }())
         {}
 
+        template <nm_size_t OtherCapacity>
+        constexpr static_string_base(const static_string_base<OtherCapacity,T>& other)
+            : base_type([&](){
+                base_type base;
+                auto N = (Capacity < other.size() ? Capacity : other.size());
+                if (Capacity < other.size()) {
+                    nmtools_panic( (Capacity < other.size())
+                        , "invalid construction of static_string from another static string" );
+                }
+                base.resize(N);
+                for (nm_size_t i=0; i<N; i++) {
+                    base[i] = other[i];
+                }
+                return base;
+            }())
+        {}
+
         constexpr auto base() const
         {
             return static_cast<base_type>(*this);
+        }
+
+        constexpr auto c_str() const
+        {
+            return this->data();
         }
 
         template <auto N>
@@ -84,6 +108,26 @@ namespace nmtools::utl
                 result.push_back(this->at(i));
             }
             for (nm_size_t i=0; i<N; i++) {
+                result.push_back(other[i]);
+            }
+
+            return result;
+        }
+
+        template <nm_size_t OtherCapacity>
+        constexpr auto operator+(const static_string_base<OtherCapacity,T>& other) const
+        {
+            using result_t = static_string_base<Capacity+OtherCapacity>;
+
+            auto result = result_t {};
+
+            nm_index_t size = this->size();
+            size = (size == 0 ? 0 : size - 1);
+            for (nm_size_t i=0; i<(nm_size_t)size; i++) {
+                result.push_back(this->at(i));
+            }
+            auto N = other.size();
+            for (nm_size_t i=0; i<(nm_size_t)N; i++) {
                 result.push_back(other[i]);
             }
 
@@ -154,6 +198,52 @@ namespace nmtools::utl
     };
 
     using static_string = static_string_base<>;
+
+    template <nm_size_t Capacity, typename T>
+    constexpr auto stoi(const static_string_base<Capacity,T>& str)
+    {
+        // quick hack
+        // size may include '\0'
+        nm_index_t result = {};
+        if (str.size() > 1) {
+            // TODO: fully implement stoi
+            auto s = str[0];
+            if (!(s >= '0' && s <= '9')) {
+                nmtools_panic( false
+                    , "invalid string for stoi" );
+            }
+            result = s - '0';
+        } else {
+            nmtools_panic( false
+                , "invalid string for stoi" );
+        }
+        return result;
+    }
+
+    template <typename T=static_string_base<NMTOOLS_DEFAULT_STATIC_STRING_MAX_SIZE,char>>
+    constexpr auto to_string(nm_index_t num)
+    {
+        T result;
+        auto condition = (num >= 0 && num <= 99);
+        if (condition) {
+            auto b = 10;
+            if (num/b) {
+                result.push_back('0'+(num/b));
+            }
+            result.push_back('0'+(num%b));
+            result.push_back('\0');
+        } else {
+            nmtools_panic( false
+                , "invalid to_string" );
+        }
+        return result;
+    }
+} // namespace nmtools::utl
+
+namespace nmtools::meta
+{
+    template <nm_size_t Capacity, typename T>
+    struct is_string<utl::static_string_base<Capacity,T>> : true_type {};
 }
 
 #endif // NMTOOLS_UTL_STATIC_STRING_HPP

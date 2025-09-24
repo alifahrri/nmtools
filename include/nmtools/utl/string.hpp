@@ -6,6 +6,7 @@
 #include "nmtools/utl/static_vector.hpp"
 #include "nmtools/utl/either.hpp"
 #include "nmtools/utl/vector.hpp"
+#include "nmtools/meta/bits/traits/is_string.hpp"
 
 #ifndef NMTOOLS_DEFAULT_STRING_STATIC_SIZE
 #define NMTOOLS_DEFAULT_STRING_STATIC_SIZE (16)
@@ -175,6 +176,11 @@ namespace nmtools::utl
             }
         }
 
+        auto c_str() const
+        {
+            return this->data();
+        }
+
         pointer begin()
         {
             return data();
@@ -302,6 +308,12 @@ namespace nmtools::utl
     };
 
     using string = string_base<>;
+} // namespace nmtools::utl
+
+namespace nmtools::meta
+{
+    template <nm_size_t Capacity, typename T>
+    struct is_string<utl::string_base<Capacity,T>> : true_type {};
 }
 
 #endif // NMTOOLS_UTL_STRING_HPP

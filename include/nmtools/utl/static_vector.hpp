@@ -5,6 +5,7 @@
 #include "nmtools/platform.hpp"
 #include "nmtools/utl/common.hpp"
 #include "nmtools/utl/array.hpp"
+#include "nmtools/utility/forward.hpp"
 #include "nmtools/meta/bits/array/resize_bounded_size.hpp"
 
 // poor man's static_vector,
@@ -100,11 +101,42 @@ namespace nmtools::utl
 
         constexpr void push_back(const T& t)
         {
+            // TODO: assert
             if (size_+1 > Capacity) {
                 return;
             }
             resize(size_ + 1);
+            // assume assignable
             buffer[index_type(size_-1)] = t;
+        }
+
+        // can only be constexpr in c++20
+        // even placement new can't be constexpr in c++17
+        template <typename...args_t>
+        constexpr
+        void emplace(size_type idx, args_t&&...args)
+        {
+            auto old_size = size_;
+            if (size_+1 > Capacity) {
+                return;
+            }
+            resize(size_ + 1);
+            auto tmp = static_vector{};
+            for (nm_size_t i=idx; i<(nm_size_t)old_size; i++) {
+                tmp.emplace_back(buffer[i]);
+            }
+            new(&buffer[idx]) T(nmtools::forward<args_t>(args)...);
+            // copy back
+            auto offset = idx + 1;
+            for (nm_size_t i=0; i<(nm_size_t)tmp.size(); i++) {
+                new(&buffer[i+offset]) T{tmp[i]};
+            }
+        }
+
+        template <typename...args_t>
+        constexpr void emplace_back(args_t&&...args)
+        {
+            return emplace(size_,nmtools::forward<args_t>(args)...);
         }
 
         constexpr const T* data() const
