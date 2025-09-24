@@ -327,4 +327,25 @@ TEST_CASE("static_vector" * doctest::test_suite("utl"))
             NMTOOLS_ASSERT_EQUAL( array[0], 3 );
         }
     }
+
+    SUBCASE("emplace")
+    {
+        {
+            using array_t = utl::static_vector<int>;
+            auto array = array_t();
+            NMTOOLS_ASSERT_EQUAL( array.size(), 0 );
+            array.emplace_back(3);
+            NMTOOLS_ASSERT_EQUAL( array.size(), 1 );
+            NMTOOLS_ASSERT_EQUAL( array[0], 3 );
+            array.emplace(0,9);
+            NMTOOLS_ASSERT_EQUAL( array.size(), 2 );
+            NMTOOLS_ASSERT_EQUAL( array[0], 9 );
+            NMTOOLS_ASSERT_EQUAL( array[1], 3 );
+            array.emplace(1,7);
+            NMTOOLS_ASSERT_EQUAL( array.size(), 3 );
+            NMTOOLS_ASSERT_EQUAL( array[0], 9 );
+            NMTOOLS_ASSERT_EQUAL( array[1], 7 );
+            NMTOOLS_ASSERT_EQUAL( array[2], 3 );
+        }
+    }
 }
