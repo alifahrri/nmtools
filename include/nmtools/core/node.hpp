@@ -2152,6 +2152,10 @@ namespace nmtools::meta
             using composition_type = typename Node::composition_type;
             auto composition = composition_type{};
 
+            using attributes_type = functional::Attributes<>;
+            [[maybe_unused]]
+            auto attributes = attributes_type{};
+
             if constexpr (is_functor_composition_v<remove_cvref_t<functor_t>>) {
                 using functors_t = remove_cvref_t<typename remove_cvref_t<functor_t>::functors_type>;
                 kind = Kind::COMPOSITION;
@@ -2214,9 +2218,108 @@ namespace nmtools::meta
                 } else if (is_same_functor_v<functional::unary_fmap_t<functional::fun::unary_ufunc<>>,functor_type>) {
                     kind = Kind::UNARY_UFUNC;
                 }
+
+                if constexpr (is_same_functor_v<functional::unary_fmap_t<functional::fun::indexing>,functor_type>) {
+                    using attributes_t = remove_cvref_t<typename functor_type::attributes_type>;
+                    using attribute_t  = remove_cvref_t<at_t<attributes_t,0>>;
+                    using indexer_type = typename attribute_t::indexer_type;
+
+                    auto indexer_name = type_name_v<indexer_type>;
+                    attributes["indexer"] = indexer_name;
+                }
+
+                if constexpr (
+                    (is_binary_ufunc_functor_v<functor_type>)
+                    || (is_same_functor_v<functional::unary_fmap_t<functional::fun::unary_ufunc<>>,functor_type>)
+                ) {
+                    utl::static_string str = {};
+                    auto n = str.capacity; 
+                    using op_type = typename fmap_type::f_type::op_type;
+                    using attributes_t = remove_cvref_t<typename functor_type::attributes_type>;
+                    using attribute_t  = remove_cvref_t<at_t<attributes_t,0>>;
+                    // if op_type is none, check first attribute
+                    auto op_name = type_name_v<conditional_t<!is_none_v<op_type>,op_type,attribute_t>>;
+                    if (op_name.size() < n) {
+                        n = op_name.size();
+                    }
+                    str.resize(n);
+                    for (nm_size_t i=0; i<(nm_size_t)n; i++) {
+                        str[i] = op_name[i];
+                    }
+                    attributes["op"] = str;
+                }
+
+                if constexpr (is_same_functor_v<functional::unary_fmap_t<functional::fun::reduce<>>,functor_type>)
+                {
+                    utl::static_string str = {};
+                    auto n = str.capacity; 
+                    using attributes_t = remove_cvref_t<typename functor_type::attributes_type>;
+                    using attribute_t  = remove_cvref_t<at_t<attributes_t,0>>;
+
+                    // nmtools::args::reduce::op_type
+                    using op_type = typename attribute_t::op_type;
+                    auto op_name = type_name_v<op_type>;
+
+                    if (op_name.size() < n) {
+                        n = op_name.size();
+                    }
+                    str.resize(n);
+                    for (nm_size_t i=0; i<(nm_size_t)n; i++) {
+                        str[i] = op_name[i];
+                    }
+                    attributes["op"] = str;
+                    constexpr auto make_value = [](auto vtype){
+                        using type = type_t<decltype(vtype)>;
+                        [[maybe_unused]]
+                        constexpr auto DIM = len_v<type>;
+                        if constexpr (is_constant_index_v<type>
+                            || is_constant_index_array_v<type>
+                        ) {
+                            return to_value_v<type>;
+                        } else if constexpr (DIM > 0) {
+                            using result_t = nmtools_array<nm_index_t,DIM>;
+                            auto result = result_t {};
+                            for (nm_size_t i=0; i<(nm_size_t)DIM; i++) {
+                                // only known at runtime
+                                at(result,i) = -1;
+                            }
+                            return result;
+                        } else if constexpr (is_none_v<type>) {
+                            return None;
+                        } else {
+                            return type_name_v<type>;
+                        }
+                    };
+                    using axis_type     = typename attribute_t::axis_type;
+                    using initial_type  = typename attribute_t::initial_type;
+                    using keepdims_type = typename attribute_t::keepdims_type;
+                    attributes["axis"]     = make_value(as_value_v<axis_type>);
+                    attributes["initial"]  = make_value(as_value_v<initial_type>);
+                    attributes["keepdims"] = make_value(as_value_v<keepdims_type>);
+                }
             }
 
-            return Node{shape,dim,max_dim,is_num,kind,dtype,composition};
+            auto node = Node{shape,dim,max_dim,is_num,kind,dtype,composition};
+            if constexpr (is_void_v<node_t>) {
+                return node;
+            } else {
+                if (attributes.count("indexer")) {
+                    node.attributes()["indexer"] = attributes["indexer"];
+                }
+                if (attributes.count("op")) {
+                    node.attributes()["op"] = attributes["op"];
+                }
+                if (attributes.count("axis")) {
+                    node.attributes()["axis"] = attributes["axis"];
+                }
+                if (attributes.count("initial")) {
+                    node.attributes()["initial"] = attributes["initial"];
+                }
+                if (attributes.count("keepdims")) {
+                    node.attributes()["keepdims"] = attributes["keepdims"];
+                }
+                return node;
+            }
         }();
     };
 }

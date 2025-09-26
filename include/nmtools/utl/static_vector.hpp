@@ -81,6 +81,19 @@ namespace nmtools::utl
         constexpr static_vector(const static_vector& other) = default;
         #endif
 
+        template <auto OtherCapacity>
+        constexpr static_vector(const static_vector<T,OtherCapacity>& other)
+            : buffer([&](){
+                auto m_other = buffer_type{};
+                auto n = (Capacity > OtherCapacity ? OtherCapacity : Capacity);
+                for (nm_size_t i=0; i<(nm_size_t)n; i++) {
+                    m_other[i] = other[i];
+                }
+                return m_other;
+            }())
+            , size_(other.size() > Capacity ? Capacity : other.size())
+        {}
+
         constexpr void resize(size_type new_size)
         {
             // TODO: assert/throw

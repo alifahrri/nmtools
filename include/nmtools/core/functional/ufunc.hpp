@@ -14,6 +14,8 @@ namespace nmtools::functional::fun
     template <typename op_t=none_t>
     struct broadcast_binary_ufunc
     {
+        using op_type = op_t;
+
         template <typename...args_t>
         constexpr auto operator()(const args_t&...args) const
         {
@@ -28,6 +30,8 @@ namespace nmtools::functional::fun
     template <typename op_t=none_t>
     struct binary_ufunc
     {
+        using op_type = op_t;
+
         template <typename...args_t>
         constexpr auto operator()(const args_t&...args) const
         {

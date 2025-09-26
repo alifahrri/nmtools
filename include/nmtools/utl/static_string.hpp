@@ -10,7 +10,7 @@
 #include "nmtools/meta/bits/traits/is_string.hpp"
 
 #ifndef NMTOOLS_DEFAULT_STATIC_STRING_MAX_SIZE
-#define NMTOOLS_DEFAULT_STATIC_STRING_MAX_SIZE (64)
+#define NMTOOLS_DEFAULT_STATIC_STRING_MAX_SIZE (128)
 #endif // NMTOOLS_DEFAULT_STATIC_STRING_MAX_SIZE
 
 namespace nmtools::utl
@@ -21,6 +21,7 @@ namespace nmtools::utl
         using base_type = static_vector<T,Capacity>;
         using size_type = nm_size_t;
         static constexpr auto npos = size_type(-1);
+        static constexpr auto capacity = Capacity;
 
         constexpr static_string_base() = default;
 
@@ -51,6 +52,11 @@ namespace nmtools::utl
                 }
                 return base;
             }())
+        {}
+
+        template <nm_size_t OtherCapacity>
+        constexpr static_string_base(const static_vector<T,OtherCapacity>& other)
+            : base_type(other)
         {}
 
         constexpr auto base() const
