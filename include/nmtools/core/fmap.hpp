@@ -60,6 +60,7 @@ namespace nmtools::functional
     {
         using base = detail::base_fmap_t<F,Arity,N_OUT>;
         using base::fn, base::arity, base::n_outputs;
+        using f_type = F;
 
         template<
             template<auto...>typename sequence, auto...Is,
@@ -107,6 +108,7 @@ namespace nmtools::functional
         static constexpr auto arity = 0;
         using arity_type = meta::integral_constant<nm_size_t,arity>;
         using n_outputs_type = meta::integral_constant<nm_size_t,1>;
+        using f_type = F;
 
         F fn;
         static constexpr auto m_arity = arity_type{};

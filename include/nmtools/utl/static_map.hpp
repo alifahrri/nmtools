@@ -98,6 +98,21 @@ namespace nmtools::utl
             }
         }
 
+        // TODO: change return to pair<iterator,bool>
+        template <typename...args_t>
+        constexpr decltype(auto) emplace(const key_type& key, args_t&&...args)
+        {
+            auto key_indices = find_index(key);
+            if (!key_indices.size()) {
+                keys_.push_back(key);
+                values_.emplace_back(nmtools::forward<args_t>(args)...);
+            } else {
+                auto idx = key_indices[0];
+                auto ptr = &values_[idx];
+                new(ptr) mapped_type(nmtools::forward<args_t>(args)...);
+            }
+        }
+
         constexpr decltype(auto) operator[](const key_type& key) const
         {
             auto key_indices = find_index(key);

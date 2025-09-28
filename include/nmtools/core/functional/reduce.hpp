@@ -10,6 +10,8 @@ namespace nmtools::functional::fun
     template <typename op_t=none_t>
     struct reduce
     {
+        using op_type = op_t;
+
         template <typename...args_t>
         constexpr auto operator()(const args_t&...args) const
         {
