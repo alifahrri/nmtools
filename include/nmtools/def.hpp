@@ -140,6 +140,120 @@ namespace nmtools
     #undef NMTOOLS_DECLARE_CLIPPED_TYPE
 }
 
+#include "nmtools/assert.hpp"
+
+namespace nmtools
+{
+    /**
+     * @brief specific tag to represents "None" type
+     * 
+     */
+    struct none_t {};
+
+    /**
+     * @brief special inline variable to represent "None" value
+     * 
+     */
+    inline constexpr auto None = none_t {};
+
+    /**
+     * @brief Special tag to represents "..." a.k.a. "Ellipsis" type
+     * 
+     */
+    struct ellipsis_t {};
+
+    inline constexpr auto Ellipsis = ellipsis_t {};
+} // namespace nmtools
+
+namespace nmtools
+{
+    template <typename T>
+    struct nullable_num
+    {
+        // changing union is c++20 feature
+        // TODO: detect if c++20
+        #if 0
+        union {
+            none_t none;
+            T num;
+        };
+        #else
+        none_t none = {};
+        T num       = {};
+        #endif
+        enum Tag
+        {
+            NONE,
+            NUMBER,
+        };
+        Tag tag;
+
+        using value_type = T;
+
+        constexpr nullable_num()
+            : none{}
+            , tag(Tag::NONE)
+        {}
+
+        constexpr nullable_num(T num)
+            : num(num)
+            , tag(Tag::NUMBER)
+        {}
+
+        constexpr auto is_none() const noexcept
+        {
+            return tag == Tag::NONE;
+        }
+
+        constexpr auto is_num() const noexcept
+        {
+            return tag == Tag::NUMBER;
+        }
+
+        constexpr auto has_value() const noexcept
+        {
+            return is_num();
+        }
+
+        constexpr explicit operator bool() const noexcept
+        {
+            return has_value();
+        }
+
+        constexpr decltype(auto) operator=(T t)
+        {
+            num = t;
+            tag = Tag::NUMBER;
+            return *this;
+        }
+
+        constexpr decltype(auto) operator=(none_t t)
+        {
+            none = t;
+            tag = Tag::NONE;
+            return *this;
+        }
+
+        constexpr operator T() const
+        {
+            if (!is_num()) {
+                nmtools_panic( false
+                    , "invalid cast for nullable_num" );
+            }
+            return num;
+        }
+
+        constexpr T operator*() const
+        {
+            if (!is_num()) {
+                nmtools_panic( false
+                    , "invalid cast for nullable_num" );
+            }
+            return num;
+        }
+    };
+}
+
 // NOTE: to make it consistent for separate host device compilation
 #ifndef nm_size_t
 #define nm_size_t ::nmtools::size_t
