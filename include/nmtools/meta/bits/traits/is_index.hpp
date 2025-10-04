@@ -7,6 +7,7 @@
 #include "nmtools/meta/bits/traits/is_integral_constant.hpp"
 #include "nmtools/meta/bits/traits/is_reference.hpp"
 #include "nmtools/meta/bits/traits/is_const.hpp"
+#include "nmtools/meta/bits/traits/is_nullable_index.hpp"
 
 namespace nmtools::meta
 {
@@ -20,7 +21,7 @@ namespace nmtools::meta
     struct is_index
     {
         static constexpr auto value = [](){
-            return is_constant_index_v<T> || is_integer_v<T>;
+            return is_constant_index_v<T> || is_integer_v<T> || is_nullable_index_v<T>;
         }();
     };
 

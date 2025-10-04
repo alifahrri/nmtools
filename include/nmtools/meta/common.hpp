@@ -36,6 +36,12 @@ namespace nmtools::meta
             return value;
         }
         constexpr value_type operator()() const noexcept { return value; }
+
+        template <typename U, U val>
+        constexpr auto operator+(integral_constant<U,val>) const noexcept
+        {
+            return integral_constant<T,v+val>{};
+        }
     };
 
     struct true_type : integral_constant<bool,true> {};
@@ -199,6 +205,11 @@ namespace nmtools::meta
     struct empty_attributes_t {};
 } // nmtools::meta
 
+namespace nmtools
+{
+    using meta::ct_v;
+}
+
 namespace nmtools::meta
 {
     // TODO: remove
@@ -343,29 +354,8 @@ namespace nmtools::meta::detail
     } // fail_to_false
 } // namespace nmtools::meta
 
-// TODO: move to constants.hpp
 namespace nmtools
 {
-    /**
-     * @brief specific tag to represents "None" type
-     * 
-     */
-    struct none_t {};
-
-    /**
-     * @brief special inline variable to represent "None" value
-     * 
-     */
-    inline constexpr auto None = none_t {};
-
-    /**
-     * @brief Special tag to represents "..." a.k.a. "Ellipsis" type
-     * 
-     */
-    struct ellipsis_t {};
-
-    inline constexpr auto Ellipsis = ellipsis_t {};
-
     /**
      * @brief special constant for true_type
      * 
@@ -439,6 +429,6 @@ namespace nmtools
 
     template <typename T>
     inline constexpr auto is_ellipsis_v = is_ellipsis<T>::value;
-} // namespace nmtools
+}
 
 #endif // NMTOOLS_META_COMMON_HPP

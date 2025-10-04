@@ -36,6 +36,12 @@ namespace nmtools::meta
         : get_maybe_type<remove_address_space_t<T>> {};
 
     template <typename T>
+    struct get_maybe_type<nullable_num<T>>
+    {
+        using type = T;
+    };
+
+    template <typename T>
     using get_maybe_type_t = typename get_maybe_type<T>::type;
 } // namespace nmtools::meta
 

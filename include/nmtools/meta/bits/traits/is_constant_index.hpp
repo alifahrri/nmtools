@@ -24,4 +24,9 @@ namespace nmtools::meta
     inline constexpr auto is_constant_index_v = is_constant_index<T>::value;
 } // namespace nmtools::meta
 
+namespace nmtools
+{
+    using meta::is_constant_index_v;
+}
+
 #endif // NMTOOLS_META_BITS_TRAITS_IS_CONSTANT_INDEX_HPP

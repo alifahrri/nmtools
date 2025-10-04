@@ -30,6 +30,9 @@ namespace nmtools::meta
     template <typename T, size_t N>
     struct is_fixed_index_array<utl::array<T,N>,enable_if_t<is_index_v<T>>> : true_type {};
 
+    template <typename T, size_t N>
+    struct is_nullable_index_array<utl::array<T,N>> : is_nullable_index<T> {};
+
     template <typename T, typename allocator>
     struct is_dynamic_index_array<utl::vector<T,allocator>>
     {
