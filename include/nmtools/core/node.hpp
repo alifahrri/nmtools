@@ -2145,7 +2145,8 @@ namespace nmtools::meta
                 is_num = true;
             } else if constexpr (!is_fail_v<src_shape_t>) {
                 for (nm_size_t i=0; i<(nm_size_t)len(src_shape); i++) {
-                    at(shape,i) = at(src_shape,i);
+                    auto shape_i = at(src_shape,i);
+                    at(shape,i) = (has_value(shape_i) ? unwrap(shape_i) : -1);
                 }
             }
 

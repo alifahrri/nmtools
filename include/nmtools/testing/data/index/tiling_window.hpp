@@ -28,8 +28,11 @@ NMTOOLS_TESTING_DECLARE_CASE(index,shape_tiling_window)
         inline int src_shape[2] = {3,4};
         inline int tile_shape[2] = {1,2};
 
-        inline auto src_shape_ct = nmtools_tuple{3_ct,4_ct};
+        inline auto src_shape_ct  = nmtools_tuple{3_ct,4_ct};
         inline auto tile_shape_ct = nmtools_tuple{1_ct,2_ct};
+
+        inline auto src_shape_mx1  = nmtools_tuple{3,4_ct};
+        inline auto tile_shape_mx1 = nmtools_tuple{1,2_ct};
 
         NMTOOLS_CAST_INDEX_ARRAYS(src_shape)
         NMTOOLS_CAST_INDEX_ARRAYS(tile_shape)
