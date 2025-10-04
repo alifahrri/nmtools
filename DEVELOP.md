@@ -14,6 +14,7 @@ Cheatsheet for development build and tests.
   - [Build \& Test (Ubuntu20.04)](#build--test-ubuntu2004)
   - [Build \& Test `cuda`](#build--test-cuda)
   - [Build \& Test `hip`](#build--test-hip)
+  - [Build for arm](#build-for-arm)
   - [Run Interactive Notebook](#run-interactive-notebook)
   - [Run Clang-Repl](#run-clang-repl)
   - [Setup `distcc`](#setup-distcc)
@@ -271,6 +272,15 @@ To restart:
 ```
 docker start hip-dev
 docker exec -it hip-dev zsh
+```
+
+## Build for arm
+
+```
+export IMAGE=linux-arm64
+docker run --rm dockcross/${IMAGE}:latest > ./dockcross-${IMAGE}; chmod +x ./dockcross-${IMAGE}
+./dockcross-${IMAGE} bash -c "gcc -v"
+./dockcross-${IMAGE} bash -c "mkdir -p build/${IMAGE} && cd build/${IMAGE} && cmake -DNMTOOLS_TEST_ALL=ON ../.. && make -j16 VERBOSE=1"
 ```
 
 ## Run Interactive Notebook

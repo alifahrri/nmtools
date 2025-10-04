@@ -70,6 +70,7 @@ set(GRAPH_TEST_GRAPH_SOURCES
     src/softmax.cpp
     src/stddev.cpp
     src/tensordot.cpp
+    src/tilekit.cpp
     src/trace.cpp
     src/tri.cpp
     src/var.cpp

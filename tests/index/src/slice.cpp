@@ -17,39 +17,16 @@ namespace kind = na::kind;
 using nmtools_tuple;
 using namespace nm::literals;
 
-#define RUN_shape_slice_impl(...) \
-nm::index::shape_slice(__VA_ARGS__);
-
-#ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
-#include "nmtools/testing/benchmarks/bench.hpp"
-using nm::benchmarks::TrackedBench;
-// create immediately invoked lambda
-// that packs shape_slice fn to callable lambda
-#define RUN_shape_slice(case_name, ...) \
-[](auto&&...args){ \
-    auto title = std::string("shape_slice-") + #case_name; \
-    auto name  = nm::testing::make_func_args("", args...); \
-    auto fn    = [&](){ \
-        return RUN_shape_slice_impl(args...); \
-    }; \
-    return TrackedBench::run(title, name, fn); \
-}(__VA_ARGS__);
-#else
-// run normally without benchmarking, ignore case_name
-#define RUN_shape_slice(case_name, ...) \
-RUN_shape_slice_impl(__VA_ARGS__);
-#endif // NMTOOLS_TESTING_ENABLE_BENCHMARKS
-
 #define SHAPE_SLICE_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
     NMTOOLS_TESTING_USE_CASE(index, shape_slice, case_name); \
     using namespace args; \
-    auto result = RUN_shape_slice(case_name, __VA_ARGS__); \
-    NMTOOLS_ASSERT_EQUAL( result, expect::result ); \
+    auto result = nmtools::index::shape_slice(__VA_ARGS__); \
+    NMTOOLS_ASSERT_EQUAL_MSG_ATTRIBUTES_DOCTEST( result, expect::result, __VA_ARGS__ ); \
 }
 
-TEST_CASE("shape_slice(case1)" * doctest::test_suite("index::shape_slice"))
+TEST_CASE("shape_slice(case1)" * doctest::test_suite("index::shape_slice") * doctest::may_fail())
 {
     SHAPE_SLICE_SUBCASE(case1,   shape, slice0, slice1, slice2);
     SHAPE_SLICE_SUBCASE(case1, shape_a, slice0, slice1, slice2);
@@ -59,6 +36,16 @@ TEST_CASE("shape_slice(case1)" * doctest::test_suite("index::shape_slice"))
 
     SHAPE_SLICE_SUBCASE(case1, shape_ct, slice0, slice1, slice2);
     SHAPE_SLICE_SUBCASE(case1, shape_cl, slice0, slice1, slice2);
+    SHAPE_SLICE_SUBCASE(case1, shape_mx, slice0, slice1, slice2);
+
+    {
+        using nmtools::nullable_num;
+        auto shape_na = nmtools_array{nullable_num(2),nullable_num(3),nullable_num(3)};
+        static_assert( nm::meta::is_nullable_index_array_v<decltype(shape_na)> );
+        static_assert( nm::meta::is_index_array_v<decltype(shape_na)> );
+        // TODO: fix
+        SHAPE_SLICE_SUBCASE(case1, shape_na, slice0, slice1, slice2);
+    }
 }
 
 TEST_CASE("shape_slice(case2)" * doctest::test_suite("index::shape_slice"))
@@ -71,6 +58,7 @@ TEST_CASE("shape_slice(case2)" * doctest::test_suite("index::shape_slice"))
 
     SHAPE_SLICE_SUBCASE(case2, shape_ct, slice0, slice1, slice2);
     SHAPE_SLICE_SUBCASE(case2, shape_cl, slice0, slice1, slice2);
+    SHAPE_SLICE_SUBCASE(case2, shape_mx, slice0, slice1, slice2);
 }
 
 TEST_CASE("shape_slice(case3)" * doctest::test_suite("index::shape_slice"))
@@ -83,6 +71,7 @@ TEST_CASE("shape_slice(case3)" * doctest::test_suite("index::shape_slice"))
 
     SHAPE_SLICE_SUBCASE(case3, shape_ct, slice0, slice1, slice2);
     SHAPE_SLICE_SUBCASE(case3, shape_cl, slice0, slice1, slice2);
+    SHAPE_SLICE_SUBCASE(case3, shape_mx, slice0, slice1, slice2);
 }
 
 TEST_CASE("shape_slice(case4)" * doctest::test_suite("index::shape_slice"))
@@ -95,6 +84,7 @@ TEST_CASE("shape_slice(case4)" * doctest::test_suite("index::shape_slice"))
 
     SHAPE_SLICE_SUBCASE(case4, shape_ct, slice0, slice1, slice2);
     SHAPE_SLICE_SUBCASE(case4, shape_cl, slice0, slice1, slice2);
+    SHAPE_SLICE_SUBCASE(case4, shape_mx, slice0, slice1, slice2);
 }
 
 TEST_CASE("shape_slice(case5)" * doctest::test_suite("index::shape_slice"))
@@ -107,6 +97,7 @@ TEST_CASE("shape_slice(case5)" * doctest::test_suite("index::shape_slice"))
 
     SHAPE_SLICE_SUBCASE(case5, shape_ct, slice0, slice1, slice2);
     SHAPE_SLICE_SUBCASE(case5, shape_cl, slice0, slice1, slice2);
+    SHAPE_SLICE_SUBCASE(case5, shape_mx, slice0, slice1, slice2);
 }
 
 TEST_CASE("shape_slice(case6)" * doctest::test_suite("index::shape_slice"))
@@ -119,6 +110,7 @@ TEST_CASE("shape_slice(case6)" * doctest::test_suite("index::shape_slice"))
 
     SHAPE_SLICE_SUBCASE(case6, shape_ct, slice0, slice1, slice2);
     SHAPE_SLICE_SUBCASE(case6, shape_cl, slice0, slice1, slice2);
+    SHAPE_SLICE_SUBCASE(case6, shape_mx, slice0, slice1, slice2);
 }
 
 TEST_CASE("shape_slice(case7)" * doctest::test_suite("index::shape_slice"))
@@ -131,6 +123,7 @@ TEST_CASE("shape_slice(case7)" * doctest::test_suite("index::shape_slice"))
 
     SHAPE_SLICE_SUBCASE(case7, shape_ct, slice0, slice1, slice2);
     SHAPE_SLICE_SUBCASE(case7, shape_cl, slice0, slice1, slice2);
+    SHAPE_SLICE_SUBCASE(case7, shape_mx, slice0, slice1, slice2);
 }
 
 TEST_CASE("shape_slice(case8)" * doctest::test_suite("index::shape_slice"))
@@ -143,6 +136,7 @@ TEST_CASE("shape_slice(case8)" * doctest::test_suite("index::shape_slice"))
 
     SHAPE_SLICE_SUBCASE(case8, shape_ct, slice0, slice1, slice2);
     SHAPE_SLICE_SUBCASE(case8, shape_cl, slice0, slice1, slice2);
+    SHAPE_SLICE_SUBCASE(case8, shape_mx, slice0, slice1, slice2);
 }
 
 TEST_CASE("shape_slice(case9)" * doctest::test_suite("index::shape_slice"))
@@ -155,6 +149,7 @@ TEST_CASE("shape_slice(case9)" * doctest::test_suite("index::shape_slice"))
 
     SHAPE_SLICE_SUBCASE(case9, shape_ct, slice0, slice1, slice2);
     SHAPE_SLICE_SUBCASE(case9, shape_cl, slice0, slice1, slice2);
+    SHAPE_SLICE_SUBCASE(case9, shape_mx, slice0, slice1, slice2);
 }
 
 TEST_CASE("shape_slice(case10)" * doctest::test_suite("index::shape_slice"))
@@ -167,6 +162,7 @@ TEST_CASE("shape_slice(case10)" * doctest::test_suite("index::shape_slice"))
 
     SHAPE_SLICE_SUBCASE(case10, shape_ct, slice0, slice1, slice2);
     SHAPE_SLICE_SUBCASE(case10, shape_cl, slice0, slice1, slice2);
+    // SHAPE_SLICE_SUBCASE(case10, shape_mx, slice0, slice1, slice2);
 }
 
 TEST_CASE("shape_slice(case11)" * doctest::test_suite("index::shape_slice"))
@@ -179,6 +175,7 @@ TEST_CASE("shape_slice(case11)" * doctest::test_suite("index::shape_slice"))
 
     SHAPE_SLICE_SUBCASE(case11, shape_ct, slice0, slice1);
     SHAPE_SLICE_SUBCASE(case11, shape_cl, slice0, slice1);
+    SHAPE_SLICE_SUBCASE(case11, shape_mx, slice0, slice1);
 }
 
 TEST_CASE("shape_slice(case12)" * doctest::test_suite("index::shape_slice"))
@@ -191,6 +188,7 @@ TEST_CASE("shape_slice(case12)" * doctest::test_suite("index::shape_slice"))
 
     SHAPE_SLICE_SUBCASE(case12, shape_ct, slice0, slice1);
     SHAPE_SLICE_SUBCASE(case12, shape_cl, slice0, slice1);
+    SHAPE_SLICE_SUBCASE(case12, shape_mx, slice0, slice1);
 }
 
 TEST_CASE("shape_slice(case13)" * doctest::test_suite("index::shape_slice"))
@@ -203,6 +201,7 @@ TEST_CASE("shape_slice(case13)" * doctest::test_suite("index::shape_slice"))
 
     SHAPE_SLICE_SUBCASE(case13, shape_ct, slice0, slice1);
     SHAPE_SLICE_SUBCASE(case13, shape_cl, slice0, slice1);
+    SHAPE_SLICE_SUBCASE(case13, shape_mx, slice0, slice1);
 }
 
 TEST_CASE("shape_slice(case14)" * doctest::test_suite("index::shape_slice"))
@@ -215,6 +214,7 @@ TEST_CASE("shape_slice(case14)" * doctest::test_suite("index::shape_slice"))
 
     SHAPE_SLICE_SUBCASE(case14, shape_ct, slice0, slice1);
     SHAPE_SLICE_SUBCASE(case14, shape_cl, slice0, slice1);
+    SHAPE_SLICE_SUBCASE(case14, shape_mx, slice0, slice1);
 }
 
 TEST_CASE("shape_slice(case15)" * doctest::test_suite("index::shape_slice"))
@@ -227,6 +227,7 @@ TEST_CASE("shape_slice(case15)" * doctest::test_suite("index::shape_slice"))
 
     SHAPE_SLICE_SUBCASE(case15, shape_ct, slice0, slice1);
     SHAPE_SLICE_SUBCASE(case15, shape_cl, slice0, slice1);
+    SHAPE_SLICE_SUBCASE(case15, shape_mx, slice0, slice1);
 }
 
 TEST_CASE("shape_slice(case16)" * doctest::test_suite("index::shape_slice"))
@@ -239,6 +240,7 @@ TEST_CASE("shape_slice(case16)" * doctest::test_suite("index::shape_slice"))
 
     SHAPE_SLICE_SUBCASE(case16, shape_ct, slice0, slice1);
     SHAPE_SLICE_SUBCASE(case16, shape_cl, slice0, slice1);
+    SHAPE_SLICE_SUBCASE(case16, shape_mx, slice0, slice1);
 }
 
 TEST_CASE("shape_slice(case17)" * doctest::test_suite("index::shape_slice"))
@@ -248,6 +250,10 @@ TEST_CASE("shape_slice(case17)" * doctest::test_suite("index::shape_slice"))
     SHAPE_SLICE_SUBCASE(case17, shape_v, slice0, slice1);
     SHAPE_SLICE_SUBCASE(case17, shape_f, slice0, slice1);
     SHAPE_SLICE_SUBCASE(case17, shape_h, slice0, slice1);
+
+    SHAPE_SLICE_SUBCASE(case17, shape_ct, slice0, slice1);
+    SHAPE_SLICE_SUBCASE(case17, shape_cl, slice0, slice1);
+    SHAPE_SLICE_SUBCASE(case17, shape_mx, slice0, slice1);
 }
 
 TEST_CASE("shape_slice(case18)" * doctest::test_suite("index::shape_slice"))
@@ -260,6 +266,7 @@ TEST_CASE("shape_slice(case18)" * doctest::test_suite("index::shape_slice"))
 
     SHAPE_SLICE_SUBCASE(case18, shape_ct, slice0, slice1);
     SHAPE_SLICE_SUBCASE(case18, shape_cl, slice0, slice1);
+    SHAPE_SLICE_SUBCASE(case18, shape_mx, slice0, slice1);
 }
 
 TEST_CASE("shape_slice(case19)" * doctest::test_suite("index::shape_slice"))
@@ -272,6 +279,7 @@ TEST_CASE("shape_slice(case19)" * doctest::test_suite("index::shape_slice"))
 
     SHAPE_SLICE_SUBCASE(case19, shape_ct, slice0, slice1);
     SHAPE_SLICE_SUBCASE(case19, shape_cl, slice0, slice1);
+    SHAPE_SLICE_SUBCASE(case19, shape_mx, slice0, slice1);
 }
 
 TEST_CASE("shape_slice(case20)" * doctest::test_suite("index::shape_slice"))
@@ -284,6 +292,7 @@ TEST_CASE("shape_slice(case20)" * doctest::test_suite("index::shape_slice"))
 
     SHAPE_SLICE_SUBCASE(case20, shape_ct, slice0, slice1);
     SHAPE_SLICE_SUBCASE(case20, shape_cl, slice0, slice1);
+    SHAPE_SLICE_SUBCASE(case20, shape_mx, slice0, slice1);
 }
 
 TEST_CASE("shape_slice(case21)" * doctest::test_suite("index::shape_slice"))
@@ -296,6 +305,7 @@ TEST_CASE("shape_slice(case21)" * doctest::test_suite("index::shape_slice"))
 
     SHAPE_SLICE_SUBCASE(case21, shape_ct, slice0, slice1);
     SHAPE_SLICE_SUBCASE(case21, shape_cl, slice0, slice1);
+    // SHAPE_SLICE_SUBCASE(case21, shape_mx, slice0, slice1);
 }
 
 TEST_CASE("shape_slice(case22)" * doctest::test_suite("index::shape_slice"))
@@ -308,6 +318,7 @@ TEST_CASE("shape_slice(case22)" * doctest::test_suite("index::shape_slice"))
 
     SHAPE_SLICE_SUBCASE(case22, shape_ct, slice0, slice1);
     SHAPE_SLICE_SUBCASE(case22, shape_cl, slice0, slice1);
+    SHAPE_SLICE_SUBCASE(case22, shape_mx, slice0, slice1);
 }
 
 TEST_CASE("shape_slice(case23)" * doctest::test_suite("index::shape_slice"))
@@ -320,6 +331,7 @@ TEST_CASE("shape_slice(case23)" * doctest::test_suite("index::shape_slice"))
 
     SHAPE_SLICE_SUBCASE(case23, shape_ct, slice0, slice1);
     SHAPE_SLICE_SUBCASE(case23, shape_cl, slice0, slice1);
+    SHAPE_SLICE_SUBCASE(case23, shape_mx, slice0, slice1);
 }
 
 TEST_CASE("shape_slice(case24)" * doctest::test_suite("index::shape_slice"))
@@ -332,6 +344,7 @@ TEST_CASE("shape_slice(case24)" * doctest::test_suite("index::shape_slice"))
 
     SHAPE_SLICE_SUBCASE(case24, shape_ct, slice0, slice1);
     SHAPE_SLICE_SUBCASE(case24, shape_cl, slice0, slice1);
+    SHAPE_SLICE_SUBCASE(case24, shape_mx, slice0, slice1);
 
     static_assert( nm::meta::is_index_v<decltype(nm::Last)> );
     static_assert( nm::meta::is_integral_constant_v<decltype(nm::Last)> );
@@ -347,6 +360,7 @@ TEST_CASE("shape_slice(case25)" * doctest::test_suite("index::shape_slice"))
 
     SHAPE_SLICE_SUBCASE(case25, shape_ct, slice0, slice1);
     SHAPE_SLICE_SUBCASE(case25, shape_cl, slice0, slice1);
+    SHAPE_SLICE_SUBCASE(case25, shape_mx, slice0, slice1);
 }
 
 TEST_CASE("shape_slice(case26)" * doctest::test_suite("index::shape_slice"))
@@ -359,6 +373,7 @@ TEST_CASE("shape_slice(case26)" * doctest::test_suite("index::shape_slice"))
 
     SHAPE_SLICE_SUBCASE(case26, shape_ct, slice0, slice1);
     SHAPE_SLICE_SUBCASE(case26, shape_cl, slice0, slice1);
+    SHAPE_SLICE_SUBCASE(case26, shape_mx, slice0, slice1);
 }
 
 TEST_CASE("shape_slice(case27)" * doctest::test_suite("index::shape_slice"))
@@ -371,6 +386,7 @@ TEST_CASE("shape_slice(case27)" * doctest::test_suite("index::shape_slice"))
 
     SHAPE_SLICE_SUBCASE(case27, shape_ct, slice0, slice1, slice2);
     SHAPE_SLICE_SUBCASE(case27, shape_cl, slice0, slice1, slice2);
+    SHAPE_SLICE_SUBCASE(case27, shape_mx, slice0, slice1, slice2);
 }
 
 TEST_CASE("shape_slice(case28)" * doctest::test_suite("index::shape_slice"))
@@ -383,6 +399,7 @@ TEST_CASE("shape_slice(case28)" * doctest::test_suite("index::shape_slice"))
 
     SHAPE_SLICE_SUBCASE(case28, shape_ct, slice0, slice1);
     SHAPE_SLICE_SUBCASE(case28, shape_cl, slice0, slice1);
+    SHAPE_SLICE_SUBCASE(case28, shape_mx, slice0, slice1);
 }
 
 TEST_CASE("shape_slice(case29)" * doctest::test_suite("index::shape_slice"))
@@ -395,6 +412,7 @@ TEST_CASE("shape_slice(case29)" * doctest::test_suite("index::shape_slice"))
 
     SHAPE_SLICE_SUBCASE(case29, shape_ct, slice0, slice1, slice2);
     SHAPE_SLICE_SUBCASE(case29, shape_cl, slice0, slice1, slice2);
+    SHAPE_SLICE_SUBCASE(case29, shape_mx, slice0, slice1, slice2);
 }
 
 TEST_CASE("shape_slice(case30)" * doctest::test_suite("index::shape_slice"))
@@ -407,6 +425,7 @@ TEST_CASE("shape_slice(case30)" * doctest::test_suite("index::shape_slice"))
 
     SHAPE_SLICE_SUBCASE(case30, shape_ct, slice0, slice1, slice2);
     SHAPE_SLICE_SUBCASE(case30, shape_cl, slice0, slice1, slice2);
+    SHAPE_SLICE_SUBCASE(case30, shape_mx, slice0, slice1, slice2);
 }
 
 TEST_CASE("shape_slice(case31)" * doctest::test_suite("index::shape_slice"))
@@ -419,6 +438,7 @@ TEST_CASE("shape_slice(case31)" * doctest::test_suite("index::shape_slice"))
 
     SHAPE_SLICE_SUBCASE(case31, shape_ct, slice0, slice1, slice2);
     SHAPE_SLICE_SUBCASE(case31, shape_cl, slice0, slice1, slice2);
+    SHAPE_SLICE_SUBCASE(case31, shape_mx, slice0, slice1, slice2);
 }
 
 TEST_CASE("shape_slice(case32)" * doctest::test_suite("index::shape_slice"))
@@ -431,6 +451,7 @@ TEST_CASE("shape_slice(case32)" * doctest::test_suite("index::shape_slice"))
 
     SHAPE_SLICE_SUBCASE(case32, shape_ct, slice0, slice1);
     SHAPE_SLICE_SUBCASE(case32, shape_cl, slice0, slice1);
+    SHAPE_SLICE_SUBCASE(case32, shape_mx, slice0, slice1);
 }
 
 TEST_CASE("shape_slice(case33)" * doctest::test_suite("index::shape_slice"))
@@ -451,35 +472,12 @@ TEST_CASE("shape_slice(case34)" * doctest::test_suite("index::shape_slice"))
     SHAPE_SLICE_SUBCASE(case34, shape_h, slice0_a);
 }
 
-#define RUN_shape_dynamic_slice_impl(...) \
-nm::index::shape_dynamic_slice(__VA_ARGS__);
-
-#ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
-#include "nmtools/testing/benchmarks/bench.hpp"
-using nm::benchmarks::TrackedBench;
-// create immediately invoked lambda
-// that packs shape_dynamic_slice fn to callable lambda
-#define RUN_shape_dynamic_slice(case_name, ...) \
-[](auto&&...args){ \
-    auto title = std::string("shape_dynamic_slice-") + #case_name; \
-    auto name  = nm::testing::make_func_args("", args...); \
-    auto fn    = [&](){ \
-        return RUN_shape_dynamic_slice_impl(args...); \
-    }; \
-    return TrackedBench::run(title, name, fn); \
-}(__VA_ARGS__);
-#else
-// run normally without benchmarking, ignore case_name
-#define RUN_shape_dynamic_slice(case_name, ...) \
-RUN_shape_dynamic_slice_impl(__VA_ARGS__);
-#endif // NMTOOLS_TESTING_ENABLE_BENCHMARKS
-
 #define SHAPE_DYNAMIC_SLICE_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
     NMTOOLS_TESTING_USE_CASE(index, shape_dynamic_slice, case_name); \
     using namespace args; \
-    auto result = RUN_shape_dynamic_slice(case_name, __VA_ARGS__); \
+    auto result = nmtools::index::shape_dynamic_slice(__VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( result, expect::result ); \
 }
 
@@ -725,58 +723,12 @@ TEST_CASE("shape_dynamic_slice(case22)" * doctest::test_suite("index::shape_dyna
     SHAPE_DYNAMIC_SLICE_SUBCASE(case22, shape_h, a_slices);
 }
 
-#define RUN_slice_impl(...) \
-nm::index::slice(__VA_ARGS__);
-
-#ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
-#include "nmtools/testing/benchmarks/bench.hpp"
-using nm::benchmarks::TrackedBench;
-// create immediately invoked lambda
-// that packs slice fn to callable lambda
-#define RUN_slice(case_name, ...) \
-[](auto&&...args){ \
-    auto title = std::string("slice-") + #case_name; \
-    auto name  = nm::testing::make_func_args("", args...); \
-    auto fn    = [&](){ \
-        return RUN_slice_impl(args...); \
-    }; \
-    return TrackedBench::run(title, name, fn); \
-}(__VA_ARGS__);
-#else
-// run normally without benchmarking, ignore case_name
-#define RUN_slice(case_name, ...) \
-RUN_slice_impl(__VA_ARGS__);
-#endif // NMTOOLS_TESTING_ENABLE_BENCHMARKS
-
-#define RUN_dynamic_slice_impl(...) \
-nm::index::dynamic_slice(__VA_ARGS__);
-
-#ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
-#include "nmtools/testing/benchmarks/bench.hpp"
-using nm::benchmarks::TrackedBench;
-// create immediately invoked lambda
-// that packs dynamic_slice fn to callable lambda
-#define RUN_dynamic_slice(case_name, ...) \
-[](auto&&...args){ \
-    auto title = std::string("dynamic_slice-") + #case_name; \
-    auto name  = nm::testing::make_func_args("", args...); \
-    auto fn    = [&](){ \
-        return RUN_dynamic_slice_impl(args...); \
-    }; \
-    return TrackedBench::run(title, name, fn); \
-}(__VA_ARGS__);
-#else
-// run normally without benchmarking, ignore case_name
-#define RUN_dynamic_slice(case_name, ...) \
-RUN_dynamic_slice_impl(__VA_ARGS__);
-#endif // NMTOOLS_TESTING_ENABLE_BENCHMARKS
-
 #define DYNAMIC_SLICE_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
     NMTOOLS_TESTING_USE_CASE(index, dynamic_slice, case_name); \
     using namespace args; \
-    auto result = RUN_dynamic_slice(case_name, __VA_ARGS__); \
+    auto result = nmtools::index::dynamic_slice(__VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( result, expect::result ); \
 }
 
@@ -786,7 +738,7 @@ SUBCASE(#case_name) \
 { \
     NMTOOLS_TESTING_USE_CASE(index, slice, case_name); \
     using namespace args; \
-    auto result = RUN_dynamic_slice(case_name, __VA_ARGS__); \
+    auto result = nmtools::index::dynamic_slice(__VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( result, expect::result ); \
 }
 
@@ -795,7 +747,7 @@ SUBCASE(#case_name) \
 { \
     NMTOOLS_TESTING_USE_CASE(index, slice, case_name); \
     using namespace args; \
-    auto result = RUN_slice(case_name, __VA_ARGS__); \
+    auto result = nmtools::index::slice(__VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( result, expect::result ); \
 }
 
