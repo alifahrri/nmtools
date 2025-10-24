@@ -875,7 +875,9 @@ namespace nmtools::index
             // to keep track of the active shape index,
             // note that the active shape index may not be the same as
             // i (index of slices) because of ellipsis
-            auto [r_i,s_i] = init;
+            // auto [r_i,s_i] = init;
+            auto r_i = nmtools::get<0>(init);
+            auto s_i = nmtools::get<1>(init);
 
             auto slice = at(slices_pack, i);
             [[maybe_unused]] auto si = at(shape,s_i);

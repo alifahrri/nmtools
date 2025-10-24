@@ -11,13 +11,24 @@
 	// "name": "xeus-cling",
 	// "dockerFile": "../docker/dev.dockerfile",
 
-	// DOCKERFILE: ubuntu eoan (for gcc 9.2.1)
-	// "name": "GCC 9.2.1",
-	// "dockerFile": "../docker/eoan.dockerfile",
+	// DOCKERFILE: ubuntu focal (for gcc 9)
+	// "name": "GCC 9",
+	// "dockerFile": "../docker/focal.dockerfile",
+	// 	"args": {
+    //         "USERNAME": "${localEnv:USER}",
+    //     },
+    //     "target": "dev"  
+	// },
 
     // DOCKERFILE: ubuntu jammy (22.04)
     // "name": "ubuntu jammy - gcc11, clang14",
-	// "dockerFile": "../docker/jammy.dockerfile",
+	"name": "Jammy",
+	"dockerFile": "../docker/jammy.dockerfile",
+	"args": {
+            "USERNAME": "${localEnv:USER}",
+        },
+        "target": "dev"  
+	},
 
     // DOCKERFILE: ubuntu jammy (22.04)
     // "name": "ubuntu lunar",
@@ -40,16 +51,16 @@
     // "dockerFile": "../docker/sycl.dockerfile",
 
 	// DOCKERFILE: cuda-sycl
-    "name": "devcontainer",
-    "dockerFile": "../docker/sycl.dockerfile",
+    // "name": "devcontainer",
+    // "dockerFile": "../docker/sycl.dockerfile",
 
-	"build": { 
-		"args": {
-            "USERNAME": "${localEnv:USER}",
-            "BASE": "ubuntu:22.04"
-        },
-        "target": "dev"  
-	},
+	// "build": { 
+	// 	"args": {
+    //         "USERNAME": "${localEnv:USER}",
+    //         "BASE": "ubuntu:22.04"
+    //     },
+    //     "target": "dev"  
+	// },
 
 
 	// Set *default* container specific settings.json values on container create.
