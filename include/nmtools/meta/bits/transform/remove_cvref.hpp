@@ -76,4 +76,9 @@ namespace nmtools::meta
     };
 } // namespace nmtools::meta
 
+namespace nmtools
+{
+    using meta::remove_cvref_t;
+}
+
 #endif // NMTOOLS_META_BITS_TRANSFORM_REMOVE_CVREF_HPP

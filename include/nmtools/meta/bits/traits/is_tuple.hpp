@@ -31,4 +31,9 @@ namespace nmtools::meta
     inline constexpr bool is_tuple_v = is_tuple<Args...>::value;
 } // namespace nmtools::meta
 
+namespace nmtools
+{
+    using meta::is_tuple_v;
+}
+
 #endif // NMTOOLS_META_BITS_TRAITS_IS_TUPLE_HPP

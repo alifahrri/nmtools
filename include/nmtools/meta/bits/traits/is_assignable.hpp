@@ -25,4 +25,9 @@ namespace nmtools::meta
     inline constexpr auto is_assignable_v = is_assignable<T,U>::value;
 } // namespace nmtools::meta
 
+namespace nmtools
+{
+    using meta::is_assignable_v;
+}
+
 #endif // NMTOOLS_META_BITS_TRAITS_IS_ASSIGNABLE_HPP

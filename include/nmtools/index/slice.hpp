@@ -867,6 +867,19 @@ namespace nmtools::index
         constexpr auto N_SLICES = sizeof...(slices);
         constexpr auto DIM = len_v<shape_t>;
 
+        [[maybe_unused]]
+        auto assign_tuple = [](auto& tuple, auto i, auto value){
+            constexpr auto N = len_v<decltype(tuple)>;
+            meta::template_for<N>([&](auto index){
+                constexpr auto I = decltype(index)::value;
+                if constexpr (is_assignable_v<decltype(nmtools::get<I>(tuple)),decltype(value)>) {
+                    if (i == index) {
+                        nmtools::get<I>(tuple) = value;
+                    }
+                }
+            });
+        };
+
         meta::template_reduce<N_SLICES>([&](auto init, auto i){
             // r_i:
             // since res and shape may have different dim,
@@ -917,7 +930,17 @@ namespace nmtools::index
                 // number of shape to be filled (by ellipsis):
                 auto n = (dim-(N_SLICES-1));
                 for (size_t j=0; j<n; j++) {
+                    // weird things are happening here
+                    // probably this got instantiated no matter the if-constexpr condition met or not in clang
+                    #ifndef __clang__
                     at(res,m_r_i++) = at(shape,j+m_s_i);
+                    #else
+                    if constexpr (is_tuple_v<result_t>) {
+                        assign_tuple(res,m_r_i++,at(shape,j+m_s_i));
+                    } else {
+                        at(res,m_r_i++) = at(shape,j+m_s_i);
+                    }
+                    #endif
                 }
                 // must also increment active shape index
                 // to properly assign next slice to correct axis
@@ -978,10 +1001,6 @@ namespace nmtools::index
                 // doesn't contributes to shape computation
                 return nmtools_tuple{r_i,s_i+1_ct};
             }
-            // increment the active shape index here
-            // to make sure that it handled all the case (ellipsis,tuple,integral).
-            // note that ellipsis may cause both active shape index and active result index
-            // to be incremented.
         }, nmtools_tuple{meta::ct_v<0ul>,meta::ct_v<0ul>});
 
         return res;
@@ -1118,39 +1137,6 @@ namespace nmtools::meta
         template <typename...>
         struct SHAPE_SLICE_UNSUPPORTED : detail::fail_t {};
     } // namespace error
-
-    template <typename T, typename=void>
-    struct is_slice_all : false_type {};
-
-    template <template<typename...>typename tuple, typename...args_t>
-    struct is_slice_all<tuple<args_t...>
-        , enable_if_t<is_tuple_v<tuple<args_t...>>>
-    >
-    {
-        using tuple_t = tuple<args_t...>;
-
-        static constexpr auto value = [](){
-            constexpr auto num_args = sizeof...(args_t);
-            auto result = (num_args == 2) || (num_args == 3);
-            if (result) {
-                meta::template_for<num_args>([&](auto index){
-                    constexpr auto I = decltype(index)::value;
-                    using type_i = at_t<tuple_t,I>;
-                    result = result && is_none_v<type_i>;
-                });
-            }
-            return result;
-        }();
-    };
-
-    template <typename T>
-    struct is_slice_all<const T> : is_slice_all<T> {};
-
-    template <typename T>
-    struct is_slice_all<T&> : is_slice_all<T> {};
-
-    template <typename T>
-    constexpr inline auto is_slice_all_v = is_slice_all<T>::value;
 
     // TODO: compute at compile time whenever possible
     template <typename shape_t, typename...slices_t>

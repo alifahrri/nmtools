@@ -36,6 +36,28 @@ TEST_CASE("shape_slice(case1)" * doctest::test_suite("index::shape_slice") * doc
 
     SHAPE_SLICE_SUBCASE(case1, shape_ct, slice0, slice1, slice2);
     SHAPE_SLICE_SUBCASE(case1, shape_cl, slice0, slice1, slice2);
+
+    #if 0
+    NMTOOLS_TESTING_USE_CASE( index, shape_slice, case1 );
+    auto slices_pack = nmtools_tuple{slice0,slice1,slice2};
+    auto slice = nm::at(slices_pack, nm::ct_v<0>);
+    auto init = nmtools_tuple{nm::ct_v<0ul>,nm::ct_v<0ul>};
+    // auto r_i = nm::get<0>(init);
+    auto s_i = nm::get<1>(init);
+    [[maybe_unused]] auto si = nm::at(shape,s_i);
+    using slice_t = meta::remove_cvref_t<decltype(slice)>;
+
+    static_assert( nm::len_v<decltype(shape_mx)> == 3 );
+    static_assert( nm::is_mixed_index_array_v<decltype(shape_mx)> );
+    static_assert( !nm::is_index_v<slice_t> );
+    static_assert( nm::is_slice_all_v<slice_t> );
+    static_assert( nm::is_tuple_v<slice_t> );
+    static_assert( !nm::is_ellipsis_v<slice_t> );
+    static_assert( !nm::is_ellipsis_v<nm::remove_cvref_t<slice_t>> );
+    constexpr nm_index_t DIM = nm::len_v<decltype(shape_mx)>;
+    static_assert( !(nm::is_ellipsis_v<slice_t>) && (DIM > 0) );
+    #endif
+
     SHAPE_SLICE_SUBCASE(case1, shape_mx, slice0, slice1, slice2);
 
     {
