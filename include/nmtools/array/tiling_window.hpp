@@ -284,6 +284,7 @@ namespace nmtools::meta
                 constexpr auto SRC_DIM = len_v<src_shape_t>;
                 [[maybe_unused]]
                 constexpr auto SRC_BDIM = bounded_size_v<src_shape_t>;
+                [[maybe_unused]]
                 constexpr auto TILE_DIM = len_v<tile_shape_t>;
                 [[maybe_unused]]
                 constexpr auto TILE_BDIM = bounded_size_v<tile_shape_t>;
