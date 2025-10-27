@@ -93,4 +93,9 @@ namespace nmtools::meta
     #endif // __OPENCL_VERSION__
 } // namespace nmtools::meta
 
+namespace nmtools
+{
+    using meta::len_v;
+}
+
 #endif // NMTOOLS_META_BITS_TRANSFORM_LEN_HPP

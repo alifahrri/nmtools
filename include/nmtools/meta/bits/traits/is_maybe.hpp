@@ -28,4 +28,9 @@ namespace nmtools::meta
     constexpr inline auto is_maybe_v = is_maybe<T>::value;
 } // namespace nmtools::meta
 
+namespace nmtools
+{
+    using meta::is_maybe_v;
+}
+
 #endif // NMTOOLS_META_BITS_TRAITS_IS_MAYBE_HPP

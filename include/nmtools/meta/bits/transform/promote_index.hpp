@@ -7,6 +7,7 @@
 #include "nmtools/meta/bits/traits/is_constant_index.hpp"
 #include "nmtools/meta/bits/traits/is_signed.hpp"
 #include "nmtools/meta/bits/traits/is_index.hpp"
+#include "nmtools/meta/bits/traits/is_nullable_index.hpp"
 #include "nmtools/meta/bits/transform/remove_cvref.hpp"
 #include "nmtools/meta/bits/transform/at.hpp"
 #include "nmtools/meta/bits/transform/type_list_at.hpp"
@@ -39,7 +40,7 @@ namespace nmtools::meta
     
         template <typename T>
         static constexpr auto make_non_constant(as_value<T>) {
-            if constexpr (is_constant_index_v<T> || is_clipped_integer_v<T>) {
+            if constexpr (is_constant_index_v<T> || is_clipped_integer_v<T> || is_nullable_index_v<T>) {
                 return as_value_v<typename T::value_type>;
             } else {
                 return as_value_v<T>;

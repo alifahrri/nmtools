@@ -8,7 +8,7 @@ namespace nmtools
     template <typename T>
     constexpr auto has_value(const T& t) -> bool
     {
-        if constexpr (meta::is_maybe_v<T>) {
+        if constexpr (is_maybe_v<T> || is_nullable_num_v<T>) {
             return static_cast<bool>(t);
         } else {
             return true;

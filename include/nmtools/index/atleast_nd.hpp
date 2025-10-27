@@ -73,9 +73,10 @@ namespace nmtools::index
 
             // fill the rest with src shape
             if constexpr (meta::is_tuple_v<shape_t> && !meta::is_fail_v<decltype(DIFF)>) {
-                meta::template_for<N>([&](auto i){
-                    constexpr auto I = meta::ct_v<i+diff>;
-                    at(result,I) = at(shape,i);
+                meta::template_for<N>([&](auto index){
+                    constexpr auto i = decltype(index)::value+diff;
+                    constexpr auto I = meta::ct_v<i>;
+                    at(result,I) = at(shape,index);
                 });
             } else {
                 for (nm_index_t i=0; i<(nm_index_t)dim; i++) {

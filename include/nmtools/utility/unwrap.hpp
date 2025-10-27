@@ -13,7 +13,7 @@ namespace nmtools
     constexpr auto unwrap(const T& t)
         -> const meta::resolve_optype_t<unwrap_t,T>
     {
-        if constexpr (meta::is_maybe_v<T>) {
+        if constexpr (is_maybe_v<T>) {
             if (!has_value(t)) {
                 // extra if to make it usable in constant expression
                 nmtools_panic( has_value(t)
@@ -30,7 +30,7 @@ namespace nmtools
     constexpr auto unwrap(T& t)
         -> meta::resolve_optype_t<unwrap_t,T>
     {
-        if constexpr (meta::is_maybe_v<T>) {
+        if constexpr (is_maybe_v<T> || is_nullable_num_v<T>) {
             if (!has_value(t)) {
                 // extra if to make it usable in constant expression
                 nmtools_panic( has_value(t)
@@ -64,7 +64,7 @@ namespace nmtools::meta
     struct resolve_optype<void,unwrap_t,T>
     {
         static constexpr auto vtype = [](){
-            if constexpr (is_maybe_v<T>) {
+            if constexpr (is_maybe_v<T> || is_nullable_num_v<T>) {
                 using type = get_maybe_type_t<T>;
                 // TODO: handle nested maybe type
                 return as_value_v<type>;

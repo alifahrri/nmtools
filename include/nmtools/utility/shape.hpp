@@ -420,15 +420,20 @@ namespace nmtools
             constexpr auto fixed_size = meta::fixed_size_v<array_t>;
             [[maybe_unused]]
             constexpr auto bounded_size = meta::bounded_size_v<array_t>;
-            [[maybe_unused]]
             constexpr auto c_shape = meta::to_value_v<decltype(shape(array))>;
+            using c_shape_t [[maybe_unused]] = decltype(c_shape);
+            // TODO: propagate minimum value when c_shape is mixed index array
             if constexpr (!meta::is_fail_v<decltype(fixed_size)>) {
                 using type = meta::ct<(nm_size_t)fixed_size>;
                 return type{};
             } else if constexpr (!meta::is_fail_v<decltype(bounded_size)>) {
                 using type = clipped_size_t<(nm_size_t)bounded_size>;
                 return type{static_cast<nm_size_t>(nmtools::size(array))};
-            } else if constexpr (!meta::is_fail_v<decltype(c_shape)> && !is_none_v<decltype(c_shape)>) {
+            } else if constexpr (!is_none_v<c_shape_t>
+                    && !meta::is_fail_v<c_shape_t>
+                    && !meta::is_mixed_index_array_v<c_shape_t>
+                    && !meta::is_nullable_index_array_v<c_shape_t>
+            ) {
                 constexpr auto c_sum = [&](){
                     nm_size_t c_sum = 1;
                     for (nm_size_t i=0; i<(nm_size_t)len(c_shape); i++) {
@@ -437,7 +442,7 @@ namespace nmtools
                     return c_sum;
                 }();
                 using type = clipped_size_t<nm_size_t(c_sum)>;
-                return type{nmtools::size(array)};
+                return type{(nm_size_t)nmtools::size(array)};
             } else if constexpr (meta::is_num_v<array_t>) {
                 return meta::ct_v<1ul>;
             } else {

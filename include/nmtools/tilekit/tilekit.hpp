@@ -8,10 +8,10 @@
 #include "nmtools/index/product.hpp"
 #include "nmtools/ndarray/array.hpp"
 
-namespace nmtools::tilekit
+namespace nmtools::tilekit::view
 {
-    template <typename ctx_t, typename array_t, typename offset_t, typename shape_t, typename axis_t=none_t>
-    constexpr auto load(ctx_t&& ctx, const array_t& array, const offset_t& offset, const shape_t& shape, const axis_t& axis=axis_t{})
+    template <typename array_t, typename offset_t, typename shape_t, typename axis_t=none_t>
+    constexpr auto load(const array_t& array, const offset_t& offset, const shape_t& shape, const axis_t& axis=axis_t{})
     {
         static_assert( meta::is_constant_index_array_v<shape_t> );
         static_assert( meta::is_constant_index_v<axis_t> || is_none_v<axis_t> );
@@ -20,6 +20,19 @@ namespace nmtools::tilekit
         static_assert( DIM > 0 );
         static_assert( meta::is_tuple_v<offset_t> );
 
+        auto slices = utility::tuple_append(offset,Ellipsis);
+        auto window = nmtools::view::tiling_window(array,shape,axis);
+        auto sliced = unwrap(nmtools::view::apply_slice(window,slices));
+
+        return sliced;
+    }
+}
+
+namespace nmtools::tilekit
+{
+    template <typename ctx_t, typename array_t, typename offset_t, typename shape_t, typename axis_t=none_t>
+    constexpr auto load(ctx_t&& ctx, const array_t& array, const offset_t& offset, const shape_t& shape, const axis_t& axis=axis_t{})
+    {
         constexpr auto shapev = meta::to_value_v<shape_t>;
         constexpr auto numel  = index::product(shapev);
 
@@ -27,9 +40,7 @@ namespace nmtools::tilekit
         using buffer_t  = nmtools_array<element_t,numel>;        
         using result_t  = object_t<buffer_t,shape_t>;
 
-        auto slices = utility::tuple_append(offset,Ellipsis);
-        auto window = view::tiling_window(array,shape,axis);
-        auto sliced = unwrap(view::apply_slice(window,slices));
+        auto sliced = view::load(array,offset,shape,axis);
         auto result = result_t{};
 
         eval(

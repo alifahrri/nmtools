@@ -37,6 +37,10 @@ namespace nmtools::index
             if constexpr (!meta::is_constant_index_array_v<result_t>
                 && !meta::is_fail_v<result_t>
             ) {
+                [[maybe_unused]]
+                constexpr auto SRC_DIM = meta::len_v<src_shape_t>;
+                [[maybe_unused]]
+                constexpr auto DST_DIM = meta::len_v<result_t>;
                 auto src_dim = len(src_shape);
 
                 auto tile_dim = [&]()->nm_size_t{
@@ -96,12 +100,26 @@ namespace nmtools::index
                 }();
 
                 if constexpr (meta::is_index_v<tile_shape_t> && is_none_v<axis_t>) {
-                    for (nm_size_t i=0; i<src_dim; i++) {
-                        // TODO: check & propagate error
-                        at(result,i) = at(src_shape,i) / tile_shape;
+                    if constexpr (SRC_DIM > 0) {
+                        // handle mixed index array
+                        meta::template_for<SRC_DIM>([&](auto i){
+                            at(result,i) = at(src_shape,i) / tile_shape;
+                        });
+                    } else {
+                        for (nm_size_t i=0; i<src_dim; i++) {
+                            // TODO: check & propagate error
+                            at(result,i) = at(src_shape,i) / tile_shape;
+                        }
                     }
-                    for (nm_size_t i=src_dim; i<dst_dim; i++) {
-                        at(result,i) = tile_shape;
+                    if constexpr ((SRC_DIM > 0) && (DST_DIM > 0)) {
+                        meta::template_for<DST_DIM-SRC_DIM>([&](auto i){
+                            auto I = meta::ct_v<SRC_DIM+decltype(i)::value>;
+                            at(result,I) = tile_shape;
+                        });
+                    } else {
+                        for (nm_size_t i=src_dim; i<dst_dim; i++) {
+                            at(result,i) = tile_shape;
+                        }
                     }
                 } else if constexpr (meta::is_index_array_v<tile_shape_t> && meta::is_index_array_v<axis_t>) {
                     for (nm_size_t i=0; i<src_dim; i++) {
@@ -114,14 +132,28 @@ namespace nmtools::index
                         at(result,src_dim+i) = at(tile_shape,i);
                     }
                 } else if constexpr (meta::is_index_array_v<tile_shape_t>) {
-                    // assume len(tile_shape) == len(src_shape)
-                    // TODO: check & propagate error
-                    for (nm_size_t i=0; i<src_dim; i++) {
+                    if constexpr (SRC_DIM > 0) {
+                        // handle mixed index array
+                        meta::template_for<SRC_DIM>([&](auto i){
+                            at(result,i) = at(src_shape,i) / at(tile_shape,i);
+                        });
+                    } else {
+                        // assume len(tile_shape) == len(src_shape)
                         // TODO: check & propagate error
-                        at(result,i) = at(src_shape,i) / at(tile_shape,i);
+                        for (nm_size_t i=0; i<src_dim; i++) {
+                            // TODO: check & propagate error
+                            at(result,i) = at(src_shape,i) / at(tile_shape,i);
+                        }
                     }
-                    for (nm_size_t i=src_dim; i<dst_dim; i++) {
-                        at(result,i) = at(tile_shape,i-src_dim);
+                    if constexpr (DST_DIM > 0) {
+                        meta::template_for<DST_DIM-SRC_DIM>([&](auto i){
+                            auto I = meta::ct_v<SRC_DIM+decltype(i)::value>;
+                            at(result,I) = at(tile_shape,i);
+                        });
+                    } else {
+                        for (nm_size_t i=src_dim; i<dst_dim; i++) {
+                            at(result,i) = at(tile_shape,i-src_dim);
+                        }
                     }
                 } else /* if constexpr (meta::is_index_v<tile_shape_t> && is_none_v<axis_t>) */ {
                     for (nm_size_t i=0; i<src_dim; i++) {
@@ -252,10 +284,27 @@ namespace nmtools::meta
                 constexpr auto SRC_DIM = len_v<src_shape_t>;
                 [[maybe_unused]]
                 constexpr auto SRC_BDIM = bounded_size_v<src_shape_t>;
+                [[maybe_unused]]
                 constexpr auto TILE_DIM = len_v<tile_shape_t>;
                 [[maybe_unused]]
                 constexpr auto TILE_BDIM = bounded_size_v<tile_shape_t>;
-                if constexpr ((SRC_DIM > 0) && (TILE_DIM > 0)) {
+                if constexpr ((SRC_DIM > 0) && is_none_v<axis_t> 
+                    && (is_constant_index_v<tile_shape_t> || is_constant_index_array_v<tile_shape_t>)
+                ) {
+                    // results in mixed index
+                    auto vtype = meta::template_reduce<SRC_DIM>([&](auto init, auto){
+                        using init_t = type_t<decltype(init)>;
+                        using type = append_type_t<init_t,nm_index_t>;
+                        return as_value_v<type>;
+                    }, as_value_v<nmtools_tuple<>>);
+                    if constexpr (is_constant_index_v<tile_shape_t>) {
+                        using type = append_type_t<type_t<decltype(vtype)>,tile_shape_t>;
+                        return as_value_v<type>;
+                    } else {
+                        using type = concat_type_t<type_t<decltype(vtype)>,tile_shape_t>;
+                        return as_value_v<type>;
+                    }
+                } else if constexpr ((SRC_DIM > 0) && (TILE_DIM > 0)) {
                     constexpr auto DST_DIM = SRC_DIM + TILE_DIM;
                     using type = nmtools_array<nm_size_t,DST_DIM>;
                     return as_value_v<type>;

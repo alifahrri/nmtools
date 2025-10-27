@@ -49,7 +49,7 @@ namespace nmtools::index
         // gcc 8 internal compiler error :|
         // gcc 8 no longer supported, maybe cleanup this code
         [[maybe_unused]] auto abs_ = [](auto v) { return v < 0 ? -v : v; };
-        // both start and stop is none, simply returh shape for this axis
+        // both start and stop is none, simply return shape for this axis
         if constexpr (is_none_v<start_t> && is_none_v<stop_t>) {
             return si;
         }
@@ -749,19 +749,6 @@ namespace nmtools::meta
     struct resolve_optype<void,index::shape_dynamic_slice_t,shape_t,slice_t>
     {
         static constexpr auto vtype = [](){
-            #if 0
-            if constexpr (is_fixed_index_array_v<shape_t>) {
-                using index_t = get_index_element_type_t<shape_t>;
-                using elem_t  = make_unsigned_t<index_t>;
-                constexpr auto src_dim = len_v<shape_t>;
-                using type = make_hybrid_ndarray_t<elem_t,src_dim,1>;
-                return as_value_v<type>;
-            } else if constexpr (is_index_array_v<shape_t>) {
-                using index_t = get_index_element_type_t<shape_t>;
-                using elem_t  = make_unsigned_t<index_t>;
-                using type = replace_element_type_t<shape_t,elem_t>;
-                return as_value_v<type>;
-            #else
             using index_t = get_index_element_type_t<shape_t>;
             using elem_t  = make_unsigned_t<index_t>;
             constexpr auto N = len_v<shape_t>;
@@ -777,7 +764,6 @@ namespace nmtools::meta
                     using type = nmtools_list<elem_t>;
                     return as_value_v<type>;
                 }
-            #endif
             } else {
                 using type = error::SHAPE_DYNAMIC_SLICE_UNSUPPORTED<shape_t,slice_t>;
                 return as_value_v<type>;
@@ -795,13 +781,6 @@ namespace nmtools::meta
                 using type = resolve_optype_t<index::dynamic_slice_t,indices_t,remove_cvref_t<decltype(to_value_v<shape_t>)>,slice_t>;
                 return as_value_v<type>;
             } else if constexpr (is_index_array_v<shape_t>) {
-                #if 0
-                // TODO: handle raw array
-                using index_t = get_element_or_common_type_t<shape_t>;
-                using elem_t  = make_unsigned_t<index_t>;
-                using type = replace_element_type_t<shape_t,elem_t>;
-                return as_value_v<type>;
-                #else
                 using index_t = get_index_element_type_t<shape_t>;
                 using elem_t  = make_unsigned_t<index_t>;
                 constexpr auto N = len_v<shape_t>;
@@ -816,7 +795,6 @@ namespace nmtools::meta
                     using type = nmtools_list<elem_t>;
                     return as_value_v<type>;
                 }
-                #endif
             } else {
                 using type = error::DYNAMIC_SLICE_UNSUPPORTED<indices_t,shape_t,slice_t>;
                 return as_value_v<type>;
@@ -847,8 +825,9 @@ namespace nmtools::index
     template <typename shape_t, typename...slices_t>
     constexpr auto shape_slice(const shape_t& shape_, const slices_t&...slices)
     {
-        using return_t  = meta::resolve_optype_t<shape_slice_t,shape_t,slices_t...>;
-        using size_type = meta::get_index_element_type_t<return_t>;
+        using namespace literals;
+        using result_t  = meta::resolve_optype_t<shape_slice_t,shape_t,slices_t...>;
+        using size_type = meta::get_index_element_type_t<result_t>;
         // number of integer in slices, represent indexing instead of slice
         constexpr auto N_INT = (static_cast<size_t>(meta::is_index_v<slices_t>) + ...);
 
@@ -872,11 +851,11 @@ namespace nmtools::index
             , "only exactly zero or one ellipsis are allowed"
         );
 
-        auto res = return_t {};
+        auto res = result_t {};
         // Ellipsis doesn't contribute to dimension reduction.
         // Not all constexpr branches are using dim
         [[maybe_unused]] auto dim = len(shape) - N_INT;
-        if constexpr (meta::is_resizable_v<return_t>) {
+        if constexpr (meta::is_resizable_v<result_t>) {
             res.resize(dim);
         }
         
@@ -885,21 +864,36 @@ namespace nmtools::index
 
         auto slices_pack = nmtools_tuple<const slices_t&...>{slices...};
 
-        // since res and shape may have different dim,
-        // this var is to keep track of the active result index
-        auto r_i = size_t{0};
-        // to keep track of the active shape index,
-        // note that the active shape index may not be the same as
-        // i (index of slices) because of ellipsis
-        auto s_i = size_t{0};
         constexpr auto N_SLICES = sizeof...(slices);
-        meta::template_for<N_SLICES>([&](auto i){
+        constexpr auto DIM = len_v<shape_t>;
+
+        [[maybe_unused]]
+        auto assign_tuple = [](auto& tuple, auto i, auto value){
+            constexpr auto N = len_v<decltype(tuple)>;
+            meta::template_for<N>([&](auto index){
+                constexpr auto I = decltype(index)::value;
+                if constexpr (is_assignable_v<decltype(nmtools::get<I>(tuple)),decltype(value)>) {
+                    if (i == index) {
+                        nmtools::get<I>(tuple) = value;
+                    }
+                }
+            });
+        };
+
+        meta::template_reduce<N_SLICES>([&](auto init, auto i){
+            // r_i:
+            // since res and shape may have different dim,
+            // this var is to keep track of the active result index
+            // s_i:
+            // to keep track of the active shape index,
+            // note that the active shape index may not be the same as
+            // i (index of slices) because of ellipsis
+            // auto [r_i,s_i] = init;
+            auto r_i = nmtools::get<0>(init);
+            auto s_i = nmtools::get<1>(init);
+
             auto slice = at(slices_pack, i);
-            // we set si here to avoid gcc 8 internal error
-            // note that we also explicit using size_t here
-            // can't infer type (or using size_type ) :|
-            // size_type si = at(shape,i);
-            [[maybe_unused]] size_t si = at(shape,s_i);
+            [[maybe_unused]] auto si = at(shape,s_i);
             using slice_t = meta::remove_cvref_t<decltype(slice)>;
 
             // helper lambda to decompose start stop and step
@@ -919,37 +913,45 @@ namespace nmtools::index
             // when we found ellipsis,
             // fill up res with ":" aka tuple{None,None}
             // which is simply copy shape at the corresponding axis
-            if constexpr (is_ellipsis_v<slice_t>) {
+            if constexpr (is_ellipsis_v<slice_t> && (DIM > 0)) {
+                constexpr auto N = DIM - (N_SLICES-1);
+                auto r_idx = meta::template_reduce<N>([&](auto r_i, auto index){
+                    if constexpr (!is_constant_index_v<decltype(at(res,r_i))>) {
+                        at(res,r_i) = at(shape,index+s_i);
+                    }
+                    return r_i+1_ct;
+                }, r_i);
+                return nmtools_tuple{r_idx,s_i+ct_v<N>};
+            } else if constexpr (is_ellipsis_v<slice_t>) {
+                nm_size_t m_r_i = r_i;
+                nm_size_t m_s_i = s_i;
                 // ellipsis takes src dim, not dst dim
                 auto dim = len(shape);
                 // number of shape to be filled (by ellipsis):
                 auto n = (dim-(N_SLICES-1));
                 for (size_t j=0; j<n; j++) {
-                    at(res,r_i++) = at(shape,j+s_i);
+                    // weird things are happening here
+                    // probably this got instantiated no matter the if-constexpr condition met or not in clang
+                    #ifndef __clang__
+                    at(res,m_r_i++) = at(shape,j+m_s_i);
+                    #else
+                    if constexpr (is_tuple_v<result_t>) {
+                        assign_tuple(res,m_r_i++,at(shape,j+m_s_i));
+                    } else {
+                        at(res,m_r_i++) = at(shape,j+m_s_i);
+                    }
+                    #endif
                 }
                 // must also increment active shape index
                 // to properly assign next slice to correct axis
-                s_i += (n-1);
+                m_s_i += (n-1);
+                m_s_i++;
+                return nmtools_tuple{m_r_i,m_s_i};
             }
             // when slice is mixed with indexing,
             // the resulting dimension is len(shape) - N_INT
             // simply ignore if there is integer
             else if constexpr (!meta::is_index_v<slice_t>) {
-                // using IILE here triggers gcc 8 internal compiler error: 
-                // in enclosing_instantiation_of, at cp/pt.c:13299 (works fine on gcc 9)
-                // https://godbolt.org/z/7vcvPG8c1
-                // move outside to avoid this problem
-                // auto [start_, stop_, step_] = [&](){
-                //     // assume slice has tuple_size
-                //     constexpr auto NS = std::tuple_size_v<decltype(slice)>;
-                //     if constexpr (NS==2) {
-                //         auto [start, stop] = slice;
-                //         return std::tuple{start,stop,None};
-                //     }
-                //     // return as it is to keep dtype
-                //     else if constexpr (NS==3)
-                //         return slice;
-                // }();
                 const auto [start_,stop_,step_] = decompose(slice);
                 using step_t [[maybe_unused]] = meta::remove_cvref_t<decltype(step_)>;
 
@@ -986,20 +988,20 @@ namespace nmtools::index
                     }
                 }(step_);
 
-                // finally the resulting shape for corresponding indices
-                // is simply the range divided by the step
-                // use constexpr_ceil to allow clang compile this
-                at(res,r_i++) = static_cast<size_type>(math::constexpr_ceil(static_cast<float>(s) / step));
+                // for mixed index array with constant entry, skip
+                if constexpr (!is_constant_index_v<decltype(at(res,r_i))>) {
+                    // finally the resulting shape for corresponding indices
+                    // is simply the range divided by the step
+                    // use constexpr_ceil to allow clang compile this
+                    at(res,r_i) = static_cast<size_type>(math::constexpr_ceil(static_cast<float>(s) / step));
+                }
+                return nmtools_tuple{r_i+1_ct,s_i+1_ct};
             } else /* if constexpr (meta::is_index_v<slice_t>) */ {
                 // only reduce the dimension,
                 // doesn't contributes to shape computation
+                return nmtools_tuple{r_i,s_i+1_ct};
             }
-            // increment the active shape index here
-            // to make sure that it handled all the case (ellipsis,tuple,integral).
-            // note that ellipsis may cause both active shape index and active result index
-            // to be incremented.
-            s_i++;
-        });
+        }, nmtools_tuple{meta::ct_v<0ul>,meta::ct_v<0ul>});
 
         return res;
     } // shape_slice
@@ -1130,6 +1132,12 @@ namespace nmtools::index
 
 namespace nmtools::meta
 {
+    namespace error
+    {
+        template <typename...>
+        struct SHAPE_SLICE_UNSUPPORTED : detail::fail_t {};
+    } // namespace error
+
     // TODO: compute at compile time whenever possible
     template <typename shape_t, typename...slices_t>
     struct resolve_optype<
@@ -1137,8 +1145,38 @@ namespace nmtools::meta
     >
     {
         static constexpr auto vtype = [](){
-            if constexpr (is_fixed_index_array_v<shape_t>) {
-                constexpr auto n_integer = ((static_cast<size_t>(meta::is_index_v<slices_t>)) + ...);
+            if constexpr (!is_index_array_v<shape_t>) {
+                using type = error::SHAPE_SLICE_UNSUPPORTED<shape_t,slices_t...>;
+                return as_value_v<type>;
+            } else if constexpr (is_mixed_index_array_v<shape_t>) {
+                using slices_pack_t = nmtools_tuple<slices_t...>;
+                auto vtype = template_reduce<sizeof...(slices_t)>([&](auto init, auto index){
+                    constexpr auto I = decltype(index)::value;
+                    using shape_i [[maybe_unused]] = at_t<shape_t,I>;
+                    using type_i  [[maybe_unused]] = at_t<slices_pack_t,I>;
+                    using init_t  [[maybe_unused]] = type_t<decltype(init)>;
+                    if constexpr (is_index_v<type_i>) {
+                        // dimension reduction
+                        return init;
+                    } else {
+                        using index_i = conditional_t<is_slice_all_v<type_i> && is_constant_index_v<shape_i>
+                            , shape_i, nm_index_t
+                        >;
+                        using type = append_type_t<init_t,index_i>;
+                        return as_value_v<type>;
+                    }
+                }, as_value_v<nmtools_tuple<>>);
+                using type = type_t<decltype(vtype)>;
+                if constexpr (is_mixed_index_array_v<type> || is_constant_index_array_v<type>) {
+                    return vtype;
+                } else {
+                    constexpr auto n_integer = ((static_cast<nm_size_t>(meta::is_index_v<slices_t>)) + ...);
+                    constexpr auto dim = len_v<shape_t> - n_integer;
+                    using type = nmtools_array<nm_index_t,dim>;
+                    return as_value_v<type>;
+                }
+            } else if constexpr (is_fixed_index_array_v<shape_t>) {
+                constexpr auto n_integer = ((static_cast<nm_size_t>(meta::is_index_v<slices_t>)) + ...);
                 constexpr auto dim = len_v<shape_t> - n_integer;
                 using index_t = get_index_element_type_t<shape_t>;
                 using type = nmtools_array<index_t,dim>;

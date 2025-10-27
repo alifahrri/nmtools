@@ -59,6 +59,9 @@ namespace nmtools::meta
     template <typename...Ts>
     struct is_fixed_index_array<std::tuple<Ts...>,std::enable_if_t<(is_index_v<Ts> && ...)>> : std::true_type {};
 
+    template <typename T, size_t N>
+    struct is_nullable_index_array<std::array<T,N>> : is_nullable_index<T> {};
+
     template <typename...Ts>
     struct is_constant_index_array<std::tuple<Ts...>,std::enable_if_t<(is_constant_index_v<Ts> && ...)>> : std::true_type {};
 

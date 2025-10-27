@@ -77,6 +77,7 @@ set( META_TRAIT_TEST_SOURCES
     traits/is_index.cpp
     traits/is_index_array.cpp
     traits/is_integer.cpp
+    traits/is_mixed_index_array.cpp
     traits/is_num.cpp
     traits/is_pod.cpp
     traits/is_reference.cpp

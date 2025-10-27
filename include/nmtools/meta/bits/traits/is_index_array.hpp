@@ -5,6 +5,7 @@
 #include "nmtools/meta/bits/traits/is_dynamic_index_array.hpp"
 #include "nmtools/meta/bits/traits/is_constant_index_array.hpp"
 #include "nmtools/meta/bits/traits/is_hybrid_index_array.hpp"
+#include "nmtools/meta/bits/traits/is_nullable_index_array.hpp"
 #include "nmtools/meta/bits/traits/has_address_space.hpp"
 #include "nmtools/meta/bits/transform/remove_address_space.hpp"
 
@@ -22,7 +23,9 @@ namespace nmtools::meta
             return is_fixed_index_array_v<T>
                 || is_dynamic_index_array_v<T>
                 || is_constant_index_array_v<T>
-                || is_hybrid_index_array_v<T>;
+                || is_hybrid_index_array_v<T>
+                || is_nullable_index_array_v<T>
+            ;
         }();
     };
 

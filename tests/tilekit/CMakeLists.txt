@@ -46,14 +46,18 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
 add_executable(${PROJECT_NAME}-doctest tests.cpp 
     src/vector_addition.cpp
+    src/copy.cpp
 )
 add_test(
     NAME ${PROJECT_NAME}-doctest
     COMMAND ${PROJECT_NAME}-doctest
 )
+set(NMTOOLS_TEST_TILEKIT_ARCH "native" CACHE STRING "manually set tilekit arch")
+# set(NMTOOLS_TEST_TILEKIT_OPT  -O2 -g)
+set(NMTOOLS_TEST_TILEKIT_OPT  -O3 -g)
 target_compile_options(${PROJECT_NAME}-doctest
     PRIVATE
-    -O2 -g -march=native
+    ${NMTOOLS_TEST_TILEKIT_OPT} -march=${NMTOOLS_TEST_TILEKIT_ARCH}
 )
 target_link_libraries(${PROJECT_NAME}-doctest PRIVATE nanobench)
 

@@ -29,6 +29,10 @@ TEST_CASE("shape_tiling_window(case1)" * doctest::test_suite("index::shape_tilin
     SHAPE_TILING_WINDOW_SUBCASE( case1, src_shape_v, tile_shape );
 
     SHAPE_TILING_WINDOW_SUBCASE( case1, src_shape_ct, tile_shape_ct );
+    SHAPE_TILING_WINDOW_SUBCASE( case1, src_shape_ct, tile_shape );
+
+    // should results in mixed index array
+    SHAPE_TILING_WINDOW_SUBCASE( case1, src_shape, tile_shape_ct );
 }
 
 TEST_CASE("shape_tiling_window(case2)" * doctest::test_suite("index::shape_tiling_window"))
@@ -40,6 +44,10 @@ TEST_CASE("shape_tiling_window(case2)" * doctest::test_suite("index::shape_tilin
     SHAPE_TILING_WINDOW_SUBCASE( case2, src_shape_v, tile_shape_v );
 
     SHAPE_TILING_WINDOW_SUBCASE( case2, src_shape_ct, tile_shape_ct );
+    SHAPE_TILING_WINDOW_SUBCASE( case2, src_shape_mx1, tile_shape_mx1 );
+
+    // should results in mixed index array
+    SHAPE_TILING_WINDOW_SUBCASE( case2, src_shape, tile_shape_ct );
 }
 
 TEST_CASE("shape_tiling_window(case2b)" * doctest::test_suite("index::shape_tiling_window"))
