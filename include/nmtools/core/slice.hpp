@@ -29,6 +29,12 @@ namespace nmtools::view
         static constexpr auto n_inputs  = 1;
         static constexpr auto n_outputs = 1;
 
+        template <typename string_t=nmtools_static_string>
+        static constexpr auto name() noexcept
+        {
+            return string_t("slice");
+        }
+
         // currently non-const because split use push_back
         // TODO: update split to use emplace_back and make this const
         src_shape_type src_shape;
@@ -49,6 +55,34 @@ namespace nmtools::view
             , dst_shape(fwd_attribute(index::apply_shape_slice(src_shape,slices)))
             , dst_size(index::product(dst_shape))
         {}
+
+        template <typename string_t=nmtools_static_string>
+        constexpr auto to_string() const noexcept
+        {
+            string_t str;
+            str += "slice";
+            str += "{";
+            str += ".src_shape="; str += string_t::to_string(src_shape);
+            str += ",.slices=";
+            // str += NMTOOLS_TYPENAME_TO_STRING(decltype(slices));
+            str += "{";
+            constexpr auto N_SLICES = len_v<slices_type>;
+            if constexpr (N_SLICES > 0) {
+                template_for<N_SLICES>([&](auto i){
+                    str += string_t::to_string(at(slices,i));
+                });
+            } else {
+                for (nm_size_t i=0; i<len(slices); i++) {
+                    str += string_t::to_string(at(slices,i));
+                }
+            }
+            str += "}";
+            // TODO: support to_string for slices
+            // str += ",.slices=";   str += apply_to_string(kwargs.slices,Compact);
+            str += ",.src_size="; str += string_t::to_string(src_size);
+            str += "}";
+            return str;
+        }
 
         template <typename indices_t>
         constexpr auto indices(const indices_t& indices) const
@@ -135,6 +169,18 @@ namespace nmtools
     };
 }
 
+namespace nmtools::meta
+{
+    // template <typename src_shape_t, typename slices_t, typename src_size_t>
+    // struct to_value<
+    //     view::slice_t, src_shape_t, slices_t, src_size_t
+    // > {
+    //     static constexpr auto value = [](){
+    //         [[maybe_unused]] constexpr auto SRC_DIM = len_v<>;
+    //     }();
+    // };
+}
+
 #if NMTOOLS_HAS_STRING
 
 namespace nmtools::utils::impl
@@ -152,9 +198,7 @@ namespace nmtools::utils::impl
             str += "slice";
             str += "{";
             str += ".src_shape="; str += to_string(kwargs.src_shape,Compact);
-            str += ",.slices=";   str += NMTOOLS_TYPENAME_TO_STRING(decltype(kwargs.slices));
-            // TODO: support to_string for slices
-            // str += ",.slices=";   str += apply_to_string(kwargs.slices,Compact);
+            str += ",.slices=";   str += to_string(kwargs.slices,Compact);
             str += ",.src_size="; str += to_string(kwargs.src_size,Compact);
             str += "}";
             return str;
