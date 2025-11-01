@@ -1,6 +1,7 @@
 #ifndef NMTOOLS_META_BITS_TRAITS_IS_INTEGER_HPP
 #define NMTOOLS_META_BITS_TRAITS_IS_INTEGER_HPP
 
+#include "nmtools/def.hpp"
 #include "nmtools/meta/common.hpp"
 #include "nmtools/meta/bits/traits/has_address_space.hpp"
 #include "nmtools/meta/bits/transform/remove_address_space.hpp"
@@ -55,6 +56,9 @@ namespace nmtools::meta
     struct is_integer<clipped_integer_t<T,Min,Max>,enable_if_t<is_integer_v<T>>> : true_type {};
 
     template <typename T>
+    struct is_integer<nullable_num<T>> : is_integer<T> {};
+
+    template <typename T>
     struct is_integer<const T> : is_integer<T> {};
 
     template <typename T>
@@ -104,5 +108,10 @@ namespace nmtools::meta
 */
 
 } // namespace nmtools::meta
+
+namespace nmtools
+{
+    using meta::is_integer_v;
+}
 
 #endif // NMTOOLS_META_BITS_TRAITS_IS_INTEGER_HPP

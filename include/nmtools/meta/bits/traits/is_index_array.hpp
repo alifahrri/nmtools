@@ -42,4 +42,9 @@ namespace nmtools::meta
     struct is_index_array<T,enable_if_t<has_address_space_v<T>>> : is_index_array<remove_address_space_t<T>> {};
 } // namespace nmtools::meta
 
+namespace nmtools
+{
+    using meta::is_index_array_v;
+}
+
 #endif // NMTOOLS_META_BITS_TRAITS_IS_INDEX_ARRAY_HPP

@@ -1,7 +1,7 @@
 #ifndef NMTOOLS_META_BITS_TRANSFORM_MAX_LEN_HPP
 #define NMTOOLS_META_BITS_TRANSFORM_MAX_LEN_HPP
 
-#include "nmtools/meta.hpp"
+#include "nmtools/meta/common.hpp"
 #include "nmtools/meta/bits/transform/len.hpp"
 
 namespace nmtools::meta
@@ -20,6 +20,11 @@ namespace nmtools::meta
 
     template <typename T>
     constexpr inline auto max_len_v = max_len<T>::value;
+}
+
+namespace nmtools
+{
+    using meta::max_len_v;
 }
 
 #endif // NMTOOLS_META_BITS_TRANSFORM_MAX_LEN_HPP

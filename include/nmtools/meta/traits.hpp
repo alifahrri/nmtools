@@ -12,6 +12,7 @@
 #include "nmtools/meta/bits/traits/has_dst_shape_type.hpp"
 #include "nmtools/meta/bits/traits/has_id_type.hpp"
 #include "nmtools/meta/bits/traits/has_identity.hpp"
+#include "nmtools/meta/bits/traits/has_name.hpp"
 #include "nmtools/meta/bits/traits/has_operands.hpp"
 #include "nmtools/meta/bits/traits/has_operands_fn.hpp"
 #include "nmtools/meta/bits/traits/has_reserve.hpp"
