@@ -6,7 +6,13 @@
 #include "nmtools/utl/static_vector.hpp"
 #include "nmtools/utl/either.hpp"
 #include "nmtools/utl/vector.hpp"
+#include "nmtools/meta/common.hpp"
+#include "nmtools/meta/bits/traits/has_size.hpp"
+#include "nmtools/meta/bits/traits/is_integer.hpp"
 #include "nmtools/meta/bits/traits/is_string.hpp"
+#include "nmtools/meta/bits/traits/is_tuple.hpp"
+#include "nmtools/meta/bits/transform/conditional.hpp"
+#include "nmtools/meta/bits/transform/max_len.hpp"
 
 #ifndef NMTOOLS_DEFAULT_STRING_STATIC_SIZE
 #define NMTOOLS_DEFAULT_STRING_STATIC_SIZE (16)
@@ -29,6 +35,76 @@ namespace nmtools::utl
         using const_reference = const T&;
 
         static constexpr auto npos = size_type(-1);
+
+        template <typename num_t, enable_if_t<is_integer_v<num_t>,int> = 0>
+        static auto to_string(num_t num)
+        {
+            string_base result;
+            if (is_nullable_num_v<num_t> && !static_cast<bool>(num)) {
+                result = "?";
+                return result;
+            }
+            if (num == 0) {
+                result.push_back('0');
+                result.push_back('\0');
+                return result;
+            }
+            auto is_negative = (num < 0);
+            // assume integer for now
+            nm_index_t m_num = is_negative ? (nm_index_t)-num : (nm_index_t)num;
+            string_base tmp;
+            while (m_num > 0) {
+                auto digit = m_num % 10;
+                tmp.push_back(digit + '0');
+                m_num = m_num / 10;
+            }
+            if (is_negative) {
+                result.push_back('-');
+            }
+            auto n_digits = tmp.size();
+            auto offset = is_negative ? 1 : 0;
+            result.resize(result.size()+n_digits);
+            for (nm_size_t i=0; i<n_digits; i++) {
+                result[i+offset] = tmp[n_digits-i-1];
+            }
+            result.push_back('\0');
+            return result;
+        }
+
+        template <typename array_t, enable_if_t<(has_size_v<array_t> > 0),int> = 0>
+        static constexpr auto to_string(const array_t& a, const string_base& separator=string_base(","))
+        {
+            constexpr nm_index_t N = max_len_v<array_t>;
+            // TODO: add utl::small_vector?
+            using strings_t  = conditional_t<(N > 0)
+                , utl::static_vector<string_base,N>
+                , utl::vector<string_base>>;
+            auto strings = strings_t{};
+            if constexpr (is_tuple_v<array_t>) {
+                template_for<N>([&](auto I){
+                    constexpr auto i = decltype(I)::value;
+                    strings.push_back(to_string(nmtools::get<i>(a)));
+                });
+            } else {
+                for (nm_size_t i=0; i<(nm_size_t)a.size(); i++) {
+                    strings.push_back(to_string(a[i]));
+                }
+            }
+            auto result = separator.join(strings);
+            result.insert(0,"{");
+            result += "}";
+            return result;
+        }
+
+        static constexpr auto to_string(none_t)
+        {
+            return string_base("None");
+        }
+
+        static constexpr auto to_string(ellipsis_t)
+        {
+            return string_base("...");
+        }
 
         protected:
         either_type buffer_ = {};
@@ -65,6 +141,13 @@ namespace nmtools::utl
         string_base(const string_base& other)
         {
             buffer_ = other.buffer_;
+        }
+
+        // TODO: parametrize Capacity
+        string_base& operator=(const string_base& other)
+        {
+            this->buffer_ = other.buffer_;
+            return *this;
         }
 
         void resize(size_type new_size)
@@ -176,6 +259,31 @@ namespace nmtools::utl
             }
         }
 
+        template <typename str_list_t>
+        constexpr auto join(const str_list_t& str_list) const noexcept
+        {
+            // TODO: customizeable capacity
+            string_base result;
+
+            auto insert_str = [&](const auto& str){
+                for (nm_size_t i=0; i<str.size()-1; i++) {
+                    result.push_back(str.at(i));
+                }
+            };
+
+            if (str_list.size() == 0) {
+                return result;
+            } else {
+                insert_str(str_list.at(0));
+                for (nm_size_t i=1; i<str_list.size(); i++) {
+                    insert_str(*this);
+                    insert_str(str_list.at(i));
+                }
+                result.push_back('\0');
+                return result;
+            }
+        }
+
         auto c_str() const
         {
             return this->data();
@@ -256,6 +364,19 @@ namespace nmtools::utl
             return *this;
         }
 
+        template <nm_size_t OtherCapacity>
+        constexpr auto operator+=(const string_base<OtherCapacity,T>& other)
+        {
+            auto N = other.size();
+            nm_index_t init = this->size();
+            init = (init == 0 ? 0 : init - 1);
+            this->resize(init + N);
+            for (nm_size_t i=0; i<N; i++) {
+                this->at(init++) = other[i];
+            }
+            return *this;
+        }
+
         constexpr auto substr(size_type pos, size_type count=npos) const
         {
             auto substring = string_base();
@@ -315,5 +436,17 @@ namespace nmtools::meta
     template <nm_size_t Capacity, typename T>
     struct is_string<utl::string_base<Capacity,T>> : true_type {};
 }
+
+#if __has_include(<iostream>)
+#include <iostream>
+
+template <nm_size_t Capacity, typename T>
+std::ostream& operator << (std::ostream& os, const nmtools::utl::string_base<Capacity,T>& string)
+{
+    os << string.c_str();
+    return os;
+}
+
+#endif // <iostream>
 
 #endif // NMTOOLS_UTL_STRING_HPP
