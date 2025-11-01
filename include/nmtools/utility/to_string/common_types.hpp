@@ -102,10 +102,14 @@ namespace nmtools::utils::impl
                     str += to_string(*array,formatter_t{});
                 else str += "Nothing";
             }
-            else if constexpr (meta::is_num_v<T>) {
+            else if constexpr (meta::is_num_v<T> || meta::is_nullable_num_v<T>) {
                 // allow view type
                 using type_t = meta::get_element_type_t<T>;
-                str += nmtools_to_string(static_cast<type_t>(array));
+                if (has_value(array)) {
+                    str += nmtools_to_string(static_cast<type_t>(array));
+                } else {
+                    str += "?";
+                }
             }
             else if constexpr (meta::is_integral_constant_v<T>) {
                 str += nmtools_to_string(T::value);

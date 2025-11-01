@@ -234,6 +234,46 @@ namespace nmtools
             return *this;
         }
 
+        constexpr decltype(auto) operator*=(T t)
+        {
+            if (!is_num()) {
+                nmtools_panic( false
+                    , "invalid cast for nullable_num" );
+            }
+            num *= t;
+            return *this;
+        }
+
+        constexpr decltype(auto) operator/=(T t)
+        {
+            if (!is_num()) {
+                nmtools_panic( false
+                    , "invalid cast for nullable_num" );
+            }
+            num /= t;
+            return *this;
+        }
+
+        constexpr decltype(auto) operator+=(T t)
+        {
+            if (!is_num()) {
+                nmtools_panic( false
+                    , "invalid cast for nullable_num" );
+            }
+            num += t;
+            return *this;
+        }
+
+        constexpr decltype(auto) operator-=(T t)
+        {
+            if (!is_num()) {
+                nmtools_panic( false
+                    , "invalid cast for nullable_num" );
+            }
+            num -= t;
+            return *this;
+        }
+
         constexpr operator T() const
         {
             if (!is_num()) {
@@ -252,6 +292,19 @@ namespace nmtools
             return num;
         }
     };
+
+    using nullable_int      = nullable_num<int>;
+    using nullable_long     = nullable_num<long>;
+    using nullable_char     = nullable_num<char>;
+    using nullable_size_t   = nullable_num<size_t>;
+    using nullable_int8_t   = nullable_num<int8_t>;
+    using nullable_int16_t  = nullable_num<int16_t>;
+    using nullable_int32_t  = nullable_num<int32_t>;
+    using nullable_int64_t  = nullable_num<int64_t>;
+    using nullable_uint8_t  = nullable_num<uint8_t>;
+    using nullable_uint16_t = nullable_num<uint16_t>;
+    using nullable_uint32_t = nullable_num<uint32_t>;
+    using nullable_uint64_t = nullable_num<uint64_t>;
 }
 
 // NOTE: to make it consistent for separate host device compilation
@@ -266,5 +319,201 @@ namespace nmtools
 #ifndef nm_bool_t
 #define nm_bool_t ::nmtools::bool_t
 #endif // nm_bool_t
+
+namespace nmtools
+{
+    template <typename T>
+    struct is_ellipsis;
+
+    // useful for constexpr-ready runtime slice index
+    template <typename index_t=nm_index_t>
+    struct vslice
+    {
+        using index_type = nullable_num<index_t>;
+        // case [0:-1:2]
+        // case [0:-1]
+        // case [0]
+        index_type index0 = {};
+        index_type index1 = {};
+        index_type index2 = {};
+        // case [0:]
+        // case [::2]
+        // case [0::-1]
+        none_t none0;
+        none_t none1;
+        none_t none2;
+        // case [...]
+        ellipsis_t ellipsis;
+
+        enum Tag : int {
+            UNKNOWN=-1,
+            INDEX=0,
+            NONE=1,
+            ELLIPSIS=2,
+        };
+        Tag tag0 = Tag::UNKNOWN;
+        Tag tag1 = Tag::UNKNOWN;
+        Tag tag2 = Tag::UNKNOWN;
+
+        // slice index can be 1,2,3
+        // 0 means invalid
+        nm_size_t num = 0;
+
+        constexpr vslice() {}
+
+        // e.g [1]
+        constexpr vslice(index_type index0)
+            : index0(index0)
+            , tag0(Tag::INDEX)
+            , num(1)
+        {}
+
+        // e.g [1:-1]
+        constexpr vslice(index_type index0, index_type index1)
+            : index0(index0)
+            , index1(index1)
+            , tag0(Tag::INDEX)
+            , tag1(Tag::INDEX)
+            , num(2)
+        {}
+
+        // e.g [1:-2:2]
+        constexpr vslice(index_type index0, index_type index1, index_type index2)
+            : index0(index0)
+            , index1(index1)
+            , index2(index2)
+            , tag0(Tag::INDEX)
+            , tag1(Tag::INDEX)
+            , tag2(Tag::INDEX)
+            , num(3)
+        {}
+
+        // e.g [1:]
+        constexpr vslice(index_type index0, none_t)
+            : index0(index0)
+            , none1{}
+            , tag0(Tag::INDEX)
+            , tag1(Tag::NONE)
+            , num(2)
+        {}
+
+        // e.g [:]
+        constexpr vslice(none_t, none_t)
+            : none0{}
+            , none1{}
+            , tag0(Tag::NONE)
+            , tag1(Tag::NONE)
+            , num(2)
+        {}
+
+        // e.g [:-1]
+        constexpr vslice(none_t, index_type index1)
+            : none0{}
+            , index1(index1)
+            , tag0(Tag::NONE)
+            , tag1(Tag::INDEX)
+            , num(2)
+        {}
+
+        // e.g [::]
+        constexpr vslice(none_t, none_t, none_t)
+            : none0{}
+            , none1{}
+            , none2{}
+            , tag0(Tag::NONE)
+            , tag1(Tag::NONE)
+            , tag2(Tag::NONE)
+            , num(3)
+        {}
+
+        // e.g [1::]
+        constexpr vslice(index_type index0, none_t, none_t)
+            : index0(index0)
+            , none1{}
+            , none2{}
+            , tag0(Tag::INDEX)
+            , tag1(Tag::NONE)
+            , tag2(Tag::NONE)
+            , num(3)
+        {}
+
+        // e.g [1:-2:]
+        constexpr vslice(index_type index0, index_type index1, none_t)
+            : index0(index0)
+            , index1(index1)
+            , none2{}
+            , tag0(Tag::INDEX)
+            , tag1(Tag::INDEX)
+            , tag2(Tag::NONE)
+            , num(3)
+        {}
+
+        // e.g [:-1:]
+        constexpr vslice(none_t, index_type index1, none_t)
+            : none0{}
+            , index1(index1)
+            , none2{}
+            , tag0(Tag::NONE)
+            , tag1(Tag::INDEX)
+            , tag2(Tag::NONE)
+            , num(3)
+        {}
+
+        // e.g [::-1]
+        constexpr vslice(none_t, none_t, index_type index2)
+            : none0{}
+            , none1{}
+            , index2(index2)
+            , tag0(Tag::NONE)
+            , tag1(Tag::NONE)
+            , tag2(Tag::INDEX)
+            , num(3)
+        {}
+
+        // e.g [2::-1]
+        constexpr vslice(index_type index0, none_t, index_type index2)
+            : index0(index0)
+            , none1{}
+            , index2(index2)
+            , tag0(Tag::NONE)
+            , tag1(Tag::NONE)
+            , tag2(Tag::INDEX)
+            , num(3)
+        {}
+
+        // e.g [:-1:2]
+        constexpr vslice(none_t, index_type index1, index_type index2)
+            : none0{}
+            , index1(index1)
+            , index2(index2)
+            , tag0(Tag::NONE)
+            , tag1(Tag::INDEX)
+            , tag2(Tag::INDEX)
+            , num(3)
+        {}
+
+        constexpr vslice(ellipsis_t ellipsis)
+            : ellipsis(ellipsis)
+            , tag0(Tag::ELLIPSIS)
+            , num(1)
+        {}
+
+        template <typename T>
+        constexpr operator T() const
+        {
+            T result;
+
+            if constexpr (is_ellipsis<T>::value) {
+                if (tag0 != Tag::ELLIPSIS) {
+                    nmtools_panic( false
+                        , "invalid cast to Ellipsis");
+                }
+                result = ellipsis_t{};
+            }
+
+            return result;
+        }
+    };
+}
 
 #endif // NMTOOLS_DEF_HPP
