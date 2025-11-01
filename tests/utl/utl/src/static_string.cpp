@@ -177,3 +177,135 @@ TEST_CASE("constexpr_static_string" * doctest::test_suite("utl"))
         CHECK( str == "hello world" );
     }
 }
+
+TEST_CASE("static_string::to_string" * doctest::test_suite("utl"))
+{
+    {
+        auto str = utl::static_string::to_string(0);
+        CHECK( str == "0" );
+    }
+    {
+        auto str = utl::static_string::to_string(3);
+        CHECK( str == "3" );
+    }
+    {
+        auto str = utl::static_string::to_string(13);
+        CHECK( str == "13" );
+    }
+    {
+        auto str = utl::static_string::to_string(103);
+        CHECK( str == "103" );
+    }
+    {
+        auto str = utl::static_string::to_string(1103);
+        CHECK( str == "1103" );
+    }
+    {
+        auto str = utl::static_string::to_string(-3);
+        CHECK( str == "-3" );
+    }
+    {
+        auto str = utl::static_string::to_string(-13);
+        CHECK( str == "-13" );
+    }
+    {
+        auto str = utl::static_string::to_string(-103);
+        CHECK( str == "-103" );
+    }
+    {
+        auto str = utl::static_string::to_string(-1103);
+        CHECK( str == "-1103" );
+    }
+
+    // constexpr
+    {
+        constexpr auto str = utl::static_string::to_string(0);
+        CHECK( str == "0" );
+    }
+    {
+        constexpr auto str = utl::static_string::to_string(3);
+        CHECK( str == "3" );
+    }
+    {
+        constexpr auto str = utl::static_string::to_string(13);
+        CHECK( str == "13" );
+    }
+    {
+        constexpr auto str = utl::static_string::to_string(103);
+        CHECK( str == "103" );
+    }
+    {
+        constexpr auto str = utl::static_string::to_string(1103);
+        CHECK( str == "1103" );
+    }
+    {
+        constexpr auto str = utl::static_string::to_string(-3);
+        CHECK( str == "-3" );
+    }
+    {
+        constexpr auto str = utl::static_string::to_string(-13);
+        CHECK( str == "-13" );
+    }
+    {
+        constexpr auto str = utl::static_string::to_string(-103);
+        CHECK( str == "-103" );
+    }
+    {
+        constexpr auto str = utl::static_string::to_string(-1103);
+        CHECK( str == "-1103" );
+    }
+
+    // cout
+    {
+        auto str = utl::static_string::to_string(100000);
+        std::cout << str << std::endl;
+    }
+
+    // array
+    {
+        auto array = nmtools_array{0,-3,13};
+        auto str = utl::static_string::to_string(array);
+        CHECK( str == "{0,-3,13}" );
+    }
+    {
+        constexpr auto array = nmtools_array{0,-3,13};
+        constexpr auto str = utl::static_string::to_string(array);
+        CHECK( str == "{0,-3,13}" );
+    }
+    {
+        auto array = nmtools_static_vector<int,3>();
+        array.push_back(0);
+        array.push_back(-3);
+        array.push_back(13);
+        auto str = utl::static_string::to_string(array);
+        CHECK( str == "{0,-3,13}" );
+    }
+    {
+        constexpr auto array = [](){
+            auto array = nmtools_static_vector<int,3>();
+            array.push_back(0);
+            array.push_back(-3);
+            array.push_back(13);
+            return array;
+        }();
+        constexpr auto str = utl::static_string::to_string(array);
+        CHECK( str == "{0,-3,13}" );
+    }
+}
+
+TEST_CASE("static_string::join" * doctest::test_suite("utl"))
+{
+    using utl::static_string;
+    {
+        auto strs = nmtools_array{static_string::to_string(1), static_string::to_string(3), static_string::to_string(5)};
+        auto str = static_string(",").join(strs);
+        CHECK( str.size() == 6 );
+        CHECK( str == "1,3,5" );
+    }
+    {
+        constexpr auto strs = nmtools_array{static_string::to_string(1), static_string::to_string(3), static_string::to_string(5)};
+        constexpr auto str = static_string(",").join(strs);
+        CHECK( str.size() == 6 );
+        CHECK( str == "1,3,5" );
+    }
+}

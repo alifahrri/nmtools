@@ -2,11 +2,13 @@
 #include "nmtools/tilekit/tilekit.hpp"
 #include "nmtools/array/random.hpp"
 #include "nmtools/testing/doctest.hpp"
+#include "nmtools/utility.hpp"
 
 namespace nm = nmtools;
 namespace nk = nmtools::network;
 namespace tk = nmtools::tilekit;
 namespace fn = nmtools::functional;
+namespace utl = nmtools::utl;
 namespace view = nmtools::view;
 namespace utils = nmtools::utils;
 
@@ -34,9 +36,88 @@ TEST_CASE("get_computational_graph(tilekit)" * doctest::test_suite("transform"))
     NMTOOLS_ASSERT_EQUAL( nk::is_directed_acyclic_graph(graph), true );
     NMTOOLS_ASSERT_EQUAL( nm::meta::is_constant_adjacency_list_v<decltype(unwrap(graph).adjacency_list)>, true );
 
-    constexpr auto graph_v = nm::meta::to_value_v<decltype(unwrap(graph))>;
+    constexpr auto graph_v = nm::to_value_v<decltype(unwrap(graph))>;
     auto graphviz_v = utils::to_string(unwrap(graph_v),utils::Graphviz);
 
     CHECK_MESSAGE( true, graphviz_v );
     NMTOOLS_ASSERT_EQUAL( nk::is_directed_acyclic_graph(graph_v), true );
+}
+
+// TODO: move somewhere else
+TEST_CASE("to_value(tiling_window)" * doctest::test_suite("transform"))
+{
+    auto gen   = nm::random_engine();
+    auto dtype = nm::float32;
+
+    auto a = nm::random(tuple{128_ct},dtype,gen);
+
+    auto i = 0;
+    auto t_shape = tuple{4_ct};
+    auto offset  = tuple{i};
+    auto res = tk::view::load(a,offset,t_shape);
+
+    auto graph = fn::get_computational_graph(res);
+
+    auto keys   = graph.nodes();
+    auto window = graph.nodes(nm::at(keys,1_ct));
+
+    auto indexer = nm::at(window.functor.attributes,0_ct).indexer;
+    CHECK_MESSAGE( true, utils::to_string(indexer) );
+
+    [[maybe_unused]]
+    auto windowv = nm::to_value_v<decltype(indexer)>;
+    CHECK_MESSAGE( true, utils::to_string(windowv) );
+    CHECK_MESSAGE( true, windowv.to_string().c_str() );
+    CHECK_MESSAGE( true, windowv.to_string<utl::string>().c_str() );
+}
+
+// TODO: move somewhere else
+TEST_CASE("to_value(tiling_window)" * doctest::test_suite("transform"))
+{
+    auto gen   = nm::random_engine();
+    auto dtype = nm::float32;
+
+    auto a = nm::random(array{128},dtype,gen);
+
+    auto i = 0;
+    auto t_shape = tuple{4_ct};
+    auto offset  = tuple{i};
+    auto res = tk::view::load(a,offset,t_shape);
+
+    auto graph = fn::get_computational_graph(res);
+
+    auto keys   = graph.nodes();
+    auto window = graph.nodes(nm::at(keys,1_ct));
+
+    auto indexer = nm::at(window.functor.attributes,0_ct).indexer;
+    CHECK_MESSAGE( true, utils::to_string(indexer) );
+
+    [[maybe_unused]]
+    auto windowv = nm::to_value_v<decltype(indexer)>;
+    CHECK_MESSAGE( true, utils::to_string(windowv) );
+    CHECK_MESSAGE( true, windowv.to_string().c_str() );
+    CHECK_MESSAGE( true, windowv.to_string<utl::string>().c_str() );
+
+    static_assert( nm::is_slice_index_array_v<nmtools_tuple<int,nm::ellipsis_t>> );
+    static_assert( nm::is_slice_index_array_v<nmtools_tuple<int,int,nm::ellipsis_t>> );
+    static_assert( nm::is_slice_index_array_v<nmtools_tuple<int,nmtools_tuple<int,nm::none_t>,nm::ellipsis_t>> );
+    static_assert( nm::is_slice_index_array_v<nmtools_array<nmtools_either<int,nm::ellipsis_t>,2>> );
+
+    static_assert( nm::is_slice_index_v<int> );
+    static_assert( nm::is_slice_index_v<nm::ellipsis_t> );
+    static_assert( nm::is_slice_index_v<nm::none_t> );
+    static_assert( nm::is_slice_index_v<nmtools_tuple<int,int>> );
+    static_assert( nm::is_slice_index_v<nmtools_array<int,2>> );
+    static_assert( nm::is_slice_index_v<nmtools_tuple<int,int,int>> );
+    static_assert( nm::is_slice_index_v<nmtools_array<int,3>> );
+    static_assert( nm::is_slice_index_v<nmtools_tuple<nm::none_t,int>> );
+    static_assert( nm::is_slice_index_v<nmtools_tuple<int,nm::none_t>> );
+    static_assert( nm::is_slice_index_v<nmtools_either<int,nm::ellipsis_t>> );
+
+    static_assert( !nm::is_slice_index_v<nmtools_tuple<int,int,int,int>> );
+    static_assert( !nm::is_slice_index_v<nmtools_array<int,4>> );
+
+    constexpr auto SLICE = nm::to_value_v<nmtools_tuple<int,nm::ellipsis_t>>;
+    static_assert( !nm::is_fail_v<decltype(SLICE)> );
+    static_assert( nm::is_same_v<nm::remove_cvref_t<decltype(SLICE)>,nmtools_array<nmtools_either<int,nm::ellipsis_t>,2>> );
 }

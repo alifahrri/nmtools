@@ -55,6 +55,7 @@ set(GRAPH_TEST_GRAPH_SOURCES
     src/bilinear.cpp
     src/broadcast_to.cpp
     src/conv2d.cpp
+    src/cos.cpp
     src/cosine_similarity.cpp
     src/dot.cpp
     src/group_norm.cpp

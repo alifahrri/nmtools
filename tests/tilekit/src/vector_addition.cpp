@@ -8,20 +8,51 @@
 
 namespace nm = nmtools;
 
-TEST_CASE("vector_addition" * doctest::test_suite("tilekit"))
+TEST_CASE("vector_addition_kernel(f32x4)" * doctest::test_suite("tilekit"))
 {
     auto a = nmtools_array{0,1,2,3};
     auto b = nmtools_array{4,5,6,7};
     auto c = nmtools_array<int,4>{};
     auto ctx = nm::None;
 
-    vector_addition(ctx,c,a,b);
+    auto min_time = std::chrono::nanoseconds(10'000'000);
+    ankerl::nanobench::Bench()
+        .minEpochTime(min_time)
+        .run("vector_addition_kernel(f32x4)",[&](){
+            vector_addition(ctx,c,a,b);
+        });
 
     auto expected = nm::add(a,b);
-    NMTOOLS_ASSERT_EQUAL( c, expected );
+    NMTOOLS_ASSERT_CLOSE( c, expected );
 }
 
-TEST_CASE("vector_addition_f32x64" * doctest::test_suite("tilekit"))
+TEST_CASE("vector_addition(f32x4)" * doctest::test_suite("tilekit"))
+{
+    auto gen   = nm::random_engine();
+    auto dtype = nm::float32;
+
+    constexpr auto DIM = 4;
+    auto a_shape = array{DIM};
+    auto b_shape = array{DIM};
+
+    auto a = nm::random(a_shape,dtype,gen);
+    auto b = nm::random(b_shape,dtype,gen);
+    auto c = nmtools_array<float,DIM>{};
+
+    auto min_time = std::chrono::nanoseconds(10'000'000);
+    ankerl::nanobench::Bench()
+        .minEpochTime(min_time)
+        .run("vector_addition(f32x4)",[&](){
+            for (nm_size_t i=0; i<DIM; i++) {
+                at(c,i) = at(a,i) + at(b,i);
+            }
+        });
+
+    auto expected = nm::add(a,b);
+    NMTOOLS_ASSERT_CLOSE( c, expected );
+}
+
+TEST_CASE("vector_addition_kernel(f32x64)" * doctest::test_suite("tilekit"))
 {
     auto gen   = nm::random_engine();
     auto dtype = nm::float32;
@@ -39,7 +70,7 @@ TEST_CASE("vector_addition_f32x64" * doctest::test_suite("tilekit"))
     auto min_time = std::chrono::nanoseconds(10'000'000);
     ankerl::nanobench::Bench()
         .minEpochTime(min_time)
-        .run("vector_addition_f32x64",[&](){
+        .run("vector_addition_kernel(f32x64)",[&](){
             vector_addition(ctx,c,a,b);
         });
 
@@ -47,7 +78,33 @@ TEST_CASE("vector_addition_f32x64" * doctest::test_suite("tilekit"))
     NMTOOLS_ASSERT_CLOSE( c, expected );
 }
 
-TEST_CASE("vector_addition_f32x128" * doctest::test_suite("tilekit"))
+TEST_CASE("vector_addition(f32x64)" * doctest::test_suite("tilekit"))
+{
+    auto gen   = nm::random_engine();
+    auto dtype = nm::float32;
+
+    constexpr auto DIM = 64;
+    auto a_shape = array{DIM};
+    auto b_shape = array{DIM};
+
+    auto a = nm::random(a_shape,dtype,gen);
+    auto b = nm::random(b_shape,dtype,gen);
+    auto c = nmtools_array<float,DIM>{};
+
+    auto min_time = std::chrono::nanoseconds(10'000'000);
+    ankerl::nanobench::Bench()
+        .minEpochTime(min_time)
+        .run("vector_addition(f32x64)",[&](){
+            for (nm_size_t i=0; i<DIM; i++) {
+                at(c,i) = at(a,i) + at(b,i);
+            }
+        });
+
+    auto expected = nm::add(a,b);
+    NMTOOLS_ASSERT_CLOSE( c, expected );
+}
+
+TEST_CASE("vector_addition_kernel(f32x128)" * doctest::test_suite("tilekit"))
 {
     auto gen   = nm::random_engine();
     auto dtype = nm::float32;
@@ -64,8 +121,34 @@ TEST_CASE("vector_addition_f32x128" * doctest::test_suite("tilekit"))
     auto min_time = std::chrono::nanoseconds(10'000'000);
     ankerl::nanobench::Bench()
         .minEpochTime(min_time)
-        .run("vector_addition_f32x128",[&](){
+        .run("vector_addition_kernel(f32x128)",[&](){
             vector_addition(ctx,c,a,b);
+        });
+
+    auto expected = nm::add(a,b);
+    NMTOOLS_ASSERT_CLOSE( c, expected );
+}
+
+TEST_CASE("vector_addition(f32x128)" * doctest::test_suite("tilekit"))
+{
+    auto gen   = nm::random_engine();
+    auto dtype = nm::float32;
+
+    constexpr auto DIM = 128;
+    auto a_shape = array{DIM};
+    auto b_shape = array{DIM};
+
+    auto a = nm::random(a_shape,dtype,gen);
+    auto b = nm::random(b_shape,dtype,gen);
+    auto c = nmtools_array<float,DIM>{};
+
+    auto min_time = std::chrono::nanoseconds(10'000'000);
+    ankerl::nanobench::Bench()
+        .minEpochTime(min_time)
+        .run("vector_addition(f32x128)",[&](){
+            for (nm_size_t i=0; i<DIM; i++) {
+                at(c,i) = at(a,i) + at(b,i);
+            }
         });
 
     auto expected = nm::add(a,b);
