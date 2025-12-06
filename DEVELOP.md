@@ -20,6 +20,7 @@ Cheatsheet for development build and tests.
   - [Setup `distcc`](#setup-distcc)
   - [Build with devcontainer](#build-with-devcontainer)
   - [Build \& Test Tilekit](#build--test-tilekit)
+  - [Setting ulimit](#setting-ulimit)
 
 ## Basic Building & Testing (CPU)
 
@@ -537,4 +538,11 @@ Samples: 501  of event 'cycles:P', 4000 Hz, Event count (approx.): 679195920
         │     ↓ jae       16d
         │       vmovss    (%rax,%rcx,4),%xmm2
 Press 'h' for help on key bindings
+```
+
+## Setting ulimit
+
+For computational graph with no memory allocation, it may required to increase the stack size limit:
+```
+ulimit -s unlimited
 ```

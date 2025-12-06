@@ -77,7 +77,7 @@ namespace nmtools::utl
             constexpr nm_index_t N = max_len_v<array_t>;
             // TODO: add utl::small_vector?
             using strings_t  = conditional_t<(N > 0)
-                , utl::static_vector<string_base,N>
+                , utl::static_vector<string_base,(N > 0 ? N : 1)>
                 , utl::vector<string_base>>;
             auto strings = strings_t{};
             if constexpr (is_tuple_v<array_t>) {
