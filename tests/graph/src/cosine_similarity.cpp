@@ -16,11 +16,11 @@ using nmtools_array, nmtools_tuple, nmtools::unwrap;
 
 TEST_CASE("get_computational_graph(cosine_similarity)" * doctest::test_suite("transform"))
 {
-    auto gen = na::random_engine();
+    auto gen = nm::random_engine();
     auto dtype = nm::float32;
 
-    auto lhs = na::random(array{2,3,2},dtype,gen);
-    auto rhs = na::random(array{2,3,2},dtype,gen);
+    auto lhs = nm::random(array{2,3,2},dtype,gen);
+    auto rhs = nm::random(array{2,3,2},dtype,gen);
 
     auto axis = 1;
 

@@ -7,11 +7,11 @@
 #include "nmtools/core/combinator.hpp"
 
 #ifndef NMTOOLS_NODE_MAX_LEN
-#define NMTOOLS_NODE_MAX_LEN 11
+#define NMTOOLS_NODE_MAX_LEN 64
 #endif // NMTOOLS_NODE_MAX_LEN
 
 #ifndef NMTOOLS_NODE_MAX_COMPOSITION
-#define NMTOOLS_NODE_MAX_COMPOSITION 32
+#define NMTOOLS_NODE_MAX_COMPOSITION 128
 #endif // NMTOOLS_NODE_MAX_LEN
 
 #ifndef NMTOOLS_NODE_ATTRIBUTE_MAX_KEY_LEN
@@ -1652,15 +1652,21 @@ namespace nmtools::meta
                     using attribute_t  = remove_cvref_t<at_t<attributes_t,0>>;
                     using indexer_type = typename attribute_t::indexer_type;
 
+                    #if 0
+                    [[maybe_unused]]
                     constexpr auto indexer_v = to_value_v<indexer_type>;
                     if constexpr (!is_fail_v<decltype(indexer_v)> && has_to_string_v<indexer_type>) {
                         attributes["indexer"] = indexer_v.to_string();
                     } else if constexpr (has_name_v<indexer_type>) {
                         attributes["indexer"] = indexer_type::name();
-                    } else if constexpr (is_fail_v<decltype(indexer_v)>) {
+                    } else {
                         auto indexer_name = type_name_v<indexer_type>;
                         attributes["indexer"] = indexer_name;
                     }
+                    #else
+                    auto indexer_name = type_name_v<indexer_type>;
+                    attributes["indexer"] = indexer_name;
+                    #endif
                 }
 
                 if constexpr (

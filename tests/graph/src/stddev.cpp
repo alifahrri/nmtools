@@ -16,10 +16,10 @@ using nmtools_array, nmtools_tuple, nmtools::unwrap;
 
 TEST_CASE("get_computational_graph(stddev)" * doctest::test_suite("transform"))
 {
-    auto gen = na::random_engine();
+    auto gen = nm::random_engine();
     auto dtype = nm::float32;
 
-    auto input = na::random(array{1,5,2,2},dtype,gen);
+    auto input = nm::random(array{1,5,2,2},dtype,gen);
     auto res   = view::stddev(input,-1);
 
     auto graph = fn::get_computational_graph(res);

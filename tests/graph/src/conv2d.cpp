@@ -16,11 +16,11 @@ using nmtools_array, nmtools_tuple, nmtools::unwrap;
 
 TEST_CASE("get_computational_graph(conv2d)" * doctest::test_suite("transform"))
 {
-    auto gen = na::random_engine();
+    auto gen = nm::random_engine();
 
     auto dtype  = nm::float32;
-    auto input  = na::random(array{1,1,4,4},dtype,gen);
-    auto weight = na::random(array{1,1,3,3},dtype,gen);
+    auto input  = nm::random(array{1,1,4,4},dtype,gen);
+    auto weight = nm::random(array{1,1,3,3},dtype,gen);
 
     auto res = view::conv2d(input,weight);
 

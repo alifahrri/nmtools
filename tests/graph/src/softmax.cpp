@@ -16,10 +16,10 @@ using nmtools_array, nmtools_tuple, nmtools::unwrap;
 
 TEST_CASE("get_computational_graph(softmax)" * doctest::test_suite("transform"))
 {
-    auto gen = na::random_engine();
+    auto gen = nm::random_engine();
     auto dtype = nm::float32;
 
-    auto input = na::random(array{3,4},dtype,gen);
+    auto input = nm::random(array{3,4},dtype,gen);
 
     auto axis = -1;
     auto res = view::softmax(input,axis);

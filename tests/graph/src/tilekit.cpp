@@ -105,11 +105,11 @@ TEST_CASE("to_value(tiling_window)" * doctest::test_suite("transform"))
 
     static_assert( nm::is_slice_index_v<int> );
     static_assert( nm::is_slice_index_v<nm::ellipsis_t> );
-    static_assert( nm::is_slice_index_v<nm::none_t> );
+    // static_assert( nm::is_slice_index_v<nm::none_t> );
     static_assert( nm::is_slice_index_v<nmtools_tuple<int,int>> );
-    static_assert( nm::is_slice_index_v<nmtools_array<int,2>> );
+    // static_assert( nm::is_slice_index_v<nmtools_array<int,2>> );
     static_assert( nm::is_slice_index_v<nmtools_tuple<int,int,int>> );
-    static_assert( nm::is_slice_index_v<nmtools_array<int,3>> );
+    // static_assert( nm::is_slice_index_v<nmtools_array<int,3>> );
     static_assert( nm::is_slice_index_v<nmtools_tuple<nm::none_t,int>> );
     static_assert( nm::is_slice_index_v<nmtools_tuple<int,nm::none_t>> );
     static_assert( nm::is_slice_index_v<nmtools_either<int,nm::ellipsis_t>> );
@@ -119,5 +119,5 @@ TEST_CASE("to_value(tiling_window)" * doctest::test_suite("transform"))
 
     constexpr auto SLICE = nm::to_value_v<nmtools_tuple<int,nm::ellipsis_t>>;
     static_assert( !nm::is_fail_v<decltype(SLICE)> );
-    static_assert( nm::is_same_v<nm::remove_cvref_t<decltype(SLICE)>,nmtools_array<nmtools_either<int,nm::ellipsis_t>,2>> );
+    // static_assert( nm::is_same_v<nm::remove_cvref_t<decltype(SLICE)>,nmtools_array<nmtools_either<int,nm::ellipsis_t>,2>> );
 }

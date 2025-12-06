@@ -16,14 +16,14 @@ using nmtools_array, nmtools_tuple, nmtools::unwrap;
 
 TEST_CASE("get_computational_graph(matmul)" * doctest::test_suite("transform"))
 {
-    auto gen = na::random_engine();
+    auto gen = nm::random_engine();
     auto dtype = nm::float32;
 
     auto lhs_shape = array{3,4};
     auto rhs_shape = array{4,3};
 
-    auto lhs = na::random(lhs_shape,dtype,gen);
-    auto rhs = na::random(rhs_shape,dtype,gen);
+    auto lhs = nm::random(lhs_shape,dtype,gen);
+    auto rhs = nm::random(rhs_shape,dtype,gen);
 
     auto res = view::matmulv2(lhs,rhs);
 

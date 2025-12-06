@@ -16,9 +16,9 @@ using nmtools_array, nmtools_tuple, nmtools::unwrap;
 
 TEST_CASE("get_computational_graph(var)" * doctest::test_suite("transform"))
 {
-    auto gen = na::random_engine();
+    auto gen = nm::random_engine();
 
-    auto input = na::random(array{3,4},nm::float32,gen);
+    auto input = nm::random(array{3,4},nm::float32,gen);
     auto axis  = -1;
     auto res   = view::var(input,axis);
 

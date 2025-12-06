@@ -16,12 +16,12 @@ using nmtools_array, nmtools_tuple, nmtools::unwrap;
 
 TEST_CASE("get_computational_graph(instance_norm)" * doctest::test_suite("transform"))
 {
-    auto gen = na::random_engine();
+    auto gen = nm::random_engine();
 
     auto dtype  = nm::float32;
-    auto input  = na::random(array{1,5,2,2},dtype,gen);
-    auto weight = na::random(array{5},dtype,gen);
-    auto bias   = na::random(array{5},dtype,gen);
+    auto input  = nm::random(array{1,5,2,2},dtype,gen);
+    auto weight = nm::random(array{5},dtype,gen);
+    auto bias   = nm::random(array{5},dtype,gen);
     auto res    = view::instance_norm_2d(input,weight,bias);
 
     auto graph = fn::get_computational_graph(res);
