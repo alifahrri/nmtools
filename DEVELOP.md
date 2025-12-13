@@ -15,6 +15,7 @@ Cheatsheet for development build and tests.
   - [Build \& Test `cuda`](#build--test-cuda)
   - [Build \& Test `hip`](#build--test-hip)
   - [Build for arm](#build-for-arm)
+  - [Build for risc-v](#build-for-risc-v)
   - [Run Interactive Notebook](#run-interactive-notebook)
   - [Run Clang-Repl](#run-clang-repl)
   - [Setup `distcc`](#setup-distcc)
@@ -295,6 +296,23 @@ docker run --rm dockcross/${IMAGE}:latest > ./dockcross-${IMAGE}; chmod +x ./doc
 For armv5:
 ```
 export IMAGE=linux-armv5
+docker run --rm dockcross/${IMAGE}:latest > ./dockcross-${IMAGE}; chmod +x ./dockcross-${IMAGE}
+./dockcross-${IMAGE} bash -c "gcc -v"
+./dockcross-${IMAGE} bash -c "mkdir -p build/${IMAGE} && cd build/${IMAGE} && cmake -DNMTOOLS_TEST_ALL=ON ../.. && make -j16 VERBOSE=1"
+```
+
+## Build for risc-v
+
+For riscv64:
+```
+export IMAGE=linux-riscv64
+docker run --rm dockcross/${IMAGE}:latest > ./dockcross-${IMAGE}; chmod +x ./dockcross-${IMAGE}
+./dockcross-${IMAGE} bash -c "gcc -v"
+./dockcross-${IMAGE} bash -c "mkdir -p build/${IMAGE} && cd build/${IMAGE} && cmake -DNMTOOLS_TEST_ALL=ON ../.. && make -j16 VERBOSE=1"
+```
+For riscv32:
+```
+export IMAGE=linux-riscv32
 docker run --rm dockcross/${IMAGE}:latest > ./dockcross-${IMAGE}; chmod +x ./dockcross-${IMAGE}
 ./dockcross-${IMAGE} bash -c "gcc -v"
 ./dockcross-${IMAGE} bash -c "mkdir -p build/${IMAGE} && cd build/${IMAGE} && cmake -DNMTOOLS_TEST_ALL=ON ../.. && make -j16 VERBOSE=1"

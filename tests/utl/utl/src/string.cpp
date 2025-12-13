@@ -4,15 +4,31 @@
 namespace utl = nmtools::utl;
 
 #if defined(__arm__) || defined(__thumb__)
-    #if __ARM_ARCH == 5 || __ARM_ARCH == 7
-        #define DISABLE_CHECK 1
+    #if __ARM_ARCH == 5
+        #define IS_ARMV5 1
+    #elif __ARM_ARCH == 7
+        #define IS_ARMV7 1
     #else
-        #define DISABLE_CHECK 0
+        #define IS_ARMV5 0
+        #define IS_ARMV7 0
     #endif
-
+    #define IS_ARM 1
 #else
-    #define DISABLE_CHECK 0
+    #define IS_ARM 0
 #endif
+
+#ifdef __riscv
+    #if __riscv_xlen == 64
+        #define IS_RISCV64 1
+    #elif __riscv_xlen == 32
+        #define IS_RISCV32 1
+    #endif
+    #define IS_RISCV 1
+#else
+    #define IS_RISCV 0
+#endif
+
+#define DISABLE_CHECK (IS_ARMV5 || IS_ARMV7 || IS_RISCV)
 
 TEST_CASE("string" * doctest::test_suite("utl"))
 {
@@ -25,9 +41,8 @@ TEST_CASE("string" * doctest::test_suite("utl"))
         utl::string str;
         str = "hello";
         NMTOOLS_ASSERT_EQUAL( str.size(), 6 );
-        #if !DISABLE_CHECK
-        CHECK( str == "hello" );
-        #endif
+        auto isequal = str == "hello";
+        CHECK( isequal );
     }
     {
         utl::string str;
@@ -35,66 +50,60 @@ TEST_CASE("string" * doctest::test_suite("utl"))
         [[maybe_unused]]
         utl::string other = str;
         NMTOOLS_ASSERT_EQUAL( other.size(), 6 );
-        #if !DISABLE_CHECK
-        CHECK( other == "hello" );
-        #endif
+        auto isequal = other == "hello";
+        CHECK( isequal );
     }
     {
         utl::string str;
         str = "hello";
         auto other = str + " " + "world";
         NMTOOLS_ASSERT_EQUAL( other.size(), 12 );
-        #if !DISABLE_CHECK
-        CHECK( other == "hello world" );
-        #endif
+        auto isequal = other == "hello world";
+        CHECK( isequal );
     }
     {
         utl::string str;
         str = "Lorem";
         auto other = str + " " + "ipsum" + " " + "dolor" + " " + "sit amet," + " " + "consectetur adipiscing elit,";
         NMTOOLS_ASSERT_EQUAL( other.size(), 57 );
-        #if !DISABLE_CHECK
-        CHECK( other == "Lorem ipsum dolor sit amet, consectetur adipiscing elit," );
-        #endif
+        auto isequal ( other == "Lorem ipsum dolor sit amet, consectetur adipiscing elit," );
+        CHECK( isequal );
     }
     {
         utl::string str;
         str += "hello";
         str += " ";
         str += "world";
-        #if !DISABLE_CHECK
-        CHECK( str == "hello world" );
-        #endif
+        auto isequal = ( str == "hello world" );
+        CHECK( isequal );
     }
     {
         utl::string str;
         str = "hello";
         str[0] = 'H';
-        #if !DISABLE_CHECK
-        CHECK( str == "Hello" );
-        #endif
+        auto isequal = ( str == "Hello" );
+        CHECK( isequal );
     }
     {
         utl::string str;
         str = "hello world";
         auto substr = str.substr(6);
-        #if !DISABLE_CHECK
-        CHECK( substr == "world" );
-        #endif
+        auto isequal = ( substr == "world" );
+        CHECK( isequal );
     }
     {
         utl::string str;
         str = "xmplr";
         str.insert(0,"E");
         NMTOOLS_ASSERT_EQUAL( str.size(), 7 );
-        #if !DISABLE_CHECK
-        CHECK( str == "Exmplr" );
-        #endif
+        auto isequal = ( str == "Exmplr" );
+        CHECK( isequal );
         str.insert(2,"e");
         str.insert(6,"a");
-        #if !DISABLE_CHECK
-        CHECK( str == "Exemplar" );
-        #endif
+        {
+            auto isequal = ( str == "Exemplar" );
+            CHECK( isequal );
+        }
     }
     {
         utl::string str;
@@ -110,9 +119,8 @@ TEST_CASE("string" * doctest::test_suite("utl"))
     }
     {
         utl::string str("hello world");
-        #if !DISABLE_CHECK
-        CHECK( str == "hello world" );
-        #endif
+        auto isequal = ( str == "hello world" );
+        CHECK( isequal );
     }
 
     {
@@ -140,66 +148,56 @@ TEST_CASE("string::to_string" * doctest::test_suite("utl"))
 {
     {
         auto str = utl::string::to_string(0);
-        #if !DISABLE_CHECK
-        CHECK( str == "0" );
-        #endif
+        auto isequal = ( str == "0" );
+        CHECK( isequal );
     }
     {
         auto str = utl::string::to_string(3);
-        #if !DISABLE_CHECK
-        CHECK( str == "3" );
-        #endif
+        auto isequal = ( str == "3" );
+        CHECK( isequal );
     }
     {
         auto str = utl::string::to_string(13);
-        #if !DISABLE_CHECK
-        CHECK( str == "13" );
-        #endif
+        auto isequal = ( str == "13" );
+        CHECK( isequal );
     }
     {
         auto str = utl::string::to_string(103);
-        #if !DISABLE_CHECK
-        CHECK( str == "103" );
-        #endif
+        auto isequal = ( str == "103" );
+        CHECK( isequal );
     }
     {
         auto str = utl::string::to_string(1103);
-        #if !DISABLE_CHECK
-        CHECK( str == "1103" );
-        #endif
+        auto isequal = ( str == "1103" );
+        CHECK( isequal );
     }
     {
         auto str = utl::string::to_string(-3);
-        #if !DISABLE_CHECK
-        CHECK( str == "-3" );
-        #endif
+        auto isequal = ( str == "-3" );
+        CHECK( isequal );
     }
     {
         auto str = utl::string::to_string(-13);
-        #if !DISABLE_CHECK
-        CHECK( str == "-13" );
-        #endif
+        auto isequal = ( str == "-13" );
+        CHECK( isequal );
     }
     {
         auto str = utl::string::to_string(-103);
-        #if !DISABLE_CHECK
-        CHECK( str == "-103" );
-        #endif
+        auto isequal = ( str == "-103" );
+        CHECK( isequal );
     }
     {
         auto str = utl::string::to_string(-1103);
-        #if !DISABLE_CHECK
-        CHECK( str == "-1103" );
-        #endif
+        auto isequal = ( str == "-1103" );
+        CHECK( isequal );
     }
 
     // array
     {
         auto array = nmtools_array{0,-3,13};
         auto str = utl::string::to_string(array);
-        #if !DISABLE_CHECK
-        CHECK( str == "{0,-3,13}" );
-        #endif
+        auto isequal = ( str == "{0,-3,13}" );
+        CHECK( isequal );
     }
     {
         auto array = nmtools_list<int>();
@@ -207,9 +205,8 @@ TEST_CASE("string::to_string" * doctest::test_suite("utl"))
         array.push_back(-3);
         array.push_back(13);
         auto str = utl::string::to_string(array);
-        #if !DISABLE_CHECK
-        CHECK( str == "{0,-3,13}" );
-        #endif
+        auto isequal = ( str == "{0,-3,13}" );
+        CHECK( isequal );
     }
 }
 
@@ -220,8 +217,7 @@ TEST_CASE("string::join" * doctest::test_suite("utl"))
         auto strs = nmtools_array{string::to_string(1), string::to_string(3), string::to_string(5)};
         auto str = string(",").join(strs);
         CHECK( str.size() == 6 );
-        #if !DISABLE_CHECK
-        CHECK( str == "1,3,5" );
-        #endif
+        auto isequal = ( str == "1,3,5" );
+        CHECK( isequal );
     }
 }
