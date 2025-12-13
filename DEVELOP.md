@@ -285,6 +285,13 @@ docker run --rm dockcross/${IMAGE}:latest > ./dockcross-${IMAGE}; chmod +x ./doc
 ./dockcross-${IMAGE} bash -c "gcc -v"
 ./dockcross-${IMAGE} bash -c "mkdir -p build/${IMAGE} && cd build/${IMAGE} && cmake -DNMTOOLS_TEST_ALL=ON ../.. && make -j16 VERBOSE=1"
 ```
+For armv7:
+```
+export IMAGE=linux-armv7
+docker run --rm dockcross/${IMAGE}:latest > ./dockcross-${IMAGE}; chmod +x ./dockcross-${IMAGE}
+./dockcross-${IMAGE} bash -c "gcc -v"
+./dockcross-${IMAGE} bash -c "mkdir -p build/${IMAGE} && cd build/${IMAGE} && cmake -DNMTOOLS_TEST_ALL=ON ../.. && make -j16 VERBOSE=1"
+```
 For armv5:
 ```
 export IMAGE=linux-armv5

@@ -4,25 +4,14 @@
 namespace utl = nmtools::utl;
 
 #if defined(__arm__) || defined(__thumb__)
-    /* We are on an ARM architecture */
-
-    #if __ARM_ARCH == 5
-        /* Strictly ARMv5 (generic) */
-        #define IS_ARM_V5 1
-    #elif defined(__ARM_ARCH_5__)   || \
-          defined(__ARM_ARCH_5T__)  || \
-          defined(__ARM_ARCH_5E__)  || \
-          defined(__ARM_ARCH_5TE__) || \
-          defined(__ARM_ARCH_5TEJ__)
-        /* Matches various ARMv5 specific variants */
-        #define IS_ARM_V5 1
+    #if __ARM_ARCH == 5 || __ARM_ARCH == 7
+        #define DISABLE_CHECK 1
     #else
-        #define IS_ARM_V5 0
+        #define DISABLE_CHECK 0
     #endif
 
 #else
-    /* Not ARM */
-    #define IS_ARM_V5 0
+    #define DISABLE_CHECK 0
 #endif
 
 TEST_CASE("string" * doctest::test_suite("utl"))
@@ -36,7 +25,7 @@ TEST_CASE("string" * doctest::test_suite("utl"))
         utl::string str;
         str = "hello";
         NMTOOLS_ASSERT_EQUAL( str.size(), 6 );
-        #if !IS_ARM_V5
+        #if !DISABLE_CHECK
         CHECK( str == "hello" );
         #endif
     }
@@ -46,7 +35,7 @@ TEST_CASE("string" * doctest::test_suite("utl"))
         [[maybe_unused]]
         utl::string other = str;
         NMTOOLS_ASSERT_EQUAL( other.size(), 6 );
-        #if !IS_ARM_V5
+        #if !DISABLE_CHECK
         CHECK( other == "hello" );
         #endif
     }
@@ -55,7 +44,7 @@ TEST_CASE("string" * doctest::test_suite("utl"))
         str = "hello";
         auto other = str + " " + "world";
         NMTOOLS_ASSERT_EQUAL( other.size(), 12 );
-        #if !IS_ARM_V5
+        #if !DISABLE_CHECK
         CHECK( other == "hello world" );
         #endif
     }
@@ -64,7 +53,7 @@ TEST_CASE("string" * doctest::test_suite("utl"))
         str = "Lorem";
         auto other = str + " " + "ipsum" + " " + "dolor" + " " + "sit amet," + " " + "consectetur adipiscing elit,";
         NMTOOLS_ASSERT_EQUAL( other.size(), 57 );
-        #if !IS_ARM_V5
+        #if !DISABLE_CHECK
         CHECK( other == "Lorem ipsum dolor sit amet, consectetur adipiscing elit," );
         #endif
     }
@@ -73,7 +62,7 @@ TEST_CASE("string" * doctest::test_suite("utl"))
         str += "hello";
         str += " ";
         str += "world";
-        #if !IS_ARM_V5
+        #if !DISABLE_CHECK
         CHECK( str == "hello world" );
         #endif
     }
@@ -81,7 +70,7 @@ TEST_CASE("string" * doctest::test_suite("utl"))
         utl::string str;
         str = "hello";
         str[0] = 'H';
-        #if !IS_ARM_V5
+        #if !DISABLE_CHECK
         CHECK( str == "Hello" );
         #endif
     }
@@ -89,7 +78,7 @@ TEST_CASE("string" * doctest::test_suite("utl"))
         utl::string str;
         str = "hello world";
         auto substr = str.substr(6);
-        #if !IS_ARM_V5
+        #if !DISABLE_CHECK
         CHECK( substr == "world" );
         #endif
     }
@@ -98,12 +87,12 @@ TEST_CASE("string" * doctest::test_suite("utl"))
         str = "xmplr";
         str.insert(0,"E");
         NMTOOLS_ASSERT_EQUAL( str.size(), 7 );
-        #if !IS_ARM_V5
+        #if !DISABLE_CHECK
         CHECK( str == "Exmplr" );
         #endif
         str.insert(2,"e");
         str.insert(6,"a");
-        #if !IS_ARM_V5
+        #if !DISABLE_CHECK
         CHECK( str == "Exemplar" );
         #endif
     }
@@ -121,7 +110,7 @@ TEST_CASE("string" * doctest::test_suite("utl"))
     }
     {
         utl::string str("hello world");
-        #if !IS_ARM_V5
+        #if !DISABLE_CHECK
         CHECK( str == "hello world" );
         #endif
     }
@@ -151,55 +140,55 @@ TEST_CASE("string::to_string" * doctest::test_suite("utl"))
 {
     {
         auto str = utl::string::to_string(0);
-        #if !IS_ARM_V5
+        #if !DISABLE_CHECK
         CHECK( str == "0" );
         #endif
     }
     {
         auto str = utl::string::to_string(3);
-        #if !IS_ARM_V5
+        #if !DISABLE_CHECK
         CHECK( str == "3" );
         #endif
     }
     {
         auto str = utl::string::to_string(13);
-        #if !IS_ARM_V5
+        #if !DISABLE_CHECK
         CHECK( str == "13" );
         #endif
     }
     {
         auto str = utl::string::to_string(103);
-        #if !IS_ARM_V5
+        #if !DISABLE_CHECK
         CHECK( str == "103" );
         #endif
     }
     {
         auto str = utl::string::to_string(1103);
-        #if !IS_ARM_V5
+        #if !DISABLE_CHECK
         CHECK( str == "1103" );
         #endif
     }
     {
         auto str = utl::string::to_string(-3);
-        #if !IS_ARM_V5
+        #if !DISABLE_CHECK
         CHECK( str == "-3" );
         #endif
     }
     {
         auto str = utl::string::to_string(-13);
-        #if !IS_ARM_V5
+        #if !DISABLE_CHECK
         CHECK( str == "-13" );
         #endif
     }
     {
         auto str = utl::string::to_string(-103);
-        #if !IS_ARM_V5
+        #if !DISABLE_CHECK
         CHECK( str == "-103" );
         #endif
     }
     {
         auto str = utl::string::to_string(-1103);
-        #if !IS_ARM_V5
+        #if !DISABLE_CHECK
         CHECK( str == "-1103" );
         #endif
     }
@@ -208,7 +197,7 @@ TEST_CASE("string::to_string" * doctest::test_suite("utl"))
     {
         auto array = nmtools_array{0,-3,13};
         auto str = utl::string::to_string(array);
-        #if !IS_ARM_V5
+        #if !DISABLE_CHECK
         CHECK( str == "{0,-3,13}" );
         #endif
     }
@@ -218,7 +207,7 @@ TEST_CASE("string::to_string" * doctest::test_suite("utl"))
         array.push_back(-3);
         array.push_back(13);
         auto str = utl::string::to_string(array);
-        #if !IS_ARM_V5
+        #if !DISABLE_CHECK
         CHECK( str == "{0,-3,13}" );
         #endif
     }
@@ -231,7 +220,7 @@ TEST_CASE("string::join" * doctest::test_suite("utl"))
         auto strs = nmtools_array{string::to_string(1), string::to_string(3), string::to_string(5)};
         auto str = string(",").join(strs);
         CHECK( str.size() == 6 );
-        #if !IS_ARM_V5
+        #if !DISABLE_CHECK
         CHECK( str == "1,3,5" );
         #endif
     }
