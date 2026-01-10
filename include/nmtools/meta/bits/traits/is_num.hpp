@@ -3,6 +3,7 @@
 
 #include "nmtools/meta/bits/traits/is_integer.hpp"
 #include "nmtools/meta/bits/traits/is_integral_constant.hpp"
+#include "nmtools/meta/bits/traits/is_nullable_num.hpp"
 #include "nmtools/meta/bits/traits/has_address_space.hpp"
 #include "nmtools/meta/bits/transform/remove_address_space.hpp"
 
@@ -43,7 +44,7 @@ namespace nmtools::meta
     template <typename T, typename=void>
     struct is_num
     {
-        static constexpr auto value = is_integer_v<T> || is_floating_point_v<T> || is_integral_constant_v<T>;
+        static constexpr auto value = is_integer_v<T> || is_floating_point_v<T> || is_integral_constant_v<T> || is_nullable_num_v<T>;
     };
 
     template <typename T>
@@ -55,5 +56,10 @@ namespace nmtools::meta
     template <typename T>
     constexpr inline auto is_num_v = is_num<T>::value;
 } // namespace nmtools::meta
+
+namespace nmtools
+{
+    using meta::is_num_v;
+}
 
 #endif // NMTOOLS_META_BITS_TRAITS_IS_NUM_HPP

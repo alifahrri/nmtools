@@ -16,10 +16,10 @@ using nmtools_array, nmtools_tuple, nmtools::unwrap;
 
 TEST_CASE("get_computational_graph(vector_norm)" * doctest::test_suite("transform"))
 {
-    auto gen   = na::random_engine();
+    auto gen   = nm::random_engine();
     auto dtype = nm::float32;
 
-    auto x = na::random(array{2,3,2},dtype,gen);
+    auto x = nm::random(array{2,3,2},dtype,gen);
     auto axis = array{-2,-1};
     auto keepdims = nm::True;
     auto ord = 1;

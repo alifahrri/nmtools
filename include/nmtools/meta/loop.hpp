@@ -185,4 +185,10 @@ namespace nmtools::meta
     } // template_reduce
 } // namespace nmtools::meta
 
+namespace nmtools
+{
+    using meta::template_for;
+    using meta::template_reduce;
+}
+
 #endif // NMTOOLS_META_LOOP_HPP

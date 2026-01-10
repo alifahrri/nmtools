@@ -246,7 +246,7 @@ jobs:
             && make -j1 VERBOSE=1 numeric-tests-compute-graph-doctest'
       - name: run tests
         run: |
-          ./dockcross-${{ matrix.name }} bash -c 'build/${{ matrix.name }}/tests/graph/numeric-tests-compute-graph-doctest'
+          ./dockcross-${{ matrix.name }} bash -c 'ulimit -s unlimited && build/${{ matrix.name }}/tests/graph/numeric-tests-compute-graph-doctest'
 
   dockcross-gcc-no-stl-generic-ndarray:
     name: ${{ matrix.name }}-no-stl-generic-ndarray

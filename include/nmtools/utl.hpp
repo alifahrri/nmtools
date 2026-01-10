@@ -17,6 +17,7 @@
 #include "nmtools/utl/static_stack.hpp"
 #include "nmtools/utl/static_string.hpp"
 #include "nmtools/utl/static_vector.hpp"
+#include "nmtools/utl/string.hpp"
 #include "nmtools/utl/vector.hpp"
 
 #ifndef nmtools_list
@@ -59,5 +60,9 @@
 #ifndef nmtools_static_stack
 #define nmtools_static_stack ::nmtools::utl::static_stack
 #endif // nmtools_static_stack
+
+#ifndef nmtools_static_string
+#define nmtools_static_string ::nmtools::utl::static_string
+#endif // nmtools_static_string
 
 #endif // NMTOOLS_UTL_HPP

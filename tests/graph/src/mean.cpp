@@ -23,9 +23,9 @@ using nmtools_array, nmtools_tuple, nmtools::unwrap, nmtools::None;
 
 TEST_CASE("get_computational_graph(mean)" * doctest::test_suite("transform"))
 {
-    auto gen = na::random_engine();
+    auto gen = nm::random_engine();
 
-    auto input = na::random(array{2,3,2},nm::float32,gen);
+    auto input = nm::random(array{2,3,2},nm::float32,gen);
     auto axis  = 1;
     auto res   = view::mean(input,axis);
 

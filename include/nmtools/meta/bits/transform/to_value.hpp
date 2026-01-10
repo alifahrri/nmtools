@@ -10,6 +10,9 @@
 #include "nmtools/meta/bits/transform/clipped_max.hpp"
 #include "nmtools/meta/bits/transform/get_element_or_common_type.hpp"
 
+#include "nmtools/utl/static_vector.hpp"
+#include "nmtools/utl/array.hpp"
+
 namespace nmtools::meta
 {
     namespace error
@@ -86,8 +89,8 @@ namespace nmtools::meta
                     });
                     return max;
                 }();
-                using inner_t  = nmtools_static_vector<nm_index_t,MAX_NEIGHBORS>;
-                using outer_t  = nmtools_array<inner_t,NUM_NODES>;
+                using inner_t  = utl::static_vector<nm_index_t,MAX_NEIGHBORS>;
+                using outer_t  = utl::array<inner_t,NUM_NODES>;
                 using result_t = outer_t;
 
                 auto result = result_t {};
@@ -109,7 +112,7 @@ namespace nmtools::meta
                 constexpr auto N = sizeof...(Ts);
                 using T = get_element_or_common_type_t<tuple_t>;
                 using index_t  = nullable_num<T>;
-                using result_t = nmtools_array<index_t,N>;
+                using result_t = utl::array<index_t,N>;
                 auto result = result_t{};
                 meta::template_for<N>([&](auto index){
                     constexpr auto I = decltype(index)::value;
@@ -123,13 +126,13 @@ namespace nmtools::meta
                 return result;
             } else if constexpr ((sizeof...(Ts)) && (is_constant_index_v<Ts> && ...)) {
                 using index_t = promote_index_t<decltype(Ts::value)...>;
-                return nmtools_array{index_t(Ts::value)...};
+                return utl::array{index_t(Ts::value)...};
             } else if constexpr ((sizeof...(Ts)) && (is_clipped_integer_v<Ts> && ...)) {
                 using index_t = promote_index_t<decltype(Ts::max)...>;
-                return nmtools_array{index_t(Ts::max)...};
+                return utl::array{index_t(Ts::max)...};
             } else {
                 using index_t = nm_index_t;
-                return nmtools_array<index_t,0>{};   
+                return utl::array<index_t,0>{};   
             }
         }();
     }; // to_value
@@ -140,7 +143,7 @@ namespace nmtools::meta
     >
     {
         static constexpr auto value = [](){
-            using type = nmtools_array<T,N>;
+            using type = utl::array<T,N>;
             auto result = type{};
             for (size_t i=0; i<N; i++) {
                 result[i] = Max;
@@ -155,5 +158,9 @@ namespace nmtools::meta
     {};
 } // namespace nmtools::meta
 
+namespace nmtools
+{
+    using meta::to_value_v;
+}
 
 #endif // NMTOOLS_META_BITS_TRANSFORM_TO_VALUE_HPP

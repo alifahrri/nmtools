@@ -24,4 +24,9 @@ namespace nmtools::meta
     using conditional_t = type_t<conditional<C,T,F>>;
 } // namespace nmtools::meta
 
+namespace nmtools
+{
+    using meta::conditional_t;
+}
+
 #endif // NMTOOLS_META_BITS_TRANSFORM_CONDITIONAL_HPP

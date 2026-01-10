@@ -29,4 +29,9 @@ namespace nmtools::meta
     inline constexpr bool has_size_v = has_size<T>::value;
 } // namespace nmtools::meta
 
+namespace nmtools
+{
+    using meta::has_size_v;
+}
+
 #endif // NMTOOLS_META_BITS_TRAITS_HAS_SIZE_HPP

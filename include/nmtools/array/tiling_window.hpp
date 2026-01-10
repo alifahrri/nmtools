@@ -2,8 +2,7 @@
 #define NMTOOLS_ARRAY_TILING_WINDOW_HPP
 
 #include "nmtools/meta.hpp"
-#include "nmtools/utility/at.hpp"
-#include "nmtools/utility/unwrap.hpp"
+#include "nmtools/utility.hpp"
 #include "nmtools/ndarray.hpp"
 #include "nmtools/index/normalize_axis.hpp"
 
@@ -103,7 +102,10 @@ namespace nmtools::index
                     if constexpr (SRC_DIM > 0) {
                         // handle mixed index array
                         meta::template_for<SRC_DIM>([&](auto i){
-                            at(result,i) = at(src_shape,i) / tile_shape;
+                            auto s_i = at(src_shape,i);
+                            if (has_value(s_i)) {
+                                at(result,i) = s_i / tile_shape;
+                            }
                         });
                     } else {
                         for (nm_size_t i=0; i<src_dim; i++) {
@@ -123,11 +125,17 @@ namespace nmtools::index
                     }
                 } else if constexpr (meta::is_index_array_v<tile_shape_t> && meta::is_index_array_v<axis_t>) {
                     for (nm_size_t i=0; i<src_dim; i++) {
-                        at(result,i) = at(src_shape,i);
+                        auto src_i = at(src_shape,i);
+                        if (has_value(src_i)) {
+                            at(result,i) = src_i;
+                        }
                     }
                     for (nm_size_t i=0; i<len(normalized_axis); i++) {
                         // TODO: handle error
                         auto ai = at(unwrap(normalized_axis),i);
+                        if (!has_value(at(result,ai))) {
+                            continue;
+                        }
                         at(result,ai) /= at(tile_shape,i);
                         at(result,src_dim+i) = at(tile_shape,i);
                     }
@@ -135,7 +143,11 @@ namespace nmtools::index
                     if constexpr (SRC_DIM > 0) {
                         // handle mixed index array
                         meta::template_for<SRC_DIM>([&](auto i){
-                            at(result,i) = at(src_shape,i) / at(tile_shape,i);
+                            auto src_i = at(src_shape,i);
+                            auto tile_i = at(tile_shape,i);
+                            if (has_value(src_i) && has_value(tile_i)) {
+                                at(result,i) = src_i / tile_i;
+                            }
                         });
                     } else {
                         // assume len(tile_shape) == len(src_shape)
@@ -157,10 +169,11 @@ namespace nmtools::index
                     }
                 } else /* if constexpr (meta::is_index_v<tile_shape_t> && is_none_v<axis_t>) */ {
                     for (nm_size_t i=0; i<src_dim; i++) {
-                        if (i == normalized_axis) {
-                            at(result,i) = at(src_shape,i) / tile_shape;
-                        } else {
-                            at(result,i) = at(src_shape,i);
+                        auto src_i = at(src_shape,i);
+                        if ((i == normalized_axis) && has_value(src_i)) {
+                            at(result,i) = src_i / tile_shape;
+                        } else if (has_value(src_i)) {
+                            at(result,i) = src_i;
                         }
                     }
                     at(result,src_dim) = tile_shape;
@@ -288,6 +301,7 @@ namespace nmtools::meta
                 constexpr auto TILE_DIM = len_v<tile_shape_t>;
                 [[maybe_unused]]
                 constexpr auto TILE_BDIM = bounded_size_v<tile_shape_t>;
+                using index_t = conditional_t<is_nullable_index_array_v<src_shape_t>,nullable_num<nm_size_t>,nm_size_t>;
                 if constexpr ((SRC_DIM > 0) && is_none_v<axis_t> 
                     && (is_constant_index_v<tile_shape_t> || is_constant_index_array_v<tile_shape_t>)
                 ) {
@@ -306,31 +320,31 @@ namespace nmtools::meta
                     }
                 } else if constexpr ((SRC_DIM > 0) && (TILE_DIM > 0)) {
                     constexpr auto DST_DIM = SRC_DIM + TILE_DIM;
-                    using type = nmtools_array<nm_size_t,DST_DIM>;
+                    using type = nmtools_array<index_t,DST_DIM>;
                     return as_value_v<type>;
                 } else if constexpr ((SRC_DIM > 0) && (is_index_v<tile_shape_t> && is_none_v<axis_t>)) {
                     constexpr auto DST_DIM = SRC_DIM * 2;
-                    using type = nmtools_array<nm_size_t,DST_DIM>;
+                    using type = nmtools_array<index_t,DST_DIM>;
                     return as_value_v<type>;
                 } else if constexpr ((SRC_DIM > 0) && (is_index_v<tile_shape_t> && is_index_v<axis_t>)) {
                     constexpr auto DST_DIM = SRC_DIM + 1;
-                    using type = nmtools_array<nm_size_t,DST_DIM>;
+                    using type = nmtools_array<index_t,DST_DIM>;
                     return as_value_v<type>;
                 } else if constexpr (!is_fail_v<decltype(SRC_BDIM)> && !is_fail_v<decltype(TILE_BDIM)>) {
                     constexpr auto DST_BDIM = SRC_BDIM + TILE_BDIM;
-                    using type = nmtools_static_vector<nm_size_t,DST_BDIM>;
+                    using type = nmtools_static_vector<index_t,DST_BDIM>;
                     return as_value_v<type>;
                 } else if constexpr (!is_fail_v<decltype(SRC_BDIM)> && (is_index_v<tile_shape_t> && is_none_v<axis_t>)) {
                     constexpr auto DST_BDIM = SRC_BDIM * 2;
-                    using type = nmtools_static_vector<nm_size_t,DST_BDIM>;
+                    using type = nmtools_static_vector<index_t,DST_BDIM>;
                     return as_value_v<type>;
                 } else if constexpr (!is_fail_v<decltype(SRC_BDIM)> && (is_index_v<tile_shape_t> && is_index_v<axis_t>)) {
                     constexpr auto DST_BDIM = SRC_BDIM + 1;
-                    using type = nmtools_static_vector<nm_size_t,DST_BDIM>;
+                    using type = nmtools_static_vector<index_t,DST_BDIM>;
                     return as_value_v<type>;
                 } else {
                     // TODO: support small_vector
-                    using type = nmtools_list<nm_size_t>;
+                    using type = nmtools_list<index_t>;
                     return as_value_v<type>;
                 }
             }
@@ -409,6 +423,12 @@ namespace nmtools::view
         static constexpr auto n_inputs  = 1;
         static constexpr auto n_outputs = 1;
 
+        template <typename string_t=nmtools_static_string>
+        static constexpr auto name() noexcept
+        {
+            return string_t("tiling_window");
+        }
+
         const src_shape_type  src_shape;
         const tile_shape_type tile_shape;
         const axis_type       axis;
@@ -424,6 +444,22 @@ namespace nmtools::view
             , axis(fwd_attribute(axis))
             , dst_shape(fwd_attribute(dst_shape))
         {}
+
+        template <typename string_t=nmtools_static_string>
+        constexpr auto to_string() const noexcept
+        {
+            string_t str;
+            str += "tiling_window";
+            str += "{";
+            str += ".src_shape=";
+            str += string_t::to_string(src_shape);
+            str += ".window_shape=";
+            str += string_t::to_string(tile_shape);
+            str += ".axis=";
+            str += string_t::to_string(axis);
+            str += "}";
+            return str;
+        }
 
         template <typename indices_t>
         constexpr auto indices(const indices_t& indices) const
@@ -516,6 +552,72 @@ namespace nmtools
     };
 } // nmtools
 
+namespace nmtools::meta
+{
+    template <typename src_shape_t
+        , typename tile_shape_t
+        , typename axis_t
+        , typename dst_shape_t>
+    struct to_value<
+        view::tiling_window_t<src_shape_t,tile_shape_t,axis_t,dst_shape_t>
+    > {
+        static constexpr auto value = [](){
+            [[maybe_unused]] constexpr auto SRC_DIM  = len_v<src_shape_t>;
+            [[maybe_unused]] constexpr auto TILE_DIM = len_v<tile_shape_t>;
+            [[maybe_unused]] constexpr auto AXIS_DIM = len_v<axis_t>;
+
+            [[maybe_unused]] constexpr auto SRC_BDIM  = max_len_v<src_shape_t>;
+            [[maybe_unused]] constexpr auto TILE_BDIM = max_len_v<tile_shape_t>;
+            [[maybe_unused]] constexpr auto AXIS_BDIM = max_len_v<axis_t>;
+
+            constexpr auto src_shape  = [&](){
+                auto src_shape = to_value_v<src_shape_t>;
+                if constexpr (!is_fail_v<decltype(src_shape)>) {
+                    return src_shape;
+                } else if constexpr (SRC_DIM > 0) {
+                    using type = nmtools_array<nullable_num<nm_index_t>,SRC_DIM>;
+                    return type{};
+                // TODO: enable? what is the size?
+                // } else if constexpr (SRC_BDIM > 0) {
+                //     using type = nmtools_static_vector<nullable_num<nm_index_t>,SRC_BDIM>;
+                //     return type{};
+                } else {
+                    // fail
+                    return src_shape;
+                }
+            }();
+            constexpr auto tile_shape = [&](){
+                auto tile_shape = to_value_v<tile_shape_t>;
+                if constexpr (!is_fail_v<decltype(tile_shape)>) {
+                    return tile_shape;
+                } else if constexpr (TILE_DIM > 0) {
+                    using type = nmtools_array<nullable_num<nm_index_t>,SRC_DIM>;
+                    return type{};
+                } else {
+                    return tile_shape;
+                }
+            }();
+            constexpr auto axis = [&](){
+                auto axis = to_value_v<axis_t>;
+                if constexpr (!is_fail_v<decltype(axis)>) {
+                    return axis;
+                } else if constexpr (AXIS_DIM > 0) {
+                    using type = nmtools_array<nullable_num<nm_index_t>,SRC_DIM>;
+                    return type{};
+                } else {
+                    return axis;
+                }
+            }();
+
+            if constexpr (!is_fail_v<decltype(src_shape)> && !is_fail_v<decltype(tile_shape)> && !is_fail_v<decltype(axis)>) {
+                return view::tiling_window_indexer(src_shape,tile_shape,axis);
+            } else {
+                return error::TO_VALUE_UNSUPPORTED<>{};
+            }
+        }();
+    };
+}
+
 #if NMTOOLS_HAS_STRING
 
 namespace nmtools::utils::impl
@@ -529,15 +631,7 @@ namespace nmtools::utils::impl
         auto operator()(const view::tiling_window_t<args_t...>& kwargs) const noexcept
         {
             nmtools_string str;
-            str += "tiling_window";
-            str += "{";
-            str += ".src_shape=";
-            str += to_string(kwargs.src_shape,Compact);
-            str += ".window_shape=";
-            str += to_string(kwargs.tile_shape,Compact);
-            str += ".axis=";
-            str += to_string(kwargs.axis,Compact);
-            str += "}";
+            str += kwargs.to_string().c_str();
             return str;
         }
     };

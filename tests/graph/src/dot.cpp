@@ -16,11 +16,11 @@ using nmtools_array, nmtools_tuple, nmtools::unwrap;
 
 TEST_CASE("get_computational_graph(dot)" * doctest::test_suite("transform"))
 {
-    auto gen   = na::random_engine();
+    auto gen   = nm::random_engine();
     auto dtype = nm::float32;
 
-    auto a = na::random(array{2,3,2},dtype,gen);
-    auto b = na::random(array{2,4,2,2},dtype,gen);
+    auto a = nm::random(array{2,3,2},dtype,gen);
+    auto b = nm::random(array{2,4,2,2},dtype,gen);
 
     auto res = view::dot(a,b);
 

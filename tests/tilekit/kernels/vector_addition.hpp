@@ -13,7 +13,7 @@ using namespace nmtools::literals;
 using nmtools::at, nmtools::shape;
 
 template <typename context_t, typename out_t, typename a_t, typename b_t>
-auto vector_addition(context_t&& ctx, out_t& out, const a_t& a, const b_t& b)
+auto vector_addition(context_t&& ctx, out_t& __restrict__ out, const a_t& __restrict__ a, const b_t& __restrict__ b)
 {
     auto t_shape  = tuple{4_ct};
     auto [dim0]   = t_shape;

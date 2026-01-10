@@ -14,13 +14,19 @@ TEST_CASE("static_map" * doctest::test_suite("utl"))
         utl::static_map<nm_index_t,utl::static_string> kv;
         kv[99] = "hello";
         NMTOOLS_ASSERT_EQUAL( kv.size(), 1 );
-        CHECK( kv[99] == "hello" );
+        {
+            auto isequal = ( kv[99] == "hello" );
+            CHECK( isequal );
+        }
     }
     {
         utl::static_map<nm_index_t,utl::static_string> kv;
         kv[99] = "hello";
         NMTOOLS_ASSERT_EQUAL( kv.size(), 1 );
-        CHECK( kv[99] == "hello" );
+        {
+            auto isequal = ( kv[99] == "hello" );
+            CHECK( isequal );
+        }
         kv.erase(99);
         NMTOOLS_ASSERT_EQUAL( kv.count(99), 0 );
     }
@@ -28,22 +34,34 @@ TEST_CASE("static_map" * doctest::test_suite("utl"))
         utl::static_map<nm_index_t,utl::static_string> kv;
         kv[99] = "hello";
         NMTOOLS_ASSERT_EQUAL( kv.size(), 1 );
-        CHECK( kv[99] == "hello" );
+        {
+            auto isequal = ( kv[99] == "hello" );
+            CHECK( isequal );
+        }
         kv.at(99) += " world";
-        CHECK( kv.at(99) == "hello world" );
+        {
+            auto isequal = ( kv.at(99) == "hello world" );
+            CHECK( isequal );
+        }
     }
     {
         utl::static_map<utl::static_string,utl::static_string> kv;
         kv["hello"] = "world";
         NMTOOLS_ASSERT_EQUAL( kv.size(), 1 );
-        CHECK( kv.at("hello") == "world" );
+        {
+            auto isequal = ( kv.at("hello") == "world" );
+            CHECK( isequal );
+        }
     }
     {
         utl::static_map<utl::static_string,utl::static_string> kv;
         kv["hello"] = "world";
         kv.at("hello") += "!";
         NMTOOLS_ASSERT_EQUAL( kv.size(), 1 );
-        CHECK( kv.at("hello") == "world!" );
+        {
+            auto isequal = ( kv.at("hello") == "world!" );
+            CHECK( isequal );
+        }
         kv.erase("hello");
         NMTOOLS_ASSERT_EQUAL( kv.count("hello"), 0 );
     }
@@ -62,7 +80,10 @@ TEST_CASE("constexpr_static_map" * doctest::test_suite("utl"))
             return kv;
         }();
         NMTOOLS_ASSERT_EQUAL( kv.size(), 1 );
-        CHECK( kv[99] == "hello" );
+        {
+            auto isequal = ( kv[99] == "hello" );
+            CHECK( isequal );
+        }
     }
     {
         constexpr auto kv = [](){
@@ -80,6 +101,9 @@ TEST_CASE("constexpr_static_map" * doctest::test_suite("utl"))
             kv.at(99) += " world";
             return kv;
         }();
-        CHECK( kv.at(99) == "hello world" );
+        {
+            auto isequal = ( kv.at(99) == "hello world" );
+            CHECK( isequal );
+        }
     }
 }

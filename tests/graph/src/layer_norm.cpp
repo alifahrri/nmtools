@@ -1,3 +1,8 @@
+// #define NMTOOLS_NODE_MAX_LEN (128)
+// #define NMTOOLS_NODE_MAX_COMPOSITION (128)
+// #define NMTOOLS_NODE_ATTRIBUTE_MAX_KEY_LEN (128)
+// #define NMTOOLS_NODE_ATTRIBUTE_MAX_VALUE_STRING_LEN (128)
+// #define NMTOOLS_NODE_ATTRIBUTE_MAX_INDEX_ARRAY_LEN (128)
 #include "nmtools/core/computational_graph.hpp"
 #include "nmtools/array/layer_norm.hpp"
 #include "nmtools/array/random.hpp"
@@ -16,12 +21,12 @@ using nmtools_array, nmtools_tuple, nmtools::unwrap;
 
 TEST_CASE("get_computational_graph(layer_norm)" * doctest::test_suite("transform"))
 {
-    auto gen = na::random_engine();
+    auto gen = nm::random_engine();
 
     auto dtype  = nm::float32;
-    auto input  = na::random(array{1,5,2,2},dtype,gen);
-    auto weight = na::random(array{5,2,2},dtype,gen);
-    auto bias   = na::random(array{5,2,2},dtype,gen);
+    auto input  = nm::random(array{1,5,2,2},dtype,gen);
+    auto weight = nm::random(array{5,2,2},dtype,gen);
+    auto bias   = nm::random(array{5,2,2},dtype,gen);
     auto res    = view::layer_norm(input,weight,bias);
 
     auto graph = fn::get_computational_graph(res);
@@ -31,6 +36,19 @@ TEST_CASE("get_computational_graph(layer_norm)" * doctest::test_suite("transform
     CHECK_MESSAGE( true, graphviz );
     NMTOOLS_ASSERT_EQUAL( nk::is_directed_acyclic_graph(graph), true );
     NMTOOLS_ASSERT_EQUAL( nm::meta::is_constant_adjacency_list_v<decltype(unwrap(graph).adjacency_list)>, true );
+}
+
+TEST_CASE("get_computational_graph(layer_normv)" * doctest::test_suite("transform"))
+{
+    auto gen = nm::random_engine();
+
+    auto dtype  = nm::float32;
+    auto input  = nm::random(array{1,5,2,2},dtype,gen);
+    auto weight = nm::random(array{5,2,2},dtype,gen);
+    auto bias   = nm::random(array{5,2,2},dtype,gen);
+    auto res    = view::layer_norm(input,weight,bias);
+
+    auto graph = fn::get_computational_graph(res);
 
     constexpr auto graph_v = nm::meta::to_value_v<decltype(unwrap(graph))>;
     auto graphviz_v = utils::to_string(unwrap(graph_v),utils::Graphviz);

@@ -7,11 +7,11 @@
 #include "nmtools/core/combinator.hpp"
 
 #ifndef NMTOOLS_NODE_MAX_LEN
-#define NMTOOLS_NODE_MAX_LEN 11
+#define NMTOOLS_NODE_MAX_LEN 64
 #endif // NMTOOLS_NODE_MAX_LEN
 
 #ifndef NMTOOLS_NODE_MAX_COMPOSITION
-#define NMTOOLS_NODE_MAX_COMPOSITION 32
+#define NMTOOLS_NODE_MAX_COMPOSITION 128
 #endif // NMTOOLS_NODE_MAX_LEN
 
 #ifndef NMTOOLS_NODE_ATTRIBUTE_MAX_KEY_LEN
@@ -88,17 +88,6 @@ namespace nmtools::meta
     struct is_functor_composition<
         functional::functor_composition_t<tuple<functors_t...>,operands_t>
     > : true_type {};
-
-    // temporary
-    // TODO: remove
-    template <typename T>
-    struct is_nodev2 : false_type {};
-
-    template <typename T>
-    struct is_nodev2<const T> : is_nodev2<T> {};
-
-    template <typename T>
-    struct is_nodev2<T&> : is_nodev2<T> {};
 }
 
 namespace nmtools::functional
@@ -159,7 +148,7 @@ namespace nmtools::functional
         using integer_type = integer_t;
         using float_type   = float_t;
 
-        // very hard to make uninon work in constexpr (c++17)
+        // very hard to make union work in constexpr (c++17)
         // maybe use union if c++20 for potential memory saving
         #if 0
         union {
@@ -324,7 +313,7 @@ namespace nmtools::functional
         , typename float_t=float32_t
         , auto max_len=NMTOOLS_NODE_ATTRIBUTE_MAX_INDEX_ARRAY_LEN
         , auto max_str_len=NMTOOLS_NODE_ATTRIBUTE_MAX_VALUE_STRING_LEN>
-    struct NodeV2
+    struct Node
     {
         using vector_type  = meta::conditional_t<(MAX_DIM > 0)
             , nmtools_static_vector<nm_index_t,MAX_DIM>
@@ -343,10 +332,10 @@ namespace nmtools::functional
         // if dim > 0 then fixed dim
         using composition_type = meta::conditional_t<
             (MAX_COMPOSITION > 0)
-            , nmtools_static_vector<NodeV2<MAX_DIM,0>,MAX_COMPOSITION>
+            , nmtools_static_vector<Node<MAX_DIM,0>,MAX_COMPOSITION>
             , meta::conditional_t<
                 (MAX_COMPOSITION < 0) // for runtime, no need to limit composition
-                , nmtools_list<NodeV2>
+                , nmtools_list<Node>
                 , none_t
             >>;
         
@@ -550,7 +539,7 @@ namespace nmtools::functional
             return combinator_type;
         }
 
-        constexpr NodeV2(const shape_type& shape
+        constexpr Node(const shape_type& shape
             , dim_type dim
             , max_dim_type max_dim
             , is_num_type is_num
@@ -576,7 +565,7 @@ namespace nmtools::functional
             , composition_{composition}
         {}
 
-        constexpr NodeV2() {}
+        constexpr Node() {}
 
         constexpr decltype(auto) attributes() const
         {
@@ -653,657 +642,6 @@ namespace nmtools::functional
         constexpr decltype(auto) composition()
         {
             return (composition_);
-        }
-
-        /*************************************************/
-
-        static constexpr auto buffer(const shape_type& shape
-            , dim_type dim
-            , max_dim_type max_dim
-            , Type dtype
-            , Layout layout)
-        {
-            composition_type composition = {};
-            Kind kind = Kind::BUFFERED;
-            auto is_num = false;
-            return NodeV2{shape,dim,max_dim,is_num,kind,dtype,composition,layout};
-        }
-
-        static constexpr auto buffer(const shape_type& shape
-            , Type dtype
-            , Layout layout)
-        {
-            composition_type composition = {};
-            Kind kind = Kind::BUFFERED;
-            auto is_num = false;
-            dim_type dim = shape.size();
-            max_dim_type max_dim = shape.size();
-            return NodeV2{shape,dim,max_dim,is_num,kind,dtype,composition,layout};
-        }
-
-        template <typename shape_t>
-        static constexpr auto buffer(const shape_t& shape
-            , Type dtype
-            , Layout layout)
-        {
-            static_assert( meta::is_index_array_v<shape_t>
-                , "expected index array but got unsupported type for buffer" );
-
-            auto m_shape = shape_type{};
-            auto n = len(shape);
-            if constexpr (meta::is_resizable_v<shape_type>) {
-                m_shape.resize(n);
-            }
-            for (nm_size_t i=0; i<(nm_size_t)n; i++) {
-                at(m_shape,i) = at(shape,i);
-            }
-            return buffer(m_shape,dtype,layout);
-        }
-
-        static constexpr auto buffer(none_t
-            , Type dtype)
-        {
-            composition_type composition = {};
-            Kind kind    = Kind::BUFFERED;
-            auto shape   = shape_type{};
-            auto is_num  = true;
-            auto dim     = -1;
-            auto max_dim = -1;
-            auto layout  = Layout::UNKNOWN;
-            return NodeV2{shape,dim,max_dim,is_num,kind,dtype,composition,layout};
-        }
-
-        static constexpr auto compute(Kind kind
-            , const shape_type& shape
-            , dim_type dim
-            , max_dim_type max_dim
-            , is_num_type is_num
-            , Type dtype
-            , Layout layout=Layout::UNKNOWN)
-        {
-            composition_type composition = {};
-            return NodeV2{shape,dim,max_dim,is_num,kind,dtype,composition,layout};
-        }
-
-        static constexpr auto compute(Kind kind
-            , const shape_type& shape
-            , Type dtype
-            , Layout layout=Layout::UNKNOWN)
-        {
-            composition_type composition = {};
-            dim_type dim     = shape.size();
-            max_dim_type max_dim = shape.size();
-            auto is_num  = false;
-            return NodeV2{shape,dim,max_dim,is_num,kind,dtype,composition,layout};
-        }
-
-        template <typename shape_t>
-        static constexpr auto compute(Kind kind
-            , const shape_t& shape
-            , Type dtype
-            , Layout layout=Layout::UNKNOWN)
-        {
-            static_assert( meta::is_index_array_v<shape_t>
-                , "expected index array but got unsupported type for buffer" );
-
-            auto m_shape = shape_type{};
-            auto n = len(shape);
-            if constexpr (meta::is_resizable_v<shape_type>) {
-                m_shape.resize(n);
-            }
-            for (nm_size_t i=0; i<(nm_size_t)n; i++) {
-                at(m_shape,i) = at(shape,i);
-            }
-            return compute(kind,m_shape,dtype,layout);
-        }
-
-        static constexpr auto functor(Kind kind)
-        {
-            // functor is similar to compute but no real info
-            auto shape   = shape_type {};
-            auto layout  = Layout::UNKNOWN;
-            auto dtype   = Type::UNKNOWN;
-            auto is_num  = false;
-            auto dim     = -1;
-            auto max_dim = -1;
-            composition_type composition = {};
-            return NodeV2{shape,dim,max_dim,is_num,kind,dtype,composition,layout};
-        }
-
-        static constexpr auto combinator(Combinator combinator, nm_index_t args=-1)
-        {
-            auto shape   = shape_type {};
-            auto layout  = Layout::UNKNOWN;
-            auto dtype   = Type::UNKNOWN;
-            auto kind    = Kind::UNKNOWN;
-            auto is_num  = false;
-            auto dim     = -1;
-            auto max_dim = -1;
-            auto composition = composition_type {};
-            return NodeV2{shape,dim,max_dim,is_num,kind,dtype,composition,layout,combinator,args};
-        }
-
-        template <typename shape_t>
-        static constexpr auto indexing(const shape_t& shape
-            , Type dtype
-            , Layout layout=Layout::UNKNOWN)
-        {
-            return compute(Kind::INDEXING,shape,dtype,layout);
-        }
-
-        template <typename shape_t>
-        static constexpr auto binary_ufunc(const utl::static_string& op
-            , const shape_t& shape
-            , Type dtype
-            , Layout layout=Layout::UNKNOWN)
-        {
-            auto node = compute(Kind::BINARY_UFUNC,shape,dtype,layout);
-            node.attributes()["op"] = op;
-            return node;
-        }
-
-        template <typename shape_t>
-        static constexpr auto binary_ufunc(const shape_t& shape
-            , Type dtype
-            , Layout layout=Layout::UNKNOWN)
-        {
-            return compute(Kind::BINARY_UFUNC,shape,dtype,layout);
-        }
-
-        template <typename shape_t>
-        static constexpr auto unary_ufunc(const utl::static_string& op
-            , const shape_t& shape
-            , Type dtype
-            , Layout layout=Layout::UNKNOWN)
-        {
-            auto node = compute(Kind::UNARY_UFUNC,shape,dtype,layout);
-            node.attributes()["op"] = op;
-            return node;
-        }
-
-        template <typename shape_t>
-        static constexpr auto unary_ufunc(const shape_t& shape
-            , Type dtype
-            , Layout layout=Layout::UNKNOWN)
-        {
-            return compute(Kind::UNARY_UFUNC,shape,dtype,layout);
-        }
-
-        template <typename shape_t, typename axis_t>
-        static constexpr auto reduce(const utl::static_string& op
-            , const axis_t& axis
-            , const shape_t& shape
-            , Type dtype
-            , Layout layout=Layout::UNKNOWN)
-        {
-            auto node = compute(Kind::REDUCE,shape,dtype,layout);
-            node.attributes()["op"]   = op;
-            node.attributes()["axis"] = axis;
-            return node;
-        }
-
-        template <typename shape_t>
-        static constexpr auto reduce(const shape_t& shape
-            , Type dtype
-            , Layout layout=Layout::UNKNOWN)
-        {
-            return compute(Kind::REDUCE,shape,dtype,layout);
-        }
-
-        constexpr auto is_combinator() const noexcept
-        {
-            return (combinator_type() != Combinator::INVALID);
-        }
-
-        constexpr auto is_composition() const noexcept
-        {
-            if constexpr (is_none_v<composition_type>) {
-                return false;
-            } else {
-                return static_cast<bool>(composition().size());
-            }
-        }
-
-        constexpr auto is_buffer() const noexcept
-        {
-            return ((kind() == Kind::BUFFERED) && !is_combinator() && !is_composition());
-        }
-
-        constexpr auto is_compute() const noexcept
-        {
-            return (!is_buffer() && !is_combinator() && !is_composition());
-        }
-
-        template <
-            auto RHS_MAX_DIM
-            , auto RHS_MAX_COMPOSITION>
-        constexpr auto operator=(const NodeV2<RHS_MAX_DIM,RHS_MAX_COMPOSITION,attributes_t>& other)
-        {
-            this->attributes_ = other.attributes_;
-
-            if constexpr (meta::is_same_v<
-                meta::remove_cvref_t<decltype(composition_)>
-                , meta::remove_cvref_t<decltype(other.composition_)>
-                >
-            ) {
-                this->composition() = other.composition();
-            }
-            return *this;
-        }
-
-        constexpr auto operator*(const NodeV2& other) const
-        {
-            // compose
-            auto result = NodeV2{};
-
-            // TODO: assert/throw
-            // assume not buffer, only comput/combinator/composition
-            
-            auto dst_size = 2;
-            dst_size += (is_composition() ? composition().size()-1 : 0);
-            dst_size += (other.is_composition() ? other.composition().size()-1 : 0);
-            result.composition().resize(dst_size);
-
-            auto idx = 0ul;
-            if (is_composition()) {
-                for (nm_size_t i=0; i<composition().size(); i++) {
-                    at(result.composition(),idx++) = at(composition(),i);
-                }
-            } else {
-                at(result.composition(),idx++) = *this;
-            }
-            if (other.is_composition()) {
-                for (nm_size_t i=0; i<other.composition().size(); i++) {
-                    at(result.composition(),idx++) = at(other.composition(),i);
-                }
-            } else {
-                at(result.composition(),idx++) = other;
-            }
-        
-            return result;
-        }
-
-        constexpr auto operator|(const NodeV2& other) const
-        {
-            return other * *this;
-        }
-
-        #if NMTOOLS_HAS_STRING
-        inline auto to_string() const
-        {
-            auto strs = nmtools_list<nmtools_string>{};
-
-            auto indexer_args_to_string = [](const auto& attributes_){
-                auto kind_str = nmtools_string();
-                if (attributes_.count("indexer.n_args")) {
-                    kind_str += "{";
-                    auto n = attributes_.at("indexer.n_args").integer;
-                    for (nm_size_t i=0; i<(nm_size_t)n; i++) {
-                        auto arg_key = utl::static_string("indexer.args.");
-                        auto key = arg_key + utl::to_string(i);
-                        const auto& attr = attributes_.at(key);
-                        if (attributes_.count(key + ".name")) {
-                            kind_str += attributes_.at(key+".name").string.c_str();
-                            kind_str += "=";
-                        }
-                        kind_str += attr.to_string();
-                        if ((nm_index_t)i<(nm_index_t)n-1) {
-                            kind_str += ",";
-                        }
-                    }
-                    kind_str += "}";
-                }
-                return kind_str;
-            };
-
-            if (is_buffer() || is_compute()) {
-                auto kind_str = nmtools_string();
-                switch (kind()) {
-                    case Kind::UNKNOWN:
-                    kind_str += "UNKNOWN";
-                    break;
-                    case Kind::INDEXING:
-                    kind_str += "INDEXING";
-                    if (attributes_.count("indexer")) {
-                        kind_str += "{";
-                        kind_str += ".indexer=";
-                        kind_str += attributes_.at("indexer").string.c_str();
-                        kind_str += indexer_args_to_string(attributes_);
-                        kind_str += "}";
-                    }
-                    break;
-                    case Kind::UNARY_UFUNC:
-                    kind_str += "UNARY_UFUNC";
-                    if (attributes_.count("op"))
-                    {
-                        kind_str += "{";
-                        kind_str += ".op=";
-                        kind_str += attributes_.at("op").to_string();
-                        kind_str += "}";
-                    }
-                    break;
-                    case Kind::BINARY_UFUNC:
-                    kind_str += "BINARY_UFUNC";
-                    if (attributes_.count("op"))
-                    {
-                        kind_str += "{";
-                        kind_str += ".op=";
-                        kind_str += attributes_.at("op").to_string();
-                        kind_str += "}";
-                    }
-                    break;
-                    case Kind::REDUCE:
-                    kind_str += "REDUCE";
-                    if (attributes_.count("op"))
-                    {
-                        kind_str += "{";
-                        kind_str += ".op=";
-                        kind_str += attributes_.at("op").string.c_str();
-                        if (attributes_.count("axis")) {
-                            kind_str += ",axis=";
-                            kind_str += attributes_.at("axis").to_string();
-                        }
-                        if (attributes_.count("dtype")) {
-                            kind_str += ",dtype=";
-                            kind_str += attributes_.at("dtype").to_string();
-                        }
-                        if (attributes_.count("initital")) {
-                            kind_str += ",initial=";
-                            kind_str += attributes_.at("initial").to_string();
-                        }
-                        if (attributes_.count("keepdims")) {
-                            kind_str += ",keepdims=";
-                            kind_str += attributes_.at("keepdims").to_string();
-                        }
-                        kind_str += "}";
-                    }
-                    break;
-                    case Kind::BUFFERED:
-                    kind_str += "BUFFERED";
-                    if (attributes_.count("layout")) {
-                        kind_str += "{";
-                        kind_str += "layout=";
-                        kind_str += attributes_.at("layout").string.c_str();
-                        kind_str += "}";
-                    }
-                    break;
-                    case Kind::COMPOSITION:
-                    kind_str += "COMPOSITION";
-                    default:
-                    break;
-                };
-                strs.push_back(kind_str);
-
-                if constexpr (!is_none_v<attributes_t>) {
-                    
-                }
-
-                auto dtype_str = nmtools_string();
-                dtype_str += "dtype: ";
-                switch (dtype()) {
-                    case Type::UNKNOWN:
-                    dtype_str += "UNKNOWN";
-                    break;
-                    case Type::UInt8:
-                    dtype_str += "uint8";
-                    break;
-                    case Type::UInt16:
-                    dtype_str += "uint16";
-                    break;
-                    case Type::UInt32:
-                    dtype_str += "uint32";
-                    break;
-                    case Type::UInt64:
-                    dtype_str += "uint64";
-                    break;
-                    case Type::Int8:
-                    dtype_str += "int8";
-                    break;
-                    case Type::Int16:
-                    dtype_str += "int16";
-                    break;
-                    case Type::Int32:
-                    dtype_str += "int32";
-                    break;
-                    case Type::Int64:
-                    dtype_str += "int64";
-                    break;
-                    case Type::Float32:
-                    dtype_str += "float32";
-                    break;
-                    case Type::Float64:
-                    dtype_str += "float64";
-                    break;
-                    default:
-                    break;
-                };
-
-                if (!is_num()) {
-                    dtype_str += " | ";
-                    dtype_str += "dim: ";
-                    if (max_dim() > 0) {
-                        dtype_str += utils::to_string(max_dim());
-                    } else {
-                        dtype_str += "?";
-                    }
-                }
-
-                dtype_str += " | ";
-                dtype_str += "shape: ";
-                if (is_num()) {
-                    dtype_str += "None";
-                } else {
-                    auto n = len(shape());
-                    if (n > 0) {
-                        dtype_str += "{";
-                        for (nm_size_t i=0; i<(nm_size_t)n; i++) {
-                            auto shape_i = at(shape(),i);
-                            if (shape_i <= 0) {
-                                dtype_str += "?";
-                            } else {
-                                dtype_str += utils::to_string(shape_i);
-                            }
-                            if (i < (nm_size_t)n-1) {
-                                dtype_str += ",";
-                            }
-                        }
-                        dtype_str += "}";
-                    } else {
-                        dtype_str += "?";
-                    }
-                }
-                strs.push_back(dtype_str);
-            } else if (is_combinator()) {
-                auto str = nmtools_string();
-                switch (combinator_type()) {
-                    case Combinator::SWAP:
-                    str += "SWAP";
-                    break;
-                    case Combinator::DUP:
-                    str += "DUP";
-                    break;
-                    case Combinator::DIG:
-                    str += "DIG";
-                    break;
-                    case Combinator::BURY:
-                    str += "BURY";
-                    break;
-                    default:
-                    break;
-                };
-                if (combinator_args() > 0) {
-                    str += "(";
-                    str += utils::to_string(combinator_args());
-                    str += ")";
-                }
-                strs.push_back(str);
-            } else if (is_composition()) {
-                // composition_type maybe none, to avoid blowing up the recursion
-                if constexpr (!is_none_v<composition_type>) {
-                    for (nm_index_t i=1; i<(nm_index_t)composition().size(); i++) {
-                        strs.push_back(at(composition(),-i).to_string().front());
-                    }
-                    strs.push_back(composition().at(0).to_string().front());
-                }
-            }
-
-            return strs;
-        }
-        #endif
-    };
-
-    // value node
-    // attributes is useful for fully runtime Node
-    // e.g. can easily handle variants
-    template <
-        auto MAX_DIM=NMTOOLS_NODE_MAX_LEN
-        , auto MAX_COMPOSITION=NMTOOLS_NODE_MAX_COMPOSITION
-        , typename attributes_t=none_t>
-    struct Node
-    {
-        using vector_type  = meta::conditional_t<(MAX_DIM > 0)
-            , nmtools_static_vector<nm_index_t,MAX_DIM>
-            , nmtools_list<nm_index_t>>;
-        using shape_type   = vector_type;
-        using dim_type     = nm_index_t;
-        // max dim is useful to check if this node results in bounded dim
-        // in such case, dim will be -1 but max_dim > 0
-        using max_dim_type = nm_index_t;
-        // using shape, dim alone make it confusing to deduce if this node is num
-        // is_num should be set by is_none_v<shape_t>
-        // is_num is not Kind because both buffered and compute can be num
-        using is_num_type  = nm_bool_t;
-        // if dim -1 then num
-        // if dim 0 then dynamic dim
-        // if dim > 0 then fixed dim
-        using composition_type = meta::conditional_t<
-            (MAX_COMPOSITION > 0)
-            , nmtools_static_vector<Node<MAX_DIM,0>,MAX_COMPOSITION>
-            , meta::conditional_t<
-                (MAX_COMPOSITION < 0) // for runtime, no need to limit composition
-                , nmtools_list<Node>
-                , none_t
-            >>;
-
-        // TODO: support attributes
-
-        shape_type   shape_;
-        dim_type     dim_;
-        max_dim_type max_dim_;
-        is_num_type  is_num_;
-        Kind         kind_  = Kind::UNKNOWN;
-        Type         dtype_ = Type::UNKNOWN;
-
-        // no is_composition but can check if this node is composition by checking the size
-        composition_type composition_ = {};
-        Layout           layout_      = Layout::UNKNOWN;
-        // when INVALID, assume this node is not combinator
-        // combinator args is simply an int
-        Combinator combinator_type_ = Combinator::INVALID;
-        nm_index_t combinator_args_ = -1;
-
-        /*************************************************/
-
-        constexpr decltype(auto) shape() const
-        {
-            return shape_;
-        }
-
-        constexpr decltype(auto) dim() const
-        {
-            return dim_;
-        }
-
-        constexpr decltype(auto) max_dim() const
-        {
-            return max_dim_;
-        }
-
-        constexpr decltype(auto) is_num() const
-        {
-            return is_num_;
-        }
-
-        constexpr decltype(auto) kind() const
-        {
-            return kind_;
-        }
-
-        constexpr decltype(auto) dtype() const
-        {
-            return dtype_;
-        }
-
-        constexpr decltype(auto) composition() const
-        {
-            return composition_;
-        }
-
-        constexpr decltype(auto) layout() const
-        {
-            return layout_;
-        }
-
-        constexpr decltype(auto) combinator_type() const
-        {
-            return combinator_type_;
-        }
-
-        constexpr decltype(auto) combinator_args() const
-        {
-            return combinator_args_;
-        }
-
-        /*************************************************/
-
-        constexpr decltype(auto) shape()
-        {
-            return (shape_);
-        }
-
-        constexpr decltype(auto) dim()
-        {
-            return (dim_);
-        }
-
-        constexpr decltype(auto) max_dim()
-        {
-            return (max_dim_);
-        }
-
-        constexpr decltype(auto) is_num()
-        {
-            return (is_num_);
-        }
-
-        constexpr decltype(auto) kind()
-        {
-            return (kind_);
-        }
-
-        constexpr decltype(auto) dtype()
-        {
-            return (dtype_);
-        }
-
-        constexpr decltype(auto) composition()
-        {
-            return (composition_);
-        }
-
-        constexpr decltype(auto) layout()
-        {
-            return (layout_);
-        }
-
-        constexpr decltype(auto) combinator_type()
-        {
-            return (combinator_type_);
-        }
-
-        constexpr decltype(auto) combinator_args()
-        {
-            return (combinator_args_);
         }
 
         /*************************************************/
@@ -1434,14 +772,67 @@ namespace nmtools::functional
             return Node{shape,dim,max_dim,is_num,kind,dtype,composition,layout,combinator,args};
         }
 
-        static constexpr auto indexing(const shape_type& shape
+        template <typename shape_t>
+        static constexpr auto indexing(const shape_t& shape
             , Type dtype
             , Layout layout=Layout::UNKNOWN)
         {
             return compute(Kind::INDEXING,shape,dtype,layout);
         }
 
-        static constexpr auto reduce(const shape_type& shape
+        template <typename shape_t>
+        static constexpr auto binary_ufunc(const utl::static_string& op
+            , const shape_t& shape
+            , Type dtype
+            , Layout layout=Layout::UNKNOWN)
+        {
+            auto node = compute(Kind::BINARY_UFUNC,shape,dtype,layout);
+            node.attributes()["op"] = op;
+            return node;
+        }
+
+        template <typename shape_t>
+        static constexpr auto binary_ufunc(const shape_t& shape
+            , Type dtype
+            , Layout layout=Layout::UNKNOWN)
+        {
+            return compute(Kind::BINARY_UFUNC,shape,dtype,layout);
+        }
+
+        template <typename shape_t>
+        static constexpr auto unary_ufunc(const utl::static_string& op
+            , const shape_t& shape
+            , Type dtype
+            , Layout layout=Layout::UNKNOWN)
+        {
+            auto node = compute(Kind::UNARY_UFUNC,shape,dtype,layout);
+            node.attributes()["op"] = op;
+            return node;
+        }
+
+        template <typename shape_t>
+        static constexpr auto unary_ufunc(const shape_t& shape
+            , Type dtype
+            , Layout layout=Layout::UNKNOWN)
+        {
+            return compute(Kind::UNARY_UFUNC,shape,dtype,layout);
+        }
+
+        template <typename shape_t, typename axis_t>
+        static constexpr auto reduce(const utl::static_string& op
+            , const axis_t& axis
+            , const shape_t& shape
+            , Type dtype
+            , Layout layout=Layout::UNKNOWN)
+        {
+            auto node = compute(Kind::REDUCE,shape,dtype,layout);
+            node.attributes()["op"]   = op;
+            node.attributes()["axis"] = axis;
+            return node;
+        }
+
+        template <typename shape_t>
+        static constexpr auto reduce(const shape_t& shape
             , Type dtype
             , Layout layout=Layout::UNKNOWN)
         {
@@ -1477,17 +868,13 @@ namespace nmtools::functional
             , auto RHS_MAX_COMPOSITION>
         constexpr auto operator=(const Node<RHS_MAX_DIM,RHS_MAX_COMPOSITION,attributes_t>& other)
         {
-            this->shape()   = other.shape();
-            this->dim()     = other.dim();
-            this->max_dim() = other.max_dim();
-            this->is_num()  = other.is_num();
-            this->kind()    = other.kind();
-            this->dtype()   = other.dtype();
-            this->layout()  = other.layout();
-            this->combinator_type() = other.combinator_type();
-            this->combinator_args() = other.combinator_args();
+            this->attributes_ = other.attributes_;
 
-            if constexpr (meta::is_same_v<decltype(composition_),decltype(other.composition_)>) {
+            if constexpr (meta::is_same_v<
+                meta::remove_cvref_t<decltype(composition_)>
+                , meta::remove_cvref_t<decltype(other.composition_)>
+                >
+            ) {
                 this->composition() = other.composition();
             }
             return *this;
@@ -1535,6 +922,29 @@ namespace nmtools::functional
         {
             auto strs = nmtools_list<nmtools_string>{};
 
+            auto indexer_args_to_string = [](const auto& attributes_){
+                auto kind_str = nmtools_string();
+                if (attributes_.count("indexer.n_args")) {
+                    kind_str += "{";
+                    auto n = attributes_.at("indexer.n_args").integer;
+                    for (nm_size_t i=0; i<(nm_size_t)n; i++) {
+                        auto arg_key = utl::static_string("indexer.args.");
+                        auto key = arg_key + utl::to_string(i);
+                        const auto& attr = attributes_.at(key);
+                        if (attributes_.count(key + ".name")) {
+                            kind_str += attributes_.at(key+".name").string.c_str();
+                            kind_str += "=";
+                        }
+                        kind_str += attr.to_string();
+                        if ((nm_index_t)i<(nm_index_t)n-1) {
+                            kind_str += ",";
+                        }
+                    }
+                    kind_str += "}";
+                }
+                return kind_str;
+            };
+
             if (is_buffer() || is_compute()) {
                 auto kind_str = nmtools_string();
                 switch (kind()) {
@@ -1543,18 +953,68 @@ namespace nmtools::functional
                     break;
                     case Kind::INDEXING:
                     kind_str += "INDEXING";
+                    if (attributes_.count("indexer")) {
+                        kind_str += "{";
+                        kind_str += ".indexer=";
+                        kind_str += attributes_.at("indexer").string.c_str();
+                        kind_str += indexer_args_to_string(attributes_);
+                        kind_str += "}";
+                    }
                     break;
                     case Kind::UNARY_UFUNC:
                     kind_str += "UNARY_UFUNC";
+                    if (attributes_.count("op"))
+                    {
+                        kind_str += "{";
+                        kind_str += ".op=";
+                        kind_str += attributes_.at("op").to_string();
+                        kind_str += "}";
+                    }
                     break;
                     case Kind::BINARY_UFUNC:
                     kind_str += "BINARY_UFUNC";
+                    if (attributes_.count("op"))
+                    {
+                        kind_str += "{";
+                        kind_str += ".op=";
+                        kind_str += attributes_.at("op").to_string();
+                        kind_str += "}";
+                    }
                     break;
                     case Kind::REDUCE:
                     kind_str += "REDUCE";
+                    if (attributes_.count("op"))
+                    {
+                        kind_str += "{";
+                        kind_str += ".op=";
+                        kind_str += attributes_.at("op").string.c_str();
+                        if (attributes_.count("axis")) {
+                            kind_str += ",axis=";
+                            kind_str += attributes_.at("axis").to_string();
+                        }
+                        if (attributes_.count("dtype")) {
+                            kind_str += ",dtype=";
+                            kind_str += attributes_.at("dtype").to_string();
+                        }
+                        if (attributes_.count("initital")) {
+                            kind_str += ",initial=";
+                            kind_str += attributes_.at("initial").to_string();
+                        }
+                        if (attributes_.count("keepdims")) {
+                            kind_str += ",keepdims=";
+                            kind_str += attributes_.at("keepdims").to_string();
+                        }
+                        kind_str += "}";
+                    }
                     break;
                     case Kind::BUFFERED:
                     kind_str += "BUFFERED";
+                    if (attributes_.count("layout")) {
+                        kind_str += "{";
+                        kind_str += "layout=";
+                        kind_str += attributes_.at("layout").string.c_str();
+                        kind_str += "}";
+                    }
                     break;
                     case Kind::COMPOSITION:
                     kind_str += "COMPOSITION";
@@ -1562,27 +1022,6 @@ namespace nmtools::functional
                     break;
                 };
                 strs.push_back(kind_str);
-
-                if (kind() == Kind::BUFFERED && !is_num()) {
-                    auto layout_str = nmtools_string();
-                    layout_str += "layout: ";
-
-                    switch (layout()) {
-                        case Layout::UNKNOWN:
-                        layout_str += "UNKNOWN";
-                        break;
-                        case Layout::RowMajor:
-                        layout_str += "RowMajor";
-                        break;
-                        case Layout::ColMajor:
-                        layout_str += "ColMajor";
-                        break;
-                        default:
-                        break;
-                    };
-
-                    strs.push_back(layout_str);
-                }
 
                 if constexpr (!is_none_v<attributes_t>) {
                     
@@ -1984,18 +1423,6 @@ namespace nmtools::functional
 
 namespace nmtools::meta
 {
-    // temporary
-    // TODO: remove
-    template <
-        auto MAX_DIM
-        , auto MAX_COMPOSITION
-        , typename attributes_t
-        , typename integer_t
-        , typename float_t
-        , auto max_len
-        , auto max_str_len>
-    struct is_nodev2<functional::NodeV2<MAX_DIM,MAX_COMPOSITION,attributes_t,integer_t,float_t,max_len,max_str_len>> : true_type {};
-
     template <
           typename buffer_t
         , typename shape_buffer_t
@@ -2023,7 +1450,7 @@ namespace nmtools::meta
         , node_t
     > {
         static constexpr auto value = [](){
-            using Node = conditional_t<is_void_v<node_t>,functional::Node<>,node_t>;
+            using Node = functional::Node<>;
             using Type = functional::Type;
             using Layout = functional::Layout;
 
@@ -2093,7 +1520,7 @@ namespace nmtools::meta
         , node_t
     > {
         static constexpr auto value = [](){
-            using Node = conditional_t<is_void_v<node_t>,functional::Node<>,node_t>;
+            using Node = functional::Node<>;
 
             using shape_t   = output_shape_t;
             using element_t = get_dtype_t<output_element_t>;
@@ -2225,8 +1652,21 @@ namespace nmtools::meta
                     using attribute_t  = remove_cvref_t<at_t<attributes_t,0>>;
                     using indexer_type = typename attribute_t::indexer_type;
 
+                    #if 0
+                    [[maybe_unused]]
+                    constexpr auto indexer_v = to_value_v<indexer_type>;
+                    if constexpr (!is_fail_v<decltype(indexer_v)> && has_to_string_v<indexer_type>) {
+                        attributes["indexer"] = indexer_v.to_string();
+                    } else if constexpr (has_name_v<indexer_type>) {
+                        attributes["indexer"] = indexer_type::name();
+                    } else {
+                        auto indexer_name = type_name_v<indexer_type>;
+                        attributes["indexer"] = indexer_name;
+                    }
+                    #else
                     auto indexer_name = type_name_v<indexer_type>;
                     attributes["indexer"] = indexer_name;
+                    #endif
                 }
 
                 if constexpr (
@@ -2301,26 +1741,22 @@ namespace nmtools::meta
             }
 
             auto node = Node{shape,dim,max_dim,is_num,kind,dtype,composition};
-            if constexpr (is_void_v<node_t>) {
-                return node;
-            } else {
-                if (attributes.count("indexer")) {
-                    node.attributes()["indexer"] = attributes["indexer"];
-                }
-                if (attributes.count("op")) {
-                    node.attributes()["op"] = attributes["op"];
-                }
-                if (attributes.count("axis")) {
-                    node.attributes()["axis"] = attributes["axis"];
-                }
-                if (attributes.count("initial")) {
-                    node.attributes()["initial"] = attributes["initial"];
-                }
-                if (attributes.count("keepdims")) {
-                    node.attributes()["keepdims"] = attributes["keepdims"];
-                }
-                return node;
+            if (attributes.count("indexer")) {
+                node.attributes()["indexer"] = attributes["indexer"];
             }
+            if (attributes.count("op")) {
+                node.attributes()["op"] = attributes["op"];
+            }
+            if (attributes.count("axis")) {
+                node.attributes()["axis"] = attributes["axis"];
+            }
+            if (attributes.count("initial")) {
+                node.attributes()["initial"] = attributes["initial"];
+            }
+            if (attributes.count("keepdims")) {
+                node.attributes()["keepdims"] = attributes["keepdims"];
+            }
+            return node;
         }();
     };
 }

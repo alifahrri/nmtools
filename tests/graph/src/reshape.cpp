@@ -16,13 +16,13 @@ using nmtools_array, nmtools_tuple, nmtools::unwrap;
 
 TEST_CASE("get_computational_graph(reshape)" * doctest::test_suite("transform"))
 {
-    auto gen = na::random_engine();
+    auto gen = nm::random_engine();
     auto dtype = nm::float32;
 
     auto src_shape = array{12};
     auto dst_shape = array{3,4};
 
-    auto input = na::random(src_shape,dtype,gen);
+    auto input = nm::random(src_shape,dtype,gen);
 
     auto res = view::reshape(input,dst_shape);
 

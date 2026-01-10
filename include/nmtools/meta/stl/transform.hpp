@@ -203,7 +203,7 @@ namespace nmtools::meta
      */
     template <typename T, typename U, size_t N>
     struct resize_fixed_ndarray<std::array<T,N>,U,
-        std::enable_if_t<is_fixed_size_ndarray_v<U>>
+        enable_if_t<is_fixed_size_ndarray_v<U>>
     >
     {
         template <typename array_t, typename new_t>
@@ -235,7 +235,7 @@ namespace nmtools::meta
             return template_reduce<DIM>([&](auto init, auto index){
                 constexpr auto i = decltype(index)::value;
                 using init_t = type_t<remove_cvref_t<decltype(init)>>;
-                constexpr auto size = std::get<i>(shape);
+                constexpr auto size = get<i>(shape);
                 if constexpr (i==0) {
                     using type = std::array<element_t,size>;
                     return as_value_v<type>;
@@ -258,7 +258,7 @@ namespace nmtools::meta
      * @tparam U dst element type
      */
     template <typename T, size_t N, typename U>
-    struct replace_element_type<std::array<T,N>,U,std::enable_if_t<std::is_arithmetic_v<U>>>
+    struct replace_element_type<std::array<T,N>,U,enable_if_t<std::is_arithmetic_v<U>>>
     {
         static constexpr auto vtype = [](){
             if constexpr (std::is_arithmetic_v<T>) {

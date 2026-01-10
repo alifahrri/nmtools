@@ -32,4 +32,9 @@ namespace nmtools::meta
     constexpr inline auto is_constant_adjacency_list_v = is_constant_adjacency_list<T>::value;
 }
 
+namespace nmtools
+{
+    using meta::is_constant_adjacency_list_v;
+}
+
 #endif // NMTOOLS_META_BITS_TRAITS_IS_CONSTANT_ADJACENCY_LIST_HPP

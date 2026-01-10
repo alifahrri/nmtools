@@ -326,7 +326,10 @@ namespace nmtools::utils
             // assume both T and U is integer
             else if constexpr (meta::is_num_v<T> && meta::is_num_v<U>) {
                 using value_type = meta::common_type_t<T,U>;
-                return static_cast<value_type>(t) == static_cast<value_type>(u);
+                auto equal = true;
+                equal = equal && (has_value(t) == has_value(u));
+                equal = equal && (!has_value(t) || (static_cast<value_type>(t) == static_cast<value_type>(u)));
+                return equal;
             }
             else if constexpr (meta::is_integral_constant_v<T> && meta::is_integer_v<U>) {
                 using value_type = meta::common_type_t<typename T::value_type,U>;
@@ -347,7 +350,10 @@ namespace nmtools::utils
                     using u_t = meta::get_element_or_common_type_t<U>;
                     using common_t = meta::promote_index_t<t_t,u_t>;
                     meta::template_for<N>([&](auto i){
-                        equal = equal && ((common_t)at(t,i) == (common_t)at(u,i));
+                        auto t_i = at(t,i);
+                        auto u_i = at(u,i);
+                        equal = equal && (has_value(t_i) == has_value(u_i));
+                        equal = equal && (!has_value(t_i) || ((common_t)t_i == (common_t)u_i));
                     });
                     return equal;
                 }
@@ -359,7 +365,8 @@ namespace nmtools::utils
                         auto t_i = at(t,i);
                         auto u_i = at(u,i);
                         using common_t = meta::promote_index_t<t_t,u_t>;
-                        equal = equal && (static_cast<common_t>(t_i) == static_cast<common_t>(u_i));
+                        equal = equal && (has_value(t_i) == has_value(u_i));
+                        equal = equal && (!has_value(t_i) || ((common_t)t_i == (common_t)u_i));
                     });
                     return equal;
                 }
@@ -369,8 +376,9 @@ namespace nmtools::utils
                     for (size_t i=0; i<len(t); i++) {
                         auto t_i = at(t,i);
                         auto u_i = at(u,i);
-                        using idx_t = meta::promote_index_t<t_t,u_t>;
-                        equal = equal && ((idx_t)t_i == (idx_t)u_i);
+                        using common_t = meta::promote_index_t<t_t,u_t>;
+                        equal = equal && (has_value(t_i) == has_value(u_i));
+                        equal = equal && (!has_value(t_i) || ((common_t)t_i == (common_t)u_i));
                     }
                     return equal;
                 }
@@ -385,6 +393,7 @@ namespace nmtools::utils
                 return equal;
             }
             else if constexpr (meta::is_slice_index_v<T> && meta::is_slice_index_v<U>) {
+                // TODO: make sure not ellipsis / none
                 return meta::is_same_v<T,U>;
             }
             else if constexpr (meta::is_attribute_v<T> && meta::is_attribute_v<U>) {

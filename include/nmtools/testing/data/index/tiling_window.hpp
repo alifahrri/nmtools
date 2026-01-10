@@ -16,11 +16,15 @@ NMTOOLS_TESTING_DECLARE_CASE(index,shape_tiling_window)
         inline auto src_shape_ct = nmtools_tuple{6_ct};
         inline auto tile_shape_ct = 3_ct;
 
+        inline auto src_shape_nl = nmtools_array{nullable_int{6}};
+        inline auto src_shape_nn = nmtools_array{nullable_int{}};
+
         NMTOOLS_CAST_INDEX_ARRAYS(src_shape)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case1)
     {
         inline int dst_shape[2] = {2,3};
+        inline auto dst_shape_nn = nmtools_array{nullable_int{},nullable_int{3}};
     }
 
     NMTOOLS_TESTING_DECLARE_ARGS(case2)
@@ -34,12 +38,18 @@ NMTOOLS_TESTING_DECLARE_CASE(index,shape_tiling_window)
         inline auto src_shape_mx1  = nmtools_tuple{3,4_ct};
         inline auto tile_shape_mx1 = nmtools_tuple{1,2_ct};
 
+        inline auto src_shape_nl  = nmtools_array{nullable_int{3},nullable_int{4}};
+        inline auto src_shape_nn0 = nmtools_array{nullable_int{3},nullable_int{}};
+        inline auto src_shape_nn1 = nmtools_array{nullable_int{},nullable_int{4}};
+
         NMTOOLS_CAST_INDEX_ARRAYS(src_shape)
         NMTOOLS_CAST_INDEX_ARRAYS(tile_shape)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case2)
     {
         inline int dst_shape[4] = {3,2,1,2};
+        inline auto dst_shape_nn0 = nmtools_array{nullable_int{3},nullable_int{},nullable_int{1},nullable_int{2}};
+        inline auto dst_shape_nn1 = nmtools_array{nullable_int{},nullable_int{2},nullable_int{1},nullable_int{2}};
     }
 
     NMTOOLS_TESTING_DECLARE_ARGS(case2b)
@@ -50,12 +60,20 @@ NMTOOLS_TESTING_DECLARE_CASE(index,shape_tiling_window)
         inline auto src_shape_ct = nmtools_tuple{4_ct,4_ct};
         inline auto tile_shape_ct = nmtools_tuple{2_ct,2_ct};
 
+        inline auto src_shape_nl  = nmtools_array{nullable_int{4},nullable_int{4}};
+        inline auto src_shape_nn0 = nmtools_array{nullable_int{4},nullable_int{}};
+        inline auto src_shape_nn1 = nmtools_array{nullable_int{},nullable_int{4}};
+        inline auto src_shape_nn2 = nmtools_array{nullable_int{},nullable_int{}};
+
         NMTOOLS_CAST_INDEX_ARRAYS(src_shape)
         NMTOOLS_CAST_INDEX_ARRAYS(tile_shape)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case2b)
     {
         inline int dst_shape[4] = {2,2,2,2};
+        inline auto dst_shape_nn0 = nmtools_array{nullable_int{2},nullable_int{},nullable_int{2},nullable_int{2}};
+        inline auto dst_shape_nn1 = nmtools_array{nullable_int{},nullable_int{2},nullable_int{2},nullable_int{2}};
+        inline auto dst_shape_nn2 = nmtools_array{nullable_int{},nullable_int{},nullable_int{2},nullable_int{2}};
     }
 
     NMTOOLS_TESTING_DECLARE_ARGS(case2c)
@@ -68,11 +86,19 @@ NMTOOLS_TESTING_DECLARE_CASE(index,shape_tiling_window)
         inline auto tile_shape_ct = 3_ct;
         inline auto axis_ct = 0_ct;
 
+        inline auto src_shape_nl  = nmtools_array{nullable_int{3},nullable_int{4}};
+        inline auto src_shape_nn0 = nmtools_array{nullable_int{3},nullable_int{}};
+        inline auto src_shape_nn1 = nmtools_array{nullable_int{},nullable_int{4}};
+        inline auto src_shape_nn2 = nmtools_array{nullable_int{},nullable_int{}};
+
         NMTOOLS_CAST_INDEX_ARRAYS(src_shape)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case2c)
     {
         inline int dst_shape[3] = {1,4,3};
+        inline auto dst_shape_nn0 = nmtools_array{nullable_int{1},nullable_int{},nullable_int{3}};
+        inline auto dst_shape_nn1 = nmtools_array{nullable_int{},nullable_int{4},nullable_int{3}};
+        inline auto dst_shape_nn2 = nmtools_array{nullable_int{},nullable_int{},nullable_int{3}};
     }
 
     NMTOOLS_TESTING_DECLARE_ARGS(case2d)
@@ -85,11 +111,19 @@ NMTOOLS_TESTING_DECLARE_CASE(index,shape_tiling_window)
         inline auto tile_shape_ct = 2_ct;
         inline auto axis_ct = 1_ct;
 
+        inline auto src_shape_nl  = nmtools_array{nullable_int{3},nullable_int{4}};
+        inline auto src_shape_nn0 = nmtools_array{nullable_int{3},nullable_int{}};
+        inline auto src_shape_nn1 = nmtools_array{nullable_int{},nullable_int{4}};
+        inline auto src_shape_nn2 = nmtools_array{nullable_int{},nullable_int{}};
+
         NMTOOLS_CAST_INDEX_ARRAYS(src_shape)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case2d)
     {
         inline int dst_shape[3] = {3,2,2};
+        inline auto dst_shape_nn0 = nmtools_array{nullable_int{3},nullable_int{},nullable_int{2}};
+        inline auto dst_shape_nn1 = nmtools_array{nullable_int{},nullable_int{2},nullable_int{2}};
+        inline auto dst_shape_nn2 = nmtools_array{nullable_int{},nullable_int{},nullable_int{2}};
     }
 
     NMTOOLS_TESTING_DECLARE_ARGS(case2e)
@@ -100,11 +134,19 @@ NMTOOLS_TESTING_DECLARE_CASE(index,shape_tiling_window)
         inline auto src_shape_ct = nmtools_tuple{4_ct,4_ct};
         inline auto tile_shape_ct = 2_ct;
 
+        inline auto src_shape_nl  = nmtools_array{nullable_int{4},nullable_int{4}};
+        inline auto src_shape_nn0 = nmtools_array{nullable_int{4},nullable_int{}};
+        inline auto src_shape_nn1 = nmtools_array{nullable_int{},nullable_int{4}};
+        inline auto src_shape_nn2 = nmtools_array{nullable_int{},nullable_int{}};
+
         NMTOOLS_CAST_INDEX_ARRAYS(src_shape)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case2e)
     {
         inline int dst_shape[4] = {2,2,2,2};
+        inline auto dst_shape_nn0 = nmtools_array{nullable_int{2},nullable_int{},nullable_int{2},nullable_int{2}};
+        inline auto dst_shape_nn1 = nmtools_array{nullable_int{},nullable_int{2},nullable_int{2},nullable_int{2}};
+        inline auto dst_shape_nn2 = nmtools_array{nullable_int{},nullable_int{},nullable_int{2},nullable_int{2}};
     }
 
     NMTOOLS_TESTING_DECLARE_ARGS(case3a)
@@ -115,12 +157,20 @@ NMTOOLS_TESTING_DECLARE_CASE(index,shape_tiling_window)
         inline auto src_shape_ct = nmtools_tuple{2_ct,4_ct,3_ct};
         inline auto tile_shape_ct = nmtools_tuple{2_ct,2_ct,3_ct};
 
+        inline auto src_shape_nl  = nmtools_array{nullable_int{2},nullable_int{4},nullable_int{3}};
+        inline auto src_shape_nn0 = nmtools_array{nullable_int{2},nullable_int{4},nullable_int{}};
+        inline auto src_shape_nn1 = nmtools_array{nullable_int{2},nullable_int{},nullable_int{3}};
+        inline auto src_shape_nn2 = nmtools_array{nullable_int{2},nullable_int{},nullable_int{}};
+
         NMTOOLS_CAST_INDEX_ARRAYS(src_shape)
         NMTOOLS_CAST_INDEX_ARRAYS(tile_shape)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case3a)
     {
         inline int dst_shape[6] = {1,2,1,2,2,3};
+        inline auto dst_shape_nn0 = nmtools_array{nullable_int{1},nullable_int{2},nullable_int{},nullable_int{2},nullable_int{2},nullable_int{3}};
+        inline auto dst_shape_nn1 = nmtools_array{nullable_int{1},nullable_int{},nullable_int{1},nullable_int{2},nullable_int{2},nullable_int{3}};
+        inline auto dst_shape_nn2 = nmtools_array{nullable_int{1},nullable_int{},nullable_int{},nullable_int{2},nullable_int{2},nullable_int{3}};
     }
 
     NMTOOLS_TESTING_DECLARE_ARGS(case3d)
@@ -133,6 +183,11 @@ NMTOOLS_TESTING_DECLARE_CASE(index,shape_tiling_window)
         inline auto tile_shape_ct = nmtools_tuple{3_ct,2_ct};
         inline auto axis_ct = nmtools_tuple{1_ct,2_ct};
 
+        inline auto src_shape_nl  = nmtools_array{nullable_int{2},nullable_int{6},nullable_int{4}};
+        inline auto src_shape_nn0 = nmtools_array{nullable_int{2},nullable_int{6},nullable_int{}};
+        inline auto src_shape_nn1 = nmtools_array{nullable_int{2},nullable_int{},nullable_int{4}};
+        inline auto src_shape_nn2 = nmtools_array{nullable_int{2},nullable_int{},nullable_int{}};
+
         NMTOOLS_CAST_INDEX_ARRAYS(src_shape)
         NMTOOLS_CAST_INDEX_ARRAYS(tile_shape)
         NMTOOLS_CAST_INDEX_ARRAYS(axis)
@@ -140,6 +195,9 @@ NMTOOLS_TESTING_DECLARE_CASE(index,shape_tiling_window)
     NMTOOLS_TESTING_DECLARE_EXPECT(case3d)
     {
         inline int dst_shape[5] = {2,2,2,3,2};
+        inline auto dst_shape_nn0 = nmtools_array{nullable_int{2},nullable_int{2},nullable_int{2},nullable_int{3},nullable_int{2}};
+        inline auto dst_shape_nn1 = nmtools_array{nullable_int{2},nullable_int{},nullable_int{},nullable_int{3},nullable_int{2}};
+        inline auto dst_shape_nn2 = nmtools_array{nullable_int{2},nullable_int{},nullable_int{2},nullable_int{3},nullable_int{2}};
     }
 }
 

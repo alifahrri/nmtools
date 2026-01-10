@@ -16,14 +16,14 @@ using nmtools_array, nmtools_tuple, nmtools::unwrap;
 
 TEST_CASE("get_computational_graph(batch_norm)" * doctest::test_suite("transform"))
 {
-    auto gen   = na::random_engine();
+    auto gen   = nm::random_engine();
     auto dtype = nm::float32;
 
-    auto input  = na::random(array{1,2,5,5},dtype,gen);
-    auto mean   = na::random(array{2},dtype,gen);
-    auto var    = na::random(array{2},dtype,gen);
-    auto weight = na::random(array{2},dtype,gen);
-    auto bias   = na::random(array{2},dtype,gen);
+    auto input  = nm::random(array{1,2,5,5},dtype,gen);
+    auto mean   = nm::random(array{2},dtype,gen);
+    auto var    = nm::random(array{2},dtype,gen);
+    auto weight = nm::random(array{2},dtype,gen);
+    auto bias   = nm::random(array{2},dtype,gen);
     auto res    = view::batch_norm(input,mean,var,weight,bias);
 
     auto graph = fn::get_computational_graph(res);
@@ -32,9 +32,9 @@ TEST_CASE("get_computational_graph(batch_norm)" * doctest::test_suite("transform
 
     CHECK_MESSAGE( true, graphviz );
     NMTOOLS_ASSERT_EQUAL( nk::is_directed_acyclic_graph(graph), true );
-    NMTOOLS_ASSERT_EQUAL( nm::meta::is_constant_adjacency_list_v<decltype(unwrap(graph).adjacency_list)>, true );
+    NMTOOLS_ASSERT_EQUAL( nm::is_constant_adjacency_list_v<decltype(unwrap(graph).adjacency_list)>, true );
 
-    constexpr auto graph_v = nm::meta::to_value_v<decltype(unwrap(graph))>;
+    constexpr auto graph_v = nm::to_value_v<decltype(unwrap(graph))>;
     auto graphviz_v = utils::to_string(unwrap(graph_v),utils::Graphviz);
 
     CHECK_MESSAGE( true, graphviz_v );

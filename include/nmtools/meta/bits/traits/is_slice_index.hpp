@@ -37,7 +37,7 @@ namespace nmtools::meta
                 meta::template_for<num_args>([&](auto index){
                     constexpr auto I = decltype(index)::value;
                     using type_i = at_t<tuple_t,I>;
-                    result = result && is_none_v<type_i>;
+                    result = result && (is_none_v<type_i> || is_index_v<type_i>);
                 });
             }
             return result;
@@ -67,5 +67,10 @@ namespace nmtools::meta
     };
     
 } // namespace nmtools::meta
+
+namespace nmtools
+{
+    using meta::is_slice_index_v;
+}
 
 #endif // NMTOOLS_META_BITS_TRAITS_IS_SLICE_INDEX_HPP

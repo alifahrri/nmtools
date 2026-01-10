@@ -2,13 +2,19 @@
 #include "nmtools/testing/data/index/tiling_window.hpp"
 #include "nmtools/testing/doctest.hpp"
 
-#define SHAPE_TILING_WINDOW_SUBCASE(case_name, ...) \
+#define SHAPE_TILING_WINDOW_EXPECT_SUBCASE(case_name, exp, ...) \
 SUBCASE(#case_name) \
 { \
     NMTOOLS_TESTING_USE_CASE(index, shape_tiling_window, case_name); \
     using namespace args; \
     auto result = nmtools::index::shape_tiling_window(__VA_ARGS__); \
-    NMTOOLS_ASSERT_EQUAL_MSG_ATTRIBUTES( result, expect::dst_shape, __VA_ARGS__ ); \
+    NMTOOLS_ASSERT_EQUAL_MSG_ATTRIBUTES( result, expect::exp, __VA_ARGS__ ); \
+}
+
+#define SHAPE_TILING_WINDOW_SUBCASE(case_name, ...) \
+SUBCASE(#case_name) \
+{ \
+    SHAPE_TILING_WINDOW_EXPECT_SUBCASE(case_name, dst_shape, __VA_ARGS__ ); \
 }
 
 #define TILING_WINDOW_SUBCASE(case_name, ...) \
@@ -33,6 +39,9 @@ TEST_CASE("shape_tiling_window(case1)" * doctest::test_suite("index::shape_tilin
 
     // should results in mixed index array
     SHAPE_TILING_WINDOW_SUBCASE( case1, src_shape, tile_shape_ct );
+
+    SHAPE_TILING_WINDOW_SUBCASE( case1, src_shape_nl, tile_shape );
+    SHAPE_TILING_WINDOW_EXPECT_SUBCASE( case1, dst_shape_nn, src_shape_nn, tile_shape );
 }
 
 TEST_CASE("shape_tiling_window(case2)" * doctest::test_suite("index::shape_tiling_window"))
@@ -48,6 +57,10 @@ TEST_CASE("shape_tiling_window(case2)" * doctest::test_suite("index::shape_tilin
 
     // should results in mixed index array
     SHAPE_TILING_WINDOW_SUBCASE( case2, src_shape, tile_shape_ct );
+
+    SHAPE_TILING_WINDOW_SUBCASE( case2, src_shape_nl, tile_shape );
+    SHAPE_TILING_WINDOW_EXPECT_SUBCASE( case2, dst_shape_nn0, src_shape_nn0, tile_shape );
+    SHAPE_TILING_WINDOW_EXPECT_SUBCASE( case2, dst_shape_nn1, src_shape_nn1, tile_shape );
 }
 
 TEST_CASE("shape_tiling_window(case2b)" * doctest::test_suite("index::shape_tiling_window"))
@@ -59,6 +72,11 @@ TEST_CASE("shape_tiling_window(case2b)" * doctest::test_suite("index::shape_tili
     SHAPE_TILING_WINDOW_SUBCASE( case2b, src_shape_v, tile_shape_v );
 
     SHAPE_TILING_WINDOW_SUBCASE( case2b, src_shape_ct, tile_shape_ct );
+
+    SHAPE_TILING_WINDOW_SUBCASE( case2b, src_shape_nl, tile_shape );
+    SHAPE_TILING_WINDOW_EXPECT_SUBCASE( case2b, dst_shape_nn0, src_shape_nn0, tile_shape );
+    SHAPE_TILING_WINDOW_EXPECT_SUBCASE( case2b, dst_shape_nn1, src_shape_nn1, tile_shape );
+    SHAPE_TILING_WINDOW_EXPECT_SUBCASE( case2b, dst_shape_nn2, src_shape_nn2, tile_shape );
 }
 
 TEST_CASE("shape_tiling_window(case2c)" * doctest::test_suite("index::shape_tiling_window"))
@@ -70,6 +88,11 @@ TEST_CASE("shape_tiling_window(case2c)" * doctest::test_suite("index::shape_tili
     SHAPE_TILING_WINDOW_SUBCASE( case2c, src_shape_v, tile_shape, axis );
 
     SHAPE_TILING_WINDOW_SUBCASE( case2c, src_shape_ct, tile_shape_ct, axis_ct );
+
+    SHAPE_TILING_WINDOW_SUBCASE( case2c, src_shape_nl, tile_shape, axis );
+    SHAPE_TILING_WINDOW_EXPECT_SUBCASE( case2c, dst_shape_nn0, src_shape_nn0, tile_shape, axis );
+    SHAPE_TILING_WINDOW_EXPECT_SUBCASE( case2c, dst_shape_nn1, src_shape_nn1, tile_shape, axis );
+    SHAPE_TILING_WINDOW_EXPECT_SUBCASE( case2c, dst_shape_nn2, src_shape_nn2, tile_shape, axis );
 }
 
 TEST_CASE("shape_tiling_window(case2d)" * doctest::test_suite("index::shape_tiling_window"))
@@ -81,6 +104,11 @@ TEST_CASE("shape_tiling_window(case2d)" * doctest::test_suite("index::shape_tili
     SHAPE_TILING_WINDOW_SUBCASE( case2d, src_shape_v, tile_shape, axis );
 
     SHAPE_TILING_WINDOW_SUBCASE( case2d, src_shape_ct, tile_shape_ct, axis_ct );
+
+    SHAPE_TILING_WINDOW_SUBCASE( case2d, src_shape_nl, tile_shape, axis );
+    SHAPE_TILING_WINDOW_EXPECT_SUBCASE( case2d, dst_shape_nn0, src_shape_nn0, tile_shape, axis );
+    SHAPE_TILING_WINDOW_EXPECT_SUBCASE( case2d, dst_shape_nn1, src_shape_nn1, tile_shape, axis );
+    SHAPE_TILING_WINDOW_EXPECT_SUBCASE( case2d, dst_shape_nn2, src_shape_nn2, tile_shape, axis );
 }
 
 TEST_CASE("shape_tiling_window(case2e)" * doctest::test_suite("index::shape_tiling_window"))
@@ -92,6 +120,11 @@ TEST_CASE("shape_tiling_window(case2e)" * doctest::test_suite("index::shape_tili
     SHAPE_TILING_WINDOW_SUBCASE( case2e, src_shape_v, tile_shape );
 
     SHAPE_TILING_WINDOW_SUBCASE( case2e, src_shape_ct, tile_shape_ct );
+
+    SHAPE_TILING_WINDOW_SUBCASE( case2e, src_shape_nl, tile_shape );
+    SHAPE_TILING_WINDOW_EXPECT_SUBCASE( case2e, dst_shape_nn0, src_shape_nn0, tile_shape );
+    SHAPE_TILING_WINDOW_EXPECT_SUBCASE( case2e, dst_shape_nn1, src_shape_nn1, tile_shape );
+    SHAPE_TILING_WINDOW_EXPECT_SUBCASE( case2e, dst_shape_nn2, src_shape_nn2, tile_shape );
 }
 
 TEST_CASE("shape_tiling_window(case3a)" * doctest::test_suite("index::shape_tiling_window"))
@@ -103,6 +136,11 @@ TEST_CASE("shape_tiling_window(case3a)" * doctest::test_suite("index::shape_tili
     SHAPE_TILING_WINDOW_SUBCASE( case3a, src_shape_v, tile_shape_v );
     
     SHAPE_TILING_WINDOW_SUBCASE( case3a, src_shape_ct, tile_shape_ct );
+
+    SHAPE_TILING_WINDOW_SUBCASE( case3a, src_shape_nl, tile_shape );
+    SHAPE_TILING_WINDOW_EXPECT_SUBCASE( case3a, dst_shape_nn0, src_shape_nn0, tile_shape );
+    SHAPE_TILING_WINDOW_EXPECT_SUBCASE( case3a, dst_shape_nn1, src_shape_nn1, tile_shape );
+    SHAPE_TILING_WINDOW_EXPECT_SUBCASE( case3a, dst_shape_nn2, src_shape_nn2, tile_shape );
 }
 
 TEST_CASE("shape_tiling_window(case3d)" * doctest::test_suite("index::shape_tiling_window"))
@@ -113,7 +151,14 @@ TEST_CASE("shape_tiling_window(case3d)" * doctest::test_suite("index::shape_tili
     SHAPE_TILING_WINDOW_SUBCASE( case3d, src_shape_h, tile_shape_h, axis_h );
     SHAPE_TILING_WINDOW_SUBCASE( case3d, src_shape_v, tile_shape_v, axis_v );
     
+    // TODO: enable
     // SHAPE_TILING_WINDOW_SUBCASE( case3d, src_shape_ct, tile_shape_ct, axis_ct );
+
+    // TODO: fix
+    // SHAPE_TILING_WINDOW_SUBCASE( case3d, src_shape_nl, tile_shape, axis );
+    // SHAPE_TILING_WINDOW_EXPECT_SUBCASE( case3d, dst_shape_nn0, src_shape_nn0, tile_shape, axis );
+    // SHAPE_TILING_WINDOW_EXPECT_SUBCASE( case3d, dst_shape_nn1, src_shape_nn1, tile_shape, axis );
+    // SHAPE_TILING_WINDOW_EXPECT_SUBCASE( case3d, dst_shape_nn2, src_shape_nn2, tile_shape, axis );
 }
 
 TEST_CASE("tiling_window(case1_0_0)" * doctest::test_suite("index::tiling_window"))

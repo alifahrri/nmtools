@@ -37,4 +37,9 @@ namespace nmtools::meta
     inline constexpr bool is_integral_constant_v = is_integral_constant<T>::value;
 } // namespace nmtools::meta
 
+namespace nmtools
+{
+    using meta::is_integral_constant_v;
+}
+
 #endif // NMTOOLS_META_BITS_TRAITS_IS_INTEGRAL_CONSTANT_HPP

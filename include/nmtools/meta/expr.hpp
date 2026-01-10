@@ -82,6 +82,9 @@ namespace nmtools::meta
         template <typename T>
         using dim = decltype(declval<T>().dim());
 
+        template <typename T>
+        using name = decltype(declval<T>().name());
+
         // TODO: proper convention on member function vs member variable
         template <typename T>
         using src_size = decltype(declval<T>().src_size);

@@ -15,10 +15,13 @@ Cheatsheet for development build and tests.
   - [Build \& Test `cuda`](#build--test-cuda)
   - [Build \& Test `hip`](#build--test-hip)
   - [Build for arm](#build-for-arm)
+  - [Build for risc-v](#build-for-risc-v)
   - [Run Interactive Notebook](#run-interactive-notebook)
   - [Run Clang-Repl](#run-clang-repl)
   - [Setup `distcc`](#setup-distcc)
   - [Build with devcontainer](#build-with-devcontainer)
+  - [Build \& Test Tilekit](#build--test-tilekit)
+  - [Setting ulimit](#setting-ulimit)
 
 ## Basic Building & Testing (CPU)
 
@@ -276,8 +279,40 @@ docker exec -it hip-dev zsh
 
 ## Build for arm
 
+For arm64:
 ```
 export IMAGE=linux-arm64
+docker run --rm dockcross/${IMAGE}:latest > ./dockcross-${IMAGE}; chmod +x ./dockcross-${IMAGE}
+./dockcross-${IMAGE} bash -c "gcc -v"
+./dockcross-${IMAGE} bash -c "mkdir -p build/${IMAGE} && cd build/${IMAGE} && cmake -DNMTOOLS_TEST_ALL=ON ../.. && make -j16 VERBOSE=1"
+```
+For armv7:
+```
+export IMAGE=linux-armv7
+docker run --rm dockcross/${IMAGE}:latest > ./dockcross-${IMAGE}; chmod +x ./dockcross-${IMAGE}
+./dockcross-${IMAGE} bash -c "gcc -v"
+./dockcross-${IMAGE} bash -c "mkdir -p build/${IMAGE} && cd build/${IMAGE} && cmake -DNMTOOLS_TEST_ALL=ON ../.. && make -j16 VERBOSE=1"
+```
+For armv5:
+```
+export IMAGE=linux-armv5
+docker run --rm dockcross/${IMAGE}:latest > ./dockcross-${IMAGE}; chmod +x ./dockcross-${IMAGE}
+./dockcross-${IMAGE} bash -c "gcc -v"
+./dockcross-${IMAGE} bash -c "mkdir -p build/${IMAGE} && cd build/${IMAGE} && cmake -DNMTOOLS_TEST_ALL=ON ../.. && make -j16 VERBOSE=1"
+```
+
+## Build for risc-v
+
+For riscv64:
+```
+export IMAGE=linux-riscv64
+docker run --rm dockcross/${IMAGE}:latest > ./dockcross-${IMAGE}; chmod +x ./dockcross-${IMAGE}
+./dockcross-${IMAGE} bash -c "gcc -v"
+./dockcross-${IMAGE} bash -c "mkdir -p build/${IMAGE} && cd build/${IMAGE} && cmake -DNMTOOLS_TEST_ALL=ON ../.. && make -j16 VERBOSE=1"
+```
+For riscv32:
+```
+export IMAGE=linux-riscv32
 docker run --rm dockcross/${IMAGE}:latest > ./dockcross-${IMAGE}; chmod +x ./dockcross-${IMAGE}
 ./dockcross-${IMAGE} bash -c "gcc -v"
 ./dockcross-${IMAGE} bash -c "mkdir -p build/${IMAGE} && cd build/${IMAGE} && cmake -DNMTOOLS_TEST_ALL=ON ../.. && make -j16 VERBOSE=1"
@@ -403,4 +438,144 @@ mkdir -p build/gcc-9
 cd build/gcc-9
 cmake -DCMAKE_TOOLCHAIN_FILE=cmake/toolchains/gcc-werror.cmake ../..
 clear && make -j16
+```
+
+## Build & Test Tilekit
+Build cpu with `-DNMTOOLS_BUILD_TILEKIT_TESTS=ON`. Automatically built the tilekit tests target with `-O2`
+
+Run tests
+```
+➜  gcc git:(master) ./tests/tilekit/numeric-tests-tilekit-doctest 
+[doctest] doctest version is "2.4.8"
+[doctest] run with "--help" for options
+Warning, results might be unstable:
+* CPU frequency scaling enabled: CPU 0 between 2,982.0 and 5,756.0 MHz
+* Turbo is enabled, CPU frequency will fluctuate
+
+Recommendations
+* Use 'pyperf system tune' before benchmarking. See https://github.com/psf/pyperf
+
+|               ns/op |                op/s |    err% |     total | benchmark
+|--------------------:|--------------------:|--------:|----------:|:----------
+|                0.73 |    1,373,717,951.89 |    0.2% |      0.11 | `copy_kernel(4)`
+|                0.37 |    2,735,997,350.08 |    0.2% |      0.12 | `copy(4)`
+|               14.32 |       69,815,779.88 |    2.3% |      0.12 | `copy_kernel(128)`
+|               22.54 |       44,369,202.72 |    0.5% |      0.12 | `copy(128)`
+|              462.80 |        2,160,774.27 |    0.1% |      0.12 | `vector_addition_f32x64`
+|              922.53 |        1,083,979.11 |    0.1% |      0.12 | `vector_addition_f32x128`
+===============================================================================
+[doctest] test cases: 7 | 7 passed | 0 failed | 0 skipped
+[doctest] assertions: 7 | 7 passed | 0 failed |
+[doctest] Status: SUCCESS!
+```
+
+Run specific tests with perf
+```
+➜  gcc git:(master) ✗ sudo perf record ./tests/tilekit/numeric-tests-tilekit-doctest -tc="copy_kernel(128)"
+[doctest] doctest version is "2.4.8"
+[doctest] run with "--help" for options
+Warning, results might be unstable:
+* CPU frequency scaling enabled: CPU 0 between 2,982.0 and 5,756.0 MHz
+* Turbo is enabled, CPU frequency will fluctuate
+
+Recommendations
+* Use 'pyperf system tune' before benchmarking. See https://github.com/psf/pyperf
+
+|               ns/op |                op/s |    err% |          ins/op |          cyc/op |    IPC |         bra/op |   miss% |     total | benchmark
+|--------------------:|--------------------:|--------:|----------------:|----------------:|-------:|---------------:|--------:|----------:|:----------
+|               14.95 |       66,879,342.56 |    1.3% |          728.00 |           63.79 | 11.412 |         196.00 |    0.0% |      0.12 | `copy_kernel(128)`
+===============================================================================
+[doctest] test cases: 1 | 1 passed | 0 failed | 6 skipped
+[doctest] assertions: 1 | 1 passed | 0 failed |
+[doctest] Status: SUCCESS!
+[ perf record: Woken up 1 times to write data ]
+[ perf record: Captured and wrote 0.035 MB perf.data (480 samples) ]
+```
+
+Annotate the report
+```
+sudo perf report
+```
+then select function you are intersted,
+```
+Samples: 501  of event 'cycles:P', 4000 Hz, Event count (approx.): 679195920
+
+   4.84 │ 50:   cmp       %rdx,%rsi
+        │     ↓ jae       16d
+        │
+        │     template <typename m_array_type, typename indices_type>
+        │     static constexpr auto get_element(const m_array_type& array, [[maybe_unused]] const indices_type& indices)
+        │     {
+        │     if constexpr (meta::is_pointer_v<m_array_type>) {
+        │     return apply_at(*array,indices);
+   6.26 │       vmovss    (%rax,%rsi,4),%xmm0
+   6.33 │       cmp       %rdx,%rcx
+        │     ↓ jae       180
+   5.91 │       vmovss    0x4(%rax,%rsi,4),%xmm2
+   6.36 │       cmp       %rdx,%rdi
+        │     ↓ jae       17b
+   4.89 │       vmovss    0x8(%rax,%rsi,4),%xmm1
+   7.43 │       cmp       %rsi,%r10
+        │     ↓ je        169
+   7.55 │       vinsertps $0x10,0xc(%rax,%rsi,4),%xmm1,%xmm1
+   6.32 │       vunpcklps %xmm2,%xmm0,%xmm0
+   7.84 │       vmovlhps  %xmm1,%xmm0,%xmm0
+        │     }
+        │
+        │     _GLIBCXX17_CONSTEXPR reference
+        │     at(size_type __n)
+        │     {
+        │     if (__n >= _Nm)
+   3.90 │       cmp       $0x80,%rsi
+        │     ↓ je        151
+        │     auto shape  = nmtools::shape<true>(result);
+        │     auto [dim0] = shape;
+        │     auto [off0] = offset;
+        │
+        │     for (nm_size_t j=0; j<dim0; j++) {
+        │     at(output,off0*dim0+j) = at(result,j);
+   3.94 │       vmovups   %xmm0,(%r9,%rsi,4)
+        │     for (nm_size_t i=0; i<n_iter; i++) {
+   5.18 │       add       $0x4,%rsi
+   9.15 │       add       $0x4,%rdi
+   7.40 │       add       $0x4,%rcx
+   3.87 │       cmp       %rsi,%r8
+        │     ↑ jne       50
+        │     auto offset = tuple{i};
+        │     auto block  = tk::load(context,array,offset,t_shape);
+        │
+        │     tk::store(context,out,offset,block);
+        │     }
+        │     }
+   0.20 │       pop       %rbx
+   0.61 │       pop       %rbp
+        │       pop       %r12
+   0.20 │     ← ret
+        │       xchg      %ax,%ax
+        │ c0:   mov       %rcx,%rbx
+        │       shl       $0x4,%rbx
+        │       lea       (%rcx,%rcx,1),%rdi
+        │       lea       (%rax,%rcx,8),%r11
+        │     { return size_type(this->_M_impl._M_finish - this->_M_impl._M_start); }
+        │       xor       %esi,%esi
+        │     for (nm_size_t i=0; i<n_iter; i++) {
+        │       xor       %r10d,%r10d
+        │       lea       (%rdi,%rcx,1),%rbp
+        │       nop
+        │     if (__n >= this->size())
+        │ e0:   cmp       %rdx,%rsi
+        │     ↓ jae       16d
+        │       add       %rcx,%rsi
+        │       vmovss    (%rax),%xmm0
+        │       cmp       %rdx,%rsi
+        │     ↓ jae       16d
+        │       vmovss    (%rax,%rcx,4),%xmm2
+Press 'h' for help on key bindings
+```
+
+## Setting ulimit
+
+For computational graph with no memory allocation, it may required to increase the stack size limit:
+```
+ulimit -s unlimited
 ```
