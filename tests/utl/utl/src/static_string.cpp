@@ -509,7 +509,11 @@ TEST_CASE("static_string::join" * doctest::test_suite("utl"))
 {
     using utl::static_string;
     {
+        #ifndef __HIPCC__
         auto strs = nmtools_array{static_string::to_string(1), static_string::to_string(3), static_string::to_string(5)};
+        #else
+        auto strs = nmtools_array<static_string,3>{static_string::to_string(1), static_string::to_string(3), static_string::to_string(5)};
+        #endif // __HIPCC__
         auto str = static_string(",").join(strs);
         CHECK( str.size() == 6 );
         #if !DISABLE_CHECK
@@ -520,7 +524,11 @@ TEST_CASE("static_string::join" * doctest::test_suite("utl"))
         #endif
     }
     {
+        #ifndef __HIPCC__
         constexpr auto strs = nmtools_array{static_string::to_string(1), static_string::to_string(3), static_string::to_string(5)};
+        #else
+        constexpr auto strs = nmtools_array<static_string,3>{static_string::to_string(1), static_string::to_string(3), static_string::to_string(5)};
+        #endif // __HIPCC__
         constexpr auto str = static_string(",").join(strs);
         CHECK( str.size() == 6 );
         #if !DISABLE_CHECK

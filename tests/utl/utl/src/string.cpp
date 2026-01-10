@@ -214,7 +214,11 @@ TEST_CASE("string::join" * doctest::test_suite("utl"))
 {
     using utl::string;
     {
+        #ifndef __HIPCC__
         auto strs = nmtools_array{string::to_string(1), string::to_string(3), string::to_string(5)};
+        #else
+        auto strs = nmtools_array<string,3>{string::to_string(1), string::to_string(3), string::to_string(5)};
+        #endif // __HIPCC__
         auto str = string(",").join(strs);
         CHECK( str.size() == 6 );
         auto isequal = ( str == "1,3,5" );
