@@ -5,6 +5,7 @@
 #include "nmtools/ndarray/ndarray.hpp"
 #include "nmtools/core/alias.hpp"
 #include "nmtools/core/reshape.hpp"
+#include "nmtools/core/eval.hpp"
 #include "nmtools/array/ufuncs/add.hpp"
 #include "nmtools/array/ufuncs/amax.hpp"
 #include "nmtools/array/ufuncs/amin.hpp"
