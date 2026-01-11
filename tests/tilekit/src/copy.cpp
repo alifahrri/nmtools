@@ -1,4 +1,5 @@
 #include "kernels/copy.hpp"
+#include "kernels/simd_copy.hpp"
 #include "nmtools/nmtools.hpp"
 #include "nmtools/tilekit/tilekit.hpp"
 #include "nmtools/testing/doctest.hpp"
@@ -62,6 +63,27 @@ TEST_CASE("copy_kernel(128)" * doctest::test_suite("tilekit"))
             .minEpochTime(min_time)
             .run("copy_kernel(128)",[&](){
                 copy_kernel(ctx,out,inp);
+            });
+
+        NMTOOLS_ASSERT_CLOSE( out, inp );
+    }
+}
+
+TEST_CASE("simd_copy_kernel(128)" * doctest::test_suite("tilekit"))
+{
+    auto gen   = nm::random_engine();
+    auto dtype = nm::float32;
+
+    auto inp = nm::random(array{128},dtype,gen);
+    auto out = nmtools_array<float,128>{};
+
+    auto min_time = std::chrono::nanoseconds(10'000'000);
+
+    {
+        ankerl::nanobench::Bench()
+            .minEpochTime(min_time)
+            .run("simd_copy_kernel(128)",[&](){
+                simd_copy_kernel(out,inp);
             });
 
         NMTOOLS_ASSERT_CLOSE( out, inp );

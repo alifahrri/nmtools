@@ -46,6 +46,9 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
 add_executable(${PROJECT_NAME}-doctest tests.cpp 
     src/vector_addition.cpp
+    src/vector_multiply.cpp
+    src/vector_divide.cpp
+    src/vector_subtraction.cpp
     src/copy.cpp
 )
 add_test(

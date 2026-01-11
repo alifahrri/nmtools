@@ -1,5 +1,5 @@
-#ifndef NMTOOLS_TESTS_KERNELS_VECTOR_ADDITION_HPP
-#define NMTOOLS_TESTS_KERNELS_VECTOR_ADDITION_HPP
+#ifndef NMTOOLS_TESTS_KERNEL_VECTOR_SUBTRACT_HPP
+#define NMTOOLS_TESTS_KERNEL_VECTOR_SUBTRACT_HPP
 
 #include "nmtools/tilekit/tilekit.hpp"
 
@@ -13,7 +13,7 @@ using namespace nmtools::literals;
 using nmtools::at, nmtools::shape;
 
 template <typename context_t, typename out_t, typename a_t, typename b_t>
-auto vector_addition(context_t& ctx, out_t& out, const a_t& a, const b_t& b)
+auto vector_subtract(context_t&& ctx, out_t& out, const a_t& a, const b_t& b)
 {
     auto t_shape  = tuple{4_ct};
     auto [dim0]   = t_shape;
@@ -25,10 +25,10 @@ auto vector_addition(context_t& ctx, out_t& out, const a_t& a, const b_t& b)
         auto offset  = tuple{i};
         auto block_a = tk::load(ctx,a,offset,t_shape);
         auto block_b = tk::load(ctx,b,offset,t_shape);
-        auto result  = block_a + block_b;
-
+        auto result  = block_a - block_b;
+        
         tk::store(ctx,out,offset,result);
     }
 }
 
-#endif // NMTOOLS_TESTS_KERNELS_VECTOR_ADDITION_HPP
+#endif // NMTOOLS_TESTS_KERNEL_VECTOR_SUBTRACT_HPP
