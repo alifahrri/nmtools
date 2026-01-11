@@ -401,7 +401,11 @@ namespace nmtools
 
 } // namespace nmtools
 
-#include "nmtools/ndarray.hpp"
+#include "nmtools/ndarray/base_ndarray.hpp"
+#include "nmtools/ndarray/dynamic.hpp"
+#include "nmtools/ndarray/fixed.hpp"
+#include "nmtools/ndarray/hybrid.hpp"
+#include "nmtools/ndarray/ndarray.hpp"
 
 namespace nmtools::meta
 {

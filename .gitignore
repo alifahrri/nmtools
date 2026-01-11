@@ -28,3 +28,7 @@ install
 amdgpu-*
 *.dot
 *.Trash*
+*.data
+*.out
+*.svg
+*.old

@@ -12,7 +12,6 @@
 #include "nmtools/index/sum.hpp"
 #include "nmtools/utility/shape.hpp"
 #include "nmtools/dtypes.hpp"
-#include "nmtools/ndarray.hpp"
 #include "nmtools/core/eval.hpp"
 #include "nmtools/constants.hpp"
 #include "nmtools/utility/as_static.hpp"

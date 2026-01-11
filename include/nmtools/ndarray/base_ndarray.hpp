@@ -9,7 +9,6 @@
 #include "nmtools/index/reverse.hpp"
 #include "nmtools/utility/shape.hpp"
 #include "nmtools/utility/at.hpp"
-#include "nmtools/utility/cast.hpp"
 #include "nmtools/utility/get.hpp"
 
 // experimental version that combine all three to single class

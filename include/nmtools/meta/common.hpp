@@ -210,6 +210,7 @@ namespace nmtools
     using meta::ct_v;
     using meta::enable_if_t;
     using meta::is_same_v;
+    using meta::as_value_v;
 }
 
 namespace nmtools::meta
