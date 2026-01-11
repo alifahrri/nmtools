@@ -63,4 +63,9 @@ namespace nmtools::meta
     #endif // __OPENCL_VERSION__
 } // namespace nmtools::meta
 
+namespace nmtools
+{
+    using meta::fixed_shape_v;
+}
+
 #endif // NMTOOLS_META_BITS_ARRAY_FIXED_SHAPE_HPP

@@ -9,6 +9,7 @@
 #include "nmtools/array/ufuncs/amax.hpp"
 #include "nmtools/array/ufuncs/amin.hpp"
 #include "nmtools/array/ufuncs/clip.hpp"
+#include "nmtools/array/ufuncs/exp.hpp"
 #include "nmtools/array/ufuncs/greater.hpp"
 #include "nmtools/array/ufuncs/greater_equal.hpp"
 #include "nmtools/array/ufuncs/less.hpp"
@@ -150,6 +151,8 @@ namespace nmtools::view
         nmtools_ndarray_method(swapaxes)
         nmtools_ndarray_method(trace)
         nmtools_ndarray_method(transpose)
+
+        nmtools_ndarray_method(exp)
 
         nmtools_ndarray_method(max)
         nmtools_ndarray_method(min)
@@ -315,14 +318,17 @@ namespace nmtools::meta
 
 namespace nmtools
 {
+    template <LayoutKind BufferLayout=LayoutKind::RowMajor>
+    struct object_eval_resolver_t {};
+
     // TODO: propagate evaluator context
     #define nmtools_ndarray_method(method) \
     template <typename...args_t> \
     constexpr auto method(const args_t&...args) const \
     { \
         auto v = view::method(*this,args...); \
-        auto result = nmtools::eval(v); \
-        return result; \
+        auto result = nmtools::eval(v,None,None,as_value_v<resolver_type>); \
+        return nmtools::unwrap(result); \
     }
 
     template <
@@ -330,6 +336,7 @@ namespace nmtools
         , typename shape_buffer_t
         , template <typename...>typename stride_buffer_t=resolve_stride_type_t
         , template <typename...>typename compute_offset_t=row_major_offset_t
+        , template <auto...>typename resolver_t=object_eval_resolver_t
         , typename=void>
     struct object_t : base_ndarray_t<object_t<buffer_t, shape_buffer_t, stride_buffer_t, compute_offset_t>>
     {
@@ -340,6 +347,8 @@ namespace nmtools
         using stride_type = stride_buffer_t<shape_type>;
         using base_type   = base_ndarray_t<object_t>;
         using offset_type = compute_offset_t<shape_type,stride_type>;
+        // TODO: parametrize layout kind
+        using resolver_type = resolver_t<LayoutKind::RowMajor>;
 
         static_assert( meta::is_index_array_v<shape_type>, "unsupported shape_type for ndarray" );
         static_assert( meta::is_index_array_v<stride_type>, "unsupported stride_type for ndarray");
@@ -362,6 +371,16 @@ namespace nmtools
                     data_.resize(numel);
                 }
             }
+        }
+
+        constexpr auto data() const noexcept
+        {
+            return data_.data();
+        }
+
+        constexpr auto data() noexcept
+        {
+            return data_.data();
         }
 
         template <typename size_type, typename...size_types>
@@ -474,6 +493,8 @@ namespace nmtools
         nmtools_ndarray_method(trace)
         nmtools_ndarray_method(transpose)
 
+        nmtools_ndarray_method(exp)
+
         nmtools_ndarray_method(max)
         nmtools_ndarray_method(min)
         nmtools_ndarray_method(prod)
@@ -537,9 +558,6 @@ namespace nmtools
     }; // object_t
 
     #undef nmtools_ndarray_method
-
-    template <LayoutKind BufferLayout=LayoutKind::RowMajor>
-    struct object_eval_resolver_t {};
 } // nmtools
 
 namespace nmtools::meta
@@ -744,25 +762,15 @@ namespace nmtools::meta
 
 namespace nmtools
 {
-    template <typename array_t>
-    constexpr auto array(const array_t& array)
-    {
-        auto resolver = meta::as_value_v<object_eval_resolver_t<LayoutKind::RowMajor>>;
-        auto dst = nmtools::copy(unwrap(array),None,None,resolver);
-        return dst;
-    }
-}
-
-namespace nmtools
-{
     template <size_t I,
           typename buffer_t
         , typename shape_buffer_t
         , template <typename...>typename stride_buffer_t
-        , template <typename...>typename offset_compute_t>
-    struct get_t<I,object_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t>>
+        , template <typename...>typename offset_compute_t
+        , template <auto...>typename resolver_t>
+    struct get_t<I,object_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t,resolver_t>>
     {
-        using array_type = object_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t>;
+        using array_type = object_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t,resolver_t>;
 
         static constexpr auto vtype = [](){
             constexpr auto dim = meta::len_v<shape_buffer_t>;
@@ -803,10 +811,11 @@ namespace nmtools::meta
           typename buffer_t
         , typename shape_buffer_t
         , template <typename...>typename stride_buffer_t
-        , template <typename...>typename offset_compute_t>
-    struct get_element_type<object_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t>>
+        , template <typename...>typename offset_compute_t
+        , template <auto...>typename resolver_t>
+    struct get_element_type<object_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t,resolver_t>>
     {
-        using array_type = object_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t>;
+        using array_type = object_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t,resolver_t>;
         static constexpr auto vtype = [](){
             using T = typename array_type::value_type;
             if constexpr (is_num_v<T>) {
@@ -822,12 +831,13 @@ namespace nmtools::meta
           typename buffer_t
         , typename shape_buffer_t
         , template <typename...>typename stride_buffer_t
-        , template <typename...>typename offset_compute_t>
+        , template <typename...>typename offset_compute_t
+        , template <auto...>typename resolver_t>
     struct is_ndarray<
-        object_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t>
+        object_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t,resolver_t>
     >
     {
-        using array_type = object_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t>;
+        using array_type = object_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t,resolver_t>;
         using element_type = typename array_type::value_type;
         static constexpr auto value = is_num_v<element_type>;
     }; // is_ndarray
@@ -836,12 +846,13 @@ namespace nmtools::meta
           typename buffer_t
         , typename shape_buffer_t
         , template <typename...>typename stride_buffer_t
-        , template <typename...>typename offset_compute_t>
+        , template <typename...>typename offset_compute_t
+        , template <auto...>typename resolver_t>
     struct fixed_dim<
-        object_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t>
+        object_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t,resolver_t>
     >
     {
-        using array_type = object_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t>;
+        using array_type = object_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t,resolver_t>;
         using shape_type = typename array_type::shape_type;
 
         static constexpr auto value = [](){
@@ -858,12 +869,13 @@ namespace nmtools::meta
           typename buffer_t
         , typename shape_buffer_t
         , template <typename...>typename stride_buffer_t
-        , template <typename...>typename offset_compute_t>
+        , template <typename...>typename offset_compute_t
+        , template <auto...>typename resolver_t>
     struct fixed_shape<
-        object_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t>
+        object_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t,resolver_t>
     >
     {
-        using array_type = object_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t>;
+        using array_type = object_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t,resolver_t>;
         using shape_type = typename array_type::shape_type;
 
         static constexpr auto value = [](){
@@ -880,12 +892,13 @@ namespace nmtools::meta
           typename buffer_t
         , typename shape_buffer_t
         , template <typename...>typename stride_buffer_t
-        , template <typename...>typename offset_compute_t>
+        , template <typename...>typename offset_compute_t
+        , template <auto...>typename resolver_t>
     struct fixed_size<
-        object_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t>
+        object_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t,resolver_t>
     >
     {
-        using array_type  = object_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t>;
+        using array_type  = object_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t,resolver_t>;
         using shape_type  = typename array_type::shape_type;
         using buffer_type = typename array_type::buffer_type;
 
@@ -905,12 +918,13 @@ namespace nmtools::meta
           typename buffer_t
         , typename shape_buffer_t
         , template <typename...>typename stride_buffer_t
-        , template <typename...>typename offset_compute_t>
+        , template <typename...>typename offset_compute_t
+        , template <auto...>typename resolver_t>
     struct bounded_dim<
-        object_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t>
+        object_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t,resolver_t>
     >
     {
-        using array_type  = object_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t>;
+        using array_type  = object_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t,resolver_t>;
         using shape_type  = typename array_type::shape_type;
         using buffer_type = typename array_type::buffer_type;
 
@@ -931,12 +945,13 @@ namespace nmtools::meta
           typename buffer_t
         , typename shape_buffer_t
         , template <typename...>typename stride_buffer_t
-        , template <typename...>typename offset_compute_t>
+        , template <typename...>typename offset_compute_t
+        , template <auto...>typename resolver_t>
     struct bounded_size<
-        object_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t>
+        object_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t,resolver_t>
     >
     {
-        using array_type  = object_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t>;
+        using array_type  = object_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t,resolver_t>;
         using shape_type  = typename array_type::shape_type;
         using buffer_type = typename array_type::buffer_type;
 
@@ -956,9 +971,10 @@ namespace nmtools::meta
         , typename buffer_t
         , typename shape_buffer_t
         , template <typename...>typename stride_buffer_t
-        , template <typename...>typename offset_compute_t>
+        , template <typename...>typename offset_compute_t
+        , template <auto...>typename resolver_t>
     struct replace_element_type<
-        object_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t>, U
+        object_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t,resolver_t>, U
     >
     {
         using buffer_type = replace_element_type_t<buffer_t,U>;
@@ -969,9 +985,10 @@ namespace nmtools::meta
           typename buffer_t
         , typename shape_buffer_t
         , template <typename...>typename stride_buffer_t
-        , template <typename...>typename offset_compute_t>
+        , template <typename...>typename offset_compute_t
+        , template <auto...>typename resolver_t>
     struct is_index_array<
-        object_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t>
+        object_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t,resolver_t>
     >
     {
         static constexpr auto value = [](){
@@ -986,11 +1003,12 @@ namespace nmtools::meta
           typename buffer_t
         , typename shape_buffer_t
         , template <typename...>typename stride_buffer_t
-        , template <typename...>typename offset_compute_t>
+        , template <typename...>typename offset_compute_t
+        , template <auto...>typename resolver_t>
     struct contiguous_axis<
-        object_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t>
+        object_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t,resolver_t>
     > {
-        using array_type  = object_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t>;
+        using array_type  = object_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t,resolver_t>;
         using offset_type = typename array_type::offset_type;
         static constexpr auto value = [](){
             if constexpr (is_row_major_offset_v<offset_type>) {
@@ -1005,3 +1023,33 @@ namespace nmtools::meta
 } // namespace nmtools::meta
 
 #endif // NMTOOLS_NDARRAY_ARRAY_HPP
+
+#ifndef NMTOOLS_NDARRAY_ARRAY_ARRAY_HPP
+#define NMTOOLS_NDARRAY_ARRAY_ARRAY_HPP
+
+#include "nmtools/array/arange.hpp"
+
+namespace nmtools
+{
+    struct array_t
+    {
+        static constexpr auto resolver = meta::as_value_v<object_eval_resolver_t<LayoutKind::RowMajor>>;
+
+        template <typename...args_t>
+        static constexpr auto arange(args_t&&...args)
+        {
+            return nmtools::arange(nmtools::forward<args_t>(args)...,None,None,resolver);
+        }
+
+        template <typename array_t>
+        constexpr auto operator()(const array_t& array) const
+        {
+            auto dst = nmtools::copy(unwrap(array),None,None,resolver);
+            return dst;
+        }
+    };
+
+    constexpr inline auto array = array_t {};
+}
+
+#endif // NMTOOLS_NDARRAY_ARRAY_ARRAY_HPP
