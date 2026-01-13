@@ -244,7 +244,7 @@ int main(int argc, char** argv)
 ```sh
 # adjust the path as necessary
 export NMTOOLS_INCLUDE_PATH=${HOME}/projects/nmtools/include
-g++ -I$NMTOOLS_INCLUDE_DIR array.cpp
+g++ -I$NMTOOLS_INCLUDE_PATH array.cpp
 ```
 Then you run it:
 ```sh
