@@ -5,6 +5,8 @@
 #include "nmtools/ndarray/ndarray.hpp"
 #include "nmtools/core/alias.hpp"
 #include "nmtools/core/reshape.hpp"
+#include "nmtools/core/slice.hpp"
+#include "nmtools/core/mutable_slice.hpp"
 #include "nmtools/core/eval.hpp"
 #include "nmtools/array/ufuncs/add.hpp"
 #include "nmtools/array/ufuncs/amax.hpp"
@@ -556,6 +558,36 @@ namespace nmtools
         {
             return this->less_equal(other);
         }
+
+        template <typename...slices_t>
+        constexpr auto slice(slices_t...slices) const
+        {
+            auto v = view::slice(*this,slices...);
+            auto result = nmtools::eval(v,None,None,as_value_v<resolver_type>);
+            return nmtools::unwrap(result);
+        }
+
+        template <typename...slices_t>
+        constexpr auto slice(slices_t...slices)
+        {
+            auto v = view::mutable_slice(*this,slices...);
+            return v;
+        }
+
+        // probably mixed with indexing
+        // TODO: fix, support slice and indexing
+
+        // template <typename...slices_t>
+        // constexpr auto operator()(slices_t...slices) const
+        // {
+        //     return this->slice(slices...);
+        // }
+
+        // template <typename...slices_t>
+        // constexpr auto operator()(slices_t...slices)
+        // {
+        //     return this->slice(slices...);
+        // }
     }; // object_t
 
     #undef nmtools_ndarray_method
@@ -1029,10 +1061,22 @@ namespace nmtools::meta
 #define NMTOOLS_NDARRAY_ARRAY_ARRAY_HPP
 
 #include "nmtools/array/arange.hpp"
+#include "nmtools/array/random.hpp"
+#include "nmtools/array/eye.hpp"
+#include "nmtools/array/full_like.hpp"
+#include "nmtools/array/full.hpp"
+#include "nmtools/array/linspace.hpp"
+#include "nmtools/array/ones_like.hpp"
+#include "nmtools/array/ones.hpp"
+#include "nmtools/array/tri.hpp"
+#include "nmtools/array/tril.hpp"
+#include "nmtools/array/triu.hpp"
+#include "nmtools/array/zeros_like.hpp"
+#include "nmtools/array/zeros.hpp"
 
 namespace nmtools
 {
-    struct array_t
+    struct Array
     {
         static constexpr auto resolver = meta::as_value_v<object_eval_resolver_t<LayoutKind::RowMajor>>;
 
@@ -1040,6 +1084,78 @@ namespace nmtools
         static constexpr auto arange(args_t&&...args)
         {
             return nmtools::arange(nmtools::forward<args_t>(args)...,None,None,resolver);
+        }
+
+        template <typename...args_t>
+        static constexpr auto random(args_t&&...args)
+        {
+            return nmtools::random(nmtools::forward<args_t>(args)...,None,None,resolver);
+        }
+
+        template <typename...args_t>
+        static constexpr auto eye(args_t&&...args)
+        {
+            return nmtools::eye(nmtools::forward<args_t>(args)...,None,None,resolver);
+        }
+
+        template <typename...args_t>
+        static constexpr auto full_like(args_t&&...args)
+        {
+            return nmtools::full_like(nmtools::forward<args_t>(args)...,None,None,resolver);
+        }
+
+        template <typename...args_t>
+        static constexpr auto full(args_t&&...args)
+        {
+            return nmtools::full(nmtools::forward<args_t>(args)...,None,None,resolver);
+        }
+
+        template <typename...args_t>
+        static constexpr auto linspace(args_t&&...args)
+        {
+            return nmtools::linspace(nmtools::forward<args_t>(args)...,None,None,resolver);
+        }
+
+        template <typename...args_t>
+        static constexpr auto ones_like(args_t&&...args)
+        {
+            return nmtools::ones_like(nmtools::forward<args_t>(args)...,None,None,resolver);
+        }
+
+        template <typename...args_t>
+        static constexpr auto ones(args_t&&...args)
+        {
+            return nmtools::ones(nmtools::forward<args_t>(args)...,None,None,resolver);
+        }
+
+        template <typename...args_t>
+        static constexpr auto tri(args_t&&...args)
+        {
+            return nmtools::tri(nmtools::forward<args_t>(args)...,None,None,resolver);
+        }
+
+        template <typename...args_t>
+        static constexpr auto tril(args_t&&...args)
+        {
+            return nmtools::tril(nmtools::forward<args_t>(args)...,None,None,resolver);
+        }
+
+        template <typename...args_t>
+        static constexpr auto triu(args_t&&...args)
+        {
+            return nmtools::triu(nmtools::forward<args_t>(args)...,None,None,resolver);
+        }
+
+        template <typename...args_t>
+        static constexpr auto zeros_like(args_t&&...args)
+        {
+            return nmtools::zeros_like(nmtools::forward<args_t>(args)...,None,None,resolver);
+        }
+
+        template <typename...args_t>
+        static constexpr auto zeros(args_t&&...args)
+        {
+            return nmtools::zeros(nmtools::forward<args_t>(args)...,None,None,resolver);
         }
 
         template <typename array_t>
@@ -1050,7 +1166,7 @@ namespace nmtools
         }
     };
 
-    constexpr inline auto array = array_t {};
+    constexpr inline auto array = Array {};
 }
 
 #endif // NMTOOLS_NDARRAY_ARRAY_ARRAY_HPP
