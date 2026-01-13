@@ -221,7 +221,7 @@ int main(int argc, char** argv)
     auto a = nm::Array::random(array{2,3,2},dtype,gen);
     print(a);
 
-    // similar to x[1:,1:,...]
+    // similar to a[1:,1:2,...]
     auto sa = a.slice("1:"_ct,"1:2"_ct,"..."_ct);
     print(sa);
 
