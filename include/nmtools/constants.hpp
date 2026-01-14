@@ -2,6 +2,7 @@
 #define NMTOOLS_CONSTANTS_HPP
 
 #include "nmtools/meta.hpp"
+#include "nmtools/utility/tuple_cat.hpp"
 
 // TODO: rename this file to "literals.hpp", use constant.hpp only to define None, Ellipsis...
 
@@ -33,7 +34,33 @@ namespace nmtools::detail
 
     // for gcc extensions
     template <typename always_void,typename T, T...Ts>
-    struct ct_impl_t;
+    struct ct_impl_t
+    {
+        constexpr auto operator()() const
+        {
+            constexpr auto str = [&](){
+                auto str = utl::static_string(Ts...);
+                str.push_back('\0');
+                return str;
+            }();
+            if constexpr (str == "...") {
+                return Ellipsis;
+            } else {
+                constexpr auto splits = str.split(':');
+                constexpr auto N = splits.size();
+                return meta::template_reduce<N>([&](auto init, auto I){
+                    constexpr auto i = decltype(I)::value;
+                    constexpr auto split = splits.at(i);
+                    if constexpr (split.size() > 1) {
+                        constexpr auto v = utl::stoi(split);
+                        return utility::tuple_append(init,ct_v<v>);
+                    } else {
+                        return utility::tuple_append(init,None);
+                    }
+                }, nmtools_tuple{});
+            }
+        }
+    };
 
     // TODO: support val > 9
     template <char val>
@@ -128,6 +155,45 @@ namespace nmtools::detail
 
 namespace nmtools::literals
 {
+    template <typename chars_t>
+    constexpr auto ct_is_clipped_integer(const chars_t&)
+    {
+        return false;
+    }
+
+    template <typename string_t>
+    constexpr auto ct_is_slice(const string_t& str)
+    {
+        auto result = static_cast<bool>(str.size());
+        if (!result) {
+            return result;
+        }
+
+        auto splits = str.split(':');
+        return ((splits.size() == 2) || (splits.size() == 3)) && (str.count('[') == 0) && (str.count(']') == 0);
+    }
+
+    template <typename string_t>
+    constexpr auto ct_is_number(const string_t& str)
+    {
+        auto result = static_cast<bool>(str.size());
+        if (!result) {
+            return result;
+        }
+        nm_size_t i=0;
+        result = result && (((str[i] >= '0') && (str[i] <= '9')) || str[i] == '-');
+        for (i=1; result && i<str.size()-1; i++) {
+            result = result && (str[i] >= '0') && (str[i] <= '9');
+        }
+        return result;
+    }
+
+    template <typename string_t>
+    constexpr auto ct_is_ellipsis(const string_t& str)
+    {
+        return str == "...";
+    }
+
     /**
      * @brief define UDL for _ct
      * 

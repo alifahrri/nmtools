@@ -132,6 +132,11 @@ namespace nmtools::utl
             : base_type(other)
         {}
 
+        template <typename...Ts>
+        constexpr static_string_base(Ts...ts)
+            : base_type(ts...)
+        {}
+
         constexpr auto base() const
         {
             return static_cast<base_type>(*this);
@@ -289,7 +294,7 @@ namespace nmtools::utl
         }
 
         template <auto N>
-        constexpr auto find(const T (&other)[N])
+        constexpr auto find(const T (&other)[N]) const
         {
             auto result = npos;
 
@@ -312,6 +317,65 @@ namespace nmtools::utl
 
             return result;
         }
+
+        template <auto N>
+        constexpr auto rfind(const T (&other)[N]) const
+        {
+            auto result = npos;
+
+            auto idx = 0;
+            T to_find = other[idx++];
+            for (nm_index_t i=this->size()-1; i>=0; i--) {
+                auto chr = this->at(i);
+                if ((chr == to_find) && (result == npos)) {
+                    result = i;
+                    to_find = other[idx++];
+                } else if (chr == to_find) {
+                    to_find = other[idx++];
+                } else {
+                    result = npos;
+                }
+                if (idx == N) {
+                    break;
+                }
+            }
+
+            return result;
+        }
+
+        constexpr auto count(const T to_find) const
+        {
+            auto c = 0;
+            for (nm_size_t i=0; i<this->size(); i++) {
+                auto chr = this->at(i);
+                if (chr == to_find) {
+                    c++;
+                }
+            }
+            return c;
+        }
+
+        constexpr auto split(const T separator) const
+        {
+            using result_t = static_vector<static_string_base,Capacity>;
+
+            auto result = result_t {};
+
+            auto r_idx = 0;
+            result.push_back(static_string_base{});
+            for (nm_size_t i=0; i<this->size(); i++) {
+                auto chr = this->at(i);
+                if (chr == separator) {
+                    result[r_idx].push_back('\0');
+                    result.push_back(static_string_base{});
+                    r_idx++;
+                    continue;
+                }
+                result[r_idx].push_back(chr);
+            }
+
+            return result;
+        }
     };
 
     using static_string = static_string_base<>;
@@ -322,9 +386,14 @@ namespace nmtools::utl
         // quick hack
         // size may include '\0'
         nm_index_t result = {};
+        auto sign = 1;
         if (str.size() > 1) {
             // TODO: fully implement stoi
             auto s = str[0];
+            if (s == '-') {
+                sign = -1;
+                s = str[1];
+            }
             if (!(s >= '0' && s <= '9')) {
                 nmtools_panic( false
                     , "invalid string for stoi" );
@@ -334,7 +403,7 @@ namespace nmtools::utl
             nmtools_panic( false
                 , "invalid string for stoi" );
         }
-        return result;
+        return result * sign;
     }
 
     template <typename T=static_string_base<NMTOOLS_DEFAULT_STATIC_STRING_MAX_SIZE,char>>

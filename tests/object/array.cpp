@@ -1,6 +1,8 @@
 #include "nmtools/ndarray/array.hpp"
 #include "nmtools/testing/doctest.hpp"
 
+namespace nm = nmtools;
+
 TEST_CASE("array(case1)" * doctest::test_suite("object"))
 {
     auto buffer = nmtools_array{1,2,3,4,5};
@@ -480,3 +482,154 @@ TEST_CASE("array(case27)" * doctest::test_suite("object"))
     NMTOOLS_ASSERT_EQUAL( result, expect );
 }
 #endif
+
+TEST_CASE("array.eye" * doctest::test_suite("object"))
+{
+    auto N = 3;
+    auto M = 3;
+    auto k = 0;
+    auto dtype = nm::float32;
+    auto result = nm::array.eye(N,M,k,dtype);
+    auto expect = nm::eye(N,M,k,dtype);
+    NMTOOLS_ASSERT_CLOSE( result, expect );
+}
+
+TEST_CASE("array.full_like" * doctest::test_suite("object"))
+{
+    float a[2][3][2] = {
+        {
+            {0.,1.},
+            {2.,3.},
+            {4.,5.},
+        },
+        {
+            { 6., 7.},
+            { 8., 9.},
+            {10.,11.},
+        }
+    };
+    int fill_value = 9;
+    auto result = nm::array.full_like(a,fill_value,nm::None);
+    auto expect = nm::full_like(a,fill_value,nm::None);
+    NMTOOLS_ASSERT_CLOSE( result, expect );
+}
+
+TEST_CASE("array.full" * doctest::test_suite("object"))
+{
+    int shape[3] = {2,3,2};
+    float fill_value = 3.14;
+    auto result = nm::array.full(shape,fill_value);
+    auto expect = nm::full(shape,fill_value);
+    NMTOOLS_ASSERT_CLOSE( result, expect );
+}
+
+TEST_CASE("array.linspace" * doctest::test_suite("object"))
+{
+    int start = 0;
+    int stop  = 5;
+    int num   = 10;
+    auto endpoint = nm::False;   
+    auto retstep  = nm::False;
+    auto dtype    = nm::None;
+
+    auto result = nm::array.linspace(start,stop,num,endpoint,retstep,dtype);
+    auto expect = nm::linspace(start,stop,num,endpoint);
+
+    NMTOOLS_ASSERT_CLOSE( result, expect );
+}
+
+TEST_CASE("array.ones_like" * doctest::test_suite("object"))
+{
+    float a[2][3][2] = {
+        {
+            {0.,1.},
+            {2.,3.},
+            {4.,5.},
+        },
+        {
+            { 6., 7.},
+            { 8., 9.},
+            {10.,11.},
+        }
+    };
+    auto result = nm::array.ones_like(a,nm::None);
+    auto expect = nm::ones_like(a,nm::None);
+    NMTOOLS_ASSERT_CLOSE( result, expect );
+}
+
+TEST_CASE("array.ones" * doctest::test_suite("object"))
+{
+    int shape[3] = {2,3,2};
+    auto dtype  = nm::float32;
+    auto result = nm::array.ones(shape,dtype);
+    auto expect = nm::ones(shape,dtype);
+    NMTOOLS_ASSERT_CLOSE( result, expect );
+}
+
+TEST_CASE("array.tri" * doctest::test_suite("object"))
+{
+    int N = 3;
+    int M = 4;
+    int k = 1;
+    auto dtype  = nm::int8;
+    auto result = nm::array.tri(N,M,k,dtype);
+    auto expect = nm::tri(N,M,k,dtype);
+    NMTOOLS_ASSERT_CLOSE( result, expect );
+}
+
+TEST_CASE("array.tri" * doctest::test_suite("object"))
+{
+    int N = 3;
+    int M = 4;
+    int k = 1;
+    auto dtype  = nm::int8;
+    auto result = nm::Array::tri(N,M,k,dtype);
+    auto expect = nm::tri(N,M,k,dtype);
+    NMTOOLS_ASSERT_CLOSE( result, expect );
+}
+
+TEST_CASE("array.tril" * doctest::test_suite("object"))
+{
+    int a[6] = {1,2,3,4,5,6};
+    int k = -2;
+    auto result = nm::array.tril(a,k);
+    auto expect = nm::tril(a,k);
+    NMTOOLS_ASSERT_CLOSE( result, expect );
+}
+
+TEST_CASE("array.triu" * doctest::test_suite("object"))
+{
+    int a[6] = {1,2,3,4,5,6};
+    int k = 3;
+    auto result = nm::array.triu(a,k);
+    auto expect = nm::triu(a,k);
+    NMTOOLS_ASSERT_CLOSE( result, expect );
+}
+
+TEST_CASE("array.zeros_like" * doctest::test_suite("object"))
+{
+    float a[2][3][2] = {
+        {
+            {0.,1.},
+            {2.,3.},
+            {4.,5.},
+        },
+        {
+            { 6., 7.},
+            { 8., 9.},
+            {10.,11.},
+        }
+    };
+    auto result = nm::array.zeros_like(a,nm::None);
+    auto expect = nm::zeros_like(a,nm::None);
+    NMTOOLS_ASSERT_CLOSE( result, expect );
+}
+
+TEST_CASE("array.zeros" * doctest::test_suite("object"))
+{
+    int shape[3] = {2,3,2};
+    auto dtype  = nm::float32;
+    auto result = nm::array.zeros(shape,dtype);
+    auto expect = nm::zeros(shape,dtype);
+    NMTOOLS_ASSERT_CLOSE( result, expect );
+}

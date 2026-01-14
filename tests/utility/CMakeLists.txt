@@ -36,6 +36,7 @@ add_executable(${PROJECT_NAME}-doctest tests.cpp
     src/isequal.cpp
     src/isclose.cpp
     src/to_string.cpp
+    src/ct.cpp
 )
 add_test(
     NAME ${PROJECT_NAME}-doctest

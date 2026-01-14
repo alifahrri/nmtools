@@ -11,6 +11,17 @@ A generic, composable multidimensional array library.
 
 The projects is still work in progress, expect missing docs, features, and benchmarks.
 
+- [nmtools](#nmtools)
+  - [What is nmtools?](#what-is-nmtools)
+    - [Array Library](#array-library)
+    - [Computational Graph](#computational-graph)
+    - [Tilekit](#tilekit)
+    - [GPU Support](#gpu-support)
+    - [Other features](#other-features)
+  - [Requirement](#requirement)
+  - [Getting Started](#getting-started)
+  - [Other Examples](#other-examples)
+
 ## What is nmtools?
 
 - Array computation library
@@ -113,7 +124,6 @@ auto vector_add(context_t& ctx, out_t& out, const a_t& a, const b_t& b)
     // auto ctx  = nm::cuda::default_context();
     // auto ctx  = nm::sycl::default_context();
     auto ctx  = nm::hip::default_context();
-    auto axis = 1;
     auto gpu_res = nm::tanh(input,ctx);
     auto cpu_res = nm::tanh(input);
 ```
@@ -161,12 +171,114 @@ Sample output:
 isclose: true
 ```
 
+### Other features
+
+- Compile-time shape inference
+- `constexpr` compile-time evaluation
+- CUDA, HIP, SYCL support
+- Support for zero dynamic allocation
+- Bare-metal Microcontrollers
+
 ## Requirement
 - C++17 (full language features)
 
 Supported compilers:
 - gcc 9+
 - clang 10+
+
+## Getting Started
+
+Clone the repository somewhere:
+```
+git clone https://github.com/alifahrri/nmtools.git
+```
+Write some code:
+```C++
+// file array.cpp
+#include "nmtools/nmtools.hpp"
+#include "nmtools/ndarray.hpp"
+
+namespace nm = nmtools;
+namespace utils = nmtools::utils;
+
+using namespace nm::literals;
+using nmtools_array;
+using nmtools_tuple;
+
+template <typename array_t>
+auto print(const array_t& x)
+{
+    std::cout << "shape: " << utils::to_string(nm::shape(x))
+        << std::endl
+        << utils::to_string(x)
+        << std::endl;
+}
+
+int main(int argc, char** argv)
+{
+    auto gen = nm::random_engine();
+    auto dtype = nm::float32;
+    auto a = nm::Array::random(array{2,3,2},dtype,gen);
+    print(a);
+
+    // similar to a[1:,1:2,...]
+    auto sa = a.slice("1:"_ct,"1:2"_ct,"..."_ct);
+    print(sa);
+
+    std::cout << "a:\n";
+    a.slice("1:"_ct,"1:2"_ct,"..."_ct) = nm::ones(array{1,1,2});
+    print(a);
+
+    std::cout << "b:\n";
+    auto b = nm::Array::arange(2,dtype);
+    print(b);
+
+    std::cout << "c=dot(a,b):\n";
+    auto c = nm::dot(a,b);
+    print(c);
+
+    return 0;
+}
+```
+`nmtools` is a header only library, it can be used by simply informing the include path to the compiler. Then compile it.
+```sh
+# adjust the path as necessary
+export NMTOOLS_INCLUDE_PATH=${HOME}/projects/nmtools/include
+g++ -I$NMTOOLS_INCLUDE_PATH array.cpp
+```
+Then you run it:
+```sh
+./a.out
+```
+sample result:
+```
+shape: [        2,      3,      2]
+[[[     0.846539,       0.547375],
+[       0.150028,       0.481849],
+[       0.761298,       0.949123]],
+
+[[      0.382625,       0.582128],
+[       0.845037,       0.914821],
+[       0.660163,       0.464962]]]
+shape: [        1,      1,      2]
+[[[     0.845037,       0.914821]]]
+a:
+shape: [        2,      3,      2]
+[[[     0.846539,       0.547375],
+[       0.150028,       0.481849],
+[       0.761298,       0.949123]],
+
+[[      0.382625,       0.582128],
+[       1.000000,       1.000000],
+[       0.660163,       0.464962]]]
+b:
+shape: [        2]
+[       0.000000,       1.000000]
+c=dot(a,b):
+shape: [        2,      3]
+[[      0.547375,       0.481849,       0.949123],
+[       0.582128,       1.000000,       0.464962]]
+```
 
 ## Other Examples
 - [cmake examples](examples/nmtools/array/README.md)

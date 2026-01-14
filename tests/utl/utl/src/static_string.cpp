@@ -149,6 +149,37 @@ TEST_CASE("static_string" * doctest::test_suite("utl"))
         }
         #endif
     }
+    {
+        utl::static_string str("1:-1:");
+        {
+            auto pos = str.find(":");
+            NMTOOLS_ASSERT_EQUAL( pos, 1 );
+        }
+        {
+            auto pos = str.rfind(":");
+            NMTOOLS_ASSERT_EQUAL( pos, 4 );
+        }
+        {
+            auto count = str.count(':');
+            NMTOOLS_ASSERT_EQUAL( count, 2 );
+        }
+        {
+            auto splits = str.split(':');
+            NMTOOLS_ASSERT_EQUAL( splits.size(), 3 );
+            {
+                auto isequal = splits[0] == "1";
+                CHECK( isequal );
+            }
+            {
+                auto isequal = splits[1] == "-1";
+                CHECK( isequal );
+            }
+            {
+                auto isequal = splits[2] == "";
+                CHECK( isequal );
+            }
+        }
+    }
 }
 
 TEST_CASE("constexpr_static_string" * doctest::test_suite("utl"))
