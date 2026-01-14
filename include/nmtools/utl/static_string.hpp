@@ -325,7 +325,7 @@ namespace nmtools::utl
 
             auto idx = 0;
             T to_find = other[idx++];
-            for (nm_size_t i=this->size()-1; i>=0; i--) {
+            for (nm_index_t i=this->size()-1; i>=0; i--) {
                 auto chr = this->at(i);
                 if ((chr == to_find) && (result == npos)) {
                     result = i;
