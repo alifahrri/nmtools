@@ -131,7 +131,7 @@ namespace nmtools::meta
 
         static constexpr auto value = [](){
             constexpr auto shape = to_value_v<shape_type>;
-            if constexpr (!is_fail_v<decltype(shape)>) {
+            if constexpr (is_constant_index_array_v<decltype(shape)>) {
                 return index::product(shape);
             } else {
                 return error::BOUNDED_SIZE_UNSUPPORTED<view_type>{};
