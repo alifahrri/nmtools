@@ -92,4 +92,76 @@ namespace nmtools::tilekit
     }
 }
 
+// tilekit utility
+
+namespace nmtools::tilekit
+{
+    template <typename block_shape_t>
+    constexpr auto product(const block_shape_t& b_shape)
+    {
+        return nmtools::index::product(b_shape);
+    }
+
+    template <typename context_t>
+    constexpr auto tile_id(context_t&)
+    {
+        // TODO: implement
+        return nmtools_tuple{0};
+    }
+
+    template <typename block_shape_t, typename tile_shape_t>
+    struct ndoffset_t
+    {
+        using block_shape_type  = block_shape_t;
+        using block_stride_type = meta::resolve_optype_t<index::compute_strides_t,block_shape_type>;
+        using tile_shape_type   = tile_shape_t;
+        using size_type = nm_size_t;
+
+        block_shape_type  block_shape_;
+        block_stride_type block_stride_;
+        tile_shape_type   tile_shape_;
+
+        size_type size_;
+
+        constexpr ndoffset_t(const block_shape_t& block_shape
+            , const tile_shape_t& tile_shape)
+            : block_shape_(block_shape)
+            , block_stride_(index::compute_strides(block_shape_))
+            , tile_shape_(tile_shape)
+            , size_(index::product(block_shape_))
+        {}
+
+        constexpr auto size() const noexcept
+        {
+            return size_;
+        }
+
+        constexpr auto operator[](nm_size_t i) const
+        {
+            auto indices = index::compute_indices(i,block_shape_,block_stride_);
+            // assume fixed dim
+            constexpr auto DIM = len_v<decltype(indices)>;
+            meta::template_for<DIM>([&](auto i){
+                constexpr auto I = decltype(i)::value;
+                nmtools::get<I>(indices) *= nmtools::get<I>(tile_shape_);
+            });
+            return indices;
+        }
+    };
+
+    template <typename array_shape_t, typename tile_shape_t>
+    constexpr auto ndoffset([[maybe_unused]] const array_shape_t& a_shape
+        , [[maybe_unused]] const tile_shape_t& t_shape)
+    {
+        constexpr auto DIM = len_v<array_shape_t>;
+        auto b_shape = template_reduce<DIM>([&](auto init, auto i){
+            constexpr auto I = decltype(i)::value;
+            auto a_dim = nmtools::get<I>(a_shape);
+            auto t_dim = nmtools::get<I>(t_shape);
+            return utility::tuple_append(init,a_dim/t_dim);
+        }, nmtools_tuple{});
+        return ndoffset_t(b_shape,t_shape);
+    }
+}
+
 #endif // NMTOOLS_TILEKIT_TILEKIT_HPP

@@ -30,18 +30,24 @@ namespace nmtools::tilekit::vector
     {
         // TODO: assert size/shape buffer and shape is known at compile-time
         using base_type = nmtools::object_t<buffer_t,shape_buffer_t,resolve_stride_type_t,row_major_offset_t,resolver_t>;
+        using value_type = typename base_type::value_type;
 
         static constexpr auto n_bytes = bit_width / 8;
-        using vector_type = typename make_vector<typename base_type::value_type, n_bytes>::type;
+        using vector_type = typename make_vector<value_type, n_bytes>::type;
+
+        static constexpr auto n_iter = (fixed_size_v<base_type> * sizeof(value_type)) / n_bytes;
 
         template <typename rhs_t>
         constexpr auto add(const rhs_t& rhs) const
         {
             // assume same shape & type
+            // TODO: assert same shape & size
             auto result = object_t{};
 
             using vector_t = vector_type;
-            *((vector_t*)result.data()) = *((vector_t*)this->data()) + *((vector_t*)rhs.data());
+            for (nm_size_t i=0; i<n_iter; i++) {
+                *((vector_t*)result.data()+i) = *((vector_t*)this->data()+i) + *((vector_t*)rhs.data()+i);
+            }
 
             return result;
         }
@@ -57,10 +63,13 @@ namespace nmtools::tilekit::vector
         constexpr auto subtract(const rhs_t& rhs) const
         {
             // assume same shape & type
+            // TODO: assert same shape & size
             auto result = object_t{};
 
             using vector_t = vector_type;
-            *((vector_t*)result.data()) = *((vector_t*)this->data()) - *((vector_t*)rhs.data());
+            for (nm_size_t i=0; i<n_iter; i++) {
+                *((vector_t*)result.data()+i) = *((vector_t*)this->data()+i) - *((vector_t*)rhs.data()+i);
+            }
 
             return result;
         }
@@ -76,10 +85,13 @@ namespace nmtools::tilekit::vector
         constexpr auto multiply(const rhs_t& rhs) const
         {
             // assume same shape & type
+            // TODO: assert same shape & size
             auto result = object_t{};
 
             using vector_t = vector_type;
-            *((vector_t*)result.data()) = *((vector_t*)this->data()) * *((vector_t*)rhs.data());
+            for (nm_size_t i=0; i<n_iter; i++) {
+                *((vector_t*)result.data()+i) = *((vector_t*)this->data()+i) * *((vector_t*)rhs.data()+i);
+            }
 
             return result;
         }
@@ -95,10 +107,13 @@ namespace nmtools::tilekit::vector
         constexpr auto divide(const rhs_t& rhs) const
         {
             // assume same shape & type
+            // TODO: assert same shape & size
             auto result = object_t{};
 
             using vector_t = vector_type;
-            *((vector_t*)result.data()) = *((vector_t*)this->data()) - *((vector_t*)rhs.data());
+            for (nm_size_t i=0; i<n_iter; i++) {
+                *((vector_t*)result.data()+i) = *((vector_t*)this->data()+i) / *((vector_t*)rhs.data()+i);
+            }
 
             return result;
         }
@@ -110,6 +125,8 @@ namespace nmtools::tilekit::vector
             return result;
         }
     };
+
+    // TODO: rename offset to indices
 
     template <auto bit_width=128, typename array_t, typename offset_t, typename shape_t, typename axis_t=none_t>
     constexpr auto load(const array_t& array, const offset_t& offset, const shape_t&, [[maybe_unused]] const axis_t& axis=axis_t{})
@@ -124,9 +141,17 @@ namespace nmtools::tilekit::vector
 
         auto result = result_t{};
 
-        // TODO: fill all buffer of result
-        auto [off0] = offset;
-        *((vector_t*)result.data()) = *((vector_t*)&(array.data()[off0]));
+        constexpr auto strides = index::compute_strides(shape_t{});
+        constexpr auto DIM = len_v<offset_t>;
+        auto src_shape   = shape(array);
+        auto src_strides = index::compute_strides(src_shape);
+        auto off = index::compute_offset(offset,src_strides);
+        template_for<DIM>([&](auto i){
+            constexpr auto I = decltype(i)::value;
+            constexpr auto tile_stride_i = nmtools::get<I>(strides);
+            auto src_stride_i = at(src_strides,ct_v<DIM-I-1>);
+            *((vector_t*)result.data()+(i*tile_stride_i)) = *((vector_t*)&(array.data()[off+(i*src_stride_i)]));
+        });
 
         return result;
     }
@@ -139,13 +164,21 @@ namespace nmtools::tilekit::vector
 
         constexpr auto DIM = meta::len_v<offset_t>;
         static_assert( DIM > 0 );
-        static_assert( meta::is_tuple_v<offset_t> );
 
         using vector_t = typename result_t::vector_type;
 
-        // TODO: fill all output buffer
-        auto [off0] = offset;
-        *(vector_t*)&output.data()[off0] = *((vector_t*)result.data());
+        constexpr auto shape = fixed_shape_v<result_t>;
+        constexpr auto strides = index::compute_strides(shape);
+        // constexpr auto DIM = len(strides);
+        auto dst_shape = nmtools::shape(output);
+        auto dst_strides = index::compute_strides(dst_shape);
+        auto off = index::compute_offset(offset,dst_strides);
+        template_for<DIM>([&](auto i){
+            constexpr auto I = decltype(i)::value;
+            constexpr auto tile_stride_i = nmtools::get<I>(strides);
+            auto dst_stride_i = at(dst_strides,ct_v<DIM-I-1>);
+            *((vector_t*)&(output.data()[off+(i*dst_stride_i)])) = *((vector_t*)result.data()+(i*tile_stride_i));
+        });
     }
 
     // context
@@ -162,21 +195,13 @@ namespace nmtools::tilekit
     template <typename array_t, typename offset_t, typename shape_t, typename axis_t=none_t>
     constexpr auto load(vector::context_t, const array_t& array, const offset_t& offset, const shape_t& shape, const axis_t& axis=axis_t{})
     {
-        // TODO: support multi dimensional
-        auto [dim0]    = shape;
-        auto [offset0] = offset;
-        auto m_offset  = nmtools_tuple{dim0 * offset0};
-        return vector::load(array,m_offset,shape,axis);
+        return vector::load(array,offset,shape,axis);
     }
 
     template <typename output_t, typename offset_t, typename result_t, typename axis_t=none_t>
     constexpr auto store(vector::context_t, output_t& output, const offset_t& offset, const result_t& result, [[maybe_unused]] const axis_t& axis=axis_t{})
     {
-        // TODO: support multi dimensional
-        auto [dim0]    = fixed_shape_v<result_t>;
-        auto [offset0] = offset;
-        auto m_offset  = nmtools_tuple{dim0 * offset0};
-        return vector::store(output,m_offset,result,axis);
+        return vector::store(output,offset,result,axis);
     }
 }
 
