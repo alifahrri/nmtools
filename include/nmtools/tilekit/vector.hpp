@@ -126,31 +126,55 @@ namespace nmtools::tilekit::vector
         }
     };
 
+    template <typename bit_width_t, typename T, typename flat_index_t, typename tile_ndoffset_t, typename tile_shape_t, typename src_shape_t, typename src_strides_t>
+    constexpr auto compute_load_offset(dtype_t<T>, bit_width_t, flat_index_t flat_index, const tile_ndoffset_t& tile_ndoffset, const tile_shape_t, const src_shape_t& src_shape, const src_strides_t& src_strides)
+    {
+        constexpr auto BIT_WIDTH = bit_width_t::value;
+        constexpr auto NUMEL = BIT_WIDTH / (sizeof(T) * 8 /*bit*/);
+        auto offset = index::compute_offset(tile_ndoffset,src_strides);
+
+        // TODO: generalize to ND
+        constexpr auto last_tile = at(tile_shape_t{},ct_v<-1>);
+        auto last_dim = at(src_shape,ct_v<-1>) - last_tile;
+
+        auto result = (flat_index * NUMEL) + ((flat_index / (last_tile / NUMEL)) * last_dim) + offset;
+        return result;
+    }
+    
+    template <typename bit_width_t, typename T, typename flat_index_t, typename tile_ndoffset_t, typename tile_shape_t, typename src_shape_t>
+    constexpr auto compute_load_offset(dtype_t<T> dtype, bit_width_t bit_width, flat_index_t flat_index, const tile_ndoffset_t& tile_ndoffset, const tile_shape_t tile_shape, const src_shape_t& src_shape)
+    {
+        auto src_strides = index::compute_strides(src_shape);
+        return compute_load_offset(dtype,bit_width,flat_index,tile_ndoffset,tile_shape,src_shape,src_strides);
+    }
+
+    
+
     // TODO: rename offset to indices
 
-    template <auto bit_width=128, typename array_t, typename offset_t, typename shape_t, typename axis_t=none_t>
-    constexpr auto load(const array_t& array, const offset_t& offset, const shape_t&, [[maybe_unused]] const axis_t& axis=axis_t{})
+    template <auto bit_width=128, typename array_t, typename offset_t, typename tile_shape_t, typename axis_t=none_t>
+    constexpr auto load(const array_t& array, const offset_t& offset, const tile_shape_t& tile_shape, [[maybe_unused]] const axis_t& axis=axis_t{})
     {
         using element_t = meta::get_element_type_t<array_t>;
 
-        constexpr auto numel = index::product(to_value_v<shape_t>);
-        using buffer_t = nmtools_array<element_t,numel>;
-        using shape_buffer_t = shape_t;
+        constexpr auto SIZE = index::product(to_value_v<tile_shape_t>);
+        using buffer_t = nmtools_array<element_t,SIZE>;
+        using shape_buffer_t = tile_shape_t;
         using result_t = object_t<buffer_t,shape_buffer_t,bit_width>;
         using vector_t = typename result_t::vector_type;
 
         auto result = result_t{};
 
-        constexpr auto strides = index::compute_strides(shape_t{});
-        constexpr auto DIM = len_v<offset_t>;
         auto src_shape   = shape(array);
         auto src_strides = index::compute_strides(src_shape);
-        auto off = index::compute_offset(offset,src_strides);
-        template_for<DIM>([&](auto i){
+
+        constexpr auto NUM_LANE = bit_width / (sizeof(element_t) * 8 /*bit*/);
+        constexpr auto NUM_LOAD = SIZE / NUM_LANE;
+
+        template_for<NUM_LOAD>([&](auto i){
             constexpr auto I = decltype(i)::value;
-            constexpr auto tile_stride_i = nmtools::get<I>(strides);
-            auto src_stride_i = at(src_strides,ct_v<DIM-I-1>);
-            *((vector_t*)result.data()+(i*tile_stride_i)) = *((vector_t*)&(array.data()[off+(i*src_stride_i)]));
+            auto src_offset  = compute_load_offset(dtype_t<element_t>{},ct_v<bit_width>,i,offset,tile_shape,src_shape,src_strides);
+            *((vector_t*)result.data()+I) = *((vector_t*)&array.data()[src_offset]);
         });
 
         return result;
@@ -167,17 +191,21 @@ namespace nmtools::tilekit::vector
 
         using vector_t = typename result_t::vector_type;
 
-        constexpr auto shape = fixed_shape_v<result_t>;
-        constexpr auto strides = index::compute_strides(shape);
-        // constexpr auto DIM = len(strides);
-        auto dst_shape = nmtools::shape(output);
-        auto dst_strides = index::compute_strides(dst_shape);
-        auto off = index::compute_offset(offset,dst_strides);
-        template_for<DIM>([&](auto i){
+        constexpr auto tile_shape = fixed_shape_v<result_t>;
+        using element_t = get_element_type_t<result_t>;
+        constexpr auto SIZE = index::product(tile_shape);
+        constexpr auto NUM_LANE = bit_width / (sizeof(element_t) * 8 /*bit*/);
+        constexpr auto NUM_LOAD = SIZE / NUM_LANE;
+
+        auto output_shape   = shape(output);
+        auto output_strides = index::compute_strides(output_shape);
+
+        auto dtype = dtype_t<element_t>{};
+        auto BIT_WIDTH = ct_v<bit_width>;
+        template_for<NUM_LOAD>([&](auto i){
             constexpr auto I = decltype(i)::value;
-            constexpr auto tile_stride_i = nmtools::get<I>(strides);
-            auto dst_stride_i = at(dst_strides,ct_v<DIM-I-1>);
-            *((vector_t*)&(output.data()[off+(i*dst_stride_i)])) = *((vector_t*)result.data()+(i*tile_stride_i));
+            auto src_offset  = compute_load_offset(dtype,BIT_WIDTH,i,offset,tile_shape,output_shape,output_strides);
+            *((vector_t*)&output.data()[src_offset]) = *((vector_t*)result.data()+I);
         });
     }
 
