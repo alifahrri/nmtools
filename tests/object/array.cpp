@@ -2,6 +2,7 @@
 #include "nmtools/testing/doctest.hpp"
 
 namespace nm = nmtools;
+using namespace nmtools::literals;
 
 TEST_CASE("array(case1)" * doctest::test_suite("object"))
 {
@@ -560,6 +561,15 @@ TEST_CASE("array.ones_like" * doctest::test_suite("object"))
 TEST_CASE("array.ones" * doctest::test_suite("object"))
 {
     int shape[3] = {2,3,2};
+    auto dtype  = nm::float32;
+    auto result = nm::array.ones(shape,dtype);
+    auto expect = nm::ones(shape,dtype);
+    NMTOOLS_ASSERT_CLOSE( result, expect );
+}
+
+TEST_CASE("array.ones" * doctest::test_suite("object"))
+{
+    auto shape = nmtools_tuple{2,3,2_ct};
     auto dtype  = nm::float32;
     auto result = nm::array.ones(shape,dtype);
     auto expect = nm::ones(shape,dtype);
