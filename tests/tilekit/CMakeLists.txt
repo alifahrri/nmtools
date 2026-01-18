@@ -50,6 +50,12 @@ add_executable(${PROJECT_NAME}-doctest tests.cpp
     src/vector_divide.cpp
     src/vector_subtraction.cpp
     src/copy.cpp
+    src/tilekit.cpp
+    src/vector.cpp
+    src/add.cpp
+    src/multiply.cpp
+    src/subtract.cpp
+    src/divide.cpp
 )
 add_test(
     NAME ${PROJECT_NAME}-doctest

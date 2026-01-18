@@ -30,18 +30,24 @@ namespace nmtools::tilekit::vector
     {
         // TODO: assert size/shape buffer and shape is known at compile-time
         using base_type = nmtools::object_t<buffer_t,shape_buffer_t,resolve_stride_type_t,row_major_offset_t,resolver_t>;
+        using value_type = typename base_type::value_type;
 
         static constexpr auto n_bytes = bit_width / 8;
-        using vector_type = typename make_vector<typename base_type::value_type, n_bytes>::type;
+        using vector_type = typename make_vector<value_type, n_bytes>::type;
+
+        static constexpr auto n_iter = (fixed_size_v<base_type> * sizeof(value_type)) / n_bytes;
 
         template <typename rhs_t>
         constexpr auto add(const rhs_t& rhs) const
         {
             // assume same shape & type
+            // TODO: assert same shape & size
             auto result = object_t{};
 
             using vector_t = vector_type;
-            *((vector_t*)result.data()) = *((vector_t*)this->data()) + *((vector_t*)rhs.data());
+            for (nm_size_t i=0; i<n_iter; i++) {
+                *((vector_t*)result.data()+i) = *((vector_t*)this->data()+i) + *((vector_t*)rhs.data()+i);
+            }
 
             return result;
         }
@@ -57,10 +63,13 @@ namespace nmtools::tilekit::vector
         constexpr auto subtract(const rhs_t& rhs) const
         {
             // assume same shape & type
+            // TODO: assert same shape & size
             auto result = object_t{};
 
             using vector_t = vector_type;
-            *((vector_t*)result.data()) = *((vector_t*)this->data()) - *((vector_t*)rhs.data());
+            for (nm_size_t i=0; i<n_iter; i++) {
+                *((vector_t*)result.data()+i) = *((vector_t*)this->data()+i) - *((vector_t*)rhs.data()+i);
+            }
 
             return result;
         }
@@ -76,10 +85,13 @@ namespace nmtools::tilekit::vector
         constexpr auto multiply(const rhs_t& rhs) const
         {
             // assume same shape & type
+            // TODO: assert same shape & size
             auto result = object_t{};
 
             using vector_t = vector_type;
-            *((vector_t*)result.data()) = *((vector_t*)this->data()) * *((vector_t*)rhs.data());
+            for (nm_size_t i=0; i<n_iter; i++) {
+                *((vector_t*)result.data()+i) = *((vector_t*)this->data()+i) * *((vector_t*)rhs.data()+i);
+            }
 
             return result;
         }
@@ -95,10 +107,13 @@ namespace nmtools::tilekit::vector
         constexpr auto divide(const rhs_t& rhs) const
         {
             // assume same shape & type
+            // TODO: assert same shape & size
             auto result = object_t{};
 
             using vector_t = vector_type;
-            *((vector_t*)result.data()) = *((vector_t*)this->data()) - *((vector_t*)rhs.data());
+            for (nm_size_t i=0; i<n_iter; i++) {
+                *((vector_t*)result.data()+i) = *((vector_t*)this->data()+i) / *((vector_t*)rhs.data()+i);
+            }
 
             return result;
         }
@@ -111,22 +126,56 @@ namespace nmtools::tilekit::vector
         }
     };
 
-    template <auto bit_width=128, typename array_t, typename offset_t, typename shape_t, typename axis_t=none_t>
-    constexpr auto load(const array_t& array, const offset_t& offset, const shape_t&, [[maybe_unused]] const axis_t& axis=axis_t{})
+    template <typename bit_width_t, typename T, typename flat_index_t, typename tile_ndoffset_t, typename tile_shape_t, typename src_shape_t, typename src_strides_t>
+    constexpr auto compute_load_offset(dtype_t<T>, bit_width_t, flat_index_t flat_index, const tile_ndoffset_t& tile_ndoffset, const tile_shape_t, const src_shape_t& src_shape, const src_strides_t& src_strides)
+    {
+        constexpr auto BIT_WIDTH = bit_width_t::value;
+        constexpr auto NUMEL = BIT_WIDTH / (sizeof(T) * 8 /*bit*/);
+        auto offset = index::compute_offset(tile_ndoffset,src_strides);
+
+        // TODO: generalize to ND
+        constexpr auto last_tile = at(tile_shape_t{},ct_v<-1>);
+        auto last_dim = at(src_shape,ct_v<-1>) - last_tile;
+
+        auto result = (flat_index * NUMEL) + ((flat_index / (last_tile / NUMEL)) * last_dim) + offset;
+        return result;
+    }
+    
+    template <typename bit_width_t, typename T, typename flat_index_t, typename tile_ndoffset_t, typename tile_shape_t, typename src_shape_t>
+    constexpr auto compute_load_offset(dtype_t<T> dtype, bit_width_t bit_width, flat_index_t flat_index, const tile_ndoffset_t& tile_ndoffset, const tile_shape_t tile_shape, const src_shape_t& src_shape)
+    {
+        auto src_strides = index::compute_strides(src_shape);
+        return compute_load_offset(dtype,bit_width,flat_index,tile_ndoffset,tile_shape,src_shape,src_strides);
+    }
+
+    
+
+    // TODO: rename offset to indices
+
+    template <auto bit_width=128, typename array_t, typename offset_t, typename tile_shape_t, typename axis_t=none_t>
+    constexpr auto load(const array_t& array, const offset_t& offset, const tile_shape_t& tile_shape, [[maybe_unused]] const axis_t& axis=axis_t{})
     {
         using element_t = meta::get_element_type_t<array_t>;
 
-        constexpr auto numel = index::product(to_value_v<shape_t>);
-        using buffer_t = nmtools_array<element_t,numel>;
-        using shape_buffer_t = shape_t;
+        constexpr auto SIZE = index::product(to_value_v<tile_shape_t>);
+        using buffer_t = nmtools_array<element_t,SIZE>;
+        using shape_buffer_t = tile_shape_t;
         using result_t = object_t<buffer_t,shape_buffer_t,bit_width>;
         using vector_t = typename result_t::vector_type;
 
         auto result = result_t{};
 
-        // TODO: fill all buffer of result
-        auto [off0] = offset;
-        *((vector_t*)result.data()) = *((vector_t*)&(array.data()[off0]));
+        auto src_shape   = shape(array);
+        auto src_strides = index::compute_strides(src_shape);
+
+        constexpr auto NUM_LANE = bit_width / (sizeof(element_t) * 8 /*bit*/);
+        constexpr auto NUM_LOAD = SIZE / NUM_LANE;
+
+        template_for<NUM_LOAD>([&](auto i){
+            constexpr auto I = decltype(i)::value;
+            auto src_offset  = compute_load_offset(dtype_t<element_t>{},ct_v<bit_width>,i,offset,tile_shape,src_shape,src_strides);
+            *((vector_t*)result.data()+I) = *((vector_t*)&array.data()[src_offset]);
+        });
 
         return result;
     }
@@ -139,13 +188,25 @@ namespace nmtools::tilekit::vector
 
         constexpr auto DIM = meta::len_v<offset_t>;
         static_assert( DIM > 0 );
-        static_assert( meta::is_tuple_v<offset_t> );
 
         using vector_t = typename result_t::vector_type;
 
-        // TODO: fill all output buffer
-        auto [off0] = offset;
-        *(vector_t*)&output.data()[off0] = *((vector_t*)result.data());
+        constexpr auto tile_shape = fixed_shape_v<result_t>;
+        using element_t = get_element_type_t<result_t>;
+        constexpr auto SIZE = index::product(tile_shape);
+        constexpr auto NUM_LANE = bit_width / (sizeof(element_t) * 8 /*bit*/);
+        constexpr auto NUM_LOAD = SIZE / NUM_LANE;
+
+        auto output_shape   = shape(output);
+        auto output_strides = index::compute_strides(output_shape);
+
+        auto dtype = dtype_t<element_t>{};
+        auto BIT_WIDTH = ct_v<bit_width>;
+        template_for<NUM_LOAD>([&](auto i){
+            constexpr auto I = decltype(i)::value;
+            auto src_offset  = compute_load_offset(dtype,BIT_WIDTH,i,offset,tile_shape,output_shape,output_strides);
+            *((vector_t*)&output.data()[src_offset]) = *((vector_t*)result.data()+I);
+        });
     }
 
     // context
@@ -162,21 +223,13 @@ namespace nmtools::tilekit
     template <typename array_t, typename offset_t, typename shape_t, typename axis_t=none_t>
     constexpr auto load(vector::context_t, const array_t& array, const offset_t& offset, const shape_t& shape, const axis_t& axis=axis_t{})
     {
-        // TODO: support multi dimensional
-        auto [dim0]    = shape;
-        auto [offset0] = offset;
-        auto m_offset  = nmtools_tuple{dim0 * offset0};
-        return vector::load(array,m_offset,shape,axis);
+        return vector::load(array,offset,shape,axis);
     }
 
     template <typename output_t, typename offset_t, typename result_t, typename axis_t=none_t>
     constexpr auto store(vector::context_t, output_t& output, const offset_t& offset, const result_t& result, [[maybe_unused]] const axis_t& axis=axis_t{})
     {
-        // TODO: support multi dimensional
-        auto [dim0]    = fixed_shape_v<result_t>;
-        auto [offset0] = offset;
-        auto m_offset  = nmtools_tuple{dim0 * offset0};
-        return vector::store(output,m_offset,result,axis);
+        return vector::store(output,offset,result,axis);
     }
 }
 

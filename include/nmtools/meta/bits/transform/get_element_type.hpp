@@ -102,4 +102,9 @@ namespace nmtools::meta
     using get_element_type_t = typename get_element_type<T>::type;
 } // namespace nmtools::meta
 
+namespace nmtools
+{
+    using meta::get_element_type_t;
+}
+
 #endif // NMTOOLS_META_BITS_TRANSFORM_GET_ELEMENT_TYPE_HPP

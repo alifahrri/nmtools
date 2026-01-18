@@ -62,4 +62,9 @@ namespace nmtools::meta
     constexpr inline auto fixed_size_v = fixed_size<T>::value;
 } // namespace nmtools::meta
 
+namespace nmtools
+{
+    using meta::fixed_size_v;
+}
+
 #endif // NMTOOLS_META_BITS_ARRAY_FIXED_SIZE_HPP
