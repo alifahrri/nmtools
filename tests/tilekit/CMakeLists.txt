@@ -44,7 +44,9 @@ endif ()
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
-add_executable(${PROJECT_NAME}-doctest tests.cpp 
+option(NMTOOLS_TESTS_TILEKIT_ENABLE_TRACY "build tilekit tests with tracy profiling" OFF)
+
+set(NMTOOLS_TESTS_TILEKIT_SRCS
     src/vector_addition.cpp
     src/vector_multiply.cpp
     src/vector_divide.cpp
@@ -56,7 +58,22 @@ add_executable(${PROJECT_NAME}-doctest tests.cpp
     src/multiply.cpp
     src/subtract.cpp
     src/divide.cpp
+    src/thread_pool.cpp
 )
+if (NMTOOLS_TESTS_TILEKIT_ENABLE_TRACY)
+    add_executable(${PROJECT_NAME}-doctest tests.cpp 
+        ${NMTOOLS_TESTS_TILEKIT_SRCS}
+        /opt/tracy/public/TracyClient.cpp
+    )
+    target_compile_definitions(${PROJECT_NAME}-doctest PRIVATE -DTRACY_ENABLE -DNMTOOLS_TRACY_ENABLE)
+    ## TODO: configurable tracy directory
+    target_include_directories(${PROJECT_NAME}-doctest PRIVATE /opt/tracy/public/)
+else ()
+    add_executable(${PROJECT_NAME}-doctest tests.cpp 
+        ${NMTOOLS_TESTS_TILEKIT_SRCS}
+    )
+endif()
+
 add_test(
     NAME ${PROJECT_NAME}-doctest
     COMMAND ${PROJECT_NAME}-doctest
