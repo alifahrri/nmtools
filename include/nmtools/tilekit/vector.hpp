@@ -211,13 +211,33 @@ namespace nmtools::tilekit::vector
 
     // context
     // TODO: pass bit width
-    struct context_t {};
+    // TODO: mark this as kernel_context (context for kernel, not lancher/host)
+    struct context_t
+    {
+        nm_size_t worker_id = 0;
+        nm_size_t worker_size = 1;
+
+        static auto create_context(nm_size_t worker_id, nm_size_t worker_size)
+        {
+            return context_t{worker_id, worker_size};
+        }
+    };
 
     constexpr inline auto Context = context_t {};
 }
 
 namespace nmtools::tilekit
 {
+    inline auto worker_id(vector::context_t ctx)
+    {
+        return nmtools_tuple{ctx.worker_id};
+    }
+
+    inline auto worker_size(vector::context_t ctx)
+    {
+        return nmtools_tuple{ctx.worker_size};
+    }
+
     // TODO: specialize eval graph, instead of function
 
     template <typename array_t, typename offset_t, typename shape_t, typename axis_t=none_t>
