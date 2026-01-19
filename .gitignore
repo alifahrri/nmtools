@@ -32,3 +32,4 @@ amdgpu-*
 *.out
 *.svg
 *.old
+*.perf

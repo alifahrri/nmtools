@@ -86,31 +86,62 @@ shape: [        3,      5]
 
 ### Tilekit
 
+Check full code: [examples/tilekit/add.cpp](examples/tilekit/add.cpp)
 ```C++
-template <typename context_t, typename out_t, typename a_t, typename b_t>
-auto vector_add(context_t& ctx, out_t& out, const a_t& a, const b_t& b)
+/* includes */
+
+/* Multicore + SIMD */
+using mt_vector = tk::thread_pool<tk::vector::context_t>;
+
+struct add_kernel_t
 {
-    auto t_shape  = tuple{4_ct};
-    auto [dim0]   = t_shape;
-    auto a_shape  = shape(a);
-    auto [a_dim0] = a_shape;
-    auto n_iter   = a_dim0 / dim0;
+    template <typename tile_shape_t=tuple<nm::ct<2>,nm::ct<4>>, typename context_t, typename out_t, typename a_t, typename b_t>
+    auto operator()(context_t ctx, out_t& out, const a_t& a, const b_t& b, const tile_shape_t t_shape=tile_shape_t{})
+    {
+        auto [t_id] = tk::worker_id(ctx);
+        auto [t_size] = tk::worker_size(ctx);
 
-    for (nm_size_t i=0; i<n_iter; i++) {
-        auto offset  = tuple{i};
-        auto block_a = tk::load(ctx,a,offset,t_shape);
-        auto block_b = tk::load(ctx,b,offset,t_shape);
-        auto result  = block_a + block_b;
+        auto a_shape = shape(a);
+        auto offset  = tk::ndoffset(a_shape,t_shape);
+        // t_size num workers
+        auto n_iter = (offset.size()/t_size);
+        for (nm_size_t i=0; i<n_iter; i++) {
+            auto tile_offset = offset[(t_id*n_iter)+i];
+            auto block_a = tk::load(ctx,a,tile_offset,t_shape);
+            auto block_b = tk::load(ctx,b,tile_offset,t_shape);
+            auto result  = block_a + block_b;
 
-        tk::store(ctx,out,offset,result);
+            tk::store(ctx,out,tile_offset,result);
+        }
     }
+};
+inline auto add_kernel = add_kernel_t{};
+
+int main(int argc, char** argv)
+{
+    /* setup a,b,c*/
+
+    auto tile_shape  = tuple{2_ct,16_ct};
+    auto num_threads = 8;
+    auto ctx         = mt_vector(num_threads);
+    auto worker_size = num_threads;
+
+    ctx.launch(worker_size,add_kernel,c,a,b,tile_shape);
+
+    /* check or use result */
+    
+    return 0;
 }
 ```
 
-<!-- ![perf-report.png](examples/tilekit/perf-report.png) -->
-<div style="text-align: center;">
-  <img src="examples/tilekit/perf-report.png" alt="Description" style="width:600px; max-width:100%;" />
-</div>
+![perf-script.png](examples/tilekit/perf-script.png)  
+As you can see, we have 8 worker threads saturated with works.
+
+![perf-report.png](examples/tilekit/perf-report.png)  
+As you can see, the add is vectorized using simd instruction.
+
+![tracy-add-kernel.png](docs/image/tracy-add-kernel.png)
+Optionally, instrument profiling using tracy is also supported. It provides timeline view, assembly and source.
 
 ### GPU Support
 
