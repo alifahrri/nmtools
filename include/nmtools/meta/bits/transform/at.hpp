@@ -31,6 +31,14 @@ namespace nmtools::meta
      */
     template <typename T, size_t I>
     using at_t = type_t<type_at<T,I>>;
+
+    template <typename T, size_t I>
+    using type_at_t = type_t<type_at<T,I>>;
 } // namespace nmtools::meta
+
+namespace nmtools
+{
+    using meta::type_at_t;
+}
 
 #endif // NMTOOLS_META_BITS_TRANSFORM_AT_HPP

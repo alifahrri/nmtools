@@ -102,13 +102,6 @@ namespace nmtools::tilekit
         return nmtools::index::product(b_shape);
     }
 
-    template <typename context_t>
-    constexpr auto tile_id(context_t&)
-    {
-        // TODO: implement
-        return nmtools_tuple{0};
-    }
-
     template <typename block_shape_t, typename tile_shape_t>
     struct ndoffset_t
     {

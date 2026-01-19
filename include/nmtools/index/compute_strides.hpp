@@ -4,6 +4,7 @@
 #include "nmtools/meta.hpp"
 #include "nmtools/utility/at.hpp"
 #include "nmtools/utility/shape.hpp"
+#include "nmtools/utility/has_value.hpp"
 
 namespace nmtools::index
 {
@@ -29,14 +30,35 @@ namespace nmtools::index
             p = 1;
             if constexpr (n > 0) {
                 // note that k may be runtime value
-                meta::template_for<n>([&](auto index){
+                template_for<n>([&](auto index){
                     constexpr auto i = decltype(index)::value;
-                    if ((size_type)i>=(size_type)(k+1))
-                        p *= at<i>(shape);
+                    if ((size_type)i>=(size_type)(k+1)) {
+                        if constexpr (is_nullable_num_v<result_t>) {
+                            auto shape_j = at(shape,index);
+                            if (has_value(shape_j) && has_value(p)) {
+                                p *= shape_j;
+                            } else {
+                                // reset to none;
+                                p = result_t{};
+                            }
+                        } else {
+                            p *= at<i>(shape);
+                        }
+                    }
                 });
             } else {
-                for (size_type j=k+1; j<(size_type)len(shape); j++) {
-                    p *= at(shape,j);
+                for (size_type j=k+1; (j<(size_type)len(shape)) && has_value(p); j++) {
+                    if constexpr (is_nullable_num_v<result_t>) {
+                        auto shape_j = at(shape,j);
+                        if (has_value(shape_j) && has_value(p)) {
+                            p *= shape_j;
+                        } else {
+                            // reset to none;
+                            p = result_t{};
+                        }
+                    } else {
+                        p *= at(shape,j);
+                    }
                 }
             }
         }
@@ -73,25 +95,28 @@ namespace nmtools::index
             }
         } else {
             using size_type = size_t;
-            auto strides_ = return_t{};
-            if constexpr (!meta::is_constant_index_array_v<return_t> && meta::is_index_array_v<return_t>) {
+            auto result = return_t{};
+            if constexpr (!is_constant_index_array_v<return_t> && is_index_array_v<return_t>) {
                 [[maybe_unused]] auto n = (size_type)len(shape);
                 if constexpr (meta::is_resizable_v<return_t>) {
-                    strides_.resize(n);
+                    result.resize(n);
                 }
-                constexpr auto N = meta::len_v<return_t>;
+                constexpr auto N = len_v<return_t>;
                 if constexpr (N>0) {
                     // this may be clipped shape
                     meta::template_for<N>([&](auto i){
-                        at(strides_,i) = stride(shape,i);
+                        constexpr auto I = decltype(i)::value;
+                        if constexpr (!is_constant_index_v<type_at_t<return_t,I>>) {
+                            at(result,i) = stride(shape,i);
+                        }
                     });
                 } else {
                     for (size_type i=0; i<n; i++) {
-                        at(strides_,i) = stride(shape,i);
+                        at(result,i) = stride(shape,i);
                     }
                 }
             }
-            return strides_;
+            return result;
         }
     } // compute_strides
 } // namespace nmtools::index
@@ -117,8 +142,7 @@ namespace nmtools::meta
                 using shape_type = remove_cvref_t<get_maybe_type_t<shape_t>>;
                 using type = nmtools_maybe<resolve_optype_t<index::compute_strides_t,shape_type>>;
                 return as_value_v<type>;
-            } else
-            if constexpr (
+            } else if constexpr (
                 (DIM > 0)
                 && (is_constant_index_array_v<shape_t>
                     || is_clipped_index_array_v<shape_t>)
@@ -140,9 +164,31 @@ namespace nmtools::meta
                     }
                 }, as_value_v<nmtools_tuple<>>);
             } else if constexpr (is_clipped_index_array_v<shape_t>) {
-                return as_value_v<nmtools_list<index_type>>;
+                using type = nmtools_list<index_type>;
+                return as_value_v<type>;
+            } else if constexpr (is_mixed_index_array_v<shape_t>) {
+                constexpr auto shape = to_value_v<shape_t>;
+                constexpr auto result = index::compute_strides(shape);
+                constexpr auto N = ::nmtools::len(result);
+                using nmtools::at;
+                return template_reduce<N>([&](auto init, auto index){
+                    using init_t = type_t<decltype(init)>;
+                    constexpr auto I = at(result,index);
+                    if constexpr (has_value(I)) {
+                        using type = append_type_t<init_t,ct<(nm_size_t)I>>;
+                        return as_value_v<type>;
+                    } else {
+                        using type = append_type_t<init_t,nm_size_t>;
+                        return as_value_v<type>;
+                    }
+                }, as_value_v<nmtools_tuple<>>);
+            } else if constexpr (is_nullable_index_array_v<shape_t>) {
+                // return as it is
+                using type = shape_t;
+                return as_value_v<type>;
             } else if constexpr (is_index_array_v<shape_t>) {
-                [[maybe_unused]] constexpr auto B_DIM = bounded_size_v<shape_t>;
+                [[maybe_unused]]
+                constexpr auto B_DIM = bounded_size_v<shape_t>;
                 if constexpr (DIM > 0) {
                     using type = nmtools_array<index_type,DIM>;
                     return as_value_v<type>;
@@ -154,12 +200,6 @@ namespace nmtools::meta
                     using type = nmtools_list<index_type>;
                     return as_value_v<type>;
                 }
-                #if 0
-                // some fn may produce tuple of (runtime) index,
-                // also shape may be raw array
-                using type [[maybe_unused]] = tuple_to_array_t<transform_bounded_array_t<shape_t>>;
-                return as_value_v<type>;
-                #endif
             } else {
                 // forwarding params may be helpful for testing/debugging
                 return as_value_v<error::INDEX_COMPUTE_STRIDE_UNSUPPORTED<shape_t>>;
@@ -186,6 +226,9 @@ namespace nmtools::meta
                 constexpr auto stride = index::stride(array,k);
                 // convert back to type
                 return as_value_v<ct<stride>>;
+            } else if constexpr (is_nullable_num_v<element_t>) {
+                using type = element_t;
+                return as_value_v<type>;
             } else if constexpr (is_constant_index_v<element_t>) {
                 return as_value_v<typename element_t::value_type>;
             } else if constexpr (is_clipped_integer_v<element_t>) {

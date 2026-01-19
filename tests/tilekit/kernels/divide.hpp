@@ -25,7 +25,7 @@ auto divide_kernel(context_t& ctx, out_t& out, const a_t& a, const b_t& b)
 
     // TODO: tile_id
     [[maybe_unused]]
-    auto t_id = tk::tile_id(ctx);
+    auto t_id = tk::worker_id(ctx);
 
     auto offset = tk::ndoffset(b_shape,t_shape);
     for (nm_size_t i=0; i<offset.size(); i++) {

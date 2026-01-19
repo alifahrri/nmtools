@@ -6,6 +6,15 @@
 using nmtools::utils::isequal;
 using namespace nmtools::literals;
 
+#define COMPUTE_STRIDES_SUBCASE_RESULT(case_name, result, ...) \
+SUBCASE(#case_name) \
+{ \
+    NMTOOLS_TESTING_USE_CASE(compute_strides, case_name); \
+    using namespace args; \
+    auto result = nmtools::index::compute_strides(__VA_ARGS__); \
+    NMTOOLS_ASSERT_EQUAL_MSG_ATTRIBUTES( result, expect::result, __VA_ARGS__ ); \
+}
+
 #define COMPUTE_STRIDES_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
@@ -45,6 +54,12 @@ TEST_CASE("compute_strides(case2)" * doctest::test_suite("index::compute_strides
     COMPUTE_STRIDES_SUBCASE(case2, m_shape_h);
 
     COMPUTE_STRIDES_SUBCASE(case2, shape_ct);
+
+    COMPUTE_STRIDES_SUBCASE_RESULT(case2, result_nl1, shape_nl1);
+    COMPUTE_STRIDES_SUBCASE_RESULT(case2, result_nl2, shape_nl2);
+
+    COMPUTE_STRIDES_SUBCASE(case2, shape_mx1);
+    COMPUTE_STRIDES_SUBCASE(case2, shape_mx2);
 }
 
 TEST_CASE("compute_strides(case3)" * doctest::test_suite("index::compute_strides"))
