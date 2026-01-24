@@ -1,21 +1,21 @@
 #include "nmtools/tilekit/vector.hpp"
 #include "nmtools/tilekit/thread_pool.hpp"
 #include "nmtools/tilekit/tilekit.hpp"
-#include "nmtools/array/ufuncs/add.hpp"
+#include "nmtools/array/ufuncs/multiply.hpp"
 #include "nmtools/array/random.hpp"
 #include "nmtools/testing/doctest.hpp"
 #include "nmtools/ndarray.hpp"
 
-#include "kernels/add.hpp"
+#include "kernels/multiply.hpp"
 
 #include <nanobench.h>
 
 namespace nm = nmtools;
 using namespace nmtools::literals;
 
-using mt_vector = tk::thread_pool<tk::vector::context_t>;
+using v128_mt = tk::thread_pool<tk::vector::context_t<>>;
 
-TEST_CASE("thread_pool.add.case7" * doctest::test_suite("tilekit"))
+TEST_CASE("v128_mt.multiply.case7" * doctest::test_suite("tilekit"))
 {
     auto gen   = nm::random_engine();
     auto dtype = nm::float32;
@@ -31,21 +31,21 @@ TEST_CASE("thread_pool.add.case7" * doctest::test_suite("tilekit"))
 
     auto tile_shape = tuple{2_ct,4_ct};
     auto num_threads = 2;
-    auto ctx = mt_vector(num_threads);
+    auto ctx = v128_mt(num_threads);
     auto worker_size = num_threads;
 
     auto min_time = std::chrono::nanoseconds(50'000'000);
     ankerl::nanobench::Bench()
         .minEpochTime(min_time)
-        .run("thread_pool.add.case7",[&](){
-            ctx.launch(worker_size,add_kernel,c,a,b,tile_shape);
+        .run("v128_mt.multiply.case7",[&](){
+            ctx.eval(worker_size,multiply_kernel,c,a,b,tile_shape);
         });
 
-    auto expected = nm::add(a,b);
+    auto expected = nm::multiply(a,b);
     NMTOOLS_ASSERT_CLOSE( c, expected );
 }
 
-TEST_CASE("thread_pool.add.case7b" * doctest::test_suite("tilekit"))
+TEST_CASE("v128_mt.multiply.case7b" * doctest::test_suite("tilekit"))
 {
     auto gen   = nm::random_engine();
     auto dtype = nm::float32;
@@ -61,21 +61,21 @@ TEST_CASE("thread_pool.add.case7b" * doctest::test_suite("tilekit"))
 
     auto tile_shape = tuple{2_ct,4_ct};
     auto num_threads = 4;
-    auto ctx = mt_vector(num_threads);
+    auto ctx = v128_mt(num_threads);
     auto worker_size = num_threads;
 
     auto min_time = std::chrono::nanoseconds(50'000'000);
     ankerl::nanobench::Bench()
         .minEpochTime(min_time)
-        .run("thread_pool.add.case7b",[&](){
-            ctx.launch(worker_size,add_kernel,c,a,b,tile_shape);
+        .run("v128_mt.multiply.case7b",[&](){
+            ctx.eval(worker_size,multiply_kernel,c,a,b,tile_shape);
         });
 
-    auto expected = nm::add(a,b);
+    auto expected = nm::multiply(a,b);
     NMTOOLS_ASSERT_CLOSE( c, expected );
 }
 
-TEST_CASE("thread_pool.add.case7c" * doctest::test_suite("tilekit"))
+TEST_CASE("v128_mt.multiply.case7c" * doctest::test_suite("tilekit"))
 {
     auto gen   = nm::random_engine();
     auto dtype = nm::float32;
@@ -91,21 +91,21 @@ TEST_CASE("thread_pool.add.case7c" * doctest::test_suite("tilekit"))
 
     auto tile_shape = tuple{2_ct,4_ct};
     auto num_threads = 8;
-    auto ctx = mt_vector(num_threads);
+    auto ctx = v128_mt(num_threads);
     auto worker_size = num_threads;
 
     auto min_time = std::chrono::nanoseconds(50'000'000);
     ankerl::nanobench::Bench()
         .minEpochTime(min_time)
-        .run("thread_pool.add.case7c",[&](){
-            ctx.launch(worker_size,add_kernel,c,a,b,tile_shape);
+        .run("v128_mt.multiply.case7c",[&](){
+            ctx.eval(worker_size,multiply_kernel,c,a,b,tile_shape);
         });
 
-    auto expected = nm::add(a,b);
+    auto expected = nm::multiply(a,b);
     NMTOOLS_ASSERT_CLOSE( c, expected );
 }
 
-TEST_CASE("thread_pool.add.case7d" * doctest::test_suite("tilekit"))
+TEST_CASE("v128_mt.multiply.case7d" * doctest::test_suite("tilekit"))
 {
     auto gen   = nm::random_engine();
     auto dtype = nm::float32;
@@ -121,24 +121,24 @@ TEST_CASE("thread_pool.add.case7d" * doctest::test_suite("tilekit"))
 
     auto tile_shape = tuple{2_ct,4_ct};
     auto num_threads = 16;
-    auto ctx = mt_vector(num_threads);
+    auto ctx = v128_mt(num_threads);
     auto worker_size = num_threads;
 
     auto min_time = std::chrono::nanoseconds(50'000'000);
     ankerl::nanobench::Bench()
         .minEpochTime(min_time)
-        .run("thread_pool.add.case7d",[&](){
-            ctx.launch(worker_size,add_kernel,c,a,b,tile_shape);
+        .run("v128_mt.multiply.case7d",[&](){
+            ctx.eval(worker_size,multiply_kernel,c,a,b,tile_shape);
         });
 
-    auto expected = nm::add(a,b);
+    auto expected = nm::multiply(a,b);
     NMTOOLS_ASSERT_CLOSE( c, expected );
 }
 
 /*********************************************************************************** */
 // no thread affinity
 
-TEST_CASE("thread_pool.add.case7e" * doctest::test_suite("tilekit"))
+TEST_CASE("v128_mt.multiply.case7e" * doctest::test_suite("tilekit"))
 {
     auto gen   = nm::random_engine();
     auto dtype = nm::float32;
@@ -154,21 +154,21 @@ TEST_CASE("thread_pool.add.case7e" * doctest::test_suite("tilekit"))
 
     auto tile_shape = tuple{2_ct,4_ct};
     auto num_threads = 2;
-    auto ctx = mt_vector(num_threads,false);
+    auto ctx = v128_mt(num_threads,false);
     auto worker_size = num_threads;
 
     auto min_time = std::chrono::nanoseconds(50'000'000);
     ankerl::nanobench::Bench()
         .minEpochTime(min_time)
-        .run("thread_pool.add.case7e",[&](){
-            ctx.launch(worker_size,add_kernel,c,a,b,tile_shape);
+        .run("v128_mt.multiply.case7e",[&](){
+            ctx.eval(worker_size,multiply_kernel,c,a,b,tile_shape);
         });
 
-    auto expected = nm::add(a,b);
+    auto expected = nm::multiply(a,b);
     NMTOOLS_ASSERT_CLOSE( c, expected );
 }
 
-TEST_CASE("thread_pool.add.case7f" * doctest::test_suite("tilekit"))
+TEST_CASE("v128_mt.multiply.case7f" * doctest::test_suite("tilekit"))
 {
     auto gen   = nm::random_engine();
     auto dtype = nm::float32;
@@ -184,21 +184,21 @@ TEST_CASE("thread_pool.add.case7f" * doctest::test_suite("tilekit"))
 
     auto tile_shape = tuple{2_ct,4_ct};
     auto num_threads = 4;
-    auto ctx = mt_vector(num_threads,false);
+    auto ctx = v128_mt(num_threads,false);
     auto worker_size = num_threads;
 
     auto min_time = std::chrono::nanoseconds(50'000'000);
     ankerl::nanobench::Bench()
         .minEpochTime(min_time)
-        .run("thread_pool.add.case7f",[&](){
-            ctx.launch(worker_size,add_kernel,c,a,b,tile_shape);
+        .run("v128_mt.multiply.case7f",[&](){
+            ctx.eval(worker_size,multiply_kernel,c,a,b,tile_shape);
         });
 
-    auto expected = nm::add(a,b);
+    auto expected = nm::multiply(a,b);
     NMTOOLS_ASSERT_CLOSE( c, expected );
 }
 
-TEST_CASE("thread_pool.add.case7g" * doctest::test_suite("tilekit"))
+TEST_CASE("v128_mt.multiply.case7g" * doctest::test_suite("tilekit"))
 {
     auto gen   = nm::random_engine();
     auto dtype = nm::float32;
@@ -214,21 +214,21 @@ TEST_CASE("thread_pool.add.case7g" * doctest::test_suite("tilekit"))
 
     auto tile_shape = tuple{2_ct,4_ct};
     auto num_threads = 8;
-    auto ctx = mt_vector(num_threads,false);
+    auto ctx = v128_mt(num_threads,false);
     auto worker_size = num_threads;
 
     auto min_time = std::chrono::nanoseconds(50'000'000);
     ankerl::nanobench::Bench()
         .minEpochTime(min_time)
-        .run("thread_pool.add.case7g",[&](){
-            ctx.launch(worker_size,add_kernel,c,a,b,tile_shape);
+        .run("v128_mt.multiply.case7g",[&](){
+            ctx.eval(worker_size,multiply_kernel,c,a,b,tile_shape);
         });
 
-    auto expected = nm::add(a,b);
+    auto expected = nm::multiply(a,b);
     NMTOOLS_ASSERT_CLOSE( c, expected );
 }
 
-TEST_CASE("thread_pool.add.case7h" * doctest::test_suite("tilekit"))
+TEST_CASE("v128_mt.multiply.case7h" * doctest::test_suite("tilekit"))
 {
     auto gen   = nm::random_engine();
     auto dtype = nm::float32;
@@ -244,23 +244,23 @@ TEST_CASE("thread_pool.add.case7h" * doctest::test_suite("tilekit"))
 
     auto tile_shape = tuple{2_ct,4_ct};
     auto num_threads = 16;
-    auto ctx = mt_vector(num_threads,false);
+    auto ctx = v128_mt(num_threads,false);
     auto worker_size = num_threads;
 
     auto min_time = std::chrono::nanoseconds(50'000'000);
     ankerl::nanobench::Bench()
         .minEpochTime(min_time)
-        .run("thread_pool.add.case7h",[&](){
-            ctx.launch(worker_size,add_kernel,c,a,b,tile_shape);
+        .run("v128_mt.multiply.case7h",[&](){
+            ctx.eval(worker_size,multiply_kernel,c,a,b,tile_shape);
         });
 
-    auto expected = nm::add(a,b);
+    auto expected = nm::multiply(a,b);
     NMTOOLS_ASSERT_CLOSE( c, expected );
 }
 
 /*********************************************************************************** */
 // mixed shape
-TEST_CASE("thread_pool.add.case7i" * doctest::test_suite("tilekit") * doctest::skip())
+TEST_CASE("v128_mt.multiply.case7i" * doctest::test_suite("tilekit") * doctest::skip())
 {
     auto gen   = nm::random_engine();
     auto dtype = nm::float32;
@@ -276,21 +276,21 @@ TEST_CASE("thread_pool.add.case7i" * doctest::test_suite("tilekit") * doctest::s
 
     auto tile_shape = tuple{2_ct,4_ct};
     auto num_threads = 2;
-    auto ctx = mt_vector(num_threads);
+    auto ctx = v128_mt(num_threads);
     auto worker_size = num_threads;
 
     auto min_time = std::chrono::nanoseconds(50'000'000);
     ankerl::nanobench::Bench()
         .minEpochTime(min_time)
-        .run("thread_pool.add.case7i",[&](){
-            ctx.launch(worker_size,add_kernel,c,a,b,tile_shape);
+        .run("v128_mt.multiply.case7i",[&](){
+            ctx.eval(worker_size,multiply_kernel,c,a,b,tile_shape);
         });
 
-    auto expected = nm::add(a,b);
+    auto expected = nm::multiply(a,b);
     NMTOOLS_ASSERT_CLOSE( c, expected );
 }
 
-TEST_CASE("thread_pool.add.case7j" * doctest::test_suite("tilekit"))
+TEST_CASE("v128_mt.multiply.case7j" * doctest::test_suite("tilekit"))
 {
     auto gen   = nm::random_engine();
     auto dtype = nm::float32;
@@ -306,21 +306,21 @@ TEST_CASE("thread_pool.add.case7j" * doctest::test_suite("tilekit"))
 
     auto tile_shape = tuple{2_ct,4_ct};
     auto num_threads = 4;
-    auto ctx = mt_vector(num_threads);
+    auto ctx = v128_mt(num_threads);
     auto worker_size = num_threads;
 
     auto min_time = std::chrono::nanoseconds(50'000'000);
     ankerl::nanobench::Bench()
         .minEpochTime(min_time)
-        .run("thread_pool.add.case7j",[&](){
-            ctx.launch(worker_size,add_kernel,c,a,b,tile_shape);
+        .run("v128_mt.multiply.case7j",[&](){
+            ctx.eval(worker_size,multiply_kernel,c,a,b,tile_shape);
         });
 
-    auto expected = nm::add(a,b);
+    auto expected = nm::multiply(a,b);
     NMTOOLS_ASSERT_CLOSE( c, expected );
 }
 
-TEST_CASE("thread_pool.add.case7k" * doctest::test_suite("tilekit"))
+TEST_CASE("v128_mt.multiply.case7k" * doctest::test_suite("tilekit"))
 {
     auto gen   = nm::random_engine();
     auto dtype = nm::float32;
@@ -336,21 +336,21 @@ TEST_CASE("thread_pool.add.case7k" * doctest::test_suite("tilekit"))
 
     auto tile_shape = tuple{2_ct,4_ct};
     auto num_threads = 8;
-    auto ctx = mt_vector(num_threads);
+    auto ctx = v128_mt(num_threads);
     auto worker_size = num_threads;
 
     auto min_time = std::chrono::nanoseconds(50'000'000);
     ankerl::nanobench::Bench()
         .minEpochTime(min_time)
-        .run("thread_pool.add.case7k",[&](){
-            ctx.launch(worker_size,add_kernel,c,a,b,tile_shape);
+        .run("v128_mt.multiply.case7k",[&](){
+            ctx.eval(worker_size,multiply_kernel,c,a,b,tile_shape);
         });
 
-    auto expected = nm::add(a,b);
+    auto expected = nm::multiply(a,b);
     NMTOOLS_ASSERT_CLOSE( c, expected );
 }
 
-TEST_CASE("thread_pool.add.case7l" * doctest::test_suite("tilekit"))
+TEST_CASE("v128_mt.multiply.case7l" * doctest::test_suite("tilekit"))
 {
     auto gen   = nm::random_engine();
     auto dtype = nm::float32;
@@ -366,23 +366,23 @@ TEST_CASE("thread_pool.add.case7l" * doctest::test_suite("tilekit"))
 
     auto tile_shape = tuple{2_ct,4_ct};
     auto num_threads = 16;
-    auto ctx = mt_vector(num_threads);
+    auto ctx = v128_mt(num_threads);
     auto worker_size = num_threads;
 
     auto min_time = std::chrono::nanoseconds(50'000'000);
     ankerl::nanobench::Bench()
         .minEpochTime(min_time)
-        .run("thread_pool.add.case7l",[&](){
-            ctx.launch(worker_size,add_kernel,c,a,b,tile_shape);
+        .run("v128_mt.multiply.case7l",[&](){
+            ctx.eval(worker_size,multiply_kernel,c,a,b,tile_shape);
         });
 
-    auto expected = nm::add(a,b);
+    auto expected = nm::multiply(a,b);
     NMTOOLS_ASSERT_CLOSE( c, expected );
 }
 
 // TODO: fix segfault
 #if 0
-TEST_CASE("thread_pool.add.case7e" * doctest::test_suite("tilekit"))
+TEST_CASE("v128_mt.multiply.case7e" * doctest::test_suite("tilekit"))
 {
     auto gen   = nm::random_engine();
     auto dtype = nm::float32;
@@ -398,21 +398,21 @@ TEST_CASE("thread_pool.add.case7e" * doctest::test_suite("tilekit"))
 
     auto tile_shape = tuple{2_ct,4_ct};
     auto num_threads = 2;
-    auto ctx = mt_vector(num_threads);
+    auto ctx = v128_mt(num_threads);
     auto worker_size = num_threads;
 
     auto min_time = std::chrono::nanoseconds(50'000'000);
     ankerl::nanobench::Bench()
         .minEpochTime(min_time)
-        .run("thread_pool.add.case7e",[&](){
-            ctx.launch(worker_size,add_kernel,c,a,b,tile_shape);
+        .run("v128_mt.multiply.case7e",[&](){
+            ctx.eval(worker_size,multiply_kernel,c,a,b,tile_shape);
         });
 
-    auto expected = nm::add(a,b);
+    auto expected = nm::multiply(a,b);
     NMTOOLS_ASSERT_CLOSE( c, expected );
 }
 
-TEST_CASE("thread_pool.add.case7f" * doctest::test_suite("tilekit"))
+TEST_CASE("v128_mt.multiply.case7f" * doctest::test_suite("tilekit"))
 {
     auto gen   = nm::random_engine();
     auto dtype = nm::float32;
@@ -428,22 +428,22 @@ TEST_CASE("thread_pool.add.case7f" * doctest::test_suite("tilekit"))
 
     auto tile_shape = tuple{2_ct,4_ct};
     auto num_threads = 4;
-    auto ctx = mt_vector(num_threads);
+    auto ctx = v128_mt(num_threads);
     auto worker_size = num_threads;
 
     auto min_time = std::chrono::nanoseconds(50'000'000);
     ankerl::nanobench::Bench()
         .minEpochTime(min_time)
-        .run("thread_pool.add.case7f",[&](){
-            ctx.launch(worker_size,add_kernel,c,a,b,tile_shape);
+        .run("v128_mt.multiply.case7f",[&](){
+            ctx.eval(worker_size,multiply_kernel,c,a,b,tile_shape);
         });
 
-    auto expected = nm::add(a,b);
+    auto expected = nm::multiply(a,b);
     NMTOOLS_ASSERT_CLOSE( c, expected );
 }
 #endif
 
-TEST_CASE("thread_pool.add.case9" * doctest::test_suite("tilekit"))
+TEST_CASE("v128_mt.multiply.case9" * doctest::test_suite("tilekit"))
 {
     auto gen   = nm::random_engine();
     auto dtype = nm::float32;
@@ -459,21 +459,21 @@ TEST_CASE("thread_pool.add.case9" * doctest::test_suite("tilekit"))
 
     auto tile_shape = tuple{2_ct,4_ct};
     auto num_threads = 2;
-    auto ctx = mt_vector(num_threads);
+    auto ctx = v128_mt(num_threads);
     auto worker_size = num_threads;
 
     auto min_time = std::chrono::nanoseconds(50'000'000);
     ankerl::nanobench::Bench()
         .minEpochTime(min_time)
-        .run("thread_pool.add.case9",[&](){
-            ctx.launch(worker_size,add_kernel,c,a,b,tile_shape);
+        .run("v128_mt.multiply.case9",[&](){
+            ctx.eval(worker_size,multiply_kernel,c,a,b,tile_shape);
         });
 
-    auto expected = nm::add(a,b);
+    auto expected = nm::multiply(a,b);
     NMTOOLS_ASSERT_CLOSE( c, expected );
 }
 
-TEST_CASE("thread_pool.add.case9b" * doctest::test_suite("tilekit"))
+TEST_CASE("v128_mt.multiply.case9b" * doctest::test_suite("tilekit"))
 {
     auto gen   = nm::random_engine();
     auto dtype = nm::float32;
@@ -489,21 +489,21 @@ TEST_CASE("thread_pool.add.case9b" * doctest::test_suite("tilekit"))
 
     auto tile_shape = tuple{2_ct,4_ct};
     auto num_threads = 4;
-    auto ctx = mt_vector(num_threads);
+    auto ctx = v128_mt(num_threads);
     auto worker_size = num_threads;
 
     auto min_time = std::chrono::nanoseconds(50'000'000);
     ankerl::nanobench::Bench()
         .minEpochTime(min_time)
-        .run("thread_pool.add.case9b",[&](){
-            ctx.launch(worker_size,add_kernel,c,a,b,tile_shape);
+        .run("v128_mt.multiply.case9b",[&](){
+            ctx.eval(worker_size,multiply_kernel,c,a,b,tile_shape);
         });
 
-    auto expected = nm::add(a,b);
+    auto expected = nm::multiply(a,b);
     NMTOOLS_ASSERT_CLOSE( c, expected );
 }
 
-TEST_CASE("thread_pool.add.case9c" * doctest::test_suite("tilekit"))
+TEST_CASE("v128_mt.multiply.case9c" * doctest::test_suite("tilekit"))
 {
     auto gen   = nm::random_engine();
     auto dtype = nm::float32;
@@ -519,21 +519,21 @@ TEST_CASE("thread_pool.add.case9c" * doctest::test_suite("tilekit"))
 
     auto tile_shape = tuple{2_ct,16_ct};
     auto num_threads = 2;
-    auto ctx = mt_vector(num_threads);
+    auto ctx = v128_mt(num_threads);
     auto worker_size = num_threads;
 
     auto min_time = std::chrono::nanoseconds(50'000'000);
     ankerl::nanobench::Bench()
         .minEpochTime(min_time)
-        .run("thread_pool.add.case9c",[&](){
-            ctx.launch(worker_size,add_kernel,c,a,b,tile_shape);
+        .run("v128_mt.multiply.case9c",[&](){
+            ctx.eval(worker_size,multiply_kernel,c,a,b,tile_shape);
         });
 
-    auto expected = nm::add(a,b);
+    auto expected = nm::multiply(a,b);
     NMTOOLS_ASSERT_CLOSE( c, expected );
 }
 
-TEST_CASE("thread_pool.add.case9d" * doctest::test_suite("tilekit"))
+TEST_CASE("v128_mt.multiply.case9d" * doctest::test_suite("tilekit"))
 {
     auto gen   = nm::random_engine();
     auto dtype = nm::float32;
@@ -549,21 +549,21 @@ TEST_CASE("thread_pool.add.case9d" * doctest::test_suite("tilekit"))
 
     auto tile_shape = tuple{2_ct,16_ct};
     auto num_threads = 4;
-    auto ctx = mt_vector(num_threads);
+    auto ctx = v128_mt(num_threads);
     auto worker_size = num_threads;
 
     auto min_time = std::chrono::nanoseconds(50'000'000);
     ankerl::nanobench::Bench()
         .minEpochTime(min_time)
-        .run("thread_pool.add.case9d",[&](){
-            ctx.launch(worker_size,add_kernel,c,a,b,tile_shape);
+        .run("v128_mt.multiply.case9d",[&](){
+            ctx.eval(worker_size,multiply_kernel,c,a,b,tile_shape);
         });
 
-    auto expected = nm::add(a,b);
+    auto expected = nm::multiply(a,b);
     NMTOOLS_ASSERT_CLOSE( c, expected );
 }
 
-TEST_CASE("thread_pool.add.case9e" * doctest::test_suite("tilekit"))
+TEST_CASE("v128_mt.multiply.case9e" * doctest::test_suite("tilekit"))
 {
     auto gen   = nm::random_engine();
     auto dtype = nm::float32;
@@ -579,16 +579,16 @@ TEST_CASE("thread_pool.add.case9e" * doctest::test_suite("tilekit"))
 
     auto tile_shape = tuple{1_ct,32_ct};
     auto num_threads = 4;
-    auto ctx = mt_vector(num_threads);
+    auto ctx = v128_mt(num_threads);
     auto worker_size = num_threads;
 
     auto min_time = std::chrono::nanoseconds(50'000'000);
     ankerl::nanobench::Bench()
         .minEpochTime(min_time)
-        .run("thread_pool.add.case9e",[&](){
-            ctx.launch(worker_size,add_kernel,c,a,b,tile_shape);
+        .run("v128_mt.multiply.case9e",[&](){
+            ctx.eval(worker_size,multiply_kernel,c,a,b,tile_shape);
         });
 
-    auto expected = nm::add(a,b);
+    auto expected = nm::multiply(a,b);
     NMTOOLS_ASSERT_CLOSE( c, expected );
 }

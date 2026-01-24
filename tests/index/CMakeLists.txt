@@ -42,6 +42,7 @@ option(NMTOOLS_INDEX_TEST_ALL "test all index modules" ON)
 
 if (NMTOOLS_INDEX_TEST_ALL)
     set(ARRAY_INDEX_TEST_SOURCES
+        src/add_indices.cpp
         src/alias.cpp
         src/argsort.cpp
         src/array_slice.cpp
