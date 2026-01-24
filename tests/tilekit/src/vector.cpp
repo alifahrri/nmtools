@@ -59,7 +59,6 @@ TEST_CASE("vector(case2)" * doctest::test_suite("tilekit"))
     };
     auto array      = nm::array(a);
     auto tile_shape = tuple{2_ct,4_ct};
-    auto src_shape  = nm::shape(a);
     auto ctx        = tk::vector::Context;
     auto padding    = nm::True;
     {

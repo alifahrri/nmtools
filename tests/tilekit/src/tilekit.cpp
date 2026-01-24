@@ -196,7 +196,6 @@ TEST_CASE("load(case1)" * doctest::test_suite("tilekit"))
     };
     auto array = nm::array(a);
     auto tile_shape = tuple{2_ct,4_ct};
-    auto src_shape  = nm::shape(array);
     auto ctx = nm::None;
     {
         auto tile_ndoffset = tuple{0,0};
@@ -228,7 +227,6 @@ TEST_CASE("load(case2)" * doctest::test_suite("tilekit"))
     };
     auto array      = nm::array(a);
     auto tile_shape = tuple{2_ct,4_ct};
-    auto src_shape  = nm::shape(a);
     auto ctx        = tk::Scalar;
     auto padding    = nm::True;
     {
@@ -260,11 +258,9 @@ TEST_CASE("store(case2)" * doctest::test_suite("tilekit"))
         {0,0,0,0,0,0,0,0,0,0,0,0,0,0},
     };
     auto array     = nm::array(a);
-    auto src_shape = nm::shape(a);
     auto ctx       = tk::Scalar;
     auto padding   = nm::True;
     constexpr auto tile_shape = tuple{2_ct,4_ct};
-    using tile_shape_t = nm::remove_cvref_t<decltype(tile_shape)>;
     {
         auto tile_ndoffset = tuple{0,0};
         auto store = tk::store_t<tk::scalar_t,nm::remove_cvref_t<decltype(array)>,nm::remove_cvref_t<decltype(padding)>>{};

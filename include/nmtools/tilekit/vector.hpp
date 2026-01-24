@@ -312,7 +312,7 @@ namespace nmtools::tilekit
         using output_type  = output_t;
 
         template <typename offset_t, typename result_t>
-        auto operator()(context_type ctx, output_type& output, const offset_t& offset, const result_t& result, padding_type padding) const
+        auto operator()(context_type, output_type& output, const offset_t& offset, const result_t& result, padding_type padding) const
         {
             return vector::store<bit_width>(output,offset,result,padding);
         }
