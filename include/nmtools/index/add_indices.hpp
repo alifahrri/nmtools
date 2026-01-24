@@ -92,8 +92,9 @@ namespace nmtools::meta
                     return as_value_v<type>;
                 } else {
                     return template_reduce<N>([&](auto init, auto I){
+                        constexpr auto i = decltype(I)::value;
                         using init_t = type_t<decltype(init)>;
-                        constexpr auto res_i = at(result,I);
+                        constexpr auto res_i = at(result,i);
                         if constexpr (has_value(res_i)) {
                             using type = append_type_t<init_t,ct<(nm_size_t)res_i>>;
                             return as_value_v<type>;
