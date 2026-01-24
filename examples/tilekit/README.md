@@ -5,7 +5,7 @@ Vector add kernel:
 /* includes */
 
 /* Multicore + SIMD */
-using mt_vector = tk::thread_pool<tk::vector::context_t>;
+using v128_mt = tk::thread_pool<tk::vector::context_t>;
 
 struct add_kernel_t
 {
@@ -37,10 +37,10 @@ int main(int argc, char** argv)
 
     auto tile_shape  = tuple{2_ct,16_ct};
     auto num_threads = 4;
-    auto ctx         = mt_vector(num_threads);
+    auto ctx         = v128_mt(num_threads);
     auto worker_size = num_threads;
 
-    ctx.launch(worker_size,add_kernel,c,a,b,tile_shape);
+    ctx.eval(worker_size,add_kernel,c,a,b,tile_shape);
 
     /* check or use result */
     
