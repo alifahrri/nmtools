@@ -16,9 +16,7 @@
 #include <functional>
 #include <pthread.h>
 
-#ifdef NMTOOLS_TRACY_ENABLE
-#include "tracy/Tracy.hpp"
-#endif // NMTOOLS_TRACY_ENABLE
+#include "nmtools/profiling.hpp"
 
 namespace nmtools::tilekit
 {
@@ -45,10 +43,15 @@ namespace nmtools::tilekit
                         }
                     }
 
-                    #ifdef NMTOOLS_TRACY_ENABLE
                     std::string name = "Worker " + std::to_string(i);
+                    if (name.length() > 15) {
+                        name.resize(15);
+                    }
+                    #ifdef TRACY_ENABLE
                     tracy::SetThreadName(name.c_str());
-                    #endif // NMTOOLS_TRACY_ENABLE
+                    #else
+                    pthread_setname_np(pthread_self(), name.c_str());
+                    #endif // TRACY_ENABLE
 
                     while (true) {
                         std::function<void()> task;
@@ -66,15 +69,13 @@ namespace nmtools::tilekit
 
                             task = std::move(tasks.front());
                             tasks.pop();
-                            #ifdef NMTOOLS_TRACY_ENABLE
+                            #ifdef TRACY_ENABLE
                             TracyPlot("Queue Size", (int64_t)tasks.size());
-                            #endif // NMTOOLS_TRACY_ENABLE
+                            #endif // TRACY_ENABLE
                         }
 
                         {
-                            #ifdef NMTOOLS_TRACY_ENABLE
-                            ZoneScopedN("Worker Task Processing");
-                            #endif // NMTOOLS_TRACY_ENABLE
+                            nmtools_tracy_zone_scoped("Worker Task Processing");
                             task();
                         }
                     }
@@ -107,9 +108,9 @@ namespace nmtools::tilekit
             {
                 std::unique_lock<decltype(queue_mutex)> lock(queue_mutex);
                 tasks.emplace([task](){ (*task)(); });
-                #ifdef NMTOOLS_TRACY_ENABLE
+                #ifdef TRACY_ENABLE
                 TracyPlot("Queue Size", (int64_t)tasks.size());
-                #endif // NMTOOLS_TRACY_ENABLE
+                #endif // TRACY_ENABLE
             }
             condition.notify_one();
 
@@ -122,29 +123,37 @@ namespace nmtools::tilekit
         }
 
         template <typename kernel_t, typename...args_t>
-        void launch(size_t work_size, kernel_t&& kernel, args_t&&...args)
+        auto launch(size_t work_size, kernel_t&& kernel, args_t&&...args)
         {
             auto promises = std::vector<std::future<bool>>();
             for (nm_size_t i=0; i<work_size; i++) {
-                auto ctx = ctx_t::create_context(i,work_size);
-                promises.push_back(this->enqueue([&]{
-                    #ifdef NMTOOLS_TRACY_ENABLE
-                    ZoneScopedN("Kernel run");
-                    #endif
+                promises.push_back(this->enqueue([&,i,work_size]{
+                    nmtools_tracy_zone_scoped("Kernel run");
+                    auto ctx = ctx_t::create_context(i,work_size);
                     kernel(ctx,nmtools::forward<args_t>(args)...);
                     return true;
                 }));
             }
+            return promises;
+        }
+
+        template <typename kernel_t, typename...args_t>
+        auto eval(size_t work_size, kernel_t&& kernel, args_t&&...args)
+        {
+            auto promises = this->launch(work_size
+                , nmtools::forward<kernel_t>(kernel)
+                , nmtools::forward<args_t>(args)...);
+            auto success = true;
             for (nm_size_t i=0; i<work_size; i++) {
-                [[maybe_unused]]
-                auto ok = promises[i].get();
+                success &= promises[i].get();
             }
+            return success;
         }
     private:
         std::vector<std::thread> workers;
         std::queue<std::function<void()>> tasks;
 
-        #ifdef NMTOOLS_TRACY_ENABLE
+        #ifdef TRACY_ENABLE
         TracyLockable(std::mutex, queue_mutex);
         #else
         std::mutex queue_mutex;
