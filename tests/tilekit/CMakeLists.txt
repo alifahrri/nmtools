@@ -47,7 +47,6 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 option(NMTOOLS_TESTS_TILEKIT_ENABLE_TRACY "build tilekit tests with tracy profiling" OFF)
 
 set(NMTOOLS_TESTS_TILEKIT_SRCS
-    src/copy.cpp
     src/tilekit.cpp
     src/vector.cpp
     src/add.cpp
