@@ -109,4 +109,9 @@ namespace nmtools::meta
     inline constexpr bool is_resizable2d_v = is_resizable2d<T>::value;
 } // namespace nmtools::meta
 
+namespace nmtools
+{
+    using meta::is_resizable_v;
+}
+
 #endif // NMTOOLS_META_BITS_TRAITS_IS_resizable_HPP

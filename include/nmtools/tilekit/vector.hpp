@@ -6,6 +6,7 @@
 #include "nmtools/core.hpp"
 #include "nmtools/index/product.hpp"
 #include "nmtools/ndarray/array.hpp"
+#include "nmtools/tilekit/tilekit.hpp"
 
 namespace nmtools::tilekit::vector
 {
@@ -152,8 +153,8 @@ namespace nmtools::tilekit::vector
 
     // TODO: rename offset to indices
 
-    template <auto bit_width=128, typename array_t, typename offset_t, typename tile_shape_t, typename axis_t=none_t>
-    constexpr auto load(const array_t& array, const offset_t& offset, const tile_shape_t& tile_shape, [[maybe_unused]] const axis_t& axis=axis_t{})
+    template <auto bit_width=128, typename array_t, typename offset_t, typename tile_shape_t, typename padding_t=ct<0>>
+    constexpr auto load(const array_t& array, const offset_t& offset, const tile_shape_t& tile_shape, [[maybe_unused]] padding_t padding=padding_t{})
     {
         using element_t = meta::get_element_type_t<array_t>;
 
@@ -165,26 +166,48 @@ namespace nmtools::tilekit::vector
 
         auto result = result_t{};
 
-        auto src_shape   = shape(array);
-        auto src_strides = index::compute_strides(src_shape);
+        const auto src_shape   = shape(array);
+        const auto src_strides = index::compute_strides(src_shape);
 
         constexpr auto NUM_LANE = bit_width / (sizeof(element_t) * 8 /*bit*/);
         constexpr auto NUM_LOAD = SIZE / NUM_LANE;
 
-        template_for<NUM_LOAD>([&](auto i){
-            constexpr auto I = decltype(i)::value;
-            auto src_offset  = compute_load_offset(dtype_t<element_t>{},ct_v<bit_width>,i,offset,tile_shape,src_shape,src_strides);
-            *((vector_t*)result.data()+I) = *((vector_t*)&array.data()[src_offset]);
-        });
+        auto vectorized_load = [&](){
+            template_for<NUM_LOAD>([&](auto i){
+                constexpr auto I = decltype(i)::value;
+                auto src_offset  = compute_load_offset(dtype_t<element_t>{},ct_v<bit_width>,i,offset,tile_shape,src_shape,src_strides);
+                *((vector_t*)result.data()+I) = *((vector_t*)&array.data()[src_offset]);
+            });
+        };
+        using scalar_loader_t = load_t<scalar_t,array_t,tile_shape_t,padding_t>;
+
+        if constexpr (!padding_t::value) {
+            vectorized_load();
+        } else {
+            const auto start_index  = 0;
+            const auto tile_stride  = index::compute_strides(tile_shape);
+            const auto tile_indices = index::compute_indices(start_index,tile_shape,tile_stride);
+            const auto src_indices  = index::add_indices(tile_indices,offset);
+            const auto dim = len(src_indices);
+            auto valid = true;
+            for (nm_size_t j=0; (j<dim) && valid; j++) {
+                valid = valid && ((at(src_indices,j) + at(tile_shape,j)) < at(src_shape,j));
+            }
+            if (valid) {
+                vectorized_load();
+            } else {
+                scalar_loader_t::load(scalar_t{},result,array,src_shape,offset,tile_shape,tile_stride,padding);
+            }
+        }
 
         return result;
     }
 
-    template <auto bit_width=128, typename output_t, typename offset_t, typename result_t, typename axis_t=none_t>
-    constexpr auto store(output_t& output, const offset_t& offset, const result_t& result, [[maybe_unused]] const axis_t& axis=axis_t{})
+    template <auto bit_width=128, typename output_t, typename offset_t, typename result_t, typename padding_t=ct<0>>
+    constexpr auto store(output_t& output, const offset_t& offset, const result_t& result, [[maybe_unused]] padding_t padding=padding_t{})
     {
         // static_assert( meta::is_fixed_shape_v<result_t> );
-        static_assert( meta::is_constant_index_v<axis_t> || is_none_v<axis_t> );
+        static_assert( meta::is_constant_index_v<padding_t> || is_none_v<padding_t> );
 
         constexpr auto DIM = meta::len_v<offset_t>;
         static_assert( DIM > 0 );
@@ -197,23 +220,47 @@ namespace nmtools::tilekit::vector
         constexpr auto NUM_LANE = bit_width / (sizeof(element_t) * 8 /*bit*/);
         constexpr auto NUM_LOAD = SIZE / NUM_LANE;
 
-        auto output_shape   = shape(output);
-        auto output_strides = index::compute_strides(output_shape);
+        const auto output_shape   = shape(output);
+        const auto output_strides = index::compute_strides(output_shape);
 
         auto dtype = dtype_t<element_t>{};
         auto BIT_WIDTH = ct_v<bit_width>;
-        template_for<NUM_LOAD>([&](auto i){
-            constexpr auto I = decltype(i)::value;
-            auto src_offset  = compute_load_offset(dtype,BIT_WIDTH,i,offset,tile_shape,output_shape,output_strides);
-            *((vector_t*)&output.data()[src_offset]) = *((vector_t*)result.data()+I);
-        });
+
+        auto vectorized_store = [&](){
+            template_for<NUM_LOAD>([&](auto i){
+                constexpr auto I = decltype(i)::value;
+                auto src_offset  = compute_load_offset(dtype,BIT_WIDTH,i,offset,tile_shape,output_shape,output_strides);
+                *((vector_t*)&output.data()[src_offset]) = *((vector_t*)result.data()+I);
+            });
+        };
+        using scalar_store_t = store_t<scalar_t,output_t,padding_t>;
+
+        if constexpr (!padding_t::value) {
+            vectorized_store();
+        } else {
+            const auto start_index  = 0;
+            const auto tile_stride  = index::compute_strides(tile_shape);
+            const auto tile_indices = index::compute_indices(start_index,tile_shape,tile_stride);
+            const auto src_indices  = index::add_indices(tile_indices,offset);
+            const auto dim = len(src_indices);
+            auto valid = true;
+            for (nm_size_t j=0; (j<dim) && valid; j++) {
+                valid = valid && ((at(src_indices,j) + at(tile_shape,j)) < at(output_shape,j));
+            }
+            if (valid) {
+                vectorized_store();
+            } else {
+                scalar_store_t::store(scalar_t{},output,output_shape,offset,result,padding);
+            }
+        }
     }
 
     // context
-    // TODO: pass bit width
     // TODO: mark this as kernel_context (context for kernel, not lancher/host)
+    template <auto bit_width=128>
     struct context_t
     {
+        static constexpr auto BIT_WIDTH = bit_width;
         nm_size_t worker_id = 0;
         nm_size_t worker_size = 1;
 
@@ -228,28 +275,59 @@ namespace nmtools::tilekit::vector
 
 namespace nmtools::tilekit
 {
-    inline auto worker_id(vector::context_t ctx)
+    template <auto bit_width, typename array_t, typename tile_shape_t, typename padding_t>
+    struct load_t<
+        vector::context_t<bit_width>, array_t, tile_shape_t, padding_t
+    > {
+        using context_type    = vector::context_t<bit_width>;
+        using tile_shape_type = tile_shape_t;
+        using array_type   = array_t;
+        using element_type = get_element_type_t<array_t>;
+
+        static constexpr auto SIZE = index::product(to_value_v<tile_shape_type>);
+        using buffer_type = nmtools_array<element_type,SIZE>;
+        using shape_buffer_type = tile_shape_type;
+        using result_type = vector::object_t<buffer_type,shape_buffer_type,bit_width>;
+        using vector_type = typename result_type::vector_type;
+
+        template <typename ctx_t, typename offset_t>
+        static auto load(ctx_t, const array_type& array, const offset_t& offset, const tile_shape_type& tile_shape, padding_t padding)
+        {
+            return vector::load<bit_width>(array,offset,tile_shape,padding);
+        }
+
+        template <typename ctx_t, typename offset_t>
+        auto operator()(ctx_t, const array_type& array, const offset_t& offset, const tile_shape_type& tile_shape, padding_t padding) const
+        {
+            return load(ctx_t{},array,offset,tile_shape,padding);
+        }
+    };
+
+    template <auto bit_width, typename output_t, typename padding_t>
+    struct store_t<
+        vector::context_t<bit_width>, output_t, padding_t
+    > {
+        using context_type = vector::context_t<bit_width>;
+        using padding_type = padding_t;
+        using output_type  = output_t;
+
+        template <typename offset_t, typename result_t>
+        auto operator()(context_type ctx, output_type& output, const offset_t& offset, const result_t& result, padding_type padding) const
+        {
+            return vector::store<bit_width>(output,offset,result,padding);
+        }
+    };
+
+    template <auto bit_width=128>
+    inline auto worker_id(vector::context_t<bit_width> ctx)
     {
         return nmtools_tuple{ctx.worker_id};
     }
 
-    inline auto worker_size(vector::context_t ctx)
+    template <auto bit_width=128>
+    inline auto worker_size(vector::context_t<bit_width> ctx)
     {
         return nmtools_tuple{ctx.worker_size};
-    }
-
-    // TODO: specialize eval graph, instead of function
-
-    template <typename array_t, typename offset_t, typename shape_t, typename axis_t=none_t>
-    constexpr auto load(vector::context_t, const array_t& array, const offset_t& offset, const shape_t& shape, const axis_t& axis=axis_t{})
-    {
-        return vector::load(array,offset,shape,axis);
-    }
-
-    template <typename output_t, typename offset_t, typename result_t, typename axis_t=none_t>
-    constexpr auto store(vector::context_t, output_t& output, const offset_t& offset, const result_t& result, [[maybe_unused]] const axis_t& axis=axis_t{})
-    {
-        return vector::store(output,offset,result,axis);
     }
 }
 

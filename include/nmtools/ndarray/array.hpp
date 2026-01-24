@@ -25,6 +25,7 @@
 #include "nmtools/array/ufuncs/power.hpp"
 #include "nmtools/array/mean.hpp"
 #include "nmtools/array/prod.hpp"
+#include "nmtools/array/reshape.hpp"
 #include "nmtools/array/sum.hpp"
 #include "nmtools/array/var.hpp"
 
@@ -1158,11 +1159,16 @@ namespace nmtools
             return nmtools::zeros(nmtools::forward<args_t>(args)...,None,None,resolver);
         }
 
-        template <typename array_t>
-        constexpr auto operator()(const array_t& array) const
+        template <typename array_t, typename dst_shape_t=none_t>
+        constexpr auto operator()(const array_t& array, const dst_shape_t& dst_shape=dst_shape_t{}) const
         {
-            auto dst = nmtools::copy(unwrap(array),None,None,resolver);
-            return dst;
+            if constexpr (is_none_v<dst_shape_t>) {
+                auto dst = nmtools::copy(unwrap(array),None,None,resolver);
+                return dst;
+            } else {
+                auto dst = unwrap(nmtools::reshape(array,dst_shape,None,None,resolver));
+                return dst;
+            }
         }
     };
 
