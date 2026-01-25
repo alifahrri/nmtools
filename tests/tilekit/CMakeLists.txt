@@ -47,25 +47,24 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 option(NMTOOLS_TESTS_TILEKIT_ENABLE_TRACY "build tilekit tests with tracy profiling" OFF)
 
 set(NMTOOLS_TESTS_TILEKIT_SRCS
-    src/vector_addition.cpp
-    src/vector_multiply.cpp
-    src/vector_divide.cpp
-    src/vector_subtraction.cpp
-    src/copy.cpp
     src/tilekit.cpp
     src/vector.cpp
     src/add.cpp
     src/multiply.cpp
     src/subtract.cpp
     src/divide.cpp
-    src/thread_pool.cpp
+    src/add_v128_mt.cpp
+    src/multiply_v128_mt.cpp
+    src/subtract_v128_mt.cpp
+    src/divide_v128_mt.cpp
+    src/add_padding.cpp
 )
 if (NMTOOLS_TESTS_TILEKIT_ENABLE_TRACY)
     add_executable(${PROJECT_NAME}-doctest tests.cpp 
         ${NMTOOLS_TESTS_TILEKIT_SRCS}
         /opt/tracy/public/TracyClient.cpp
     )
-    target_compile_definitions(${PROJECT_NAME}-doctest PRIVATE -DTRACY_ENABLE -DNMTOOLS_TRACY_ENABLE)
+    target_compile_definitions(${PROJECT_NAME}-doctest PRIVATE -DTRACY_ENABLE)
     ## TODO: configurable tracy directory
     target_include_directories(${PROJECT_NAME}-doctest PRIVATE /opt/tracy/public/)
 else ()
@@ -79,13 +78,22 @@ add_test(
     COMMAND ${PROJECT_NAME}-doctest
 )
 set(NMTOOLS_TEST_TILEKIT_ARCH "native" CACHE STRING "manually set tilekit arch")
-# set(NMTOOLS_TEST_TILEKIT_OPT  -O2 -g)
-set(NMTOOLS_TEST_TILEKIT_OPT  -O3 -g)
+option(NMTOOLS_TESTS_TILEKIT_ENABLE_TSAN "build tilekit tests with thread sanitizer enabled" OFF)
+
+if (NMTOOLS_TESTS_TILEKIT_ENABLE_TSAN)
+    set(NMTOOLS_TEST_TILEKIT_OPT -g -O3 -fsanitize=thread)
+else ()
+    # set(NMTOOLS_TEST_TILEKIT_OPT -g -O2)
+    set(NMTOOLS_TEST_TILEKIT_OPT -g -O3)
+endif ()
 target_compile_options(${PROJECT_NAME}-doctest
     PRIVATE
     ${NMTOOLS_TEST_TILEKIT_OPT} -march=${NMTOOLS_TEST_TILEKIT_ARCH}
 )
 target_link_libraries(${PROJECT_NAME}-doctest PRIVATE nanobench)
+if (NMTOOLS_TESTS_TILEKIT_ENABLE_TSAN)
+    target_link_options(${PROJECT_NAME}-doctest PRIVATE -fsanitize=thread)
+endif ()
 
 target_compile_options(${PROJECT_NAME}-doctest PRIVATE -std=c++17)
 if (doctest_FOUND)

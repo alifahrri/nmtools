@@ -8,7 +8,7 @@
 namespace nm = nmtools;
 namespace tk = nmtools::tilekit;
 namespace utils = nmtools::utils;
-using mt_vector = tk::thread_pool<tk::vector::context_t>;
+using v128_mt = tk::thread_pool<tk::vector::context_t>;
 
 using nmtools_tuple;
 using nmtools_array;
@@ -56,11 +56,11 @@ int main(int argc, char** argv)
 
     auto tile_shape = tuple{2_ct,16_ct};
     auto num_threads = 8;
-    auto ctx = mt_vector(num_threads);
+    auto ctx = v128_mt(num_threads);
     auto worker_size = num_threads;
 
     for (nm_size_t i=0; i<10'000; i++) {
-        ctx.launch(worker_size,add_kernel,c,a,b,tile_shape);
+        ctx.eval(worker_size,add_kernel,c,a,b,tile_shape);
     }
 
     auto expected = nm::add(a,b);

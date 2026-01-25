@@ -269,4 +269,9 @@ namespace nmtools::meta
     /** @} */ // end group meta
 } // namespace nmtools::meta
 
+namespace nmtools
+{
+    using meta::resolve_optype_t;
+}
+
 #endif // NMTOOLS_META_TRANSFORM_HPP
