@@ -200,6 +200,11 @@ namespace nmtools
             , tag(Tag::NUMBER)
         {}
 
+        constexpr nullable_num(const nullable_num& number)
+            : num(number.num)
+            , tag(number.tag)
+        {}
+
         constexpr auto is_none() const noexcept
         {
             return tag == Tag::NONE;
@@ -231,6 +236,13 @@ namespace nmtools
         {
             none = t;
             tag = Tag::NONE;
+            return *this;
+        }
+
+        constexpr decltype(auto) operator=(nullable_num number)
+        {
+            num = number.num;
+            tag = number.tag;
             return *this;
         }
 
