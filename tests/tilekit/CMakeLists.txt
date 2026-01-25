@@ -49,15 +49,29 @@ option(NMTOOLS_TESTS_TILEKIT_ENABLE_TRACY "build tilekit tests with tracy profil
 set(NMTOOLS_TESTS_TILEKIT_SRCS
     src/tilekit.cpp
     src/vector.cpp
-    src/add.cpp
-    src/multiply.cpp
-    src/subtract.cpp
-    src/divide.cpp
+
+    src/add_v128_st.cpp
+    src/multiply_v128_st.cpp
+    src/subtract_v128_st.cpp
+    src/divide_v128_st.cpp
+
     src/add_v128_mt.cpp
     src/multiply_v128_mt.cpp
     src/subtract_v128_mt.cpp
     src/divide_v128_mt.cpp
-    src/add_padding.cpp
+
+    src/add_padding_v128_st.cpp
+    src/multiply_padding_v128_st.cpp
+    src/subtract_padding_v128_st.cpp
+    src/divide_padding_v128_st.cpp
+
+    src/add_padding_v128_mt.cpp
+    src/multiply_padding_v128_mt.cpp
+    src/subtract_padding_v128_mt.cpp
+    src/divide_padding_v128_mt.cpp
+
+    src/add_v256_mt.cpp
+    src/add_v512_mt.cpp
 )
 if (NMTOOLS_TESTS_TILEKIT_ENABLE_TRACY)
     add_executable(${PROJECT_NAME}-doctest tests.cpp 
