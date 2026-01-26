@@ -10,7 +10,7 @@
 
 namespace nmtools::tilekit::vector
 {
-    template <LayoutKind BufferLayout=LayoutKind::RowMajor>
+    template <auto bit_width=128, LayoutKind BufferLayout=LayoutKind::RowMajor>
     struct vector_eval_resolver_t {};
 
     template<typename T, int N>
@@ -348,16 +348,15 @@ namespace nmtools
 namespace nmtools::meta
 {
     // TODO parametrize, unify with array version
-    template <LayoutKind BufferLayout, typename view_t>
+    template <auto bit_width, LayoutKind BufferLayout, typename view_t>
     struct resolve_optype<
-        void, tilekit::vector::vector_eval_resolver_t<BufferLayout>, view_t, none_t
+        void, tilekit::vector::vector_eval_resolver_t<bit_width, BufferLayout>, view_t, none_t
     >
     {
         template <typename buffer_t, typename shape_buffer_t>
         static constexpr auto make_ndarray(as_value<buffer_t>, as_value<shape_buffer_t>)
         {
             // TODO: parametrize bit_width
-            constexpr auto bit_width = 128;
             if constexpr (BufferLayout == LayoutKind::RowMajor) {
                 using type = tilekit::vector::object_t<buffer_t,shape_buffer_t,bit_width,resolve_stride_type_t,row_major_offset_t>;
                 return as_value_v<type>;
@@ -365,7 +364,7 @@ namespace nmtools::meta
                 using type = tilekit::vector::object_t<buffer_t,shape_buffer_t,bit_width,resolve_stride_type_t,column_major_offset_t>;
                 return as_value_v<type>;
             } else {
-                using type = error::EVAL_RESULT_UNSUPPORTED<view_t,none_t,as_type<BufferLayout>>;
+                using type = error::EVAL_RESULT_UNSUPPORTED<view_t,none_t,as_type<bit_width>,as_type<BufferLayout>>;
                 return as_value_v<type>;
             }
         }
