@@ -22,6 +22,7 @@ Cheatsheet for development build and tests.
   - [Build with devcontainer](#build-with-devcontainer)
   - [Build \& Test Tilekit](#build--test-tilekit)
   - [Setting ulimit](#setting-ulimit)
+  - [Run tracy](#run-tracy)
 
 ## Basic Building & Testing (CPU)
 
@@ -579,3 +580,20 @@ For computational graph with no memory allocation, it may required to increase t
 ```
 ulimit -s unlimited
 ```
+
+## Run tracy
+
+For tilekit, it is possible to run profiling with tracy.
+First, run tracy-capture in a terminal:
+```
+/opt/tracy/capture/build/tracy-capture -o result.tracy -f
+```
+Second, on another terminal, run the tilekit bench, e.g:
+```
+./tests/tilekit/numeric-tests-tilekit-doctest -tc="v128_mt.multiply_padding.1024_1024_ct.fp32.1x32.8"
+```
+Finally, open tracy profiler, then open the `result.tracy` file:
+```
+/opt/tracy/profiler/build/tracy-profiler
+```
+![tracy-add-kernel.png](docs/image/tracy-add-kernel.png)
