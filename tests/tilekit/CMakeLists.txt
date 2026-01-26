@@ -46,6 +46,22 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
 option(NMTOOLS_TESTS_TILEKIT_ENABLE_TRACY "build tilekit tests with tracy profiling" OFF)
 
+function(remove_target_compile_option TARGET_NAME OPTION_TO_REMOVE)
+    # Get the current compile options property as a list
+    get_target_property(_options ${TARGET_NAME} COMPILE_OPTIONS)
+
+    if(_options)
+        # Iterate over the list and remove the specific option
+        list(REMOVE_ITEM _options ${OPTION_TO_REMOVE})
+
+        # Set the modified list back to the property
+        set_target_properties(${TARGET_NAME} PROPERTIES
+            COMPILE_OPTIONS "${_options}"
+        )
+    endif()
+endfunction()
+
+
 set(NMTOOLS_TESTS_TILEKIT_SRCS
     src/tilekit.cpp
     src/vector.cpp
@@ -71,7 +87,10 @@ set(NMTOOLS_TESTS_TILEKIT_SRCS
     src/divide_padding_v128_mt.cpp
 
     src/add_v256_mt.cpp
+    src/multiply_v256_mt.cpp
+
     src/add_v512_mt.cpp
+    src/multiply_v512_mt.cpp
 )
 if (NMTOOLS_TESTS_TILEKIT_ENABLE_TRACY)
     add_executable(${PROJECT_NAME}-doctest tests.cpp 
@@ -81,6 +100,7 @@ if (NMTOOLS_TESTS_TILEKIT_ENABLE_TRACY)
     target_compile_definitions(${PROJECT_NAME}-doctest PRIVATE -DTRACY_ENABLE)
     ## TODO: configurable tracy directory
     target_include_directories(${PROJECT_NAME}-doctest PRIVATE /opt/tracy/public/)
+    remove_target_compile_option(${PROJECT_NAME}-doctest "-Werror")
 else ()
     add_executable(${PROJECT_NAME}-doctest tests.cpp 
         ${NMTOOLS_TESTS_TILEKIT_SRCS}
