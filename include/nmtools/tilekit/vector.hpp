@@ -187,28 +187,6 @@ namespace nmtools::tilekit::vector
 
     #undef nmtools_ndarray_method
 
-    template <typename bit_width_t, typename T, typename flat_index_t, typename tile_ndoffset_t, typename tile_shape_t, typename src_shape_t, typename src_strides_t>
-    constexpr auto compute_load_offset(dtype_t<T>, bit_width_t, flat_index_t flat_index, const tile_ndoffset_t& tile_ndoffset, const tile_shape_t, const src_shape_t& src_shape, const src_strides_t& src_strides)
-    {
-        constexpr auto BIT_WIDTH = bit_width_t::value;
-        constexpr auto NUMEL = BIT_WIDTH / (sizeof(T) * 8 /*bit*/);
-        auto offset = index::compute_offset(tile_ndoffset,src_strides);
-
-        // TODO: generalize to ND
-        constexpr auto last_tile = at(tile_shape_t{},ct_v<-1>);
-        auto last_dim = at(src_shape,ct_v<-1>) - last_tile;
-
-        auto result = (flat_index * NUMEL) + ((flat_index / (last_tile / NUMEL)) * last_dim) + offset;
-        return result;
-    }
-    
-    template <typename bit_width_t, typename T, typename flat_index_t, typename tile_ndoffset_t, typename tile_shape_t, typename src_shape_t>
-    constexpr auto compute_load_offset(dtype_t<T> dtype, bit_width_t bit_width, flat_index_t flat_index, const tile_ndoffset_t& tile_ndoffset, const tile_shape_t tile_shape, const src_shape_t& src_shape)
-    {
-        auto src_strides = index::compute_strides(src_shape);
-        return compute_load_offset(dtype,bit_width,flat_index,tile_ndoffset,tile_shape,src_shape,src_strides);
-    }
-
     struct compute_src_indices_t {};
 
     template <
