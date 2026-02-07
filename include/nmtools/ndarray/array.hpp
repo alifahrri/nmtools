@@ -4,6 +4,7 @@
 #include "nmtools/meta.hpp"
 #include "nmtools/ndarray/ndarray.hpp"
 #include "nmtools/core/alias.hpp"
+#include "nmtools/core/broadcast_to.hpp"
 #include "nmtools/core/reshape.hpp"
 #include "nmtools/core/slice.hpp"
 #include "nmtools/core/mutable_slice.hpp"
@@ -134,6 +135,8 @@ namespace nmtools::view
         } // index
 
         using view_type = decorator_t<object_t,array_t,id_t>;
+
+        nmtools_ndarray_method(broadcast_to)
 
         nmtools_ndarray_method(add)
         nmtools_ndarray_method(subtract)
@@ -475,6 +478,8 @@ namespace nmtools
             offset_ = offset_type(shape_,strides_);
             return true;
         } // resize
+
+        nmtools_ndarray_method(broadcast_to)
 
         nmtools_ndarray_method(add)
         nmtools_ndarray_method(subtract)

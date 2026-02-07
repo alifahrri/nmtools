@@ -20,4 +20,9 @@ namespace nmtools::meta
 
 } // namespace nmtools::meta
 
+namespace nmtools
+{
+    using meta::is_fixed_shape_v;
+}
+
 #endif // NMTOOLS_META_BITS_TRAITS_IS_FIXED_SHAPE_HPP
