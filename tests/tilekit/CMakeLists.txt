@@ -91,6 +91,10 @@ set(NMTOOLS_TESTS_TILEKIT_SRCS
 
     src/add_v512_mt.cpp
     src/multiply_v512_mt.cpp
+
+    src/load_store_v128_st.cpp
+
+    src/broadcast_to_v128_st.cpp
 )
 if (NMTOOLS_TESTS_TILEKIT_ENABLE_TRACY)
     add_executable(${PROJECT_NAME}-doctest tests.cpp 

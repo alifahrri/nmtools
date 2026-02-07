@@ -81,98 +81,123 @@ TEST_CASE("vector(case2)" * doctest::test_suite("tilekit"))
     }
 }
 
-TEST_CASE("vector.compute_load_offset" * doctest::test_suite("tilekit"))
+NMTOOLS_TESTING_DECLARE_CASE(vector, compute_src_indices)
 {
-    auto tile_shape = tuple{2_ct,4_ct};
-    auto src_shape  = tuple{4_ct,12_ct};
-    const auto dtype = nm::float32;
-    const auto bit_width = nm::ct_v<128>;
+    using namespace literals;
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case1)
     {
-        auto tile_ndoffset = tuple{0,0};
-        auto tile_offset = 0;
-        auto memory_offset = tk::vector::compute_load_offset(dtype,bit_width,tile_offset,tile_ndoffset,tile_shape,src_shape);
-        NMTOOLS_ASSERT_EQUAL( memory_offset, 0 );
+        inline int tile_indices[3] = {0,0,0};
+        inline int src_ndoffset[3] = {0,0,0};
+
+        NMTOOLS_CAST_INDEX_ARRAYS(tile_indices)
+        NMTOOLS_CAST_INDEX_ARRAYS(src_ndoffset)
+
+        inline auto tile_indices_ct = nmtools_tuple{0_ct,0_ct,0_ct};
+        inline auto src_ndoffset_ct = nmtools_tuple{0_ct,0_ct,0_ct};
+
+        inline auto tile_indices_nl1 = nmtools_array{nullable_int(),nullable_int(),nullable_int(0)};
+        inline auto src_ndoffset_nl1 = nmtools_array{nullable_int(),nullable_int(),nullable_int(0)};
+
+        inline auto tile_indices_nl2 = nmtools_array{nullable_int(),nullable_int(0),nullable_int()};
+        inline auto src_ndoffset_nl2 = nmtools_array{nullable_int(),nullable_int(0),nullable_int()};
+
+        inline auto tile_indices_mx1 = nmtools_tuple{0,0,0_ct};
+        inline auto src_ndoffset_mx1 = nmtools_tuple{0,0,0_ct};
+
+        inline auto tile_indices_mx2 = nmtools_tuple{0,0_ct,0};
+        inline auto src_ndoffset_mx2 = nmtools_tuple{0,0_ct,0};
+
+        inline auto num_lane = 4_ct;
     }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case1)
     {
-        auto tile_ndoffset = tuple{0,0};
-        auto tile_offset = 1;
-        auto memory_offset = tk::vector::compute_load_offset(dtype,bit_width,tile_offset,tile_ndoffset,tile_shape,src_shape);
-        NMTOOLS_ASSERT_EQUAL( memory_offset, 12 );
+        inline int expected[3] = {0,0,0};
+        inline auto expected_nl1 = nmtools_array{nullable_int(),nullable_int(),nullable_int(0)};
+        inline auto expected_nl2 = nmtools_array{nullable_int(),nullable_int(0),nullable_int()};
     }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case2)
     {
-        auto tile_ndoffset = tuple{0,4};
-        auto tile_offset = 0;
-        auto memory_offset = tk::vector::compute_load_offset(dtype,bit_width,tile_offset,tile_ndoffset,tile_shape,src_shape);
-        NMTOOLS_ASSERT_EQUAL( memory_offset, 4 );
+        inline int tile_indices[3] = {0,1,0};
+        inline int src_ndoffset[3] = {0,2,0};
+
+        NMTOOLS_CAST_INDEX_ARRAYS(tile_indices)
+        NMTOOLS_CAST_INDEX_ARRAYS(src_ndoffset)
+
+        inline auto tile_indices_ct = nmtools_tuple{0_ct,1_ct,0_ct};
+        inline auto src_ndoffset_ct = nmtools_tuple{0_ct,2_ct,0_ct};
+
+        inline auto tile_indices_nl1 = nmtools_array{nullable_int(),nullable_int(),nullable_int(0)};
+        inline auto src_ndoffset_nl1 = nmtools_array{nullable_int(),nullable_int(),nullable_int(0)};
+
+        inline auto tile_indices_nl2 = nmtools_array{nullable_int(),nullable_int(1),nullable_int()};
+        inline auto src_ndoffset_nl2 = nmtools_array{nullable_int(),nullable_int(2),nullable_int()};
+
+        inline auto tile_indices_mx1 = nmtools_tuple{0,1,0_ct};
+        inline auto src_ndoffset_mx1 = nmtools_tuple{0,2,0_ct};
+
+        inline auto tile_indices_mx2 = nmtools_tuple{0,1_ct,0};
+        inline auto src_ndoffset_mx2 = nmtools_tuple{0,2_ct,0};
+
+        inline auto num_lane = 4_ct;
     }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case2)
     {
-        auto tile_ndoffset = tuple{0,4};
-        auto tile_offset = 1;
-        auto memory_offset = tk::vector::compute_load_offset(dtype,bit_width,tile_offset,tile_ndoffset,tile_shape,src_shape);
-        NMTOOLS_ASSERT_EQUAL( memory_offset, 16 );
+        inline int expected[3] = {0,3,0};
+        inline auto expected_nl1 = nmtools_array{nullable_int(),nullable_int(),nullable_int(0)};
+        inline auto expected_nl2 = nmtools_array{nullable_int(),nullable_int(3),nullable_int()};
     }
 }
 
-TEST_CASE("vector.compute_load_offset" * doctest::test_suite("tilekit"))
-{
-    auto tile_shape = tuple{1_ct,2_ct,4_ct};
-    auto src_shape  = tuple{1_ct,4_ct,12_ct};
-    const auto dtype = nm::float32;
-    const auto bit_width = nm::ct_v<128>;
-    {
-        auto tile_ndoffset = tuple{0,0,0};
-        auto tile_offset = 0;
-        auto memory_offset = tk::vector::compute_load_offset(dtype,bit_width,tile_offset,tile_ndoffset,tile_shape,src_shape);
-        NMTOOLS_ASSERT_EQUAL( memory_offset, 0 );
-    }
-    {
-        auto tile_ndoffset = tuple{0,0,0};
-        auto tile_offset = 1;
-        auto memory_offset = tk::vector::compute_load_offset(dtype,bit_width,tile_offset,tile_ndoffset,tile_shape,src_shape);
-        NMTOOLS_ASSERT_EQUAL( memory_offset, 12 );
-    }
-    {
-        auto tile_ndoffset = tuple{0,0,4};
-        auto tile_offset = 0;
-        auto memory_offset = tk::vector::compute_load_offset(dtype,bit_width,tile_offset,tile_ndoffset,tile_shape,src_shape);
-        NMTOOLS_ASSERT_EQUAL( memory_offset, 4 );
-    }
-    {
-        auto tile_ndoffset = tuple{0,0,4};
-        auto tile_offset = 1;
-        auto memory_offset = tk::vector::compute_load_offset(dtype,bit_width,tile_offset,tile_ndoffset,tile_shape,src_shape);
-        NMTOOLS_ASSERT_EQUAL( memory_offset, 16 );
-    }
+#define COMPUTE_SRC_INDICES_EXPECTED_SUBCASE(case_name, expected, ...) \
+SUBCASE(#case_name) \
+{ \
+    NMTOOLS_TESTING_USE_CASE(vector,compute_src_indices,case_name); \
+    using namespace args; \
+    auto result = nmtools::tilekit::vector::compute_src_indices(__VA_ARGS__); \
+    NMTOOLS_ASSERT_EQUAL( result, expect::expected ); \
 }
 
-TEST_CASE("vector.compute_load_offset" * doctest::test_suite("tilekit"))
+#define COMPUTE_SRC_INDICES_SUBCASE(case_name, ...) \
+SUBCASE(#case_name) \
+{ \
+    NMTOOLS_TESTING_USE_CASE(vector,compute_src_indices,case_name); \
+    using namespace args; \
+    auto result = nmtools::tilekit::vector::compute_src_indices(__VA_ARGS__); \
+    NMTOOLS_ASSERT_EQUAL( result, expect::expected ); \
+}
+
+TEST_CASE("compute_src_indices(case1)" * doctest::test_suite("vector"))
 {
-    auto tile_shape = tuple{3_ct,8_ct};
-    auto src_shape  = tuple{3_ct,16_ct};
-    const auto dtype = nm::float32;
-    const auto bit_width = nm::ct_v<128>;
-    {
-        auto tile_ndoffset = tuple{0,0};
-        auto tile_offset   = 1;
-        auto memory_offset = tk::vector::compute_load_offset(dtype,bit_width,tile_offset,tile_ndoffset,tile_shape,src_shape);
-        NMTOOLS_ASSERT_EQUAL( memory_offset, 4 );
-    }
-    {
-        auto tile_ndoffset = tuple{0,0};
-        auto tile_offset   = 2;
-        auto memory_offset = tk::vector::compute_load_offset(dtype,bit_width,tile_offset,tile_ndoffset,tile_shape,src_shape);
-        NMTOOLS_ASSERT_EQUAL( memory_offset, 16 );
-    }
-    {
-        auto tile_ndoffset = tuple{0,0};
-        auto tile_offset   = 5;
-        auto memory_offset = tk::vector::compute_load_offset(dtype,bit_width,tile_offset,tile_ndoffset,tile_shape,src_shape);
-        NMTOOLS_ASSERT_EQUAL( memory_offset, 36 );
-    }
-    {
-        auto tile_ndoffset = tuple{0,8};
-        auto tile_offset   = 1;
-        auto memory_offset = tk::vector::compute_load_offset(dtype,bit_width,tile_offset,tile_ndoffset,tile_shape,src_shape);
-        NMTOOLS_ASSERT_EQUAL( memory_offset, 12 );
-    }
+    COMPUTE_SRC_INDICES_SUBCASE(case1, tile_indices, src_ndoffset, num_lane);
+    COMPUTE_SRC_INDICES_SUBCASE(case1, tile_indices_a, src_ndoffset_a, num_lane);
+    COMPUTE_SRC_INDICES_SUBCASE(case1, tile_indices_v, src_ndoffset_v, num_lane);
+    COMPUTE_SRC_INDICES_SUBCASE(case1, tile_indices_f, src_ndoffset_f, num_lane);
+    COMPUTE_SRC_INDICES_SUBCASE(case1, tile_indices_h, src_ndoffset_h, num_lane);
+
+    COMPUTE_SRC_INDICES_EXPECTED_SUBCASE(case1, expected_nl1, tile_indices_nl1, src_ndoffset_nl1, num_lane);
+    COMPUTE_SRC_INDICES_EXPECTED_SUBCASE(case1, expected_nl2, tile_indices_nl2, src_ndoffset_nl2, num_lane);
+
+    COMPUTE_SRC_INDICES_SUBCASE(case1, tile_indices_mx1, src_ndoffset_mx1, num_lane);
+    COMPUTE_SRC_INDICES_SUBCASE(case1, tile_indices_mx2, src_ndoffset_mx2, num_lane);
+
+    COMPUTE_SRC_INDICES_SUBCASE(case1, tile_indices_ct, src_ndoffset_ct, num_lane);
+}
+
+TEST_CASE("compute_src_indices(case2)" * doctest::test_suite("vector"))
+{
+    COMPUTE_SRC_INDICES_SUBCASE(case2, tile_indices, src_ndoffset, num_lane);
+    COMPUTE_SRC_INDICES_SUBCASE(case2, tile_indices_a, src_ndoffset_a, num_lane);
+    COMPUTE_SRC_INDICES_SUBCASE(case2, tile_indices_v, src_ndoffset_v, num_lane);
+    COMPUTE_SRC_INDICES_SUBCASE(case2, tile_indices_f, src_ndoffset_f, num_lane);
+    COMPUTE_SRC_INDICES_SUBCASE(case2, tile_indices_h, src_ndoffset_h, num_lane);
+
+    COMPUTE_SRC_INDICES_EXPECTED_SUBCASE(case2, expected_nl1, tile_indices_nl1, src_ndoffset_nl1, num_lane);
+    COMPUTE_SRC_INDICES_EXPECTED_SUBCASE(case2, expected_nl2, tile_indices_nl2, src_ndoffset_nl2, num_lane);
+
+    COMPUTE_SRC_INDICES_SUBCASE(case2, tile_indices_mx1, src_ndoffset_mx1, num_lane);
+    COMPUTE_SRC_INDICES_SUBCASE(case2, tile_indices_mx2, src_ndoffset_mx2, num_lane);
+
+    COMPUTE_SRC_INDICES_SUBCASE(case2, tile_indices_ct, src_ndoffset_ct, num_lane);
 }
