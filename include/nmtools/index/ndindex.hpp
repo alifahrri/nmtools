@@ -20,9 +20,9 @@ namespace nmtools::index
     template <typename shape_t, typename=void>
     struct ndindex_t
     {
-        using shape_type = const shape_t&;
-        using stride_type = meta::resolve_optype_t<compute_strides_t,shape_t>;
-        using size_type = meta::remove_cvref_t<meta::get_index_element_type_t<shape_t>>;
+        using shape_type  = const shape_t&;
+        using stride_type = resolve_optype_t<compute_strides_t,shape_t>;
+        using size_type   = remove_cvref_t<meta::get_index_element_type_t<shape_t>>;
 
         shape_type shape;
         stride_type stride;
@@ -52,17 +52,10 @@ namespace nmtools::index
          * @param i flat index
          * @return auto 
          */
-        constexpr inline decltype(auto) operator[](size_t i) const
+        template <typename size_type>
+        constexpr inline decltype(auto) operator[](size_type i) const
         {
-            using index::compute_indices;
-            if constexpr (meta::is_fixed_index_array_v<shape_t>) {
-                // map offset (flat index) back to indices
-                return compute_indices(i,shape,stride);
-            }
-            else {
-                // map offset (flat index) back to indices
-                return compute_indices(i,shape,stride);
-            }
+            return index::compute_indices(i,shape,stride);
         } // operator[]
     }; // ndindex_t
 
@@ -99,6 +92,16 @@ namespace nmtools
         return ndindex.size();
     } // len
 } // namespace nmtools
+
+namespace nmtools::meta
+{
+    template <typename shape_t>
+    struct len<
+        index::ndindex_t<shape_t>, enable_if_t<is_constant_index_array_v<shape_t>>
+    > {
+        static constexpr auto value = index::product(shape_t{});
+    };
+}
 
 
 #endif // NMTOOLS_ARRAY_INDEX_NDINDEX_HPP

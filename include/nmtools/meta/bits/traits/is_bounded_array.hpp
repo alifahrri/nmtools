@@ -29,5 +29,9 @@ namespace nmtools::meta
     inline constexpr bool is_bounded_array_v = is_bounded_array<T>::value;
 } // namespace nmtools::meta
 
+namespace nmtools
+{
+    using meta::is_bounded_array_v;
+}
 
 #endif // NMTOOLS_META_BITS_TRAITS_IS_BOUNDED_ARRAY_HPP

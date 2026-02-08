@@ -157,7 +157,7 @@ TEST_CASE("compute_block_shape(case3)" * doctest::test_suite("tilekit"))
     COMPUTE_BLOCK_SHAPE_EXPECTED_SUBCASE(case3, expected_nl2, array_shape_nl2, tile_shape_nl2, padding);
 }
 
-TEST_CASE("ndoffset" * doctest::test_suite("tilekit"))
+TEST_CASE("ndoffset(case1)" * doctest::test_suite("tilekit"))
 {
     auto array_shape = tuple{4_ct,12_ct};
     auto tile_shape  = tuple{2_ct,4_ct};
@@ -173,7 +173,19 @@ TEST_CASE("ndoffset" * doctest::test_suite("tilekit"))
     NMTOOLS_ASSERT_EQUAL( ndoffset[5], (tuple{2,8}) );
 }
 
-TEST_CASE("ndoffset" * doctest::test_suite("tilekit"))
+TEST_CASE("ndoffset(case2)" * doctest::test_suite("tilekit"))
+{
+    auto array_shape = tuple{2_ct,4_ct,4_ct};
+    auto tile_shape  = tuple{2_ct,2_ct,4_ct};
+
+    auto ndoffset = tk::ndoffset(array_shape,tile_shape);
+
+    NMTOOLS_ASSERT_EQUAL( ndoffset.size(), 2 );
+    NMTOOLS_ASSERT_EQUAL( ndoffset[0], (tuple{0,0,0}) );
+    NMTOOLS_ASSERT_EQUAL( ndoffset[1], (tuple{0,2,0}) );
+}
+
+TEST_CASE("ndoffset(case3)" * doctest::test_suite("tilekit"))
 {
     auto array_shape = tuple{1024_ct,1024_ct};
     auto tile_shape  = tuple{2_ct,4_ct};

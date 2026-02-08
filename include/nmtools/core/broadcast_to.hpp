@@ -116,15 +116,7 @@ namespace nmtools::view
     {
         auto f = [](const auto& array, const auto& dst_shape, const auto bsize){
             auto src_shape = shape<true>(array);
-            auto bcast_result = index::shape_broadcast_to(src_shape,dst_shape);
-            #if 0
-            // when shape_origin is tuple<maybe<clipped_integer>...>
-            // unusable in constexpr evaluation :|
-            auto shape_origin = index::origin_axes(bcast_result);
-            auto origin = nmtools::get<1>(shape_origin);
-            auto indexer = broadcaster(src_shape,dst_shape,origin,bsize);
-            return indexing(array,indexer);
-            #else
+            auto bcast_result   = index::shape_broadcast_to(src_shape,dst_shape);
             auto m_shape_origin = index::origin_axes(bcast_result);
             if constexpr (meta::is_maybe_v<decltype(m_shape_origin)>) {
                 using shape_origin_t = meta::get_maybe_type_t<decltype(m_shape_origin)>;
@@ -144,7 +136,6 @@ namespace nmtools::view
                 auto indexer = broadcaster(src_shape,dst_shape,origin,bsize);
                 return indexing(array,indexer);
             }
-            #endif
         };
         return lift_indexing(f,array,dst_shape,bsize);
     } // broadcast_to

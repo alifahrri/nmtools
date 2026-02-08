@@ -4,6 +4,7 @@
 #include "nmtools/meta.hpp"
 #include "nmtools/utility.hpp"
 #include "nmtools/core.hpp"
+#include "nmtools/index/array.hpp"
 #include "nmtools/index/product.hpp"
 #include "nmtools/ndarray/array.hpp"
 #include "nmtools/tilekit/tilekit.hpp"
@@ -18,6 +19,15 @@ namespace nmtools::tilekit::vector
         using type __attribute__((vector_size(N), aligned(4))) = T;
     };
 
+    #define nmtools_ndarray_method(method) \
+    template <typename...args_t> \
+    constexpr auto method(const args_t&...args) const \
+    { \
+        auto v = nmtools::view::method(*this,args...); \
+        auto result = nmtools::eval(v,Unroll,None,as_value_v<resolver_type>); \
+        return nmtools::unwrap(result); \
+    }
+
     template <
           typename buffer_t
         , typename shape_buffer_t
@@ -29,14 +39,62 @@ namespace nmtools::tilekit::vector
     struct object_t
         : nmtools::object_t<buffer_t,shape_buffer_t,resolve_stride_type_t,row_major_offset_t,resolver_t>
     {
-        // TODO: assert size/shape buffer and shape is known at compile-time
-        using base_type = nmtools::object_t<buffer_t,shape_buffer_t,resolve_stride_type_t,row_major_offset_t,resolver_t>;
-        using value_type = typename base_type::value_type;
+        using shape_buffer_type = shape_buffer_t;
+        static_assert( is_constant_index_array_v<shape_buffer_type>
+            , "unsupported shape buffer type for vector::object_t; expected constant index array"
+        );
+        // TODO: assert shape buffer and shape is known at compile-time
+        using base_type     = nmtools::object_t<buffer_t,shape_buffer_t,resolve_stride_type_t,row_major_offset_t,resolver_t>;
+        using value_type    = typename base_type::value_type;
+        using resolver_type = resolver_t<bit_width,LayoutKind::RowMajor>;
+        using element_type  = get_element_type_t<buffer_t>;
 
         static constexpr auto n_bytes = bit_width / 8;
         using vector_type = typename make_vector<value_type, n_bytes>::type;
 
         static constexpr auto n_iter = (fixed_size_v<base_type> * sizeof(value_type)) / n_bytes;
+        static constexpr auto src_shape = shape_buffer_type{};
+        static constexpr auto dtype = dtype_t<element_type>{};
+        static constexpr auto DIM   = len_v<shape_buffer_type>;
+        static constexpr auto NUM_LANE = bit_width / (sizeof(element_type) * 8 /*bit*/);
+        static constexpr auto SRC_SIZE = index::product(src_shape);
+
+        template <typename dst_shape_t>
+        constexpr auto broadcast_to(const dst_shape_t& dst_shape) const
+        {
+            auto dst_size = index::product(dst_shape);
+            constexpr auto DST_SIZE = decltype(dst_size)::value;
+            using dst_buffer_t = nmtools_array<element_type,DST_SIZE>;
+            using result_t = object_t<dst_buffer_t,dst_shape_t,bit_width>;
+
+            auto m_src_shape = index::array(src_shape);
+            auto lane = [&](){
+                if constexpr (DIM == 1) {
+                    return nmtools_tuple{ct_v<NUM_LANE>};
+                } else {
+                    return index::ones(ct_v<DIM-1>).append(ct_v<NUM_LANE>);
+                }
+            }();
+            auto bcast_src_shape = m_src_shape / lane;
+            auto src_index = index::ndindex(bcast_src_shape);
+
+            constexpr auto NUM_LOAD   = len_v<decltype(src_index)>;
+            constexpr auto NUM_REPEAT = DST_SIZE / SRC_SIZE;
+
+            auto result = result_t {};
+
+            using vector_t = vector_type;
+            template_for<NUM_LOAD>([&](auto i){
+                constexpr auto I = decltype(i)::value;
+                auto v = *((vector_t*)this->data()+I);
+                template_for<NUM_REPEAT>([&](auto j){
+                    constexpr auto J = decltype(j)::value;
+                    *((vector_t*)result.data()+((J*NUM_LOAD)+I)) = v;
+                });
+            });
+
+            return result;
+        }
 
         template <typename rhs_t>
         constexpr auto add(const rhs_t& rhs) const
@@ -127,28 +185,71 @@ namespace nmtools::tilekit::vector
         }
     };
 
-    template <typename bit_width_t, typename T, typename flat_index_t, typename tile_ndoffset_t, typename tile_shape_t, typename src_shape_t, typename src_strides_t>
-    constexpr auto compute_load_offset(dtype_t<T>, bit_width_t, flat_index_t flat_index, const tile_ndoffset_t& tile_ndoffset, const tile_shape_t, const src_shape_t& src_shape, const src_strides_t& src_strides)
+    #undef nmtools_ndarray_method
+
+    struct compute_src_indices_t {};
+
+    template <
+        typename tile_indices_t
+        , typename src_ndoffset_t
+        , typename num_lane_t>
+    constexpr auto compute_src_indices(
+        const tile_indices_t& tile_indices
+        , const src_ndoffset_t& src_ndoffset
+        , const num_lane_t num_lane)
     {
-        constexpr auto BIT_WIDTH = bit_width_t::value;
-        constexpr auto NUMEL = BIT_WIDTH / (sizeof(T) * 8 /*bit*/);
-        auto offset = index::compute_offset(tile_ndoffset,src_strides);
+        using result_t = resolve_optype_t<compute_src_indices_t,tile_indices_t,src_ndoffset_t,num_lane_t>;
 
-        // TODO: generalize to ND
-        constexpr auto last_tile = at(tile_shape_t{},ct_v<-1>);
-        auto last_dim = at(src_shape,ct_v<-1>) - last_tile;
+        auto result = result_t {};
 
-        auto result = (flat_index * NUMEL) + ((flat_index / (last_tile / NUMEL)) * last_dim) + offset;
+        if constexpr (!is_fail_v<result_t>
+            && !is_constant_index_array_v<result_t>
+        ) {
+            constexpr auto DIM = len_v<tile_indices_t>;
+            [[maybe_unused]] auto dim = len(src_ndoffset);
+            if constexpr (is_resizable_v<result_t>) {
+                result.resize(dim);
+            }
+
+            if constexpr (DIM > 0) {
+                template_for<DIM-1>([&](auto i){
+                    auto& result_i = at(result,i);
+                    if constexpr (!is_constant_index_v<decltype(result_i)>) {
+                        auto src_i = at(src_ndoffset,i);
+                        auto tile_i = at(tile_indices,i);
+                        if (has_value(src_i) && has_value(tile_i)) {
+                            at(result,i) = tile_i + src_i;
+                        }
+                    }
+                });
+                auto i = ct_v<DIM-1>;
+                auto& result_i = at(result,i);
+                if constexpr (!is_constant_index_v<decltype(result_i)>) {
+                    auto src_i = at(src_ndoffset,i);
+                    auto tile_i = at(tile_indices,i);
+                    if (has_value(src_i) && has_value(tile_i)) {
+                        at(result,i) = (tile_i * num_lane) + src_i;
+                    }
+                }
+            } else {
+                nm_size_t i = 0;
+                for (; i<(nm_size_t)dim-1; i++) {
+                    auto src_i = at(src_ndoffset,i);
+                    auto tile_i = at(tile_indices,i);
+                    if (has_value(src_i) && has_value(tile_i)) {
+                        at(result,i) = tile_i + src_i;
+                    }
+                }
+                auto src_i = at(src_ndoffset,i);
+                auto tile_i = at(tile_indices,i);
+                if (has_value(src_i) && has_value(tile_i)) {
+                    at(result,i) = (tile_i * num_lane) + src_i;
+                }
+            }
+        }
+
         return result;
     }
-    
-    template <typename bit_width_t, typename T, typename flat_index_t, typename tile_ndoffset_t, typename tile_shape_t, typename src_shape_t>
-    constexpr auto compute_load_offset(dtype_t<T> dtype, bit_width_t bit_width, flat_index_t flat_index, const tile_ndoffset_t& tile_ndoffset, const tile_shape_t tile_shape, const src_shape_t& src_shape)
-    {
-        auto src_strides = index::compute_strides(src_shape);
-        return compute_load_offset(dtype,bit_width,flat_index,tile_ndoffset,tile_shape,src_shape,src_strides);
-    }
-
     
 
     // TODO: rename offset to indices
@@ -172,10 +273,23 @@ namespace nmtools::tilekit::vector
         constexpr auto NUM_LANE = bit_width / (sizeof(element_t) * 8 /*bit*/);
         constexpr auto NUM_LOAD = SIZE / NUM_LANE;
 
+        constexpr auto DIM = len_v<tile_shape_t>;
+        constexpr auto v_lane = [&](){
+            if constexpr (DIM == 1) {
+                return nmtools_tuple{ct_v<NUM_LANE>};
+            } else {
+                return index::ones(ct_v<DIM-1>).append(ct_v<NUM_LANE>);
+            }
+        }();
+        constexpr auto v_tile_shape = index::array(tile_shape_t{}) / v_lane;
+        constexpr auto v_tile_strides = index::compute_strides(v_tile_shape);
+
         auto vectorized_load = [&](){
             template_for<NUM_LOAD>([&](auto i){
                 constexpr auto I = decltype(i)::value;
-                auto src_offset  = compute_load_offset(dtype_t<element_t>{},ct_v<bit_width>,i,offset,tile_shape,src_shape,src_strides);
+                auto tile_indices = index::compute_indices(i,v_tile_shape,v_tile_strides);
+                auto src_indices  = vector::compute_src_indices(tile_indices,offset,ct_v<NUM_LANE>);
+                auto src_offset   = index::compute_offset(src_indices,src_strides);
                 *((vector_t*)result.data()+I) = *((vector_t*)&array.data()[src_offset]);
             });
         };
@@ -223,13 +337,23 @@ namespace nmtools::tilekit::vector
         const auto output_shape   = shape(output);
         const auto output_strides = index::compute_strides(output_shape);
 
-        auto dtype = dtype_t<element_t>{};
-        auto BIT_WIDTH = ct_v<bit_width>;
+        using tile_shape_t = decltype(result.shape());
+        constexpr auto v_lane = [&](){
+            if constexpr (DIM == 1) {
+                return nmtools_tuple{ct_v<NUM_LANE>};
+            } else {
+                return index::ones(ct_v<DIM-1>).append(ct_v<NUM_LANE>);
+            }
+        }();
+        constexpr auto v_tile_shape = index::array(tile_shape_t{}) / v_lane;
+        constexpr auto v_tile_strides = index::compute_strides(v_tile_shape);
 
         auto vectorized_store = [&](){
             template_for<NUM_LOAD>([&](auto i){
                 constexpr auto I = decltype(i)::value;
-                auto src_offset  = compute_load_offset(dtype,BIT_WIDTH,i,offset,tile_shape,output_shape,output_strides);
+                auto tile_indices = index::compute_indices(i,v_tile_shape,v_tile_strides);
+                auto src_indices  = vector::compute_src_indices(tile_indices,offset,ct_v<NUM_LANE>);
+                auto src_offset   = index::compute_offset(src_indices,output_strides);
                 *((vector_t*)&output.data()[src_offset]) = *((vector_t*)result.data()+I);
             });
         };
@@ -347,10 +471,94 @@ namespace nmtools
 
 namespace nmtools::meta
 {
-    // TODO parametrize, unify with array version
-    template <auto bit_width, LayoutKind BufferLayout, typename view_t>
+    namespace error
+    {
+        template <typename...>
+        struct VECTOR_COMPUTE_SRC_INDICES_UNSUPPORTED : detail::fail_t {};
+    }
+
+    template <typename tile_indices_t, typename src_ndoffset_t, typename num_lane_t>
     struct resolve_optype<
-        void, tilekit::vector::vector_eval_resolver_t<bit_width, BufferLayout>, view_t, none_t
+        void, tilekit::vector::compute_src_indices_t, tile_indices_t, src_ndoffset_t, num_lane_t
+    > {
+        static constexpr auto vtype = [](){
+            if constexpr (!is_index_array_v<tile_indices_t>
+                || !is_index_array_v<src_ndoffset_t>
+                || !is_constant_index_v<num_lane_t>
+            ) {
+                using type = error::VECTOR_COMPUTE_SRC_INDICES_UNSUPPORTED<tile_indices_t,src_ndoffset_t,num_lane_t>;
+                return as_value_v<type>;
+            } else if constexpr ((is_constant_index_array_v<tile_indices_t> || is_mixed_index_array_v<tile_indices_t>)
+                && (is_constant_index_array_v<src_ndoffset_t> || is_mixed_index_array_v<src_ndoffset_t>)
+            ) {
+                constexpr auto tile_indices = to_value_v<tile_indices_t>;
+                constexpr auto src_ndoffset = to_value_v<src_ndoffset_t>;
+                constexpr auto num_lane = num_lane_t{};
+                constexpr auto result = unwrap(tilekit::vector::compute_src_indices(tile_indices,src_ndoffset,num_lane));
+                using nmtools::at, nmtools::len;
+                constexpr auto N = len(result);
+                // check if should return array
+                constexpr auto return_array = [&](){
+                    auto all_none = !has_value(at(result,0));
+                    for (nm_size_t i=1; i<(nm_size_t)N; i++) {
+                        all_none &= !has_value(at(result,i));
+                    }
+                    return all_none;
+                }();
+                if constexpr (return_array) {
+                    using type = nmtools_array<nm_size_t,N>;
+                    return as_value_v<type>;
+                } else {
+                    return template_reduce<N>([&](auto init, auto index){
+                        constexpr auto i = decltype(index)::value;
+                        using init_t = type_t<decltype(init)>;
+                        constexpr auto result_i = at(result,i);
+                        if constexpr (has_value(result_i)) {
+                            using type_i = ct<(nm_size_t)result_i>;
+                            using type   = append_type_t<init_t,type_i>;
+                            return as_value_v<type>;
+                        } else {
+                            using type_i = nm_size_t;
+                            using type   = append_type_t<init_t,type_i>;
+                            return as_value_v<type>;
+                        }
+                    }, as_value_v<nmtools_tuple<>>);
+                }
+            } else {
+                constexpr auto TILE_DIM = len_v<tile_indices_t>;
+                constexpr auto SRC_DIM  = len_v<src_ndoffset_t>;
+                using element_t = conditional_t<
+                    (is_mixed_index_array_v<tile_indices_t> || is_mixed_index_array_v<src_ndoffset_t>)
+                    || (is_nullable_index_array_v<tile_indices_t> || is_nullable_index_array_v<src_ndoffset_t>)
+                    , nullable_size_t
+                    , nm_size_t
+                >;
+                [[maybe_unused]] constexpr auto MAX_TILE_DIM = max_len_v<tile_indices_t>;
+                [[maybe_unused]] constexpr auto MAX_SRC_DIM  = max_len_v<src_ndoffset_t>;
+                if constexpr ((TILE_DIM > 0) && (SRC_DIM > 0)) {
+                    // assume the same
+                    using type = nmtools_array<element_t,TILE_DIM>;
+                    return as_value_v<type>;
+                } else if constexpr ((MAX_TILE_DIM > 0) || (MAX_SRC_DIM > 0)) {
+                    constexpr auto MAX_DIM = (MAX_TILE_DIM > 0 ? MAX_TILE_DIM : MAX_SRC_DIM);
+                    using type = nmtools_static_vector<element_t,MAX_DIM>;
+                    return as_value_v<type>;
+                } else {
+                    using type = nmtools_list<element_t>;
+                    return as_value_v<type>;
+                }
+            }
+        }();
+        using type = type_t<decltype(vtype)>;
+    };
+}
+
+namespace nmtools::meta
+{
+    // TODO parametrize, unify with array version
+    template <auto bit_width, LayoutKind BufferLayout, typename view_t, typename context_t>
+    struct resolve_optype<
+        void, tilekit::vector::vector_eval_resolver_t<bit_width, BufferLayout>, view_t, context_t
     >
     {
         template <typename buffer_t, typename shape_buffer_t>
