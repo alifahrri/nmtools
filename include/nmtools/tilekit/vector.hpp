@@ -8,6 +8,7 @@
 #include "nmtools/index/product.hpp"
 #include "nmtools/ndarray/array.hpp"
 #include "nmtools/tilekit/tilekit.hpp"
+#include "nmtools/tilekit/scalar.hpp"
 
 namespace nmtools::tilekit::vector
 {
@@ -34,7 +35,7 @@ namespace nmtools::tilekit::vector
         , auto bit_width
         , template <typename...>typename stride_buffer_t=resolve_stride_type_t
         , template <typename...>typename compute_offset_t=row_major_offset_t
-        , template <auto...>typename resolver_t=vector_eval_resolver_t
+        , typename resolver_t=vector_eval_resolver_t<bit_width,LayoutKind::RowMajor>
         , typename=void>
     struct object_t
         : nmtools::object_t<buffer_t,shape_buffer_t,resolve_stride_type_t,row_major_offset_t,resolver_t>
@@ -46,7 +47,7 @@ namespace nmtools::tilekit::vector
         // TODO: assert shape buffer and shape is known at compile-time
         using base_type     = nmtools::object_t<buffer_t,shape_buffer_t,resolve_stride_type_t,row_major_offset_t,resolver_t>;
         using value_type    = typename base_type::value_type;
-        using resolver_type = resolver_t<bit_width,LayoutKind::RowMajor>;
+        using resolver_type = resolver_t;
         using element_type  = get_element_type_t<buffer_t>;
 
         static constexpr auto n_bytes = bit_width / 8;
@@ -463,7 +464,7 @@ namespace nmtools
         , auto bit_width
         , template <typename...>typename stride_buffer_t
         , template <typename...>typename offset_compute_t
-        , template <auto...>typename resolver_t>
+        , typename resolver_t>
     struct get_t<I,tilekit::vector::object_t<buffer_t,shape_buffer_t,bit_width,stride_buffer_t,offset_compute_t,resolver_t>>
         : get_t<I,object_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t,resolver_t>> {};
     
@@ -763,7 +764,7 @@ namespace nmtools::meta
         , auto bit_width
         , template <typename...>typename stride_buffer_t
         , template <typename...>typename offset_compute_t
-        , template <auto...>typename resolver_t>
+        , typename resolver_t>
     struct get_element_type<tilekit::vector::object_t<buffer_t,shape_buffer_t,bit_width,stride_buffer_t,offset_compute_t,resolver_t>>
         : get_element_type<object_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t,resolver_t>> {};
     
@@ -773,7 +774,7 @@ namespace nmtools::meta
         , auto bit_width
         , template <typename...>typename stride_buffer_t
         , template <typename...>typename offset_compute_t
-        , template <auto...>typename resolver_t>
+        , typename resolver_t>
     struct is_ndarray<
         tilekit::vector::object_t<buffer_t,shape_buffer_t,bit_width,stride_buffer_t,offset_compute_t,resolver_t>
     > : is_ndarray<object_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t,resolver_t>> {};
@@ -784,7 +785,7 @@ namespace nmtools::meta
         , auto bit_width
         , template <typename...>typename stride_buffer_t
         , template <typename...>typename offset_compute_t
-        , template <auto...>typename resolver_t>
+        , typename resolver_t>
     struct fixed_dim<
         tilekit::vector::object_t<buffer_t,shape_buffer_t,bit_width,stride_buffer_t,offset_compute_t,resolver_t>
     > : fixed_dim<object_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t,resolver_t>> {};
@@ -795,7 +796,7 @@ namespace nmtools::meta
         , auto bit_width
         , template <typename...>typename stride_buffer_t
         , template <typename...>typename offset_compute_t
-        , template <auto...>typename resolver_t>
+        , typename resolver_t>
     struct fixed_shape<
         tilekit::vector::object_t<buffer_t,shape_buffer_t,bit_width,stride_buffer_t,offset_compute_t,resolver_t>
     > : fixed_shape<object_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t,resolver_t>> {};
@@ -806,7 +807,7 @@ namespace nmtools::meta
         , auto bit_width
         , template <typename...>typename stride_buffer_t
         , template <typename...>typename offset_compute_t
-        , template <auto...>typename resolver_t>
+        , typename resolver_t>
     struct fixed_size<
         tilekit::vector::object_t<buffer_t,shape_buffer_t,bit_width,stride_buffer_t,offset_compute_t,resolver_t>
     > : fixed_size<object_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t,resolver_t>> {};
@@ -817,7 +818,7 @@ namespace nmtools::meta
         , auto bit_width
         , template <typename...>typename stride_buffer_t
         , template <typename...>typename offset_compute_t
-        , template <auto...>typename resolver_t>
+        , typename resolver_t>
     struct replace_element_type<
         tilekit::vector::object_t<buffer_t,shape_buffer_t,bit_width,stride_buffer_t,offset_compute_t,resolver_t>, U
     >
