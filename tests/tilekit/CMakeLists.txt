@@ -94,6 +94,8 @@ set(NMTOOLS_TESTS_TILEKIT_SRCS
 
     src/load_store_v128_st.cpp
 
+    src/add_scalar_st.cpp
+
     src/broadcast_to_v128_st.cpp
 )
 if (NMTOOLS_TESTS_TILEKIT_ENABLE_TRACY)

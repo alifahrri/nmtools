@@ -9,6 +9,8 @@ add_executable(${PROJECT_NAME} tests.cpp
     src/either.cpp
     src/vector.cpp
     src/clipped_integer.cpp
+    src/algorithm.cpp
+    src/math.cpp
     src/queue.cpp
     src/stack.cpp
     src/static_map.cpp
