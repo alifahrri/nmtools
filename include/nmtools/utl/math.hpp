@@ -30,11 +30,27 @@ namespace nmtools::utl
         }
     }
 
+    #define nmtools_bit_cast(T,x) \
+    (__builtin_bit_cast(T,x))
+
+    #define nmtools_bit_cast_constexpr constexpr
+
+    #ifdef __GNUC__
+    #if __GNUC__ < 10
+    #undef nmtools_bit_cast
+    #undef nmtools_bit_cast_constexpr
+    #define nmtools_bit_cast(T,x) \
+    (*(T*)&x)
+    #define nmtools_bit_cast_constexpr
+    #endif // __GNUC__ < 10
+    #endif // __GNUC__
+
     template <typename T>
-    constexpr auto get_exponent_bits(T x)
+    nmtools_bit_cast_constexpr
+    auto get_exponent_bits(T x)
     {
         // TODO: handle double precision
-        uint32_t bits = __builtin_bit_cast(uint32_t,x);
+        uint32_t bits = nmtools_bit_cast(uint32_t,x);
 
         auto shifted_bits = bits >> 23;
 
@@ -46,10 +62,11 @@ namespace nmtools::utl
     }
 
     template <typename T>
-    constexpr auto copy_sign(T x, T y)
+    nmtools_bit_cast_constexpr
+    auto copy_sign(T x, T y)
     {
-        auto x_bits = __builtin_bit_cast(uint32_t,x);
-        auto y_bits = __builtin_bit_cast(uint32_t,y);
+        auto x_bits = nmtools_bit_cast(uint32_t,x);
+        auto y_bits = nmtools_bit_cast(uint32_t,y);
 
         auto sign_mask = 0x80000000;
 
@@ -58,7 +75,7 @@ namespace nmtools::utl
 
         auto result_bits = mag_x | sgn_y;
 
-        return __builtin_bit_cast(T,result_bits);
+        return nmtools_bit_cast(T,result_bits);
     }
 
     template <typename exponent_t>
@@ -79,13 +96,14 @@ namespace nmtools::utl
     }
 
     template <typename T, typename U>
-    constexpr auto bitwise_and(T x, U mask)
+    nmtools_bit_cast_constexpr
+    auto bitwise_and(T x, U mask)
     {
-        auto bits = __builtin_bit_cast(uint32_t,x);
+        auto bits = nmtools_bit_cast(uint32_t,x);
 
         auto masked_bits = bits & mask;
 
-        return __builtin_bit_cast(T,masked_bits);
+        return nmtools_bit_cast(T,masked_bits);
     }
 
     template <typename T>
