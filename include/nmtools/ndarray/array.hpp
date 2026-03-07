@@ -338,22 +338,6 @@ namespace nmtools
         return nmtools::unwrap(result); \
     }
 
-    // #define nmtools_ndarray_method(method) \
-    // template <typename...args_t> \
-    // constexpr auto method(const args_t&...args) const \
-    // { \
-    //     auto v = view::method(*this,args...); \
-    //     using view_t = remove_cvref_t<decltype(v)>; \
-    //     using result_t = resolve_optype_t<resolver_type,view_t,none_t>; \
-    //     auto result = result_t{}; \
-    //     if constexpr (meta::is_resizable_v<result_t>) { \
-    //         auto inp_shape = ::nmtools::shape(v); \
-    //         ::nmtools::detail::apply_resize(result,inp_shape); \
-    //     } \
-    //     nmtools::eval(unwrap(v),context_,result); \
-    //     return result; \
-    // }
-
     template <
           typename buffer_t
         , typename shape_buffer_t
