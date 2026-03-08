@@ -44,7 +44,7 @@ namespace nmtools::utl
     #define nmtools_bit_cast(T,x) \
     (*(T*)&x)
     #define nmtools_bit_cast_constexpr
-    #define nmtools_has_constexpr_bit_cast (1)
+    #define nmtools_has_constexpr_bit_cast (0)
     #endif // __GNUC__ < 10
     #endif // __GNUC__
 
