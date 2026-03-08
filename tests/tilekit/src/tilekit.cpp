@@ -1,4 +1,5 @@
 #include "nmtools/tilekit/tilekit.hpp"
+#include "nmtools/tilekit/scalar.hpp"
 #include "nmtools/testing/doctest.hpp"
 
 namespace nm = nmtools;
