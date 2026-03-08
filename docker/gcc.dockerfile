@@ -12,7 +12,7 @@ COPY nmtools.pc.in nmtools.pc.in
 COPY nmtoolsConfig.cmake.in nmtoolsConfig.cmake.in
 
 RUN mkdir build && cd build \
-    && cmake -DCMAKE_TOOLCHAIN_FILE=cmake/toolchains/gcc-werror.cmake \
+    && cmake -DCMAKE_TOOLCHAIN_FILE=cmake/toolchains/gcc9-werror.cmake \
         -DNMTOOLS_BUILD_EXAMPLES=ON \
         -DNMTOOLS_CODE_COVERAGE=ON \
         -DNMTOOLS_ENABLE_TEST_BENCHMARKS=OFF \
