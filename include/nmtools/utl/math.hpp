@@ -34,14 +34,17 @@ namespace nmtools::utl
     (__builtin_bit_cast(T,x))
 
     #define nmtools_bit_cast_constexpr constexpr
+    #define nmtools_has_constexpr_bit_cast (1)
 
     #ifdef __GNUC__
     #if __GNUC__ < 10
     #undef nmtools_bit_cast
     #undef nmtools_bit_cast_constexpr
+    #undef nmtools_has_constexpr_bit_cast
     #define nmtools_bit_cast(T,x) \
     (*(T*)&x)
     #define nmtools_bit_cast_constexpr
+    #define nmtools_has_constexpr_bit_cast (1)
     #endif // __GNUC__ < 10
     #endif // __GNUC__
 
@@ -665,10 +668,15 @@ namespace nmtools::utl
     template <typename T>
     constexpr auto cos(T x)
     {
+        #if nmtools_has_constexpr_bit_cast
         constexpr auto a = T(0);
         constexpr auto b = T(utl::pow(T(utl::pi_v<T> / 4), 2));
         constexpr auto cos_coeffs = solve_remez(obj_fun_cos,a,b,NMTOOLS_UTL_REMEZ_DEGREE,NMTOOLS_UTL_REMEZ_ITER);
         constexpr auto sin_coeffs = solve_remez(obj_fun_sin,a,b,NMTOOLS_UTL_REMEZ_DEGREE,NMTOOLS_UTL_REMEZ_ITER);
+        #else
+        constexpr auto cos_coeffs = utl::array<T,6>{1.000000, -5.00000e-1, 4.16666e-2, -1.38888e-3, 2.47998045e-4, -2.72364189e-7};
+        constexpr auto sin_coeffs = utl::array<T,6>{1.000000, -1.66667e-1, 8.33333e-3, -1.98412647e-4, 2.75555594e-6, -2.47766355e-8};
+        #endif
 
         return cos_poly(x,cos_coeffs,sin_coeffs);
     }
@@ -676,10 +684,15 @@ namespace nmtools::utl
     template <typename T>
     constexpr auto sin(T x)
     {
+        #if nmtools_has_constexpr_bit_cast
         constexpr auto a = T(0);
         constexpr auto b = T(utl::pow(T(utl::pi_v<T> / 4), 2));
         constexpr auto cos_coeffs = solve_remez(obj_fun_cos,a,b,NMTOOLS_UTL_REMEZ_DEGREE,NMTOOLS_UTL_REMEZ_ITER);
         constexpr auto sin_coeffs = solve_remez(obj_fun_sin,a,b,NMTOOLS_UTL_REMEZ_DEGREE,NMTOOLS_UTL_REMEZ_ITER);
+        #else
+        constexpr auto cos_coeffs = utl::array<T,6>{1.000000, -5.00000e-1, 4.16666e-2, -1.38888e-3, 2.47998045e-4, -2.72364189e-7};
+        constexpr auto sin_coeffs = utl::array<T,6>{1.000000, -1.66667e-1, 8.33333e-3, -1.98412647e-4, 2.75555594e-6, -2.47766355e-8};
+        #endif
 
         return sin_poly(x,sin_coeffs,cos_coeffs);
     }
