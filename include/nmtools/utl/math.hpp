@@ -21,6 +21,18 @@ namespace nmtools::utl
     constexpr inline T pi_v = 3.141592653589793238462643383279502884197;
 
     template <typename T>
+    constexpr inline T ln2_v = 0.6931471805599453;
+
+    template <typename T>
+    constexpr inline T e_v = 2.718281828459045;
+
+    template <typename T>
+    constexpr inline T inv_ln2_v = 1.4426950408889634;
+
+    template <typename T>
+    constexpr inline T inv_ln10_v = 0.4342944819032518;
+
+    template <typename T>
     constexpr auto abs(T t)
     {
         if (t < 0) {
@@ -68,6 +80,7 @@ namespace nmtools::utl
     nmtools_bit_cast_constexpr
     auto copy_sign(T x, T y)
     {
+        // TODO: handle double precision
         auto x_bits = nmtools_bit_cast(uint32_t,x);
         auto y_bits = nmtools_bit_cast(uint32_t,y);
 
@@ -84,6 +97,7 @@ namespace nmtools::utl
     template <typename exponent_t>
     constexpr auto create_integer_mask(exponent_t exponent)
     {
+        // TODO: handle double precision
         // TODO: assert constant index
         if (exponent >= 23) {
             return 0xFFFFFFFF;
@@ -102,6 +116,7 @@ namespace nmtools::utl
     nmtools_bit_cast_constexpr
     auto bitwise_and(T x, U mask)
     {
+        // TODO: handle double precision
         auto bits = nmtools_bit_cast(uint32_t,x);
 
         auto masked_bits = bits & mask;
@@ -114,6 +129,7 @@ namespace nmtools::utl
     {
         auto exponent = get_exponent_bits(x);
 
+        // TODO: handle double precision
         if (exponent >= 23) {
             return x;
         }
@@ -131,6 +147,7 @@ namespace nmtools::utl
     template <typename T>
     constexpr auto floor(T x)
     {
+        // int32 is enough for both float64 and float32 (?)
         // assume float, so use int
         // TODO: infer type
         int32_t i = x;
@@ -144,6 +161,7 @@ namespace nmtools::utl
     template <typename T>
     constexpr auto ceil(T x)
     {
+        // int32 is enough for both float64 and float32 (?)
         // assume float, use int
         // TODO: infer type
         int32_t i = x;
@@ -171,6 +189,93 @@ namespace nmtools::utl
 
         auto result = x - (quotient * y);
         return result;
+    }
+
+    template <typename T>
+    constexpr auto frexp(T num, int32_t* exp)
+    {
+        // TODO: generalize to another floating point
+        using uint_t = conditional_t<
+            (sizeof(T) == (64/8)),
+            uint64_t,
+            uint32_t
+        >;
+
+        union {
+            T f;
+            uint_t i;
+        } u;
+
+        u.f = num;
+
+        if (num == T(0)) {
+            if (exp) {
+                *exp = 0;
+            }
+            return T(0);
+        }
+
+        constexpr auto mantissa_shift = ((sizeof(T) == (64/8)) ? 52 : 23);
+        constexpr auto mask = ((sizeof(T) == (64/8)) ? 0x7FFull : 0xFF);
+
+        int raw_exp = (u.i >> mantissa_shift) & mask;
+
+        // check if inf or nan
+        if (raw_exp == mask) {
+            *exp = 0;
+            return num;
+        }
+
+        if (exp) {
+            constexpr auto bias = ((sizeof(T) == (64/8)) ? 1022 : 126);
+            *exp = raw_exp - bias;
+        }
+
+        constexpr auto exp_mask = ((sizeof(T) == (64/8)) ? 0x7FF0000000000000ull : 0x7F800000u);
+        u.i &= ~exp_mask;
+        constexpr auto raw_exp_mask = ((sizeof(T) == (64/8)) ? (0x3FEull << 52) : (0x7Eu << 23));
+        u.i |= (raw_exp_mask);
+
+        return u.f;
+    }
+
+    template <typename T>
+    nmtools_bit_cast_constexpr
+    auto ldexp(T x, int32_t exp)
+    {
+        // TODO: check for isnan and isinf
+        if (x == T(0) || exp == 0) {
+            return x;
+        }
+
+        using int_t = conditional_t<
+            sizeof(T)==(64/8)
+            , uint64_t
+            , uint32_t
+        >;
+
+        int_t bits = nmtools_bit_cast(int_t,x);
+
+        constexpr auto mantissa_shift = ((sizeof(T) == (64/8)) ? 52 : 23);
+        constexpr auto mask = ((sizeof(T) == (64/8)) ? 0x7FFull : 0xFF);
+
+        int32_t current_exp = (bits >> mantissa_shift) & mask;
+        int32_t new_exp = current_exp + exp;
+
+        // TODO: handle overflow and underflow
+
+        bits &= ~(mask << mantissa_shift);
+        bits |= (static_cast<int_t>(new_exp) << mantissa_shift);
+
+        return nmtools_bit_cast(T,bits);
+    }
+
+    template <typename T>
+    constexpr auto frexp(T num)
+    {
+        int32_t e = {};
+        auto m = frexp(num,&e);
+        return utl::tuple{m,e};
     }
 
     template <typename T, typename U=float>
@@ -233,6 +338,7 @@ namespace nmtools::utl
         return T(final_x);
     }
 
+    // TODO: rename to cos taylor/maclaurin
     template <typename T>
     constexpr auto taylor_cos(T x, T precision_limit=1e-16, nm_size_t max_iter=100)
     {
@@ -262,6 +368,7 @@ namespace nmtools::utl
         return result;
     }
 
+    // TODO: rename to sin taylor/maclaurin
     template <typename T>
     constexpr auto taylor_sin(T x, T precision_limit=1e-16, nm_size_t max_iter=100)
     {
@@ -293,6 +400,7 @@ namespace nmtools::utl
         return result;
     }
 
+    // TODO: rename to exp taylor/maclaurin
     template <typename T>
     constexpr auto taylor_exp(T t, T precision_limit=1e-15, nm_size_t max_iter=100)
     {
@@ -311,6 +419,108 @@ namespace nmtools::utl
         }
 
         return result;
+    }
+
+    template <typename T>
+    constexpr auto log_series(T x, nm_size_t num_terms=10)
+    {
+        const auto [m_,e_] = utl::frexp(x);
+
+        auto m = m_ * T(2);
+        auto e = e_ - 1;
+
+        auto z = (m - T(1)) / (m + 1);
+        auto z_squared = z * z;
+
+        T sum = 0;
+        auto term = z;
+
+        for (nm_size_t i=1; i<=num_terms; i++) {
+            auto denominator = (2*i) - 1;
+            sum += term / denominator;
+            term *= z_squared;
+        }
+
+        T ln_m = 2 * sum;
+
+        return ln_m + (e * ln2_v<T>);
+    }
+
+    template <typename T>
+    constexpr auto log_maclaurin(T x, nm_size_t num_terms=25)
+    {
+        x = utl::abs(x);
+
+        T sum = 1;
+        auto term = x;
+
+        for (nm_size_t i=1; i<=num_terms; i++) {
+            auto denominator = (2*i) + 1;
+            sum += term / denominator;
+            term *= x;
+        }
+
+        return sum;
+    }
+
+    template <typename T>
+    constexpr auto log2_series(T x, nm_size_t num_terms=10)
+    {
+        const auto [m_,e_] = utl::frexp(x);
+
+        auto m = m_ * T(2);
+        auto e = e_ - 1;
+
+        auto z = (m - T(1)) / (m + 1);
+        auto z_squared = z * z;
+
+        T sum = 0;
+        auto term = z;
+
+        for (nm_size_t i=1; i<=num_terms; i++) {
+            auto denominator = (2*i) - 1;
+            sum += term / denominator;
+            term *= z_squared;
+        }
+
+        T ln_m = 2 * sum;
+
+        return (ln_m * inv_ln2_v<T>) + e;
+    }
+
+    template <typename T>
+    constexpr auto exp2_maclaurin(T x, nm_size_t num_terms=15)
+    {
+        T k = utl::round(x);
+        T r = x - k;
+
+        T z = r * ln2_v<T>;
+
+        T result = 1;
+        T term = 1;
+
+        for (nm_size_t i=1; i<=num_terms; i++) {
+            term = term * z / i;
+            result += term;
+        }
+
+        return utl::ldexp(result,k);
+    }
+
+    template <typename T>
+    constexpr auto exp2_pade(T x)
+    {
+        T k = utl::round(x);
+        T r = x - k;
+
+        T z = r * ln2_v<T>;
+        T z2 = z * z;
+        T z3 = z2 * z;
+
+        T P = T(1) + (z / T(2)) + (z2 / T(10)) + (z3 / T(120));
+        T Q = T(1) - (z / T(2)) + (z2 / T(10)) - (z3 / T(120));
+
+        return utl::ldexp(P/Q,k);
     }
 
     template <typename T, typename num_nodes_t>
@@ -333,25 +543,12 @@ namespace nmtools::utl
             result.resize(n);
         }
 
-        // result[0] = a;
-        // result[n-1] = b;
-        #if 0
-        for (nm_size_t i=1; i<=(nm_size_t)n; i++) {
-            auto angle = (T(2) * i + 1) * pi_v<T> / (2 * n);
-            auto x_standard = taylor_cos(angle);
-
-            auto x_mapped = ((a+b) / 2) + (((b-a) * x_standard) / 2);
-
-            result[n-i] = x_mapped;
-        }
-        #else
         nm_index_t degree = nm_index_t(n) - 2;
         for (nm_size_t i=0; i<nm_size_t(degree+2); i++) {
             // result[i] = a + (b-a) * (0.5 - 0.5 * taylor_cos(pi_v<T> * i / (degree + 1)));
             auto k = taylor_cos((2*i+1)*pi_v<T> / (2*n));
             result[i] = T(0.5) * (a+b) + T(0.5) * (b-a) * k;
         }
-        #endif
         // insertion_sort_(result,[](auto a, auto b){
         //     return abs(a) > abs(b);
         // });
@@ -499,7 +696,23 @@ namespace nmtools::utl
         }();
         using vec_t = type_t<decltype(vec_vtype)>;
 
-        auto nodes = chebyshev_nodes(a,b,num_nodes);
+        auto nodes_vtype = [](){
+            if constexpr (is_constant_index_v<degree_t>) {
+                using type = utl::static_vector<T,degree_t::value+2>;
+                return as_value_v<type>;
+            } else {
+                // TODO: use small vector
+                using type = utl::vector<T>;
+                return as_value_v<type>;
+            }
+        }();
+        using nodes_t = type_t<decltype(nodes_vtype)>;
+
+        auto m_nodes = chebyshev_nodes(a,b,num_nodes);
+        auto nodes = nodes_t{};
+        for (nm_size_t i=0; i<(nm_size_t)m_nodes.size(); i++) {
+            nodes.push_back(m_nodes[i]);
+        }
 
         auto get_coeffs = [](const auto& coeffs){
             using coeffs_t = remove_cvref_t<decltype(coeffs)>;
@@ -534,9 +747,38 @@ namespace nmtools::utl
             return result;
         };
 
-        auto get_search_interval = [&](auto, auto, const auto& nodes){
-            // TODO: ensure a and b are in the inteval
-            return nodes;
+        // TODO: find better way?
+        auto get_search_interval = [&](auto a, auto b, const auto& nodes){
+            using nodes_t = remove_cvref_t<decltype(nodes)>;
+            using element_t = get_element_type_t<nodes_t>;
+
+            auto result_vtype = [](){
+                constexpr auto MAX_DIM = max_len_v<nodes_t>;
+                if constexpr (MAX_DIM > 0) {
+                    using type = utl::static_vector<element_t,MAX_DIM+2>;
+                    return as_value_v<type>;
+                } else {
+                    // TODO: use small vector
+                    using type = utl::vector<element_t>;
+                    return as_value_v<type>;
+                }
+            }();
+            using result_t = type_t<decltype(result_vtype)>;
+
+            auto result = result_t {};
+
+            result.push_back(a);
+            for (nm_size_t i=0; i<nodes.size(); i++) {
+                const auto node = nodes[i];
+                // NOTE: this may be affecting the results precision
+                constexpr auto eps = 1e-9;
+                if ((utl::abs(node-a) < eps) || (utl::abs(b-node) < eps)) {
+                    continue;
+                }
+                result.push_back(node);
+            }
+            result.push_back(b);
+            return result;
         };
 
         auto size = degree + 2;
@@ -582,17 +824,19 @@ namespace nmtools::utl
             auto search_interval = get_search_interval(a,b,nodes);
             insertion_sort_(search_interval);
 
-            using new_nodes_t = remove_cvref_t<decltype(nodes)>;
+            using new_nodes_t = remove_cvref_t<decltype(search_interval)>;
             auto new_nodes = new_nodes_t {};
             if constexpr (is_resizable_v<new_nodes_t>) {
-                new_nodes.resize(nodes.size());
+                new_nodes.resize(search_interval.size());
             }
             for (nm_size_t i=0; i<(nm_size_t)search_interval.size()-1; i++) {
                 auto res = minimize_bounded(neg_abs_error,search_interval[i],search_interval[i+1]);
-                new_nodes[i] = (res);
+                new_nodes[i] = res;
             }
             insertion_sort_(new_nodes);
-            nodes = new_nodes;
+            for (nm_size_t i=0; i<(nm_size_t)nodes.size(); i++) {
+                nodes[i] = new_nodes[i];
+            }
         }
 
         return final_coeffs;
@@ -642,6 +886,55 @@ namespace nmtools::utl
             return result;
         }
     } // cos_poly
+
+    template <typename T, typename coeffs_t>
+    constexpr auto exp2_poly(T x, const coeffs_t& coeffs)
+    {
+        auto k = utl::round(x);
+        auto r = x - k;
+        auto poly_val = horner_poly(r,coeffs);
+        return utl::ldexp(poly_val,(int)k);
+    } // exp2_poly
+
+    template <typename T, typename coeffs_t>
+    constexpr auto log_poly(T x, const coeffs_t& coeffs)
+    {
+        // TODO: error on x < 0
+        // TODO: return inf if x == inf
+
+        const auto [m_,e_] = frexp(x);
+
+        T m = m_ * 2;
+        T e = e_ - 1;
+
+        T z = (m - 1) / (m + 1);
+
+        auto poly_val = horner_poly(z*z,coeffs);
+
+        T ln_m = 2 * z * poly_val;
+
+        return ln_m + (e * ln2_v<T>);
+    }
+
+    template <typename T, typename coeffs_t>
+    constexpr auto log2_poly(T x, const coeffs_t& coeffs)
+    {
+        // TODO: error on x < 0
+        // TODO: return inf if x == inf
+
+        const auto [m_,e_] = frexp(x);
+
+        T m = m_ * 2;
+        T e = e_ - 1;
+
+        T z = (m - 1) / (m + 1);
+
+        auto poly_val = horner_poly(z*z,coeffs);
+
+        T ln_m = 2 * z * poly_val;
+
+        return (ln_m * inv_ln2_v<T>) + e;
+    }
 
     #ifndef NMTOOLS_UTL_REMEZ_DEGREE
     #define NMTOOLS_UTL_REMEZ_DEGREE (ct_v<4>)
@@ -695,6 +988,95 @@ namespace nmtools::utl
         #endif
 
         return sin_poly(x,sin_coeffs,cos_coeffs);
+    }
+
+    template <typename T>
+    constexpr auto exp(T x)
+    {
+        #if nmtools_has_constexpr_bit_cast
+        constexpr T a = -0.5;
+        constexpr T b = 0.5;
+        constexpr auto obj_fun = [](auto t) {
+            return utl::exp2_maclaurin(t);
+        };
+        constexpr auto coeffs = solve_remez(obj_fun,a,b,NMTOOLS_UTL_REMEZ_DEGREE,NMTOOLS_UTL_REMEZ_ITER);
+        #else
+        constexpr auto coeffs = utl::array<T,7>{
+            1.0f
+            ,0.6931471805599453f
+            ,0.2402265069591007f
+            ,0.05550410866482158f
+            ,0.009618129107628477f
+            ,0.0013333558146428443f
+            ,0.0001540353039338161f
+        };
+        #endif
+
+        auto y = x * inv_ln2_v<T>;
+        auto k = utl::round(y);
+        auto r = y - k;
+
+        auto poly = horner_poly(r,coeffs);
+
+        return utl::ldexp(poly,int(k));
+    }
+
+    template <typename T>
+    constexpr auto exp2(T x)
+    {
+        #if nmtools_has_constexpr_bit_cast
+        constexpr T a = -0.5;
+        constexpr T b = 0.5;
+        constexpr auto obj_fun = [](auto t) {
+            return utl::exp2_maclaurin(t);
+        };
+        constexpr auto coeffs = solve_remez(obj_fun,a,b,NMTOOLS_UTL_REMEZ_DEGREE,NMTOOLS_UTL_REMEZ_ITER);
+        #else
+        constexpr auto coeffs = utl::array<T,7>{
+            1.0f
+            ,0.6931471805599453f
+            ,0.2402265069591007f
+            ,0.05550410866482158f
+            ,0.009618129107628477f
+            ,0.0013333558146428443f
+            ,0.0001540353039338161f
+        };
+        #endif
+
+        return exp2_poly(x,coeffs);
+    }
+
+    template <typename T>
+    constexpr auto log(T x)
+    {
+        constexpr T a = 0;
+        constexpr T b = T(1) / T(9);
+        constexpr auto obj_fun = [](auto t){
+            return utl::log_maclaurin(t);
+        };
+        constexpr auto coeffs = solve_remez(obj_fun,a,b,NMTOOLS_UTL_REMEZ_DEGREE,NMTOOLS_UTL_REMEZ_DEGREE);
+
+        return log_poly(x,coeffs);
+    }
+
+    template <typename T>
+    constexpr auto log10(T x)
+    {
+        auto t = utl::log(x);
+        return t * inv_ln10_v<T>;
+    }
+
+    template <typename T>
+    constexpr auto log2(T x)
+    {
+        constexpr T a = 0;
+        constexpr T b = T(1) / T(9);
+        constexpr auto obj_fun = [](auto t){
+            return utl::log_maclaurin(t);
+        };
+        constexpr auto coeffs = solve_remez(obj_fun,a,b,NMTOOLS_UTL_REMEZ_DEGREE,NMTOOLS_UTL_REMEZ_DEGREE);
+
+        return log2_poly(x,coeffs);
     }
 }
 
