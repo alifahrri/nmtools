@@ -2131,7 +2131,10 @@ TEST_CASE("solve_remez(case3)" * doctest::test_suite("utl") * doctest::may_fail(
 
 TEST_CASE("solve_remez(case4)" * doctest::test_suite("utl") * doctest::may_fail() * doctest::skip())
 {
+    // not available on emcc
+    #ifndef __EMSCRIPTEN__
     feenableexcept(FE_INVALID | FE_OVERFLOW | FE_DIVBYZERO);
+    #endif
 
     SOLVE_REMEZ_SUBCASE( case4, f, a, b, degree, num_iter );
 }

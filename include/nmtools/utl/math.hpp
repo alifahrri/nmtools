@@ -1056,12 +1056,22 @@ namespace nmtools::utl
     template <typename T>
     constexpr auto log(T x)
     {
+        #if nmtools_has_constexpr_bit_cast
         constexpr T a = 0;
         constexpr T b = T(1) / T(9);
         constexpr auto obj_fun = [](auto t){
             return utl::log_maclaurin(t);
         };
         constexpr auto coeffs = solve_remez(obj_fun,a,b,NMTOOLS_UTL_REMEZ_DEGREE,NMTOOLS_UTL_REMEZ_DEGREE);
+        #else
+        constexpr auto coeffs = utl::array<T,5>{
+            1.0f,
+            0.3333333333333333f,
+            0.2000000000000000f,
+            0.1428571428571428f,
+            0.1111111111111111f
+        };
+        #endif
 
         return log_poly(x,coeffs);
     }
@@ -1076,12 +1086,22 @@ namespace nmtools::utl
     template <typename T>
     constexpr auto log2(T x)
     {
+        #if nmtools_has_constexpr_bit_cast
         constexpr T a = 0;
         constexpr T b = T(1) / T(9);
         constexpr auto obj_fun = [](auto t){
             return utl::log_maclaurin(t);
         };
         constexpr auto coeffs = solve_remez(obj_fun,a,b,NMTOOLS_UTL_REMEZ_DEGREE,NMTOOLS_UTL_REMEZ_DEGREE);
+        #else
+        constexpr auto coeffs = utl::array<T,5>{
+            1.0f,
+            0.3333333333333333f,
+            0.2000000000000000f,
+            0.1428571428571428f,
+            0.1111111111111111f
+        };
+        #endif
 
         return log2_poly(x,coeffs);
     }
