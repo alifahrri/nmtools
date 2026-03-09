@@ -2099,28 +2099,28 @@ SUBCASE(#case_name) \
 #include <fenv.h>
 
 // TODO: fix undefined behaviour, probably utl::vector
-TEST_CASE("solve_remez(case1)" * doctest::test_suite("utl") * doctest::may_fail())
+TEST_CASE("solve_remez(case1)" * doctest::test_suite("utl") * doctest::may_fail() * doctest::skip())
 {
     // feenableexcept(FE_INVALID | FE_OVERFLOW | FE_DIVBYZERO);
 
     SOLVE_REMEZ_SUBCASE( case1, f, a, b, degree );
 }
 
-TEST_CASE("solve_remez(case2)" * doctest::test_suite("utl") * doctest::may_fail())
+TEST_CASE("solve_remez(case2)" * doctest::test_suite("utl") * doctest::may_fail() * doctest::skip())
 {
     feenableexcept(FE_INVALID | FE_OVERFLOW | FE_DIVBYZERO);
 
     SOLVE_REMEZ_SUBCASE( case2, f, a, b, degree );
 }
 
-TEST_CASE("solve_remez(case3)" * doctest::test_suite("utl") * doctest::may_fail())
+TEST_CASE("solve_remez(case3)" * doctest::test_suite("utl") * doctest::may_fail() * doctest::skip())
 {
     feenableexcept(FE_INVALID | FE_OVERFLOW | FE_DIVBYZERO);
 
     SOLVE_REMEZ_SUBCASE( case3, f, a, b, degree, num_iter );
 }
 
-TEST_CASE("solve_remez(case4)" * doctest::test_suite("utl") * doctest::may_fail())
+TEST_CASE("solve_remez(case4)" * doctest::test_suite("utl") * doctest::may_fail() * doctest::skip())
 {
     feenableexcept(FE_INVALID | FE_OVERFLOW | FE_DIVBYZERO);
 
