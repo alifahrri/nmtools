@@ -79,7 +79,7 @@ namespace nmtools::view
     >
     using multiply_t = fun::multiply<lhs_t,rhs_t,res_t>;
 
-    template <typename left_t, typename right_t, typename casting_t=casting::auto_t>
+    template <auto broadcast_enable=true, typename left_t, typename right_t, typename casting_t=casting::auto_t>
     constexpr auto multiply(const left_t& a, const right_t& b, casting_t=casting_t{})
     {
         constexpr auto cast_kind = get_casting_v<casting_t>;
@@ -88,10 +88,18 @@ namespace nmtools::view
         using rhs_t [[maybe_unused]] = meta::get_element_type_t<right_t>;
         using casting::Casting;
         if constexpr (cast_kind == Casting::AUTO) {
-            return broadcast_binary_ufunc(multiply_t<>{},a,b);
+            if constexpr (broadcast_enable) {
+                return broadcast_binary_ufunc(multiply_t<>{},a,b);
+            } else {
+                return binary_ufunc(multiply_t<>{},a,b);
+            }
         } else /* if constexpr (cast_kind == Casting::SAME_KIND) */ {
             static_assert( meta::is_same_v<lhs_t,rhs_t>, "unsupported same-kind cast");
-            return broadcast_binary_ufunc(multiply_t<lhs_t,rhs_t,rhs_t>{},a,b);
+            if constexpr (broadcast_enable) {
+                return broadcast_binary_ufunc(multiply_t<lhs_t,rhs_t,rhs_t>{},a,b);
+            } else {
+                return binary_ufunc(multiply_t<lhs_t,rhs_t,rhs_t>{},a,b);
+            }
         }
         // TODO: support Casting::EQUIV
     } // multiply

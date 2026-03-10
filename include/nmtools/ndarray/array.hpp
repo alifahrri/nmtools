@@ -13,11 +13,17 @@
 #include "nmtools/array/ufuncs/amax.hpp"
 #include "nmtools/array/ufuncs/amin.hpp"
 #include "nmtools/array/ufuncs/clip.hpp"
+#include "nmtools/array/ufuncs/cos.hpp"
+#include "nmtools/array/ufuncs/sin.hpp"
 #include "nmtools/array/ufuncs/exp.hpp"
+#include "nmtools/array/ufuncs/exp2.hpp"
 #include "nmtools/array/ufuncs/greater.hpp"
 #include "nmtools/array/ufuncs/greater_equal.hpp"
 #include "nmtools/array/ufuncs/less.hpp"
 #include "nmtools/array/ufuncs/less_equal.hpp"
+#include "nmtools/array/ufuncs/log.hpp"
+#include "nmtools/array/ufuncs/log2.hpp"
+#include "nmtools/array/ufuncs/log10.hpp"
 #include "nmtools/array/ufuncs/maximum.hpp"
 #include "nmtools/array/ufuncs/minimum.hpp"
 #include "nmtools/array/ufuncs/multiply.hpp"
@@ -490,12 +496,39 @@ namespace nmtools
             return nmtools::unwrap(result);
         }
 
-        nmtools_ndarray_method(broadcast_to)
+        template <typename rhs_t>
+        constexpr auto subtract(const rhs_t& rhs) const
+        {
+            auto v = view::subtract<broadcast_enable>(*this,rhs);
+            auto result = nmtools::eval(v,None,None,as_value_v<resolver_type>);
+            return nmtools::unwrap(result);
+        }
 
-        // nmtools_ndarray_method(add)
-        nmtools_ndarray_method(subtract)
-        nmtools_ndarray_method(multiply)
-        nmtools_ndarray_method(divide)
+        template <typename rhs_t>
+        constexpr auto multiply(const rhs_t& rhs) const
+        {
+            auto v = view::multiply<broadcast_enable>(*this,rhs);
+            auto result = nmtools::eval(v,None,None,as_value_v<resolver_type>);
+            return nmtools::unwrap(result);
+        }
+
+        template <typename rhs_t>
+        constexpr auto divide(const rhs_t& rhs) const
+        {
+            auto v = view::divide<broadcast_enable>(*this,rhs);
+            auto result = nmtools::eval(v,None,None,as_value_v<resolver_type>);
+            return nmtools::unwrap(result);
+        }
+
+        template <typename F>
+        constexpr auto ufunc(F&& f) const
+        {
+            auto v = view::unary_ufunc(nmtools::forward<F>(f),*this);
+            auto result = nmtools::eval(v,None,None,as_value_v<resolver_type>);
+            return nmtools::unwrap(result);
+        }
+
+        nmtools_ndarray_method(broadcast_to)
 
         nmtools_ndarray_method(less)
         nmtools_ndarray_method(less_equal)
@@ -513,7 +546,14 @@ namespace nmtools
         nmtools_ndarray_method(trace)
         nmtools_ndarray_method(transpose)
 
+        nmtools_ndarray_method(cos)
+        nmtools_ndarray_method(sin)
+
         nmtools_ndarray_method(exp)
+        nmtools_ndarray_method(exp2)
+        nmtools_ndarray_method(log)
+        nmtools_ndarray_method(log2)
+        nmtools_ndarray_method(log10)
 
         nmtools_ndarray_method(max)
         nmtools_ndarray_method(min)
