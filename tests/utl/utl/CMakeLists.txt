@@ -10,7 +10,10 @@ add_executable(${PROJECT_NAME} tests.cpp
     src/vector.cpp
     src/clipped_integer.cpp
     src/algorithm.cpp
-    src/math.cpp
+    src/fmath.cpp
+    src/power.cpp
+    src/remez.cpp
+    src/poly.cpp
     src/queue.cpp
     src/stack.cpp
     src/static_map.cpp
