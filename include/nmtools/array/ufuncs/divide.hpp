@@ -20,10 +20,14 @@ namespace nmtools::view
 {
     using divide_t = fun::divide;
 
-    template <typename left_t, typename right_t>
+    template <auto broadcast_enable=true, typename left_t, typename right_t>
     constexpr auto divide(const left_t& a, const right_t& b)
     {
-        return broadcast_binary_ufunc(divide_t{},a,b);
+        if constexpr (broadcast_enable) {
+            return broadcast_binary_ufunc(divide_t{},a,b);
+        } else {
+            return binary_ufunc(divide_t{},a,b);
+        }
     } // divide
 }
 

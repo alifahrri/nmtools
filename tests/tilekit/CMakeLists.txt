@@ -95,8 +95,30 @@ set(NMTOOLS_TESTS_TILEKIT_SRCS
     src/load_store_v128_st.cpp
 
     src/add_scalar_st.cpp
+    src/multiply_scalar_st.cpp
+    src/subtract_scalar_st.cpp
+    src/divide_scalar_st.cpp
 
     src/broadcast_to_v128_st.cpp
+
+    src/cos_scalar_st.cpp
+
+    src/sin_scalar_st.cpp
+
+    src/exp_scalar_st.cpp
+    src/exp_scalar_mt.cpp
+
+    src/exp2_scalar_st.cpp
+    src/exp2_scalar_mt.cpp
+
+    src/log_scalar_st.cpp
+    src/log_scalar_mt.cpp
+
+    src/log2_scalar_st.cpp
+    src/log2_scalar_mt.cpp
+
+    src/log10_scalar_st.cpp
+    src/log10_scalar_mt.cpp
 )
 if (NMTOOLS_TESTS_TILEKIT_ENABLE_TRACY)
     add_executable(${PROJECT_NAME}-doctest tests.cpp 
