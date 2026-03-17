@@ -320,6 +320,19 @@ namespace nmtools::utils::impl
         }
     }; // struct to_string_t
 
+    #ifdef NMTOOLS_HAS_FLOAT16
+    template <typename formatter_t>
+    struct to_string_t<float16_t,formatter_t>
+    {
+        using result_type = nmtools_string;
+
+        auto operator()(const float16_t& t) const noexcept
+        {
+            return to_string(static_cast<float>(t));
+        }
+    };
+    #endif // NMTOOLS_HAS_FLOAT16
+
     #define NMTOOLS_DTYPE_TO_STRING_CASE(T,type,string) \
     if constexpr (meta::is_same_v<T,type>) { \
         return nmtools_string(string); \
@@ -344,6 +357,9 @@ namespace nmtools::utils::impl
             else NMTOOLS_DTYPE_TO_STRING_CASE(T,uint32_t,"uint32")
             else NMTOOLS_DTYPE_TO_STRING_CASE(T,uint16_t,"uint16")
             else NMTOOLS_DTYPE_TO_STRING_CASE(T,uint8_t,"uint8")
+            #ifdef NMTOOLS_HAS_FLOAT16
+            else NMTOOLS_DTYPE_TO_STRING_CASE(T,float16_t,"float16")
+            #endif // NMTOOLS_HAS_FLOAT16
             else return nmtools_string("");
         }
     };

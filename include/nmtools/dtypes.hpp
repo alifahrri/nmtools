@@ -73,6 +73,10 @@ namespace nmtools
         using uint16_t  = dtype_t<::nmtools::uint16_t>;
         using uint32_t  = dtype_t<::nmtools::uint32_t>;
         using uint64_t  = dtype_t<::nmtools::uint64_t>;
+
+        #ifdef NMTOOLS_HAS_FLOAT16
+        using float16_t = dtype_t<::nmtools::float16_t>;
+        #endif // NMTOOLS_HAS_FLOAT16
     } // dtype
 
     // inline variables
@@ -87,6 +91,10 @@ namespace nmtools
     constexpr inline auto uint16  = dtype::uint16_t  {};
     constexpr inline auto uint32  = dtype::uint32_t  {};
     constexpr inline auto uint64  = dtype::uint64_t  {};
+
+    #ifdef NMTOOLS_HAS_FLOAT16
+    constexpr inline auto float16 = dtype::float16_t {};
+    #endif // NMTOOLS_HAS_FLOAT16
 
     /**
      * @brief Helper metafunction to get the type
