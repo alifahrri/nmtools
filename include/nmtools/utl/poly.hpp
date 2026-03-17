@@ -147,7 +147,7 @@ namespace nmtools::utl
         template <typename T>
         constexpr auto operator()(T t) const
         {
-            return T(utl::taylor_cos(utl::sqrt(utl::abs(t))));
+            return T(utl::cos_maclaurin(utl::sqrt(utl::abs(t))));
         };
     };
 
@@ -168,7 +168,7 @@ namespace nmtools::utl
             if (t < 1e-15) {
                 return T(1.0);
             } else {
-                return T(utl::taylor_sin(utl::sqrt(t)) / utl::sqrt(t));
+                return T(utl::sin_maclaurin(utl::sqrt(t)) / utl::sqrt(t));
             }
         }
     };

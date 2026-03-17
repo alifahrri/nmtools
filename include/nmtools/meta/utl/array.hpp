@@ -1,13 +1,22 @@
 #ifndef NMTOOLS_META_UTL_ARRAY_HPP
 #define NMTOOLS_META_UTL_ARRAY_HPP
 
-#include "nmtools/meta/array.hpp"
-
 #include "nmtools/meta/bits/traits/is_num.hpp"
 #include "nmtools/meta/bits/traits/is_index.hpp"
 #include "nmtools/meta/bits/traits/is_slice_index.hpp"
+#include "nmtools/meta/bits/transform/len.hpp"
+#include "nmtools/meta/bits/transform/max_len.hpp"
+#include "nmtools/meta/bits/array/fixed_shape.hpp"
+#include "nmtools/meta/bits/array/fixed_ndarray_shape.hpp"
+#include "nmtools/meta/bits/array/fixed_index_array_size.hpp"
+#include "nmtools/meta/bits/array/fixed_dim.hpp"
+#include "nmtools/meta/bits/array/bounded_size.hpp"
+#include "nmtools/meta/bits/array/fixed_shape.hpp"
 
-#include "nmtools/utl.hpp"
+#include "nmtools/utl/array.hpp"
+#include "nmtools/utl/tuple.hpp"
+#include "nmtools/utl/static_vector.hpp"
+#include "nmtools/utl/vector.hpp"
 
 namespace nmtools::meta
 {
@@ -63,6 +72,7 @@ namespace nmtools::meta
         static constexpr auto value = N;
     };
 
+    // TODO: remove struct
     template <typename...Ts>
     struct fixed_index_array_size<utl::tuple<Ts...>,enable_if_t<(is_index_v<Ts> && ...)>>
     {
