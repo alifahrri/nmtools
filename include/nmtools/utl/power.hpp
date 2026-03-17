@@ -7,29 +7,28 @@ namespace nmtools::utl
 {
     // TODO: rename to cos taylor/maclaurin
     template <typename T>
-    constexpr auto taylor_cos(T x, T precision_limit=1e-16, nm_size_t max_iter=100)
+    constexpr auto taylor_cos(T x, nm_size_t num_terms=10)
     {
-        x = fmod(x,(2 * pi_v<T>));
-        if (x > pi_v<T>) {
-            x = x - (2 * pi_v<T>);
-        }
+        // x = fmod(x,(2 * pi_v<T>));
+        // if (x > pi_v<T>) {
+        //     x = x - (2 * pi_v<T>);
+        // }
+        auto mod = [](auto x, auto y){
+            return x - utl::floor(x/y) * y;
+        };
+        x = mod(x+pi_v<T>,(2*pi_v<T>)) - pi_v<T>;
 
         T result = 1;
         T term = 1;
-        nm_size_t n = 1;
 
         auto x_squared = x * x;
 
-        while (abs(term) > precision_limit) {
-            auto multiplier = -x_squared / ((2*n-1)*(2*n));
-            term = term * multiplier;
+        for (nm_size_t i=1; i<num_terms; i++) {
+            auto denominator = (2*i) * (2*i-1);
 
-            result = result + term;
-            n = n + 1;
+            term = term * (-x_squared) / denominator;
 
-            if (n > max_iter) {
-                break;
-            }
+            result += term;
         }
 
         return result;
@@ -39,7 +38,7 @@ namespace nmtools::utl
     template <typename T>
     constexpr auto taylor_sin(T x, T precision_limit=1e-16, nm_size_t max_iter=100)
     {
-        x = fmod(x,(2 * pi_v<T>));
+        x = utl::fmod(x,(2 * pi_v<T>));
         if (x > pi_v<T>) {
             x = x - (2*pi_v<T>);
         } else if (x < -pi_v<T>) {
@@ -52,7 +51,7 @@ namespace nmtools::utl
 
         auto x_squared = x * x;
 
-        while (abs(term) > precision_limit) {
+        while (utl::abs(term) > precision_limit) {
             auto multiplier = -x_squared / ((2*n)*(2*n+1));
             term = term * multiplier;
 
