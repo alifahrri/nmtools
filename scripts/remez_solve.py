@@ -2,6 +2,65 @@ import numpy as np
 import math
 from scipy.optimize import minimize_scalar
 
+def cos_taylor(x, num_terms=10):
+    """
+    Computes cos(x) using a dynamically calculated Taylor series.
+    """
+    # 1. Basic Range Reduction
+    # We must wrap x to be as close to 0 as possible.
+    # This maps any x into the domain [-pi, pi]
+    x = (x + math.pi) % (2.0 * math.pi) - math.pi
+    
+    # 2. Taylor Series Initialization
+    result = 1.0
+    current_term = 1.0
+    x_squared = x * x
+    
+    # 3. Dynamic Loop
+    for n in range(1, num_terms):
+        # The denominator grows as (2n) * (2n - 1)
+        # For n=1: 2 * 1 = 2
+        # For n=2: 4 * 3 = 12
+        # For n=3: 6 * 5 = 30
+        denominator = (2 * n) * (2 * n - 1)
+        
+        # Multiply the previous term by -x^2 / denominator
+        current_term = current_term * (-x_squared) / denominator
+        
+        # Add to the running total
+        result += current_term
+        
+    return result
+
+def sin_taylor(x, num_terms=10):
+    """
+    Computes sin(x) using a dynamically calculated Taylor series.
+    """
+    # 1. Range Reduction
+    # Safely wrap any angle into the [-pi, pi] domain using Python's floor modulo
+    x = (x + math.pi) % (2.0 * math.pi) - math.pi
+    
+    # 2. Taylor Series Initialization
+    # Sine is an odd function, so we start the running total at x, not 1.0
+    result = x
+    current_term = x
+    x_squared = x * x
+    
+    # 3. Dynamic Loop
+    for n in range(1, num_terms):
+        # The denominator grows as (2n) * (2n + 1)
+        # For n=1: 2 * 3 = 6
+        # For n=2: 4 * 5 = 20
+        # For n=3: 6 * 7 = 42
+        denominator = (2 * n) * ((2 * n) + 1)
+        
+        # Multiply the previous term by -x^2 / denominator
+        current_term = current_term * (-x_squared) / denominator
+        
+        # Add to the running total
+        result += current_term
+        
+    return result
 class RemezBase:
     """Base class handling the core Remez algorithm loop."""
     def __init__(self, degree=4):
@@ -76,7 +135,8 @@ class RemezBase:
 # --- TRIGONOMETRIC POLYS ---
 class RemezCosine(RemezBase):
     def _target_func(self, t):
-        return np.cos(np.sqrt(np.abs(t)))
+        # return np.cos(np.sqrt(np.abs(t)))
+        return cos_taylor(np.sqrt(np.abs(t)))
 
     def estimate(self, x):
         return self._poly_eval(self.coeffs, x * x)
@@ -85,7 +145,8 @@ class RemezSine(RemezBase):
     def _target_func(self, t):
         t = np.abs(t)
         if t < 1e-15: return 1.0
-        return np.sin(np.sqrt(t)) / np.sqrt(t)
+        # return np.sin(np.sqrt(t)) / np.sqrt(t)
+        return sin_taylor(math.sqrt(t)) / math.sqrt(t)
 
     def estimate(self, x):
         return x * self._poly_eval(self.coeffs, x * x)

@@ -3,7 +3,7 @@
 
 // TODO: increase precision
 #undef NMTOOLS_TESTING_PRECISION
-#define NMTOOLS_TESTING_PRECISION (1e-3)
+#define NMTOOLS_TESTING_PRECISION (1e-7)
 
 NMTOOLS_TESTING_DECLARE_CASE(utl,sin_poly)
 {
@@ -626,6 +626,136 @@ TEST_CASE("cos(case7)" * doctest::test_suite("utl"))
 TEST_CASE("cos(case8)" * doctest::test_suite("utl"))
 {
     COS_SUBCASE( case8, x );
+}
+
+NMTOOLS_TESTING_DECLARE_CASE(utl,sin)
+{
+    namespace utl = nmtools::utl;
+
+    auto cos_coeffs = utl::array{1.000000f, -5.00000e-1f, 4.16666e-2f, -1.38888e-3f, 2.47998045e-4f, -2.72364189e-7};
+    auto sin_coeffs = utl::array{1.000000f, -1.66667e-1f, 8.33333e-3f, -1.98412647e-4f, 2.75555594e-6f, -2.47766355e-8f};
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case1)
+    {
+        auto x = 0.0f;
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case1)
+    {
+        auto expected = std::sin(0.0f);
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case2)
+    {
+        auto x = 0.1f;
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case2)
+    {
+        auto expected = std::sin(0.1f);
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case3)
+    {
+        auto x = 0.2f;
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case3)
+    {
+        auto expected = std::sin(0.2f);
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case4)
+    {
+        auto x = 0.3f;
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case4)
+    {
+        auto expected = std::sin(0.3f);
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case5)
+    {
+        auto x = 0.4f;
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case5)
+    {
+        auto expected = std::sin(0.4f);
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case6)
+    {
+        auto x = 0.5f;
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case6)
+    {
+        auto expected = std::sin(0.5f);
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case7)
+    {
+        auto x = 0.785398; 
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case7)
+    {
+        auto expected = std::sin(0.785398f);
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case8)
+    {
+        auto x = 1.0f;
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case8)
+    {
+        auto expected = std::sin(1.0f);
+    }
+}
+
+#define SIN_SUBCASE(case_name, ...) \
+SUBCASE(#case_name) \
+{ \
+    using namespace nmtools::testing::data::utl::sin; \
+    NMTOOLS_TESTING_USE_CASE(utl,sin,case_name); \
+    using namespace args; \
+    auto result = nmtools::utl::sin(__VA_ARGS__); \
+    NMTOOLS_ASSERT_CLOSE( result, expect::expected ); \
+}
+
+TEST_CASE("sin(case1)" * doctest::test_suite("utl"))
+{
+    SIN_SUBCASE( case1, x );
+}
+
+TEST_CASE("sin(case2)" * doctest::test_suite("utl"))
+{
+    SIN_SUBCASE( case2, x );
+}
+
+TEST_CASE("sin(case3)" * doctest::test_suite("utl"))
+{
+    SIN_SUBCASE( case3, x );
+}
+
+TEST_CASE("sin(case4)" * doctest::test_suite("utl"))
+{
+    SIN_SUBCASE( case4, x );
+}
+
+TEST_CASE("sin(case5)" * doctest::test_suite("utl"))
+{
+    SIN_SUBCASE( case5, x );
+}
+
+TEST_CASE("sin(case6)" * doctest::test_suite("utl"))
+{
+    SIN_SUBCASE( case6, x );
+}
+
+TEST_CASE("sin(case7)" * doctest::test_suite("utl"))
+{
+    SIN_SUBCASE( case7, x );
+}
+
+TEST_CASE("sin(case8)" * doctest::test_suite("utl"))
+{
+    SIN_SUBCASE( case8, x );
 }
 
 NMTOOLS_TESTING_DECLARE_CASE(utl,exp2)
