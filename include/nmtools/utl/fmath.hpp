@@ -4,6 +4,125 @@
 #include "nmtools/utl/tuple.hpp"
 #include "nmtools/meta/bits/transform/conditional.hpp"
 
+namespace nmtools::meta
+{
+    template <typename T>
+    struct num_exponent_bits;
+
+    template <typename T>
+    struct num_mantissa_bits;
+
+    template <typename T>
+    struct get_bias;
+
+    template <nm_size_t bits>
+    struct get_uint;
+
+    /********************************************************************* */
+
+    template <>
+    struct num_exponent_bits<float>
+    {
+        static constexpr auto value = 8;
+    };
+
+    template <>
+    struct num_mantissa_bits<float>
+    {
+        static constexpr auto value = 23;
+    };
+
+    template <>
+    struct get_bias<float>
+    {
+        static constexpr auto value = 127;
+    };
+
+    template <>
+    struct get_uint<32>
+    {
+        using type = uint32_t;
+    };
+
+    /********************************************************************* */
+
+    template <>
+    struct num_exponent_bits<double>
+    {
+        static constexpr auto value = 11;
+    };
+
+    template <>
+    struct num_mantissa_bits<double>
+    {
+        static constexpr auto value = 52;
+    };
+
+    template <>
+    struct get_bias<double>
+    {
+        static constexpr auto value = 1023;
+    };
+
+    template <>
+    struct get_uint<64>
+    {
+        using type = uint64_t;
+    };
+    
+    /********************************************************************* */
+
+    #ifdef NMTOOLS_HAS_FLOAT16
+
+    template <>
+    struct num_exponent_bits<float16_t>
+    {
+        static constexpr auto value = 5;
+    };
+
+    template <>
+    struct num_mantissa_bits<float16_t>
+    {
+        static constexpr auto value = 10;
+    };
+
+    template <>
+    struct get_bias<float16_t>
+    {
+        static constexpr auto value = 15;
+    };
+
+    template<>
+    struct get_uint<16>
+    {
+        using type = uint16_t;
+    };
+
+    #endif // NMTOOLS_HAS_FLOAT16
+
+    /********************************************************************* */
+
+    template <typename T>
+    constexpr inline auto num_exponent_bits_v = num_exponent_bits<T>::value;
+
+    template <typename T>
+    constexpr inline auto num_mantissa_bits_v = num_mantissa_bits<T>::value;
+
+    template <typename T>
+    constexpr inline auto get_bias_v = get_bias<T>::value;
+
+    template <auto bits>
+    using get_uint_t = type_t<get_uint<bits>>;
+}
+
+namespace nmtools
+{
+    using meta::num_exponent_bits_v;
+    using meta::num_mantissa_bits_v;
+    using meta::get_bias_v;
+    using meta::get_uint_t;
+}
+
 namespace nmtools::utl
 {
     template <typename T>
@@ -60,27 +179,44 @@ namespace nmtools::utl
     nmtools_bit_cast_constexpr
     auto get_exponent_bits(T x)
     {
-        // TODO: handle double precision
-        uint32_t bits = nmtools_bit_cast(uint32_t,x);
+        using uint_t = get_uint_t<sizeof(T)*8>;
+        uint_t bits = nmtools_bit_cast(uint_t,x);
 
-        auto shifted_bits = bits >> 23;
+        auto shifted_bits = bits >> num_mantissa_bits_v<T>;
 
-        auto exponent_field = shifted_bits & 0xFF;
+        auto exponent_field = shifted_bits & ((2 << num_exponent_bits_v<T>) - 1);
 
-        int32_t actual_exponent = exponent_field - 127;
+        int32_t actual_exponent = exponent_field - get_bias_v<T>;
 
         return actual_exponent;
     }
 
     template <typename T>
     nmtools_bit_cast_constexpr
+    auto signbit(T x)
+    {
+        using uint_t = get_uint_t<sizeof(T)*8>;
+
+        uint_t bits = nmtools_bit_cast(uint_t,x);
+
+        constexpr auto mantissa_shift = num_mantissa_bits_v<T>;
+        constexpr auto mantissa_mask  = ((uint_t)1 << mantissa_shift) - 1;
+        constexpr auto exponent_mask  = ((uint_t)1 << num_exponent_bits_v<T>) - 1;
+
+        uint_t sign_bit = bits & ~(mantissa_mask | (exponent_mask << mantissa_shift));
+
+        return static_cast<bool>(sign_bit);
+    }
+
+    template <typename T>
+    nmtools_bit_cast_constexpr
     auto copy_sign(T x, T y)
     {
-        // TODO: handle double precision
-        auto x_bits = nmtools_bit_cast(uint32_t,x);
-        auto y_bits = nmtools_bit_cast(uint32_t,y);
+        using uint_t = get_uint_t<sizeof(T)*8>;
+        auto x_bits = nmtools_bit_cast(uint_t,x);
+        auto y_bits = nmtools_bit_cast(uint_t,y);
 
-        auto sign_mask = 0x80000000;
+        auto sign_mask = ((uint_t)1 << ((sizeof(T)*8)-1));
 
         auto mag_x = x_bits & (~sign_mask);
         auto sgn_y = y_bits & sign_mask;
@@ -112,12 +248,33 @@ namespace nmtools::utl
     nmtools_bit_cast_constexpr
     auto bitwise_and(T x, U mask)
     {
-        // TODO: handle double precision
-        auto bits = nmtools_bit_cast(uint32_t,x);
+        using uint_t = get_uint_t<sizeof(T)*8>;
+        auto bits = nmtools_bit_cast(uint_t,x);
 
         auto masked_bits = bits & mask;
 
         return nmtools_bit_cast(T,masked_bits);
+    }
+
+    template <typename T>
+    nmtools_bit_cast_constexpr
+    auto ilogb(T x)
+    {
+        using uint_t = get_uint_t<sizeof(T)*8>;
+        auto bits = nmtools_bit_cast(uint_t,x);
+
+        constexpr auto mantissa_shift = num_mantissa_bits_v<T>;
+        // constexpr auto mantissa_mask  = ((uint_t)1 << num_mantissa_bits_v<T>) - 1;
+        constexpr auto exponent_mask  = ((uint_t)1 << num_exponent_bits_v<T>) - 1;
+
+        // uint_t mantissa = bits & mantissa_mask;
+        uint_t exp_bits = (bits >> mantissa_shift) & exponent_mask;
+
+        // TODO: handle zero
+        // TODO: handle infinity & nan
+        // TODO: handle subnormals
+
+        return static_cast<int32_t>(exp_bits) - get_bias_v<T>;
     }
 
     template <typename T>
@@ -174,28 +331,10 @@ namespace nmtools::utl
         return (x >= 0) ? floor(x + T(0.5)) : ceil(x - T(0.5));
     }
 
-    template <typename T, typename U>
-    constexpr auto fmod(T x, U y)
-    {
-        // TODO: hanle nan
-        // if (y == 0) {
-        //     return T(NAN);
-        // }
-        auto quotient = trunc(T(x / y));
-
-        auto result = x - (quotient * y);
-        return result;
-    }
-
     template <typename T>
     constexpr auto frexp(T num, int32_t* exp)
     {
-        // TODO: generalize to another floating point
-        using uint_t = conditional_t<
-            (sizeof(T) == (64/8)),
-            uint64_t,
-            uint32_t
-        >;
+        using uint_t = get_uint_t<sizeof(T)*8>;
 
         union {
             T f;
@@ -211,26 +350,29 @@ namespace nmtools::utl
             return T(0);
         }
 
-        constexpr auto mantissa_shift = ((sizeof(T) == (64/8)) ? 52 : 23);
-        constexpr auto mask = ((sizeof(T) == (64/8)) ? 0x7FFull : 0xFF);
+        constexpr auto mantissa_shift = num_mantissa_bits_v<T>;
+        constexpr auto mantissa_mask  = ((uint_t)1 << mantissa_shift) - 1;
+        constexpr auto exponent_mask  = ((uint_t)1 << num_exponent_bits_v<T>) - 1;
 
-        int raw_exp = (u.i >> mantissa_shift) & mask;
+        int raw_exp = (u.i >> mantissa_shift) & exponent_mask;
 
         // check if inf or nan
-        if (raw_exp == mask) {
-            *exp = 0;
-            return num;
+        if (raw_exp == exponent_mask) {
+            if (exp) {
+                *exp = 0;
+                return num;
+            }
         }
+
+        // TODO: handle subnormals
 
         if (exp) {
-            constexpr auto bias = ((sizeof(T) == (64/8)) ? 1022 : 126);
-            *exp = raw_exp - bias;
+            *exp = raw_exp - get_bias_v<T> + 1;
         }
-
-        constexpr auto exp_mask = ((sizeof(T) == (64/8)) ? 0x7FF0000000000000ull : 0x7F800000u);
-        u.i &= ~exp_mask;
-        constexpr auto raw_exp_mask = ((sizeof(T) == (64/8)) ? (0x3FEull << 52) : (0x7Eu << 23));
-        u.i |= (raw_exp_mask);
+        uint_t new_exp_bits = get_bias_v<T> - 1;
+        uint_t mantissa = u.i & mantissa_mask;
+        uint_t sign_bit = u.i & ~(mantissa_mask | (exponent_mask << mantissa_shift));
+        u.i = sign_bit | (new_exp_bits << num_mantissa_bits_v<T>) | mantissa;
 
         return u.f;
     }
@@ -244,24 +386,22 @@ namespace nmtools::utl
             return x;
         }
 
-        using int_t = conditional_t<
-            sizeof(T)==(64/8)
-            , uint64_t
-            , uint32_t
-        >;
+        using uint_t = get_uint_t<sizeof(T)*8>;
 
-        int_t bits = nmtools_bit_cast(int_t,x);
+        uint_t bits = nmtools_bit_cast(uint_t,x);
 
-        constexpr auto mantissa_shift = ((sizeof(T) == (64/8)) ? 52 : 23);
-        constexpr auto mask = ((sizeof(T) == (64/8)) ? 0x7FFull : 0xFF);
+        constexpr auto mantissa_shift = num_mantissa_bits_v<T>;
+        constexpr auto mask = ((uint_t)1 << num_exponent_bits_v<T>) - 1;
 
         int32_t current_exp = (bits >> mantissa_shift) & mask;
         int32_t new_exp = current_exp + exp;
 
+        // TODO: handle inf / nan
+        // TODO: handle subnormals
         // TODO: handle overflow and underflow
 
         bits &= ~(mask << mantissa_shift);
-        bits |= (static_cast<int_t>(new_exp) << mantissa_shift);
+        bits |= (static_cast<uint_t>(new_exp) << mantissa_shift);
 
         return nmtools_bit_cast(T,bits);
     }
@@ -270,23 +410,116 @@ namespace nmtools::utl
     constexpr auto frexp(T num)
     {
         int32_t e = {};
-        auto m = frexp(num,&e);
+        auto m = utl::frexp(num,&e);
         return utl::tuple{m,e};
     }
 
+    #if 0
+    template <typename T, typename U>
+    constexpr auto fmod(T x, U y)
+    {
+        // TODO: hanle nan
+        // if (y == 0) {
+        //     return T(NAN);
+        // }
+        auto quotient = trunc(T(x / y));
+
+        auto result = x - (quotient * y);
+        return result;
+    }
+    #else
+    template <typename T>
+    nmtools_bit_cast_constexpr
+    auto fmod(T x, T y)
+    {
+        // TODO: handle case when y = 0 or x is nan/inf: return quiet nan
+        // TODO: handle case when y is inf/nan: return x
+
+        auto is_negative = utl::signbit(x);
+        x = utl::abs(x);
+        y = utl::abs(y);
+
+        if (x < y) {
+            return is_negative ? -x : x;
+        }
+        if (x == y) {
+            return is_negative ? -T(0) : T(0);
+        }
+
+        auto exp_x = utl::ilogb(x);
+        auto exp_y = utl::ilogb(y);
+        int n = exp_x - exp_y;
+
+        auto scaled_y = utl::ldexp(y,n);
+
+        for (int i=0; i<=n; i++) {
+            if (x >= scaled_y) {
+                x -= scaled_y;
+            }
+            scaled_y *= T(0.5);
+        }
+
+        return is_negative ? -x : x;
+    }
+    #endif
+
+    template <typename T>
+    nmtools_bit_cast_constexpr
+    auto remainder(T x, T y)
+    {
+        // TODO: handle if y = 0 or x is nan/inf
+        // TODO: handle if y is nan/inf or x = 0
+
+        auto is_negative = utl::signbit(x);
+
+        x = utl::abs(x);
+        y = utl::abs(y);
+
+        auto half_y = y / 2;
+
+        if (x < half_y) {
+            return is_negative ? -x : x;
+        }
+
+        auto exp_x = utl::ilogb(x);
+        auto exp_y = utl::ilogb(y);
+        auto n = exp_x - exp_y;
+
+        int parity = 0;
+        auto scaled_y = utl::ldexp(y,n);
+
+        for (int i=n; i>=0; i--) {
+            if (x >= scaled_y) {
+                x -= scaled_y;
+                if (i == 0) {
+                    parity = 1;
+                }
+            }
+            scaled_y /= 2;
+        }
+
+        if (x > half_y) {
+            x -= y;
+        } else if (x == half_y && parity) {
+            x -= y;
+        }
+
+        return is_negative ? -x : x;
+    }
+
     template <typename T, typename U=float>
-    constexpr auto sqrt(T x, U tol=U{1e-7}, nm_size_t max_iter=25)
+    constexpr auto sqrt(T x, U tol=U{1e-16}, nm_size_t max_iter=25)
     {
         // zero
         if (abs(x) < tol) {
             return x;
         }
-        T guess = x / T(2);
+        T guess = x * T(0.5);
 
         for (nm_size_t i=0; (i<max_iter); i++) {
             auto next_guess = T(0.5) * (guess + (x/guess));
 
-            auto done = abs(guess - next_guess) < tol;
+            auto done = utl::abs(guess - next_guess) < tol;
             guess = next_guess;
 
             if (done) {
