@@ -20,6 +20,10 @@
 #include "nmtools/utl/remez.hpp"
 #include "nmtools/meta/utl/array.hpp"
 
+#ifndef NMTOOLS_UTL_REMEZ_ITER
+#define NMTOOLS_UTL_REMEZ_ITER (10)
+#endif // NMTOOLS_UTL_REMEZ_ITER
+
 // polynomial approximation
 namespace nmtools::utl
 {
@@ -127,28 +131,6 @@ namespace nmtools::utl
         return (ln_m * inv_ln2_v<T>) + e;
     }
 
-    #ifndef NMTOOLS_UTL_REMEZ_DEGREE
-    #define NMTOOLS_UTL_REMEZ_DEGREE (ct_v<4>)
-    #endif // NMTOOLS_UTL_REMEZ_DEGREE
-
-    #ifndef NMTOOLS_UTL_REMEZ_ITER
-    #define NMTOOLS_UTL_REMEZ_ITER (10)
-    #endif // NMTOOLS_UTL_REMEZ_ITER
-
-    constexpr auto obj_fun_cos = [](auto t){
-        using T = decltype(t);
-        return T(utl::taylor_cos(utl::sqrt(utl::abs(t))));
-    };
-    constexpr auto obj_fun_sin = [](auto t){
-        using T = decltype(t);
-        t = utl::abs(t);
-        if (t < 1e-15) {
-            return T(1.0);
-        } else {
-            return T(utl::taylor_sin(utl::sqrt(t)) / utl::sqrt(t));
-        }
-    };
-
     // objective functions for remez
     /********************************************************************* */
 
@@ -238,6 +220,7 @@ namespace nmtools::utl
             , utl::get<0>(F::domain())
             , utl::get<1>(F::domain())
             , ct_v<degree>
+            , NMTOOLS_UTL_REMEZ_ITER
         );
 
         constexpr auto size() const noexcept
@@ -351,19 +334,8 @@ namespace nmtools::utl
     template <typename T, typename degree_t=ct<4>>
     constexpr auto cos(T x, degree_t=degree_t{})
     {
-        #if 0
-        constexpr auto a = double(0);
-        constexpr auto q_pi = utl::pi_v<double> / 4;
-        constexpr auto b = q_pi * q_pi;
-        constexpr auto cos_coeffs = solve_remez(obj_fun_cos,a,b,NMTOOLS_UTL_REMEZ_DEGREE,NMTOOLS_UTL_REMEZ_ITER);
-        constexpr auto sin_coeffs = solve_remez(obj_fun_sin,a,b,NMTOOLS_UTL_REMEZ_DEGREE,NMTOOLS_UTL_REMEZ_ITER);
-        #elif 0
-        constexpr auto cos_coeffs = utl::array<T,6>{1.000000, -5.00000e-1, 4.16666e-2, -1.38888e-3, 2.47998045e-4, -2.72364189e-7};
-        constexpr auto sin_coeffs = utl::array<T,6>{1.000000, -1.66667e-1, 8.33333e-3, -1.98412647e-4, 2.75555594e-6, -2.47766355e-8};
-        #else
         constexpr auto cos_coeffs = remez_coeffs<cos_obj_fun_t,T,degree_t::value>{};
         constexpr auto sin_coeffs = remez_coeffs<sin_obj_fun_t,T,degree_t::value>{};
-        #endif
 
         return cos_poly(x,cos_coeffs,sin_coeffs);
     }
@@ -371,18 +343,8 @@ namespace nmtools::utl
     template <typename T, typename degree_t=ct<4>>
     constexpr auto sin(T x, degree_t=degree_t{})
     {
-        #if 0
-        constexpr auto a = double(0);
-        constexpr auto b = double(utl::pow(double(utl::pi_v<double> / 4), 2));
-        constexpr auto cos_coeffs = solve_remez(obj_fun_cos,a,b,NMTOOLS_UTL_REMEZ_DEGREE,NMTOOLS_UTL_REMEZ_ITER);
-        constexpr auto sin_coeffs = solve_remez(obj_fun_sin,a,b,NMTOOLS_UTL_REMEZ_DEGREE,NMTOOLS_UTL_REMEZ_ITER);
-        #elif 0
-        constexpr auto cos_coeffs = utl::array<T,6>{1.000000, -5.00000e-1, 4.16666e-2, -1.38888e-3, 2.47998045e-4, -2.72364189e-7};
-        constexpr auto sin_coeffs = utl::array<T,6>{1.000000, -1.66667e-1, 8.33333e-3, -1.98412647e-4, 2.75555594e-6, -2.47766355e-8};
-        #else
         constexpr auto cos_coeffs = remez_coeffs<cos_obj_fun_t,T,degree_t::value>{};
         constexpr auto sin_coeffs = remez_coeffs<sin_obj_fun_t,T,degree_t::value>{};
-        #endif
 
         return sin_poly(x,sin_coeffs,cos_coeffs);
     }
@@ -390,26 +352,7 @@ namespace nmtools::utl
     template <typename T, typename degree_t=ct<5>>
     constexpr auto exp(T x, degree_t=degree_t{})
     {
-        #if 0
-        constexpr double a = -0.5;
-        constexpr double b = 0.5;
-        constexpr auto obj_fun = [](auto t) {
-            return utl::exp2_maclaurin(t);
-        };
-        constexpr auto coeffs = solve_remez(obj_fun,a,b,NMTOOLS_UTL_REMEZ_DEGREE,NMTOOLS_UTL_REMEZ_ITER);
-        #elif 0
-        constexpr auto coeffs = utl::array<T,7>{
-            1.0f
-            ,0.6931471805599453f
-            ,0.2402265069591007f
-            ,0.05550410866482158f
-            ,0.009618129107628477f
-            ,0.0013333558146428443f
-            ,0.0001540353039338161f
-        };
-        #else
         constexpr auto coeffs = remez_coeffs<exp2_obj_fun_t,T,degree_t::value>{};
-        #endif
 
         auto y = x * inv_ln2_v<T>;
         auto k = utl::round(y);
@@ -423,26 +366,7 @@ namespace nmtools::utl
     template <typename T, typename degree_t=ct<5>>
     constexpr auto exp2(T x, degree_t=degree_t{})
     {
-        #if 0
-        constexpr double a = -0.5;
-        constexpr double b = 0.5;
-        constexpr auto obj_fun = [](auto t) {
-            return utl::exp2_maclaurin(t);
-        };
-        constexpr auto coeffs = solve_remez(obj_fun,a,b,NMTOOLS_UTL_REMEZ_DEGREE,NMTOOLS_UTL_REMEZ_ITER);
-        #elif 0
-        constexpr auto coeffs = utl::array<T,7>{
-            1.0f
-            ,0.6931471805599453f
-            ,0.2402265069591007f
-            ,0.05550410866482158f
-            ,0.009618129107628477f
-            ,0.0013333558146428443f
-            ,0.0001540353039338161f
-        };
-        #else
         constexpr auto coeffs = remez_coeffs<exp2_obj_fun_t,T,degree_t::value>{};
-        #endif
 
         return exp2_poly(x,coeffs);
     }
@@ -450,24 +374,7 @@ namespace nmtools::utl
     template <typename T, typename degree_t=ct<7>>
     constexpr auto log(T x, degree_t=degree_t{})
     {
-        #if 0
-        constexpr double a = 0;
-        constexpr double b = double(1) / double(9);
-        constexpr auto obj_fun = [](auto t){
-            return utl::log_maclaurin(t);
-        };
-        constexpr auto coeffs = solve_remez(obj_fun,a,b,NMTOOLS_UTL_REMEZ_DEGREE,NMTOOLS_UTL_REMEZ_DEGREE);
-        #elif 0
-        constexpr auto coeffs = utl::array<T,5>{
-            1.0f,
-            0.3333333333333333f,
-            0.2000000000000000f,
-            0.1428571428571428f,
-            0.1111111111111111f
-        };
-        #else
         constexpr auto coeffs = remez_coeffs<log_obj_fun_t,T,degree_t::value>{};
-        #endif
 
         return log_poly(x,coeffs);
     }
@@ -482,24 +389,7 @@ namespace nmtools::utl
     template <typename T, typename degree_t=ct<7>>
     constexpr auto log2(T x, degree_t=degree_t{})
     {
-        #if 0
-        constexpr double a = 0;
-        constexpr double b = double(1) / double(9);
-        constexpr auto obj_fun = [](auto t){
-            return utl::log_maclaurin(t);
-        };
-        constexpr auto coeffs = solve_remez(obj_fun,a,b,NMTOOLS_UTL_REMEZ_DEGREE,NMTOOLS_UTL_REMEZ_DEGREE);
-        #elif 0
-        constexpr auto coeffs = utl::array<T,5>{
-            1.0f,
-            0.3333333333333333f,
-            0.2000000000000000f,
-            0.1428571428571428f,
-            0.1111111111111111f
-        };
-        #else
         constexpr auto coeffs = remez_coeffs<log_obj_fun_t,T,degree_t::value>{};
-        #endif
 
         return log2_poly(x,coeffs);
     }
