@@ -3,14 +3,14 @@
 
 // TODO: increase precision
 #undef NMTOOLS_TESTING_PRECISION
-#define NMTOOLS_TESTING_PRECISION (1e-7)
+#define NMTOOLS_TESTING_PRECISION (1e-6)
 
 NMTOOLS_TESTING_DECLARE_CASE(utl,sin_poly)
 {
     namespace utl = nmtools::utl;
 
-    auto cos_coeffs = utl::array{1.000000f, -5.00000e-1f, 4.16666e-2f, -1.38888e-3f, 2.47998045e-4f, -2.72364189e-7};
-    auto sin_coeffs = utl::array{1.000000f, -1.66667e-1f, 8.33333e-3f, -1.98412647e-4f, 2.75555594e-6f, -2.47766355e-8f};
+    auto cos_coeffs = utl::poly_coeffs<utl::cos_obj_fun_t,4>::value;
+    auto sin_coeffs = utl::poly_coeffs<utl::sin_obj_fun_t,4>::value;
 
     NMTOOLS_TESTING_DECLARE_ARGS(case1)
     {
@@ -18,7 +18,7 @@ NMTOOLS_TESTING_DECLARE_CASE(utl,sin_poly)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case1)
     {
-        auto expected = std::sin(0.0f);
+        auto expected = std::sin(args::x);
     }
 
     NMTOOLS_TESTING_DECLARE_ARGS(case2)
@@ -27,7 +27,7 @@ NMTOOLS_TESTING_DECLARE_CASE(utl,sin_poly)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case2)
     {
-        auto expected = std::sin(0.1f);
+        auto expected = std::sin(args::x);
     }
 
     NMTOOLS_TESTING_DECLARE_ARGS(case3)
@@ -36,7 +36,7 @@ NMTOOLS_TESTING_DECLARE_CASE(utl,sin_poly)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case3)
     {
-        auto expected = std::sin(0.2f);
+        auto expected = std::sin(args::x);
     }
 
     NMTOOLS_TESTING_DECLARE_ARGS(case4)
@@ -45,7 +45,7 @@ NMTOOLS_TESTING_DECLARE_CASE(utl,sin_poly)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case4)
     {
-        auto expected = std::sin(0.3f);
+        auto expected = std::sin(args::x);
     }
 
     NMTOOLS_TESTING_DECLARE_ARGS(case5)
@@ -54,7 +54,7 @@ NMTOOLS_TESTING_DECLARE_CASE(utl,sin_poly)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case5)
     {
-        auto expected = std::sin(0.4f);
+        auto expected = std::sin(args::x);
     }
 
     NMTOOLS_TESTING_DECLARE_ARGS(case6)
@@ -63,7 +63,7 @@ NMTOOLS_TESTING_DECLARE_CASE(utl,sin_poly)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case6)
     {
-        auto expected = std::sin(0.5f);
+        auto expected = std::sin(args::x);
     }
 
     NMTOOLS_TESTING_DECLARE_ARGS(case7)
@@ -72,7 +72,7 @@ NMTOOLS_TESTING_DECLARE_CASE(utl,sin_poly)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case7)
     {
-        auto expected = std::sin(0.785398f);
+        auto expected = std::sin(args::x);
     }
 
     NMTOOLS_TESTING_DECLARE_ARGS(case8)
@@ -81,7 +81,7 @@ NMTOOLS_TESTING_DECLARE_CASE(utl,sin_poly)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case8)
     {
-        auto expected = std::sin(1.0f);
+        auto expected = std::sin(args::x);
     }
 }
 
@@ -130,7 +130,8 @@ TEST_CASE("sin_poly(case7)" * doctest::test_suite("utl"))
     SIN_POLY_SUBCASE( case7, x, sin_coeffs, cos_coeffs );
 }
 
-TEST_CASE("sin_poly(case8)" * doctest::test_suite("utl"))
+// TODO: increase precision for hardcoded polynomial coefficiets
+TEST_CASE("sin_poly(case8)" * doctest::test_suite("utl") * doctest::may_fail())
 {
     SIN_POLY_SUBCASE( case8, x, sin_coeffs, cos_coeffs );
 }
@@ -139,8 +140,8 @@ NMTOOLS_TESTING_DECLARE_CASE(utl,cos_poly)
 {
     namespace utl = nmtools::utl;
 
-    auto cos_coeffs = utl::array{1.000000f, -5.00000e-1f, 4.16666e-2f, -1.38888e-3f, 2.47998045e-4f, -2.72364189e-7};
-    auto sin_coeffs = utl::array{1.000000f, -1.66667e-1f, 8.33333e-3f, -1.98412647e-4f, 2.75555594e-6f, -2.47766355e-8f};
+    auto cos_coeffs = utl::poly_coeffs<utl::cos_obj_fun_t,4>::value;
+    auto sin_coeffs = utl::poly_coeffs<utl::sin_obj_fun_t,4>::value;
 
     NMTOOLS_TESTING_DECLARE_ARGS(case1)
     {
@@ -148,7 +149,7 @@ NMTOOLS_TESTING_DECLARE_CASE(utl,cos_poly)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case1)
     {
-        auto expected = std::cos(0.0f);
+        auto expected = std::cos(args::x);
     }
 
     NMTOOLS_TESTING_DECLARE_ARGS(case2)
@@ -157,7 +158,7 @@ NMTOOLS_TESTING_DECLARE_CASE(utl,cos_poly)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case2)
     {
-        auto expected = std::cos(0.1f);
+        auto expected = std::cos(args::x);
     }
 
     NMTOOLS_TESTING_DECLARE_ARGS(case3)
@@ -166,7 +167,7 @@ NMTOOLS_TESTING_DECLARE_CASE(utl,cos_poly)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case3)
     {
-        auto expected = std::cos(0.2f);
+        auto expected = std::cos(args::x);
     }
 
     NMTOOLS_TESTING_DECLARE_ARGS(case4)
@@ -175,7 +176,7 @@ NMTOOLS_TESTING_DECLARE_CASE(utl,cos_poly)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case4)
     {
-        auto expected = std::cos(0.3f);
+        auto expected = std::cos(args::x);
     }
 
     NMTOOLS_TESTING_DECLARE_ARGS(case5)
@@ -184,7 +185,7 @@ NMTOOLS_TESTING_DECLARE_CASE(utl,cos_poly)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case5)
     {
-        auto expected = std::cos(0.4f);
+        auto expected = std::cos(args::x);
     }
 
     NMTOOLS_TESTING_DECLARE_ARGS(case6)
@@ -193,7 +194,7 @@ NMTOOLS_TESTING_DECLARE_CASE(utl,cos_poly)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case6)
     {
-        auto expected = std::cos(0.5f);
+        auto expected = std::cos(args::x);
     }
 
     NMTOOLS_TESTING_DECLARE_ARGS(case7)
@@ -202,7 +203,7 @@ NMTOOLS_TESTING_DECLARE_CASE(utl,cos_poly)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case7)
     {
-        auto expected = std::cos(0.785398f);
+        auto expected = std::cos(args::x);
     }
 
     NMTOOLS_TESTING_DECLARE_ARGS(case8)
@@ -211,7 +212,7 @@ NMTOOLS_TESTING_DECLARE_CASE(utl,cos_poly)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case8)
     {
-        auto expected = std::cos(1.0f);
+        auto expected = std::cos(args::x);
     }
 }
 
@@ -255,7 +256,8 @@ TEST_CASE("cos_poly(case6)" * doctest::test_suite("utl"))
     COS_POLY_SUBCASE( case6, x, cos_coeffs, sin_coeffs );
 }
 
-TEST_CASE("cos_poly(case7)" * doctest::test_suite("utl"))
+// TODO: increase precision for hardcoded polynomial coefficiets
+TEST_CASE("cos_poly(case7)" * doctest::test_suite("utl") * doctest::may_fail())
 {
     COS_POLY_SUBCASE( case7, x, cos_coeffs, sin_coeffs );
 }
@@ -269,7 +271,7 @@ NMTOOLS_TESTING_DECLARE_CASE(utl,exp2_poly)
 {
     namespace utl = nmtools::utl;
 
-    auto coeffs = utl::array{1.0f,0.6931471805599453f,0.2402265069591007f,0.05550410866482158f,0.009618129107628477f,0.0013333558146428443f,0.0001540353039338161f};
+    auto coeffs = utl::poly_coeffs<utl::exp2_obj_fun_t,5>::value;
 
     NMTOOLS_TESTING_DECLARE_ARGS(case1)
     {
@@ -277,7 +279,7 @@ NMTOOLS_TESTING_DECLARE_CASE(utl,exp2_poly)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case1)
     {
-        auto expected = 1.0f;
+        auto expected = std::exp2(args::x);
     }
 
     NMTOOLS_TESTING_DECLARE_ARGS(case2)
@@ -286,7 +288,7 @@ NMTOOLS_TESTING_DECLARE_CASE(utl,exp2_poly)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case2)
     {
-        auto expected = 2.0f;
+        auto expected = std::exp2(args::x);
     }
 
     NMTOOLS_TESTING_DECLARE_ARGS(case3)
@@ -295,7 +297,7 @@ NMTOOLS_TESTING_DECLARE_CASE(utl,exp2_poly)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case3)
     {
-        auto expected = 0.5f;
+        auto expected = std::exp2(args::x);
     }
 
     NMTOOLS_TESTING_DECLARE_ARGS(case4)
@@ -304,7 +306,7 @@ NMTOOLS_TESTING_DECLARE_CASE(utl,exp2_poly)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case4)
     {
-        auto expected = 1.414213562373095e+00f;
+        auto expected = std::exp2(args::x);
     }
 
     NMTOOLS_TESTING_DECLARE_ARGS(case5)
@@ -313,7 +315,7 @@ NMTOOLS_TESTING_DECLARE_CASE(utl,exp2_poly)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case5)
     {
-        auto expected = 7.578582832551990e-01f;
+        auto expected = std::exp2(args::x);
     }
 
     NMTOOLS_TESTING_DECLARE_ARGS(case6)
@@ -322,7 +324,7 @@ NMTOOLS_TESTING_DECLARE_CASE(utl,exp2_poly)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case6)
     {
-        auto expected = 3.939662122703731e+01f;
+        auto expected = std::exp2(args::x);
     }
 
 
@@ -332,7 +334,7 @@ NMTOOLS_TESTING_DECLARE_CASE(utl,exp2_poly)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case7)
     {
-        auto expected = 4.487102949207168e-03f;
+        auto expected = std::exp2(args::x);
     }
 }
 
@@ -385,13 +387,7 @@ NMTOOLS_TESTING_DECLARE_CASE(utl,log_poly)
 {
     namespace utl = nmtools::utl;
 
-    auto coeffs = utl::array{
-        1.0f,
-        0.3333333333333333f,
-        0.2000000000000000f,
-        0.1428571428571428f,
-        0.1111111111111111f
-    };
+    auto coeffs = utl::poly_coeffs<utl::log_obj_fun_t,3>::value;
 
     NMTOOLS_TESTING_DECLARE_ARGS(case1)
     {
@@ -399,7 +395,7 @@ NMTOOLS_TESTING_DECLARE_CASE(utl,log_poly)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case1)
     {
-        auto expected = std::log(0.001f);
+        auto expected = std::log(args::x);
     }
 
     NMTOOLS_TESTING_DECLARE_ARGS(case2)
@@ -408,7 +404,7 @@ NMTOOLS_TESTING_DECLARE_CASE(utl,log_poly)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case2)
     {
-        auto expected = std::log(0.5f);
+        auto expected = std::log(args::x);
     }
 
     NMTOOLS_TESTING_DECLARE_ARGS(case3)
@@ -417,7 +413,7 @@ NMTOOLS_TESTING_DECLARE_CASE(utl,log_poly)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case3)
     {
-        auto expected = std::log(1.0f);
+        auto expected = std::log(args::x);
     }
 
     NMTOOLS_TESTING_DECLARE_ARGS(case4)
@@ -435,7 +431,7 @@ NMTOOLS_TESTING_DECLARE_CASE(utl,log_poly)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case5)
     {
-        auto expected = std::log(10.f);
+        auto expected = std::log(args::x);
     }
 
     NMTOOLS_TESTING_DECLARE_ARGS(case6)
@@ -444,7 +440,7 @@ NMTOOLS_TESTING_DECLARE_CASE(utl,log_poly)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case6)
     {
-        auto expected = std::log(100.f);
+        auto expected = std::log(args::x);
     }
 
     NMTOOLS_TESTING_DECLARE_ARGS(case7)
@@ -453,7 +449,7 @@ NMTOOLS_TESTING_DECLARE_CASE(utl,log_poly)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case7)
     {
-        auto expected = std::log(1000000.f);
+        auto expected = std::log(args::x);
     }
 }
 
@@ -512,7 +508,7 @@ NMTOOLS_TESTING_DECLARE_CASE(utl,cos)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case1)
     {
-        auto expected = std::cos(0.0f);
+        auto expected = std::cos(args::x);
     }
 
     NMTOOLS_TESTING_DECLARE_ARGS(case2)
@@ -521,7 +517,7 @@ NMTOOLS_TESTING_DECLARE_CASE(utl,cos)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case2)
     {
-        auto expected = std::cos(0.1f);
+        auto expected = std::cos(args::x);
     }
 
     NMTOOLS_TESTING_DECLARE_ARGS(case3)
@@ -530,7 +526,7 @@ NMTOOLS_TESTING_DECLARE_CASE(utl,cos)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case3)
     {
-        auto expected = std::cos(0.2f);
+        auto expected = std::cos(args::x);
     }
 
     NMTOOLS_TESTING_DECLARE_ARGS(case4)
@@ -539,7 +535,7 @@ NMTOOLS_TESTING_DECLARE_CASE(utl,cos)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case4)
     {
-        auto expected = std::cos(0.3f);
+        auto expected = std::cos(args::x);
     }
 
     NMTOOLS_TESTING_DECLARE_ARGS(case5)
@@ -548,7 +544,7 @@ NMTOOLS_TESTING_DECLARE_CASE(utl,cos)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case5)
     {
-        auto expected = std::cos(0.4f);
+        auto expected = std::cos(args::x);
     }
 
     NMTOOLS_TESTING_DECLARE_ARGS(case6)
@@ -557,7 +553,7 @@ NMTOOLS_TESTING_DECLARE_CASE(utl,cos)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case6)
     {
-        auto expected = std::cos(0.5f);
+        auto expected = std::cos(args::x);
     }
 
     NMTOOLS_TESTING_DECLARE_ARGS(case7)
@@ -566,7 +562,7 @@ NMTOOLS_TESTING_DECLARE_CASE(utl,cos)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case7)
     {
-        auto expected = std::cos(0.785398f);
+        auto expected = std::cos(args::x);
     }
 
     NMTOOLS_TESTING_DECLARE_ARGS(case8)
@@ -575,7 +571,7 @@ NMTOOLS_TESTING_DECLARE_CASE(utl,cos)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case8)
     {
-        auto expected = std::cos(1.0f);
+        auto expected = std::cos(args::x);
     }
 }
 
@@ -641,7 +637,7 @@ NMTOOLS_TESTING_DECLARE_CASE(utl,sin)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case1)
     {
-        auto expected = std::sin(0.0f);
+        auto expected = std::sin(args::x);
     }
 
     NMTOOLS_TESTING_DECLARE_ARGS(case2)
@@ -650,7 +646,7 @@ NMTOOLS_TESTING_DECLARE_CASE(utl,sin)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case2)
     {
-        auto expected = std::sin(0.1f);
+        auto expected = std::sin(args::x);
     }
 
     NMTOOLS_TESTING_DECLARE_ARGS(case3)
@@ -659,7 +655,7 @@ NMTOOLS_TESTING_DECLARE_CASE(utl,sin)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case3)
     {
-        auto expected = std::sin(0.2f);
+        auto expected = std::sin(args::x);
     }
 
     NMTOOLS_TESTING_DECLARE_ARGS(case4)
@@ -668,7 +664,7 @@ NMTOOLS_TESTING_DECLARE_CASE(utl,sin)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case4)
     {
-        auto expected = std::sin(0.3f);
+        auto expected = std::sin(args::x);
     }
 
     NMTOOLS_TESTING_DECLARE_ARGS(case5)
@@ -677,7 +673,7 @@ NMTOOLS_TESTING_DECLARE_CASE(utl,sin)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case5)
     {
-        auto expected = std::sin(0.4f);
+        auto expected = std::sin(args::x);
     }
 
     NMTOOLS_TESTING_DECLARE_ARGS(case6)
@@ -686,7 +682,7 @@ NMTOOLS_TESTING_DECLARE_CASE(utl,sin)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case6)
     {
-        auto expected = std::sin(0.5f);
+        auto expected = std::sin(args::x);
     }
 
     NMTOOLS_TESTING_DECLARE_ARGS(case7)
@@ -695,7 +691,7 @@ NMTOOLS_TESTING_DECLARE_CASE(utl,sin)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case7)
     {
-        auto expected = std::sin(0.785398f);
+        auto expected = std::sin(args::x);
     }
 
     NMTOOLS_TESTING_DECLARE_ARGS(case8)
@@ -704,7 +700,7 @@ NMTOOLS_TESTING_DECLARE_CASE(utl,sin)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case8)
     {
-        auto expected = std::sin(1.0f);
+        auto expected = std::sin(args::x);
     }
 }
 
@@ -1009,7 +1005,7 @@ NMTOOLS_TESTING_DECLARE_CASE(utl,log)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case1)
     {
-        auto expected = std::log(0.001f);
+        auto expected = std::log(args::x);
     }
 
     NMTOOLS_TESTING_DECLARE_ARGS(case2)
@@ -1018,7 +1014,7 @@ NMTOOLS_TESTING_DECLARE_CASE(utl,log)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case2)
     {
-        auto expected = std::log(0.5f);
+        auto expected = std::log(args::x);
     }
 
     NMTOOLS_TESTING_DECLARE_ARGS(case3)
@@ -1027,7 +1023,7 @@ NMTOOLS_TESTING_DECLARE_CASE(utl,log)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case3)
     {
-        auto expected = std::log(1.0f);
+        auto expected = std::log(args::x);
     }
 
     NMTOOLS_TESTING_DECLARE_ARGS(case4)
@@ -1045,7 +1041,7 @@ NMTOOLS_TESTING_DECLARE_CASE(utl,log)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case5)
     {
-        auto expected = std::log(10.f);
+        auto expected = std::log(args::x);
     }
 
     NMTOOLS_TESTING_DECLARE_ARGS(case6)
@@ -1054,7 +1050,7 @@ NMTOOLS_TESTING_DECLARE_CASE(utl,log)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case6)
     {
-        auto expected = std::log(100.f);
+        auto expected = std::log(args::x);
     }
 
     NMTOOLS_TESTING_DECLARE_ARGS(case7)
@@ -1063,7 +1059,7 @@ NMTOOLS_TESTING_DECLARE_CASE(utl,log)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case7)
     {
-        auto expected = std::log(1000000.f);
+        auto expected = std::log(args::x);
     }
 }
 

@@ -210,7 +210,7 @@ namespace nmtools::utl
 
     template <typename T>
     nmtools_bit_cast_constexpr
-    auto copy_sign(T x, T y)
+    auto copysign(T x, T y)
     {
         using uint_t = get_uint_t<sizeof(T)*8>;
         auto x_bits = nmtools_bit_cast(uint_t,x);
@@ -224,36 +224,6 @@ namespace nmtools::utl
         auto result_bits = mag_x | sgn_y;
 
         return nmtools_bit_cast(T,result_bits);
-    }
-
-    template <typename exponent_t>
-    constexpr auto create_integer_mask(exponent_t exponent)
-    {
-        // TODO: handle double precision
-        // TODO: assert constant index
-        if (exponent >= 23) {
-            return 0xFFFFFFFF;
-        }
-        if (exponent < 0) {
-            return 0x80000000;
-        }
-
-        int32_t num_fractional_bits = 23 - exponent;
-        auto mask = 0xFFFFFFFF << num_fractional_bits;
-
-        return mask;
-    }
-
-    template <typename T, typename U>
-    nmtools_bit_cast_constexpr
-    auto bitwise_and(T x, U mask)
-    {
-        using uint_t = get_uint_t<sizeof(T)*8>;
-        auto bits = nmtools_bit_cast(uint_t,x);
-
-        auto masked_bits = bits & mask;
-
-        return nmtools_bit_cast(T,masked_bits);
     }
 
     template <typename T>
@@ -278,23 +248,28 @@ namespace nmtools::utl
     }
 
     template <typename T>
-    constexpr auto trunc(T x)
+    nmtools_bit_cast_constexpr
+    auto trunc(T x)
     {
-        auto exponent = get_exponent_bits(x);
+        using uint_t = get_uint_t<sizeof(T)*8>;
+        auto bits = nmtools_bit_cast(uint_t,x);
 
-        // TODO: handle double precision
-        if (exponent >= 23) {
+        int raw_exp = (bits >> num_mantissa_bits_v<T>) & (((uint_t)1 << num_exponent_bits_v<T>) - 1);
+        int exp = raw_exp - get_bias_v<T>;
+
+        if (exp < 0) {
+            uint_t sign_bit = bits & ((uint_t)1 << (sizeof(T)*8 - 1));
+            return nmtools_bit_cast(T,sign_bit);
+        }
+
+        if (exp >= 23) {
             return x;
         }
 
-        if ((int32_t)exponent < 0) {
-            return copy_sign(T(0), x);
-        }
+        int fraction_bits = num_mantissa_bits_v<T> - exp;
+        uint_t mask = ~(((uint_t)1 << fraction_bits) - 1);
 
-        auto mask = create_integer_mask(exponent);
-        auto result = bitwise_and(x,mask);
-
-        return result;
+        return nmtools_bit_cast(T, bits & mask);
     }
 
     template <typename T>
@@ -414,20 +389,6 @@ namespace nmtools::utl
         return utl::tuple{m,e};
     }
 
-    #if 0
-    template <typename T, typename U>
-    constexpr auto fmod(T x, U y)
-    {
-        // TODO: hanle nan
-        // if (y == 0) {
-        //     return T(NAN);
-        // }
-        auto quotient = trunc(T(x / y));
-
-        auto result = x - (quotient * y);
-        return result;
-    }
-    #else
     template <typename T>
     nmtools_bit_cast_constexpr
     auto fmod(T x, T y)
@@ -461,7 +422,6 @@ namespace nmtools::utl
 
         return is_negative ? -x : x;
     }
-    #endif
 
     template <typename T>
     nmtools_bit_cast_constexpr

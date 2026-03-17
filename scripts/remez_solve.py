@@ -281,6 +281,28 @@ class FastMathLibrary:
 
 # --- ISOLATED TESTING BLOCKS ---
 if __name__ == "__main__":
+    print("Training polynomials (Degree 3)...")
+    remez_cos = RemezCosine(degree=3); remez_cos.solve(iterations=5)
+    remez_sin = RemezSine(degree=3); remez_sin.solve(iterations=5)
+    remez_exp2 = RemezExp2(degree=3); remez_exp2.solve(iterations=5)
+    remez_log = RemezLog(degree=3); remez_log.solve(iterations=5)
+
+    print(f"{remez_cos.coeffs.tolist()=}")
+    print(f"{remez_sin.coeffs.tolist()=}")
+    print(f"{remez_exp2.coeffs.tolist()=}")
+    print(f"{remez_log.coeffs.tolist()=}")
+
+    print("Training polynomials (Degree 7)...")
+    remez_cos = RemezCosine(degree=7); remez_cos.solve(iterations=5)
+    remez_sin = RemezSine(degree=7); remez_sin.solve(iterations=5)
+    remez_exp2 = RemezExp2(degree=7); remez_exp2.solve(iterations=5)
+    remez_log = RemezLog(degree=7); remez_log.solve(iterations=5)
+
+    print(f"{remez_cos.coeffs.tolist()=}")
+    print(f"{remez_sin.coeffs.tolist()=}")
+    print(f"{remez_exp2.coeffs.tolist()=}")
+    print(f"{remez_log.coeffs.tolist()=}")
+
     print("Training polynomials (Degree 5)...")
     remez_cos = RemezCosine(degree=5); remez_cos.solve(iterations=5)
     remez_sin = RemezSine(degree=5); remez_sin.solve(iterations=5)

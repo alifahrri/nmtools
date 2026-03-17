@@ -211,31 +211,35 @@ namespace nmtools::utl
     template <typename F, auto degree=5>
     struct remez_coeffs;
 
-    #if nmtools_has_constexpr_bit_cast
     template <typename F, auto degree>
-    struct remez_coeffs
-    {
-        static constexpr auto value = solve_remez(
-            F{}
-            , utl::get<0>(F::domain())
-            , utl::get<1>(F::domain())
-            , ct_v<degree>
-            , NMTOOLS_UTL_REMEZ_ITER
-        );
+    struct poly_coeffs;
 
-        constexpr auto size() const noexcept
-        {
-            return value.size();
-        }
+    template <auto degree>
+    using remez_cos = remez_coeffs<cos_obj_fun_t,degree>;
 
-        constexpr auto operator[](nm_size_t i) const noexcept
-        {
-            return value[i];
-        }
-    };
-    #else
+    template <auto degree>
+    using remez_sin = remez_coeffs<sin_obj_fun_t,degree>;
+
+    template <auto degree>
+    using remez_exp2 = remez_coeffs<exp2_obj_fun_t,degree>;
+
+    template <auto degree>
+    using remez_log = remez_coeffs<log_obj_fun_t,degree>;
+
+    template <auto degree>
+    constexpr inline auto remez_cos_v = remez_cos<degree>{};
+
+    template <auto degree>
+    constexpr inline auto remez_sin_v = remez_sin<degree>{};
+
+    template <auto degree>
+    constexpr inline auto remez_exp2_v = remez_exp2<degree>{};
+
+    template <auto degree>
+    constexpr inline auto remez_log_v = remez_log<degree>{};
+
     template <>
-    struct remez_coeffs<
+    struct poly_coeffs<
         cos_obj_fun_t, 4
     > {
         using T = double;
@@ -260,7 +264,7 @@ namespace nmtools::utl
     };
 
     template <>
-    struct remez_coeffs<
+    struct poly_coeffs<
         sin_obj_fun_t, 4
     > {
         using T = double;
@@ -285,7 +289,7 @@ namespace nmtools::utl
     };
 
     template <>
-    struct remez_coeffs<
+    struct poly_coeffs<
         exp2_obj_fun_t, 5
     > {
         using T = double;
@@ -311,7 +315,7 @@ namespace nmtools::utl
     };
 
     template <>
-    struct remez_coeffs<
+    struct poly_coeffs<
         log_obj_fun_t, 3
     > {
         using T = double;
@@ -333,13 +337,57 @@ namespace nmtools::utl
             return value[i];
         }
     };
+
+    #if nmtools_has_constexpr_bit_cast
+    template <typename F, auto degree>
+    struct remez_coeffs
+    {
+        static constexpr auto value = solve_remez(
+            F{}
+            , utl::get<0>(F::domain())
+            , utl::get<1>(F::domain())
+            , ct_v<degree>
+            , NMTOOLS_UTL_REMEZ_ITER
+        );
+
+        constexpr auto size() const noexcept
+        {
+            return value.size();
+        }
+
+        constexpr auto operator[](nm_size_t i) const noexcept
+        {
+            return value[i];
+        }
+    };
+    #else
+    // use pre-computed coefficient, less-flexible but available on older compiler
+    template <>
+    struct remez_coeffs<
+        cos_obj_fun_t, 4
+    > : poly_coeffs<cos_obj_fun_t,4> {};
+
+    template <>
+    struct remez_coeffs<
+        sin_obj_fun_t, 4
+    > : poly_coeffs<sin_obj_fun_t,4> {};
+
+    template <>
+    struct remez_coeffs<
+        exp2_obj_fun_t, 5
+    > : poly_coeffs<exp2_obj_fun_t,5> {};
+
+    template <>
+    struct remez_coeffs<
+        log_obj_fun_t, 3
+    > : poly_coeffs<log_obj_fun_t,3> {};
     #endif // nmtools_has_constexpr_bit_cast
 
     template <typename T, typename degree_t=ct<4>>
     constexpr auto cos(T x, degree_t=degree_t{})
     {
-        constexpr auto cos_coeffs = remez_coeffs<cos_obj_fun_t,degree_t::value>{};
-        constexpr auto sin_coeffs = remez_coeffs<sin_obj_fun_t,degree_t::value>{};
+        constexpr auto cos_coeffs = remez_cos_v<degree_t::value>;
+        constexpr auto sin_coeffs = remez_sin_v<degree_t::value>;
 
         return cos_poly(x,cos_coeffs,sin_coeffs);
     }
@@ -347,16 +395,16 @@ namespace nmtools::utl
     template <typename T, typename degree_t=ct<4>>
     constexpr auto sin(T x, degree_t=degree_t{})
     {
-        constexpr auto cos_coeffs = remez_coeffs<cos_obj_fun_t,degree_t::value>{};
-        constexpr auto sin_coeffs = remez_coeffs<sin_obj_fun_t,degree_t::value>{};
+        constexpr auto cos_coeffs = remez_cos_v<degree_t::value>;
+        constexpr auto sin_coeffs = remez_sin_v<degree_t::value>;
 
         return sin_poly(x,sin_coeffs,cos_coeffs);
     }
 
-    template <typename T, typename degree_t=ct<5>>
+    template <typename T, typename degree_t=ct<7>>
     constexpr auto exp(T x, degree_t=degree_t{})
     {
-        constexpr auto coeffs = remez_coeffs<exp2_obj_fun_t,degree_t::value>{};
+        constexpr auto coeffs = remez_exp2_v<degree_t::value>;
 
         auto y = x * inv_ln2_v<T>;
         auto k = utl::round(y);
@@ -367,10 +415,10 @@ namespace nmtools::utl
         return utl::ldexp(poly,int(k));
     }
 
-    template <typename T, typename degree_t=ct<5>>
+    template <typename T, typename degree_t=ct<7>>
     constexpr auto exp2(T x, degree_t=degree_t{})
     {
-        constexpr auto coeffs = remez_coeffs<exp2_obj_fun_t,degree_t::value>{};
+        constexpr auto coeffs = remez_exp2_v<degree_t::value>;
 
         return exp2_poly(x,coeffs);
     }
@@ -378,7 +426,7 @@ namespace nmtools::utl
     template <typename T, typename degree_t=ct<7>>
     constexpr auto log(T x, degree_t=degree_t{})
     {
-        constexpr auto coeffs = remez_coeffs<log_obj_fun_t,degree_t::value>{};
+        constexpr auto coeffs = remez_log_v<degree_t::value>;
 
         return log_poly(x,coeffs);
     }
@@ -393,7 +441,7 @@ namespace nmtools::utl
     template <typename T, typename degree_t=ct<7>>
     constexpr auto log2(T x, degree_t=degree_t{})
     {
-        constexpr auto coeffs = remez_coeffs<log_obj_fun_t,degree_t::value>{};
+        constexpr auto coeffs = remez_log_v<degree_t::value>;
 
         return log2_poly(x,coeffs);
     }

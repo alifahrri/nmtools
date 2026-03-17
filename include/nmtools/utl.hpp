@@ -19,6 +19,7 @@
 #include "nmtools/utl/static_vector.hpp"
 #include "nmtools/utl/string.hpp"
 #include "nmtools/utl/vector.hpp"
+#include "nmtools/utl/math.hpp"
 
 #ifndef nmtools_list
 #define nmtools_list ::nmtools::utl::vector
