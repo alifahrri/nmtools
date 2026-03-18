@@ -401,7 +401,20 @@ namespace nmtools::utl
         return sin_poly(x,sin_coeffs,cos_coeffs);
     }
 
-    template <typename T, typename degree_t=ct<7>>
+    // TODO: define poly for 7 degree remez coeffs for gcc 9
+    #if defined(__GNUC__) && !defined(__clang__)
+    #if __GNUC__ < 10
+    #define NMTOOLS_REMEZ_DEFAULT_EXP2_DEGREE 5
+    #define NMTOOLS_REMEZ_DEFAULT_LOG_DEGREE 3
+    #endif
+    #endif
+
+    #ifndef NMTOOLS_REMEZ_DEFAULT_LOG_DEGREE
+    #define NMTOOLS_REMEZ_DEFAULT_EXP2_DEGREE 7
+    #define NMTOOLS_REMEZ_DEFAULT_LOG_DEGREE 7
+    #endif
+
+    template <typename T, typename degree_t=ct<NMTOOLS_REMEZ_DEFAULT_EXP2_DEGREE>>
     constexpr auto exp(T x, degree_t=degree_t{})
     {
         constexpr auto coeffs = remez_exp2_v<degree_t::value>;
@@ -415,7 +428,7 @@ namespace nmtools::utl
         return utl::ldexp(poly,int(k));
     }
 
-    template <typename T, typename degree_t=ct<7>>
+    template <typename T, typename degree_t=ct<NMTOOLS_REMEZ_DEFAULT_EXP2_DEGREE>>
     constexpr auto exp2(T x, degree_t=degree_t{})
     {
         constexpr auto coeffs = remez_exp2_v<degree_t::value>;
@@ -423,7 +436,7 @@ namespace nmtools::utl
         return exp2_poly(x,coeffs);
     }
 
-    template <typename T, typename degree_t=ct<7>>
+    template <typename T, typename degree_t=ct<NMTOOLS_REMEZ_DEFAULT_LOG_DEGREE>>
     constexpr auto log(T x, degree_t=degree_t{})
     {
         constexpr auto coeffs = remez_log_v<degree_t::value>;
@@ -431,14 +444,14 @@ namespace nmtools::utl
         return log_poly(x,coeffs);
     }
 
-    template <typename T, typename degree_t=ct<7>>
+    template <typename T, typename degree_t=ct<NMTOOLS_REMEZ_DEFAULT_LOG_DEGREE>>
     constexpr auto log10(T x, degree_t=degree_t{})
     {
         auto t = utl::log(x,degree_t{});
         return t * inv_ln10_v<T>;
     }
 
-    template <typename T, typename degree_t=ct<7>>
+    template <typename T, typename degree_t=ct<NMTOOLS_REMEZ_DEFAULT_LOG_DEGREE>>
     constexpr auto log2(T x, degree_t=degree_t{})
     {
         constexpr auto coeffs = remez_log_v<degree_t::value>;

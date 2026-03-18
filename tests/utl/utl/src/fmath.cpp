@@ -624,7 +624,9 @@ NMTOOLS_TESTING_DECLARE_CASE(utl,ldexp)
     {
         auto res_d = std::ldexp(args::val_d,args::exponent);
         auto res_f = std::ldexp(args::val_f,args::exponent);
+        #ifdef NMTOOLS_HAS_FLOAT16
         auto res_h = std::ldexp((float)args::val_h,args::exponent);
+        #endif // NMTOOLS_HAS_FLOAT16
     }
 
     NMTOOLS_TESTING_DECLARE_ARGS(case2)
@@ -640,7 +642,9 @@ NMTOOLS_TESTING_DECLARE_CASE(utl,ldexp)
     {
         auto res_d = std::ldexp(args::val_d,args::exponent);
         auto res_f = std::ldexp(args::val_f,args::exponent);
+        #ifdef NMTOOLS_HAS_FLOAT16
         auto res_h = std::ldexp((float)args::val_h,args::exponent);
+        #endif // NMTOOLS_HAS_FLOAT16
     }
 }
 

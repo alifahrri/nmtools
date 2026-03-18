@@ -2,6 +2,7 @@
 #define NMTOOLS_UTL_FMATH_HPP
 
 #include "nmtools/utl/tuple.hpp"
+#include "nmtools/utl/bit.hpp"
 #include "nmtools/meta/bits/transform/conditional.hpp"
 
 namespace nmtools::meta
@@ -150,37 +151,12 @@ namespace nmtools::utl
         }
     }
 
-    #define nmtools_bit_cast(T,x) \
-    (__builtin_bit_cast(T,x))
-
-    #define nmtools_bit_cast_constexpr constexpr
-    #define nmtools_has_constexpr_bit_cast (1)
-
-    // in clang, at least 20.x, __GNUC__ is defined to 4 when the gcc version is 14
-    // so skip in clang
-    #if defined(__GNUC__) && !defined(__clang__)
-    #if __GNUC__ < 10
-    // #define STR(x) #x
-    // #define XSTR(x) STR(x)
-    // #pragma message("Compiling with GCC Version: " XSTR(__GNUC__) "." XSTR(__GNUC_MINOR__) "." XSTR(__GNUC_PATCHLEVEL__))
-    // #pragma message "disabling some utl math constexpr"
-
-    #undef nmtools_bit_cast
-    #undef nmtools_bit_cast_constexpr
-    #undef nmtools_has_constexpr_bit_cast
-    #define nmtools_bit_cast(T,x) \
-    (*(T*)&x)
-    #define nmtools_bit_cast_constexpr
-    #define nmtools_has_constexpr_bit_cast (0)
-    #endif // __GNUC__ < 10
-    #endif // __GNUC__
-
     template <typename T>
-    nmtools_bit_cast_constexpr
+    constexpr
     auto get_exponent_bits(T x)
     {
         using uint_t = get_uint_t<sizeof(T)*8>;
-        uint_t bits = nmtools_bit_cast(uint_t,x);
+        uint_t bits = utl::bit_cast<uint_t>(x);
 
         auto shifted_bits = bits >> num_mantissa_bits_v<T>;
 
@@ -192,12 +168,12 @@ namespace nmtools::utl
     }
 
     template <typename T>
-    nmtools_bit_cast_constexpr
+    constexpr
     auto signbit(T x)
     {
         using uint_t = get_uint_t<sizeof(T)*8>;
 
-        uint_t bits = nmtools_bit_cast(uint_t,x);
+        uint_t bits = utl::bit_cast<uint_t>(x);
 
         constexpr auto mantissa_shift = num_mantissa_bits_v<T>;
         constexpr auto mantissa_mask  = ((uint_t)1 << mantissa_shift) - 1;
@@ -209,12 +185,12 @@ namespace nmtools::utl
     }
 
     template <typename T>
-    nmtools_bit_cast_constexpr
+    constexpr
     auto copysign(T x, T y)
     {
         using uint_t = get_uint_t<sizeof(T)*8>;
-        auto x_bits = nmtools_bit_cast(uint_t,x);
-        auto y_bits = nmtools_bit_cast(uint_t,y);
+        auto x_bits = utl::bit_cast<uint_t>(x);
+        auto y_bits = utl::bit_cast<uint_t>(y);
 
         auto sign_mask = ((uint_t)1 << ((sizeof(T)*8)-1));
 
@@ -223,15 +199,15 @@ namespace nmtools::utl
 
         auto result_bits = mag_x | sgn_y;
 
-        return nmtools_bit_cast(T,result_bits);
+        return utl::bit_cast<T>(result_bits);
     }
 
     template <typename T>
-    nmtools_bit_cast_constexpr
+    constexpr
     auto ilogb(T x)
     {
         using uint_t = get_uint_t<sizeof(T)*8>;
-        auto bits = nmtools_bit_cast(uint_t,x);
+        auto bits = utl::bit_cast<uint_t>(x);
 
         constexpr auto mantissa_shift = num_mantissa_bits_v<T>;
         // constexpr auto mantissa_mask  = ((uint_t)1 << num_mantissa_bits_v<T>) - 1;
@@ -248,18 +224,18 @@ namespace nmtools::utl
     }
 
     template <typename T>
-    nmtools_bit_cast_constexpr
+    constexpr
     auto trunc(T x)
     {
         using uint_t = get_uint_t<sizeof(T)*8>;
-        auto bits = nmtools_bit_cast(uint_t,x);
+        auto bits = utl::bit_cast<uint_t>(x);
 
         int raw_exp = (bits >> num_mantissa_bits_v<T>) & (((uint_t)1 << num_exponent_bits_v<T>) - 1);
         int exp = raw_exp - get_bias_v<T>;
 
         if (exp < 0) {
             uint_t sign_bit = bits & ((uint_t)1 << (sizeof(T)*8 - 1));
-            return nmtools_bit_cast(T,sign_bit);
+            return utl::bit_cast<T>(sign_bit);
         }
 
         if (exp >= 23) {
@@ -269,7 +245,8 @@ namespace nmtools::utl
         int fraction_bits = num_mantissa_bits_v<T> - exp;
         uint_t mask = ~(((uint_t)1 << fraction_bits) - 1);
 
-        return nmtools_bit_cast(T, bits & mask);
+        auto masked = (bits & mask);
+        return utl::bit_cast<T>( masked);
     }
 
     template <typename T>
@@ -311,12 +288,7 @@ namespace nmtools::utl
     {
         using uint_t = get_uint_t<sizeof(T)*8>;
 
-        union {
-            T f;
-            uint_t i;
-        } u;
-
-        u.f = num;
+        auto bits = utl::bit_cast<uint_t>(num);
 
         if (num == T(0)) {
             if (exp) {
@@ -329,7 +301,7 @@ namespace nmtools::utl
         constexpr auto mantissa_mask  = ((uint_t)1 << mantissa_shift) - 1;
         constexpr auto exponent_mask  = ((uint_t)1 << num_exponent_bits_v<T>) - 1;
 
-        int raw_exp = (u.i >> mantissa_shift) & exponent_mask;
+        int raw_exp = (bits >> mantissa_shift) & exponent_mask;
 
         // check if inf or nan
         if (raw_exp == exponent_mask) {
@@ -345,15 +317,15 @@ namespace nmtools::utl
             *exp = raw_exp - get_bias_v<T> + 1;
         }
         uint_t new_exp_bits = get_bias_v<T> - 1;
-        uint_t mantissa = u.i & mantissa_mask;
-        uint_t sign_bit = u.i & ~(mantissa_mask | (exponent_mask << mantissa_shift));
-        u.i = sign_bit | (new_exp_bits << num_mantissa_bits_v<T>) | mantissa;
+        uint_t mantissa = bits & mantissa_mask;
+        uint_t sign_bit = bits & ~(mantissa_mask | (exponent_mask << mantissa_shift));
+        bits = sign_bit | (new_exp_bits << num_mantissa_bits_v<T>) | mantissa;
 
-        return u.f;
+        return utl::bit_cast<T>(bits);
     }
 
     template <typename T>
-    nmtools_bit_cast_constexpr
+    constexpr
     auto ldexp(T x, int32_t exp)
     {
         // TODO: check for isnan and isinf
@@ -363,7 +335,7 @@ namespace nmtools::utl
 
         using uint_t = get_uint_t<sizeof(T)*8>;
 
-        uint_t bits = nmtools_bit_cast(uint_t,x);
+        uint_t bits = utl::bit_cast<uint_t>(x);
 
         constexpr auto mantissa_shift = num_mantissa_bits_v<T>;
         constexpr auto mask = ((uint_t)1 << num_exponent_bits_v<T>) - 1;
@@ -378,7 +350,7 @@ namespace nmtools::utl
         bits &= ~(mask << mantissa_shift);
         bits |= (static_cast<uint_t>(new_exp) << mantissa_shift);
 
-        return nmtools_bit_cast(T,bits);
+        return utl::bit_cast<T>(bits);
     }
 
     template <typename T>
@@ -390,7 +362,7 @@ namespace nmtools::utl
     }
 
     template <typename T>
-    nmtools_bit_cast_constexpr
+    constexpr
     auto fmod(T x, T y)
     {
         // TODO: handle case when y = 0 or x is nan/inf: return quiet nan
@@ -424,7 +396,7 @@ namespace nmtools::utl
     }
 
     template <typename T>
-    nmtools_bit_cast_constexpr
+    constexpr
     auto remainder(T x, T y)
     {
         // TODO: handle if y = 0 or x is nan/inf
