@@ -54,40 +54,6 @@ namespace nmtools::meta
     // to carry the information about maximum number of elements per axis
     // hence we can deduce the maximum number of elements to deduce the type of buffer at compile time
 
-    template <template<typename...>typename Tuple, typename...T, auto...Min, auto...Max>
-    struct min_value<
-        Tuple<clipped_integer_t<T,Min,Max>...>,
-        enable_if_t< is_tuple_v<Tuple<clipped_integer_t<T,Min,Max>...>> && sizeof...(T)>
-    >
-    {
-        using index_t = promote_index_t<T...>;
-        static constexpr auto value = nmtools_array{index_t(Min)...};
-    }; // min_value
-
-    template <template<typename...>typename tuple, typename...Ts>
-    struct min_value<
-        tuple<Ts...>
-        , enable_if_t< is_tuple_v<tuple<Ts...>> && (is_constant_index_v<Ts> && ...) && sizeof...(Ts)>
-    > {
-        using index_t = promote_index_t<decltype(Ts::value)...>;
-        static constexpr auto value = nmtools_array{index_t(Ts::value)...};
-    }; // min_value
-
-    template <template<typename,auto>typename Array, typename T, auto Min, auto Max, auto N>
-    struct min_value<
-        Array<clipped_integer_t<T,Min,Max>,N>
-    >
-    {
-        static constexpr auto value = [](){
-            using type = nmtools_array<T,N>;
-            auto result = type{};
-            for (size_t i=0; i<N; i++) {
-                result[i] = Min;
-            }
-            return result;
-        }();
-    }; // min_value
-
     template <typename T, auto Min, auto Max>
     struct min_value<clipped_integer_t<T,Min,Max>>
         : clipped_max<clipped_integer_t<T,Min,Max>>

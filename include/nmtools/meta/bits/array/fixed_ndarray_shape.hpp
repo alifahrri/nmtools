@@ -12,7 +12,6 @@
 #include "nmtools/meta/bits/transform/remove_address_space.hpp"
 
 #include "nmtools/meta/loop.hpp"
-#include "nmtools/utl/array.hpp"
 
 namespace nmtools::meta
 {
@@ -30,38 +29,7 @@ namespace nmtools::meta
      * @tparam typename optional for sfinae
      */
     template <typename T, typename=void>
-    struct fixed_ndarray_shape
-    {
-        /**
-         * @brief get the shape of ndarray.
-         *
-         * Dispatched code based on the attributes, with the following order:
-         * - T is nested array and has fixed-size
-         * - T is bounded array
-         * - fail
-         * 
-         * @return constexpr auto 
-         */
-        static constexpr auto value = [](){
-            // check for fixed-size array (that has tuple_size_v)
-            if constexpr (nested_array_size_v<T> > 0) {
-                // nested_array_dim_v mimics std rank_v
-                // nested_array_size_v mimics std extent_v
-                constexpr auto dim = nested_array_dim_v<T>;
-                using array_t = utl::array<size_t,dim>;
-                auto shape = array_t{};
-                template_for<dim>([&](auto index){
-                    constexpr auto i = decltype(index)::value;
-                    using nested_t = remove_nested_array_dim_t<T,i>;
-                    shape[i] = nested_array_size_v<nested_t>;
-                });
-                return shape;
-            }
-            // fail otherwise
-            else return detail::fail_t{};
-        }();
-        using value_type = detail::fail_to_void_t<meta::remove_cvref_t<decltype(value)>>;
-    };
+    struct fixed_ndarray_shape;
 
     /**
      * @brief helper variable template to get fixed-array size at compile-time.
