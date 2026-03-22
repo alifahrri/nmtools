@@ -59,16 +59,14 @@ namespace nmtools
 #define __STDC_WANT_IEC_60559_TYPES_EXT__
 #include <float.h>
 
-#ifdef FLT16_MIN
+#if defined(FLT16_MIN) && !defined(__wasm__)
 namespace nmtools
 {
-    #ifndef __wasm__
     #if defined(__arm__) || defined(__aarch64__)
     using float16_t = __fp16;
-    #else
+    #else // x86 (and others?)
     using float16_t = _Float16;
     #endif
-    #endif // __wasm__
 }
 
 #define NMTOOLS_HAS_FLOAT16
