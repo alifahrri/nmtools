@@ -62,11 +62,13 @@ namespace nmtools
 #ifdef FLT16_MIN
 namespace nmtools
 {
+    #ifndef __wasm__
     #if defined(__arm__) || defined(__aarch64__)
     using float16_t = __fp16;
     #else
     using float16_t = _Float16;
     #endif
+    #endif // __wasm__
 }
 
 #define NMTOOLS_HAS_FLOAT16
