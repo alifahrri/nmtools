@@ -6,7 +6,6 @@
 #include "nmtools/meta/bits/traits/is_slice_index.hpp"
 #include "nmtools/meta/bits/transform/len.hpp"
 #include "nmtools/meta/bits/transform/max_len.hpp"
-#include "nmtools/meta/bits/array/fixed_shape.hpp"
 #include "nmtools/meta/bits/array/fixed_ndarray_shape.hpp"
 #include "nmtools/meta/bits/array/fixed_index_array_size.hpp"
 #include "nmtools/meta/bits/array/fixed_dim.hpp"
@@ -120,7 +119,7 @@ namespace nmtools::meta
     {
         static constexpr auto value = [](){
             if constexpr ((is_constant_index_v<Ts> && ...)) {
-                return nmtools_array{sizeof...(Ts)};
+                return utl::array{sizeof...(Ts)};
             } else {
                 return error::FIXED_SHAPE_UNSUPPORTED<utl::tuple<Ts...>>{};
             }

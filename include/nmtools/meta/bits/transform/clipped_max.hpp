@@ -30,16 +30,6 @@ namespace nmtools::meta
 
     template <typename T>
     constexpr inline auto clipped_max_v = clipped_max<T>::value;
-
-    template <template<typename...>typename Tuple, typename...Ts, auto...Min, auto...Max>
-    struct clipped_max<
-        Tuple<clipped_integer_t<Ts,Min,Max>...>,
-        enable_if_t< is_tuple_v<Tuple<clipped_integer_t<Ts,Min,Max>...>> >
-    >
-    {
-        using index_t = promote_index_t<Ts...>;
-        static constexpr auto value = nmtools_array{index_t(Max)...};
-    };
 }
 
 #endif // NMTOOLS_META_BITS_TRANSFORM_CLIPPED_MAX_HPP
