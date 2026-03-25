@@ -45,7 +45,18 @@ endif (NMTOOLS_CODE_COVERAGE)
 if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
     message(STATUS "Clang compiler detected.")
     message(STATUS "Clang version: ${CMAKE_CXX_COMPILER_VERSION}")
+    # probably related to gcc / libstdc++ used
+    ## TODO: findout clang & libc combination that is problematic
     if ("${CMAKE_CXX_COMPILER_VERSION}" VERSION_LESS "20.0")
+        target_compile_options(${PROJECT_NAME} PRIVATE
+            -fno-rtti
+        )
+    endif()
+elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
+    message(STATUS "Detected GCC version: ${CMAKE_CXX_COMPILER_VERSION}")
+    # known to not work without -fno-rtti on gcc 12, 
+    # known to work without -fno-rtti on gcc 14.2
+    if (CMAKE_CXX_COMPILER_VERSION VERSION_LESS 14.2.0)
         target_compile_options(${PROJECT_NAME} PRIVATE
             -fno-rtti
         )
