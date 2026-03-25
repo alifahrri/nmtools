@@ -42,10 +42,12 @@ if (NMTOOLS_CODE_COVERAGE)
     target_link_libraries(numeric-tests-utl PRIVATE coverage_config)
 endif (NMTOOLS_CODE_COVERAGE)
 
-# TODO: only apply on problematic config
-if(ANDROID)
-    # workaround for ld.lld: error: undefined symbol: typeinfo for _Float16
-    target_compile_options(${PROJECT_NAME} PRIVATE
-        -fno-rtti
-    )
-endif ()
+if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+    message(STATUS "Clang compiler detected.")
+    message(STATUS "Clang version: ${CMAKE_CXX_COMPILER_VERSION}")
+    if ("${CMAKE_CXX_COMPILER_VERSION}" VERSION_LESS "20.0")
+        target_compile_options(${PROJECT_NAME} PRIVATE
+            -fno-rtti
+        )
+    endif()
+endif()
