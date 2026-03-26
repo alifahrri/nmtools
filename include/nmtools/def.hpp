@@ -66,7 +66,7 @@ namespace nmtools
     using float16_t = __fp16;
     #define NMTOOLS_HAS_FLOAT16
     #elif defined(__clang__) // x86 (and others?)
-    #if (__clang_major__ > 11)
+    #if (__clang_major__ > 14)
     using float16_t = _Float16;
     #define NMTOOLS_HAS_FLOAT16
     #endif // __clang_major__
