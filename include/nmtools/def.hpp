@@ -64,23 +64,29 @@ namespace nmtools
 {
     #if defined(__arm__) || defined(__aarch64__)
     using float16_t = __fp16;
-    #else // x86 (and others?)
+    #define NMTOOLS_HAS_FLOAT16
+    #elif defined(__clang__) // x86 (and others?)
+    #if (__clang_major__ > 11)
     using float16_t = _Float16;
+    #define NMTOOLS_HAS_FLOAT16
+    #endif // __clang_major__
+    #else
+    using float16_t = _Float16;
+    #define NMTOOLS_HAS_FLOAT16
     #endif
 }
-
-#define NMTOOLS_HAS_FLOAT16
-
-#ifdef NMTOOLS_MESSAGE
-#pragma message "the compiler have _Float16, float16_t is defined"
-#endif // NMTOOLS_MESSAGE
 #endif // FLT16_MIN
-
 #else // <float.h>
-#ifdef NMTOOLS_MESSAGE
-#pragma message "the compiler doesn't have _Float16"
-#endif // NMTOOLS_MESSAGE
+// do nothing
 #endif // _Float16
+
+#ifdef NMTOOLS_MESSAGE
+#ifdef NMTOOLS_HAS_FLOAT16
+#pragma message "the compiler have _Float16 or __fp16, float16_t is defined"
+#else // NMTOOLS_HAS_FLOAT16
+#pragma message "the compiler doesn't have _Float16"
+#endif // NMTOOLS_HAS_FLOAT16
+#endif // NMTOOLS_MESSAGE
 
 namespace nmtools
 {
