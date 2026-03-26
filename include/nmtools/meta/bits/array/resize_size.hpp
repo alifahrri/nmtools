@@ -25,12 +25,6 @@ namespace nmtools::meta
 
     template <typename T, auto NewSize>
     using resize_size_t = type_t<resize_size<T,NewSize>>;
-
-    template <typename T, auto N, auto M>
-    struct resize_size<T[N],M>
-    {
-        using type = nmtools_array<T,M>;
-    };
 } // namespace nmtools::meta
 
 #endif // NMTOOLS_META_BITS_ARRAY_RESIZE_SIZE_HPP

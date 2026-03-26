@@ -482,7 +482,7 @@ NMTOOLS_TESTING_DECLARE_CASE(utl,solve_remez)
     NMTOOLS_TESTING_DECLARE_ARGS(case1)
     {
         auto f = [](auto t){
-            return utl::taylor_cos(utl::sqrt(utl::abs(t)));
+            return utl::cos_maclaurin(utl::sqrt(utl::abs(t)));
         };
         auto a = 0.f;
         auto b = utl::pow(utl::pi_v<float> / 4, 2);
@@ -498,14 +498,15 @@ NMTOOLS_TESTING_DECLARE_CASE(utl,solve_remez)
     {
         auto f = [](auto t){
             using T = decltype(t);
-            if (utl::abs(t) < 1e-7) {
+            t = utl::abs(t);
+            if (t < 1e-15) {
                 return T(1.0);
             } else {
-                return utl::taylor_sin(utl::sqrt(t)) / utl::sqrt(t);
+                return utl::sin_maclaurin(utl::sqrt(t)) / utl::sqrt(t);
             }
         };
-        auto a = 0.f;
-        auto b = utl::pow(utl::pi_v<float> / 4, 2);
+        auto a = 0.;
+        auto b = utl::pow(utl::pi_v<double> / 4, 2);
         auto degree = 4;
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case2)
@@ -519,8 +520,8 @@ NMTOOLS_TESTING_DECLARE_CASE(utl,solve_remez)
         auto f = [](auto t){
             return utl::exp2_maclaurin(t);
         };
-        auto a = -0.5f;
-        auto b = 0.5f;
+        auto a = -0.5;
+        auto b = 0.5;
         auto degree = 5;
         auto num_iter = 15;
     }
@@ -545,8 +546,8 @@ NMTOOLS_TESTING_DECLARE_CASE(utl,solve_remez)
         };
         auto degree = 4;
         auto num_iter = 15;
-        auto a = 0.0f;
-        auto b = 1.0f/9.0f;
+        auto a = 0.0;
+        auto b = 1.0/9.0;
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case4)
     {

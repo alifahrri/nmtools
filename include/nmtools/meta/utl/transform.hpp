@@ -1,7 +1,15 @@
 #ifndef NMTOOLS_META_UTL_TRANSFORM_HPP
 #define NMTOOLS_META_UTL_TRANSFORM_HPP
 
-#include "nmtools/meta/transform.hpp"
+#include "nmtools/meta/bits/transform/get_maybe_type.hpp"
+#include "nmtools/meta/bits/transform/resize_fixed_vector.hpp"
+#include "nmtools/meta/bits/array/resize_size.hpp"
+#include "nmtools/meta/bits/transform/resize_fixed_ndarray.hpp"
+#include "nmtools/meta/bits/transform/append_type.hpp"
+#include "nmtools/meta/bits/transform/replace_either.hpp"
+#include "nmtools/meta/bits/transform/get_either.hpp"
+#include "nmtools/meta/bits/transform/replace_element_type.hpp"
+#include "nmtools/meta/bits/transform/replace_value_type.hpp"
 #include "nmtools/utl.hpp"
 #include "nmtools/meta/utl/array.hpp"
 

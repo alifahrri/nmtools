@@ -13,6 +13,7 @@
 #include "nmtools/index/subtract_indices.hpp"
 #include "nmtools/index/multiply_indices.hpp"
 #include "nmtools/index/divide_indices.hpp"
+#include "nmtools/index/remove_dims.hpp"
 
 namespace nmtools::index
 {
@@ -47,6 +48,13 @@ namespace nmtools::index
         constexpr auto append(other_t other) const
         {
             auto result = index::append(data_,other);
+            return array(result);
+        }
+
+        template <typename axis_t, typename keepdims_t=meta::false_type>
+        constexpr auto remove_dims(const axis_t& axis, keepdims_t keepdims=keepdims_t{}) const noexcept
+        {
+            auto result = index::remove_dims(data_,axis,keepdims);
             return array(result);
         }
 
@@ -154,6 +162,46 @@ namespace nmtools::index
 
     // TODO: fix to_string
 } // namespace nmtools::index
+
+namespace nmtools
+{
+    template <nm_size_t I, typename buffer_t>
+    struct get_t<I,index::array_t<buffer_t>>
+    {
+        constexpr decltype(auto) operator()(index::array_t<buffer_t>& array) noexcept
+        {
+            return array.template get<I>();
+        }
+
+        constexpr decltype(auto) operator()(const index::array_t<buffer_t>& array) const noexcept
+        {
+            return array.template get<I>();
+        }
+    };
+}
+
+#if __has_include(<tuple>)
+#include <tuple>
+#else
+namespace std
+{
+    template <typename T>
+    struct tuple_size;
+
+    template <nm_size_t I, typename T>
+    struct tuple_element
+}
+#endif
+
+template <typename T>
+struct std::tuple_size<nmtools::index::array_t<T>>
+{
+    static constexpr auto value = nmtools::len_v<T>;
+};
+
+template <nm_size_t I, typename T>
+struct std::tuple_element<I,nmtools::index::array_t<T>>
+    : std::tuple_element<I,T> {};
 
 namespace nmtools::index
 {

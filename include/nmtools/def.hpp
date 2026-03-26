@@ -48,7 +48,45 @@ namespace nmtools
     using bool_t    = uint8_t;
 }
 
+// TODO: support custom float16 type if not available
+// TODO: use other compiler specific type (eg __half, etc) or without including stddef (?)
 #endif // __has_include(<stddef.h>)
+
+// useful for enable/disable print debugging
+// #define NMTOOLS_MESSAGE
+
+#if __has_include(<float.h>)
+#define __STDC_WANT_IEC_60559_TYPES_EXT__
+#include <float.h>
+
+#if defined(FLT16_MIN) && !defined(__wasm__)
+namespace nmtools
+{
+    #if defined(__arm__) || defined(__aarch64__)
+    using float16_t = __fp16;
+    #define NMTOOLS_HAS_FLOAT16
+    #elif defined(__clang__) // x86 (and others?)
+    #if (__clang_major__ > 14)
+    using float16_t = _Float16;
+    #define NMTOOLS_HAS_FLOAT16
+    #endif // __clang_major__
+    #else
+    using float16_t = _Float16;
+    #define NMTOOLS_HAS_FLOAT16
+    #endif
+}
+#endif // FLT16_MIN
+#else // <float.h>
+// do nothing
+#endif // _Float16
+
+#ifdef NMTOOLS_MESSAGE
+#ifdef NMTOOLS_HAS_FLOAT16
+#pragma message "the compiler have _Float16 or __fp16, float16_t is defined"
+#else // NMTOOLS_HAS_FLOAT16
+#pragma message "the compiler doesn't have _Float16"
+#endif // NMTOOLS_HAS_FLOAT16
+#endif // NMTOOLS_MESSAGE
 
 namespace nmtools
 {

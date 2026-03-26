@@ -110,8 +110,8 @@ namespace nmtools::utl
 
         nm_index_t degree = nm_index_t(n) - 2;
         for (nm_size_t i=0; i<nm_size_t(degree+2); i++) {
-            // result[i] = a + (b-a) * (0.5 - 0.5 * taylor_cos(pi_v<T> * i / (degree + 1)));
-            auto k = taylor_cos((2*i+1)*pi_v<T> / (2*n));
+            // result[i] = a + (b-a) * (0.5 - 0.5 * cos_maclaurin(pi_v<T> * i / (degree + 1)));
+            auto k = cos_maclaurin((2*i+1)*pi_v<T> / (2*n));
             result[i] = T(0.5) * (a+b) + T(0.5) * (b-a) * k;
         }
         // insertion_sort_(result,[](auto a, auto b){

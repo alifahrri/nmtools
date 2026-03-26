@@ -5,112 +5,51 @@
 
 namespace nmtools::utl
 {
-    // TODO: rename to cos taylor/maclaurin
     template <typename T>
-    constexpr auto taylor_cos(T x, T precision_limit=1e-16, nm_size_t max_iter=100)
+    constexpr auto cos_maclaurin(T x, nm_size_t num_terms=10)
     {
-        x = fmod(x,(2 * pi_v<T>));
-        if (x > pi_v<T>) {
-            x = x - (2 * pi_v<T>);
-        }
+        auto mod = [](auto x, auto y){
+            return x - utl::floor(x/y) * y;
+        };
+        x = mod(x+pi_v<T>,(2*pi_v<T>)) - pi_v<T>;
 
         T result = 1;
         T term = 1;
-        nm_size_t n = 1;
 
         auto x_squared = x * x;
 
-        while (abs(term) > precision_limit) {
-            auto multiplier = -x_squared / ((2*n-1)*(2*n));
-            term = term * multiplier;
+        for (nm_size_t i=1; i<num_terms; i++) {
+            auto denominator = (2*i) * (2*i-1);
 
-            result = result + term;
-            n = n + 1;
+            term = term * (-x_squared) / denominator;
 
-            if (n > max_iter) {
-                break;
-            }
+            result += term;
         }
 
         return result;
     }
 
-    // TODO: rename to sin taylor/maclaurin
     template <typename T>
-    constexpr auto taylor_sin(T x, T precision_limit=1e-16, nm_size_t max_iter=100)
+    constexpr auto sin_maclaurin(T x, nm_size_t num_terms=10)
     {
-        x = fmod(x,(2 * pi_v<T>));
-        if (x > pi_v<T>) {
-            x = x - (2*pi_v<T>);
-        } else if (x < -pi_v<T>) {
-            x = x + (2*pi_v<T>);
-        }
+        auto mod = [](auto x, auto y){
+            return x - utl::floor(x/y) * y;
+        };
+        x = mod(x+pi_v<T>,(2*pi_v<T>)) - pi_v<T>;
 
         auto result = x;
         auto term = x;
-        nm_size_t n = 1;
 
         auto x_squared = x * x;
 
-        while (abs(term) > precision_limit) {
-            auto multiplier = -x_squared / ((2*n)*(2*n+1));
-            term = term * multiplier;
+        for (nm_size_t n=1; n<num_terms; n++) {
+            auto denominator = ((2*n)*(2*n+1));
+            term = term * (-x_squared) / denominator;
 
             result = result + term;
-            n = n + 1;
-
-            if (n > max_iter) {
-                break;
-            }
         }
 
         return result;
-    }
-
-    // TODO: rename to exp taylor/maclaurin
-    template <typename T>
-    constexpr auto taylor_exp(T t, T precision_limit=1e-15, nm_size_t max_iter=100)
-    {
-        T result = 1;
-        T term = 1;
-        nm_size_t n = 1;
-
-        while (abs(term) > precision_limit) {
-            term = term * (t / n);
-            result = result + term;
-            n = n+1;
-
-            if (n>max_iter) {
-                break;
-            }
-        }
-
-        return result;
-    }
-
-    template <typename T>
-    constexpr auto log_series(T x, nm_size_t num_terms=10)
-    {
-        const auto [m_,e_] = utl::frexp(x);
-
-        auto m = m_ * T(2);
-        auto e = e_ - 1;
-
-        auto z = (m - T(1)) / (m + 1);
-        auto z_squared = z * z;
-
-        T sum = 0;
-        auto term = z;
-
-        for (nm_size_t i=1; i<=num_terms; i++) {
-            auto denominator = (2*i) - 1;
-            sum += term / denominator;
-            term *= z_squared;
-        }
-
-        T ln_m = 2 * sum;
-
-        return ln_m + (e * ln2_v<T>);
     }
 
     template <typename T>
@@ -128,31 +67,6 @@ namespace nmtools::utl
         }
 
         return sum;
-    }
-
-    template <typename T>
-    constexpr auto log2_series(T x, nm_size_t num_terms=10)
-    {
-        const auto [m_,e_] = utl::frexp(x);
-
-        auto m = m_ * T(2);
-        auto e = e_ - 1;
-
-        auto z = (m - T(1)) / (m + 1);
-        auto z_squared = z * z;
-
-        T sum = 0;
-        auto term = z;
-
-        for (nm_size_t i=1; i<=num_terms; i++) {
-            auto denominator = (2*i) - 1;
-            sum += term / denominator;
-            term *= z_squared;
-        }
-
-        T ln_m = 2 * sum;
-
-        return (ln_m * inv_ln2_v<T>) + e;
     }
 
     template <typename T>
