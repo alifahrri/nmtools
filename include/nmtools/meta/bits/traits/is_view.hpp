@@ -24,4 +24,9 @@ namespace nmtools::meta
     static inline constexpr bool is_view_v = is_view<T>::value;
 }
 
+namespace nmtools
+{
+    using meta::is_view_v;
+}
+
 #endif // NMTOOLS_META_BITS_TRAITS_IS_VIEW_HPP

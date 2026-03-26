@@ -218,9 +218,9 @@ namespace nmtools::view
             auto aliased = meta::template_reduce<N>([&](auto init, auto index){
                 const auto& array = at(array_pack,index);
                 if constexpr (meta::is_pointer_v<meta::remove_cvref_pointer_t<decltype(array)>>) {
-                    return append_operands(init,alias(*array,at(final_ids,index)));
+                    return append_operands(init,view::alias(*array,at(final_ids,index)));
                 } else {
-                    return append_operands(init,alias(array,at(final_ids,index)));
+                    return append_operands(init,view::alias(array,at(final_ids,index)));
                 }
             },nmtools_tuple{});
             if constexpr (N == 1) {
