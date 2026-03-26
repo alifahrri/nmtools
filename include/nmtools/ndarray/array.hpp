@@ -331,7 +331,7 @@ namespace nmtools::meta
 
 namespace nmtools
 {
-    template <LayoutKind BufferLayout=LayoutKind::RowMajor>
+    template <LayoutKind BufferLayout=LayoutKind::RowMajor, auto broadcast_enable=true>
     struct object_eval_resolver_t {};
 
     // TODO: propagate evaluator context
@@ -349,7 +349,7 @@ namespace nmtools
         , typename shape_buffer_t
         , template <typename...>typename stride_buffer_t=resolve_stride_type_t
         , template <typename...>typename compute_offset_t=row_major_offset_t
-        , typename resolver_t=object_eval_resolver_t<LayoutKind::RowMajor>
+        , typename resolver_t=object_eval_resolver_t<>
         , typename context_t=none_t
         , auto broadcast_enable=true
         , typename=void>
@@ -362,8 +362,11 @@ namespace nmtools
         using stride_type = stride_buffer_t<shape_type>;
         using base_type   = base_ndarray_t<object_t>;
         using offset_type = compute_offset_t<shape_type,stride_type>;
+        // TODO: remove resolver when evalv2 is finalized
         using resolver_type = resolver_t;
         using context_type  = context_t;
+
+        static constexpr auto broadcasting = broadcast_enable;
 
         static_assert( meta::is_index_array_v<shape_type>, "unsupported shape_type for ndarray" );
         static_assert( meta::is_index_array_v<stride_type>, "unsupported stride_type for ndarray");
@@ -388,6 +391,25 @@ namespace nmtools
                 }
             }
         }
+
+        template <
+            typename other_context_t
+            , typename other_resolver_t
+            , auto other_broadcast>
+        constexpr object_t(const object_t<
+            buffer_t
+            , shape_buffer_t
+            , stride_buffer_t
+            , compute_offset_t
+            , other_resolver_t
+            , other_context_t
+            , other_broadcast>& other
+        )
+            : data_(other.data_)
+            , shape_(other.shape_)
+            , strides_(other.strides_)
+            , offset_(other.offset_)
+        {}
 
         constexpr auto data() const noexcept
         {
@@ -528,6 +550,26 @@ namespace nmtools
             return nmtools::unwrap(result);
         }
 
+        template <
+            typename other_context_t
+            , typename other_resolver_t
+            , auto other_broadcast>
+        constexpr auto operator=(const object_t<
+            buffer_t
+            , shape_buffer_t
+            , stride_buffer_t
+            , compute_offset_t
+            , other_resolver_t
+            , other_context_t
+            , other_broadcast>& other)
+        {
+            this->data_    = other.data_;
+            this->shape_   = other.shape_;
+            this->strides_ = other.strides_;
+            this->offset_  = other.offset_;
+            return *this;
+        }
+
         nmtools_ndarray_method(broadcast_to)
 
         nmtools_ndarray_method(less)
@@ -652,19 +694,20 @@ namespace nmtools
 
 namespace nmtools::meta
 {
-    template <LayoutKind BufferLayout, typename view_t>
+    template <LayoutKind BufferLayout, auto broadcast_enable, typename view_t>
     struct resolve_optype<
-        void, object_eval_resolver_t<BufferLayout>, view_t, none_t
+        void, object_eval_resolver_t<BufferLayout,broadcast_enable>, view_t, none_t
     >
     {
         template <typename buffer_t, typename shape_buffer_t>
         static constexpr auto make_ndarray(as_value<buffer_t>, as_value<shape_buffer_t>)
         {
+            using resolver_t = object_eval_resolver_t<BufferLayout,broadcast_enable>;
             if constexpr (BufferLayout == LayoutKind::RowMajor) {
-                using type = object_t<buffer_t,shape_buffer_t,resolve_stride_type_t,row_major_offset_t>;
+                using type = object_t<buffer_t,shape_buffer_t,resolve_stride_type_t,row_major_offset_t,resolver_t,none_t,broadcast_enable>;
                 return as_value_v<type>;
             } else if constexpr (BufferLayout == LayoutKind::ColumnMajor) {
-                using type = object_t<buffer_t,shape_buffer_t,resolve_stride_type_t,column_major_offset_t>;
+                using type = object_t<buffer_t,shape_buffer_t,resolve_stride_type_t,column_major_offset_t,resolver_t,none_t,broadcast_enable>;
                 return as_value_v<type>;
             } else {
                 using type = error::EVAL_RESULT_UNSUPPORTED<view_t,none_t,as_type<BufferLayout>>;
@@ -1157,7 +1200,7 @@ namespace nmtools
 {
     struct Array
     {
-        static constexpr auto resolver = meta::as_value_v<object_eval_resolver_t<LayoutKind::RowMajor>>;
+        static constexpr auto resolver = meta::as_value_v<object_eval_resolver_t<LayoutKind::RowMajor,true>>;
 
         template <typename...args_t>
         static constexpr auto arange(args_t&&...args)
@@ -1231,11 +1274,19 @@ namespace nmtools
             return nmtools::zeros_like(nmtools::forward<args_t>(args)...,None,None,resolver);
         }
 
-        template <typename...args_t>
-        static constexpr auto zeros(args_t&&...args)
+        template <
+            typename context_t=none_t
+            , typename shape_t
+            , typename dtype_t>
+        static constexpr auto zeros(const shape_t& shape, dtype_t dtype,
+            context_t&& context=context_t{})
         {
-            return nmtools::zeros(nmtools::forward<args_t>(args)...,None,None,resolver);
-        }
+            return nmtools::zeros(shape
+                , dtype
+                , nmtools::forward<context_t>(context)
+                , None
+                , resolver);
+        } // zeros
 
         template <typename array_t, typename dst_shape_t=none_t>
         constexpr auto operator()(const array_t& array, const dst_shape_t& dst_shape=dst_shape_t{}) const

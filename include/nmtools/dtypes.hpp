@@ -3,6 +3,7 @@
 
 #include "nmtools/meta/common.hpp"
 #include "nmtools/meta/bits/transform/remove_cvref.hpp"
+#include "nmtools/meta/bits/transform/get_element_type.hpp"
 
 #include "nmtools/def.hpp"
 
@@ -135,6 +136,13 @@ namespace nmtools
 
     template <typename T>
     using make_float_t = typename make_float<T>::type;
+
+    template <typename array_t>
+    constexpr auto type(const array_t&)
+    {
+        using T = get_element_type_t<array_t>;
+        return dtype_t<T>{};
+    }
     
 } // namespace nmtools
 
