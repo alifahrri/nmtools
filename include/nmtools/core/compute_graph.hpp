@@ -424,7 +424,7 @@ namespace nmtools::utils::impl
             auto node_str = nmtools_string("");
             node_str += to_string(node.functor,formatter_type{});
             if constexpr (!is_none_v<output_element_t>) {
-                using element_t = meta::type_t<output_element_t>;
+                using element_t [[maybe_unused]] = meta::type_t<output_element_t>;
                 node_str += " | ";
                 node_str += NMTOOLS_TYPENAME_TO_STRING(element_t);
             }
@@ -544,7 +544,7 @@ namespace nmtools::utils::impl
             node_str += to_string(node.functor,utils::Graphviz);
             node_str += " [graphviz_record_layout_close] ";
             if constexpr (!is_none_v<output_element_t>) {
-                using element_t = meta::type_t<output_element_t>;
+                using element_t [[maybe_unused]] = meta::type_t<output_element_t>;
                 node_str += " | ";
                 node_str += NMTOOLS_TYPENAME_TO_STRING(element_t);
             }
