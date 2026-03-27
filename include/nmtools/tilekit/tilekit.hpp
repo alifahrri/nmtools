@@ -5,6 +5,7 @@
 #include "nmtools/utility.hpp"
 #include "nmtools/core.hpp"
 #include "nmtools/array/tiling_window.hpp"
+#include "nmtools/index/array.hpp"
 #include "nmtools/index/product.hpp"
 #include "nmtools/index/add_indices.hpp"
 #include "nmtools/ndarray/array.hpp"
@@ -36,6 +37,18 @@ namespace nmtools::tilekit
 
 namespace nmtools::tilekit
 {
+    template <typename array_t>
+    constexpr auto shape(const array_t& array)
+    {
+        return index::array(nmtools::shape(array));
+    }
+
+    template <typename index_t>
+    constexpr auto index(const index_t& idx)
+    {
+        return nmtools::index::array(idx);
+    }
+
     template <typename block_shape_t>
     constexpr auto product(const block_shape_t& b_shape)
     {

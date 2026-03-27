@@ -100,4 +100,9 @@ namespace nmtools::meta
 
 } // namespace nmtools::meta
 
+namespace nmtools
+{
+    using meta::is_ndarray_v;
+}
+
 #endif // NMTOOLS_META_BITS_TRAITS_IS_NDARRAY_HPP

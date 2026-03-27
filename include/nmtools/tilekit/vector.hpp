@@ -268,7 +268,7 @@ namespace nmtools::tilekit::vector
 
         auto result = result_t{};
 
-        const auto src_shape   = shape(array);
+        const auto src_shape   = nmtools::shape(array);
         const auto src_strides = index::compute_strides(src_shape);
 
         constexpr auto NUM_LANE = bit_width / (sizeof(element_t) * 8 /*bit*/);
@@ -335,7 +335,7 @@ namespace nmtools::tilekit::vector
         constexpr auto NUM_LANE = bit_width / (sizeof(element_t) * 8 /*bit*/);
         constexpr auto NUM_LOAD = SIZE / NUM_LANE;
 
-        const auto output_shape   = shape(output);
+        const auto output_shape   = nmtools::shape(output);
         const auto output_strides = index::compute_strides(output_shape);
 
         using tile_shape_t = decltype(result.shape());

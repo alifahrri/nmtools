@@ -119,6 +119,8 @@ set(NMTOOLS_TESTS_TILEKIT_SRCS
 
     src/log10_scalar_st.cpp
     src/log10_scalar_mt.cpp
+
+    src/sum_scalar_st.cpp
 )
 if (NMTOOLS_TESTS_TILEKIT_ENABLE_TRACY)
     add_executable(${PROJECT_NAME}-doctest tests.cpp 

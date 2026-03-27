@@ -15,5 +15,9 @@ namespace nmtools::meta
     constexpr inline auto is_void_v  = is_void<T>::value;
 } // namespace nmtools::meta
 
+namespace nmtools
+{
+    using meta::is_void_v;
+}
 
 #endif // NMTOOLS_META_BITS_TRAITS_IS_VOID_HPP
