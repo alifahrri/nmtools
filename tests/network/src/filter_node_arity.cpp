@@ -1,5 +1,6 @@
 #include "nmtools/network/filter_node_arity.hpp"
 #include "nmtools/testing/data/network/filter_node_arity.hpp"
+#include "nmtools/context/default.hpp"
 #include "nmtools/testing/doctest.hpp"
 
 #define FILTER_NODE_ARITY_SUBCASE(case_name, ...) \

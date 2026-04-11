@@ -1,5 +1,6 @@
 #include "nmtools/network/out_degree.hpp"
 #include "nmtools/testing/data/network/out_degree.hpp"
+#include "nmtools/context/default.hpp"
 #include "nmtools/testing/doctest.hpp"
 
 #define OUT_DEGREE_SUBCASE(case_name, ...) \

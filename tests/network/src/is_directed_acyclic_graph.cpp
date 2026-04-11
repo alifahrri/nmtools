@@ -2,6 +2,7 @@
 #include "nmtools/network/digraph.hpp"
 #include "nmtools/network/multi_digraph.hpp"
 #include "nmtools/testing/data/network/is_directed_acyclic_graph.hpp"
+#include "nmtools/context/default.hpp"
 #include "nmtools/testing/doctest.hpp"
 
 #define IS_DIRECTED_ACYCLIC_GRAPH_SUBCASE(case_name, ...) \

@@ -1,5 +1,6 @@
 #include "nmtools/network/in_degree.hpp"
 #include "nmtools/testing/data/network/in_degree.hpp"
+#include "nmtools/context/default.hpp"
 #include "nmtools/testing/doctest.hpp"
 
 #define IN_DEGREE_SUBCASE(case_name, ...) \

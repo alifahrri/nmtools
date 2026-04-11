@@ -1,5 +1,6 @@
 #include "nmtools/network/add_edge.hpp"
 #include "nmtools/testing/data/network/add_edge.hpp"
+#include "nmtools/context/default.hpp"
 #include "nmtools/testing/doctest.hpp"
 
 #define ADD_EDGE_SUBCASE(case_name, ...) \

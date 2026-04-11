@@ -1,4 +1,5 @@
 #include "nmtools/network/multi_digraph.hpp"
+#include "nmtools/context/default.hpp"
 #include "nmtools/testing/doctest.hpp"
 
 #include "nmtools/array/flatten.hpp"

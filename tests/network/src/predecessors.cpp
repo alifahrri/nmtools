@@ -2,6 +2,7 @@
 #include "nmtools/network/digraph.hpp"
 #include "nmtools/network/multi_digraph.hpp"
 #include "nmtools/testing/data/network/predecessors.hpp"
+#include "nmtools/context/default.hpp"
 #include "nmtools/testing/doctest.hpp"
 
 #define PREDECESSORS_SUBCASE(case_name, ...) \
