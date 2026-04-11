@@ -3,18 +3,28 @@
 
 #include "nmtools/meta.hpp"
 #include "nmtools/ndarray/ndarray.hpp"
+
 #include "nmtools/core/alias.hpp"
 #include "nmtools/core/broadcast_to.hpp"
 #include "nmtools/core/reshape.hpp"
 #include "nmtools/core/slice.hpp"
 #include "nmtools/core/mutable_slice.hpp"
 #include "nmtools/core/eval.hpp"
+#include "nmtools/core/context.hpp"
+#include "nmtools/core/math.hpp"
+
 #include "nmtools/array/ufuncs/add.hpp"
 #include "nmtools/array/ufuncs/amax.hpp"
 #include "nmtools/array/ufuncs/amin.hpp"
 #include "nmtools/array/ufuncs/clip.hpp"
+
 #include "nmtools/array/ufuncs/cos.hpp"
 #include "nmtools/array/ufuncs/sin.hpp"
+#include "nmtools/array/ufuncs/tan.hpp"
+#include "nmtools/array/ufuncs/cosh.hpp"
+#include "nmtools/array/ufuncs/sinh.hpp"
+#include "nmtools/array/ufuncs/tanh.hpp"
+
 #include "nmtools/array/ufuncs/exp.hpp"
 #include "nmtools/array/ufuncs/exp2.hpp"
 #include "nmtools/array/ufuncs/greater.hpp"
@@ -24,6 +34,7 @@
 #include "nmtools/array/ufuncs/log.hpp"
 #include "nmtools/array/ufuncs/log2.hpp"
 #include "nmtools/array/ufuncs/log10.hpp"
+#include "nmtools/array/ufuncs/log1p.hpp"
 #include "nmtools/array/ufuncs/maximum.hpp"
 #include "nmtools/array/ufuncs/minimum.hpp"
 #include "nmtools/array/ufuncs/multiply.hpp"
@@ -340,8 +351,29 @@ namespace nmtools
     constexpr auto method(const args_t&...args) const \
     { \
         auto v = view::method(*this,args...); \
-        auto result = nmtools::eval(v,None,None,as_value_v<resolver_type>); \
+        auto result = nmtools::eval(v,context_,None,as_value_v<resolver_type>); \
         return nmtools::unwrap(result); \
+    }
+
+    #define nmtools_ndarray_reduce(method) \
+    template <typename axis_t, typename dtype_t=none_t, typename initial_t=none_t, typename keepdims_t=meta::false_type> \
+    constexpr auto reduce_##method(const axis_t& axis, dtype_t dtype=dtype_t{}, initial_t initial=initial_t{}, keepdims_t keepdims=keepdims_t{}) const \
+    { \
+        return nmtools::method.reduce(*this,axis,dtype,initial,keepdims,context_); \
+    }
+
+    #define nmtools_ndarray_accumulate(method) \
+    template <typename axis_t, typename dtype_t=none_t> \
+    constexpr auto accumulate_##method(const axis_t& axis, dtype_t dtype=dtype_t{}) const \
+    { \
+        return nmtools::method.accumulate(*this,axis,dtype,context_); \
+    }
+
+    #define nmtools_ndarray_outer(method) \
+    template <typename rhs_t, typename dtype_t=none_t> \
+    constexpr auto outer_##method(const rhs_t& rhs, dtype_t dtype=dtype_t{}) const \
+    { \
+        return nmtools::method.outer(*this,rhs,dtype,context_); \
     }
 
     template <
@@ -355,12 +387,12 @@ namespace nmtools
         , typename=void>
     struct object_t : base_ndarray_t<object_t<buffer_t,shape_buffer_t,stride_buffer_t,compute_offset_t,resolver_t,context_t>>
     {
+        using base_type   = base_ndarray_t<object_t>;
         using buffer_type = buffer_t;
         using value_type  = meta::get_element_type_t<buffer_type>;
         using shape_type  = shape_buffer_t;
         using index_type  = meta::get_element_or_common_type_t<shape_type>;
         using stride_type = stride_buffer_t<shape_type>;
-        using base_type   = base_ndarray_t<object_t>;
         using offset_type = compute_offset_t<shape_type,stride_type>;
         // TODO: remove resolver when evalv2 is finalized
         using resolver_type = resolver_t;
@@ -510,11 +542,13 @@ namespace nmtools
             return true;
         } // resize
 
+        /******************************************************************* */
+
         template <typename rhs_t>
         constexpr auto add(const rhs_t& rhs) const
         {
             auto v = view::add<broadcast_enable>(*this,rhs);
-            auto result = nmtools::eval(v,None,None,as_value_v<resolver_type>);
+            auto result = nmtools::eval(v,context_,None,as_value_v<resolver_type>);
             return nmtools::unwrap(result);
         }
 
@@ -522,7 +556,7 @@ namespace nmtools
         constexpr auto subtract(const rhs_t& rhs) const
         {
             auto v = view::subtract<broadcast_enable>(*this,rhs);
-            auto result = nmtools::eval(v,None,None,as_value_v<resolver_type>);
+            auto result = nmtools::eval(v,context_,None,as_value_v<resolver_type>);
             return nmtools::unwrap(result);
         }
 
@@ -530,7 +564,7 @@ namespace nmtools
         constexpr auto multiply(const rhs_t& rhs) const
         {
             auto v = view::multiply<broadcast_enable>(*this,rhs);
-            auto result = nmtools::eval(v,None,None,as_value_v<resolver_type>);
+            auto result = nmtools::eval(v,context_,None,as_value_v<resolver_type>);
             return nmtools::unwrap(result);
         }
 
@@ -538,17 +572,64 @@ namespace nmtools
         constexpr auto divide(const rhs_t& rhs) const
         {
             auto v = view::divide<broadcast_enable>(*this,rhs);
-            auto result = nmtools::eval(v,None,None,as_value_v<resolver_type>);
+            auto result = nmtools::eval(v,context_,None,as_value_v<resolver_type>);
             return nmtools::unwrap(result);
         }
+
+        /******************************************************************* */
 
         template <typename F>
         constexpr auto ufunc(F&& f) const
         {
+            // TODO: pass broadcasting
             auto v = view::unary_ufunc(nmtools::forward<F>(f),*this);
-            auto result = nmtools::eval(v,None,None,as_value_v<resolver_type>);
+            auto result = nmtools::eval(v,context_,None,as_value_v<resolver_type>);
             return nmtools::unwrap(result);
         }
+
+        template <typename F, typename axis_t, typename dtype_t=none_t, typename initial_t=none_t, typename keepdims_t=meta::false_type>
+        constexpr auto reduce(F&& f, const axis_t& axis, dtype_t dtype=dtype_t{}, initial_t initial=initial_t{}, keepdims_t keepdims=keepdims_t{}) const
+        {
+            auto v = view::reduce(nmtools::forward<F>(f),*this,axis,dtype,initial,keepdims);
+            auto result = nmtools::eval(v,context_,None,as_value_v<resolver_type>);
+            return nmtools::unwrap(result);
+        }
+
+        template <typename F, typename axis_t, typename dtype_t=none_t>
+        constexpr auto accumulate(F&& f, const axis_t& axis, dtype_t dtype=dtype_t{}) const
+        {
+            auto v = view::accumulate(nmtools::forward<F>(f),*this,axis,dtype);
+            auto result = nmtools::eval(v,context_,None,as_value_v<resolver_type>);
+            return nmtools::unwrap(result);
+        }
+
+        template <typename F, typename rhs_t, typename dtype_t=none_t>
+        constexpr auto outer(F&& f, const rhs_t& rhs, dtype_t dtype=dtype_t{}) const
+        {
+            auto v = view::outer(nmtools::forward<F>(f),*this,rhs,dtype);
+            auto result = nmtools::eval(v,context_,None,as_value_v<resolver_type>);
+            return nmtools::unwrap(result);
+        }
+
+        /******************************************************************* */
+
+        nmtools_ndarray_reduce(add)
+        nmtools_ndarray_reduce(multiply)
+        nmtools_ndarray_reduce(subtract)
+
+        /******************************************************************* */
+
+        nmtools_ndarray_accumulate(add)
+        nmtools_ndarray_accumulate(multiply)
+        nmtools_ndarray_accumulate(subtract)
+
+        /******************************************************************* */
+
+        nmtools_ndarray_outer(add)
+        nmtools_ndarray_outer(multiply)
+        nmtools_ndarray_outer(subtract)
+
+        /******************************************************************* */
 
         template <
             typename other_context_t
@@ -572,15 +653,16 @@ namespace nmtools
 
         nmtools_ndarray_method(broadcast_to)
 
+        /******************************************************************* */
         nmtools_ndarray_method(less)
         nmtools_ndarray_method(less_equal)
         nmtools_ndarray_method(greater)
         nmtools_ndarray_method(greater_equal)
 
+        /******************************************************************* */
         nmtools_ndarray_method(clip)
-        nmtools_ndarray_method(cumprod)
-        nmtools_ndarray_method(cumsum)
         nmtools_ndarray_method(diagonal)
+        nmtools_ndarray_method(flatten)
         nmtools_ndarray_method(reshape)
         nmtools_ndarray_method(repeat)
         nmtools_ndarray_method(squeeze)
@@ -588,23 +670,53 @@ namespace nmtools
         nmtools_ndarray_method(trace)
         nmtools_ndarray_method(transpose)
 
+        /******************************************************************* */
         nmtools_ndarray_method(cos)
         nmtools_ndarray_method(sin)
+        nmtools_ndarray_method(tan)
+        nmtools_ndarray_method(cosh)
+        nmtools_ndarray_method(sinh)
+        nmtools_ndarray_method(tanh)
 
+        /******************************************************************* */
         nmtools_ndarray_method(exp)
         nmtools_ndarray_method(exp2)
         nmtools_ndarray_method(log)
         nmtools_ndarray_method(log2)
         nmtools_ndarray_method(log10)
+        nmtools_ndarray_method(log1p)
+
+        /******************************************************************* */
+        // numpy's ndarray doesn't have maximum/minimum member, but torch's Tensor does
+        // also extend to reduce, accumulate, outer
+        nmtools_ndarray_method(maximum)
+        nmtools_ndarray_method(minimum)
+
+        nmtools_ndarray_reduce(maximum)
+        nmtools_ndarray_reduce(minimum)
+
+        nmtools_ndarray_outer(maximum)
+        nmtools_ndarray_outer(minimum)
+        
+        nmtools_ndarray_accumulate(maximum)
+        nmtools_ndarray_accumulate(minimum)
+        /******************************************************************* */
 
         nmtools_ndarray_method(max)
         nmtools_ndarray_method(min)
         nmtools_ndarray_method(prod)
         nmtools_ndarray_method(sum)
-        nmtools_ndarray_method(flatten)
         nmtools_ndarray_method(mean)
         nmtools_ndarray_method(var)
         nmtools_ndarray_method(std)
+
+        /******************************************************************* */
+        nmtools_ndarray_method(cumprod)
+        nmtools_ndarray_method(cumsum)
+
+        /******************************************************************* */
+        // numpy's ndarray doesn't have sqrt member, but torch's Tensor does
+        nmtools_ndarray_method(sqrt)
 
         template <typename other_t>
         constexpr auto operator+(const other_t& other) const
@@ -690,7 +802,37 @@ namespace nmtools
     }; // object_t
 
     #undef nmtools_ndarray_method
+    #undef nmtools_ndarray_reduce
+    #undef nmtools_ndarray_accumulate
+    #undef nmtools_ndarray_outer
 } // nmtools
+
+// TODO: move to meta?
+namespace nmtools::meta
+{
+    template <typename T>
+    struct is_object_ndarray : false_type {};
+
+    template <typename T>
+    constexpr inline auto is_object_ndarray_v = is_object_ndarray<T>::value;
+
+    template <
+          typename buffer_t
+        , typename shape_buffer_t
+        , template <typename...>typename stride_buffer_t
+        , template <typename...>typename compute_offset_t
+        , typename resolver_t
+        , typename context_t
+        , auto broadcast_enable>
+    struct is_object_ndarray<
+        object_t<buffer_t,shape_buffer_t,stride_buffer_t,compute_offset_t,resolver_t,context_t,broadcast_enable>
+    > : true_type {};
+}
+
+namespace nmtools
+{
+    using meta::is_object_ndarray_v;
+}
 
 namespace nmtools::meta
 {
@@ -1288,16 +1430,43 @@ namespace nmtools
                 , resolver);
         } // zeros
 
-        template <typename array_t, typename dst_shape_t=none_t>
-        constexpr auto operator()(const array_t& array, const dst_shape_t& dst_shape=dst_shape_t{}) const
+        template <
+            typename array_t
+            , typename dst_shape_t=none_t
+            , typename context_t=none_t
+            , enable_if_t<is_none_v<dst_shape_t> || is_index_array_v<dst_shape_t>,int> = 0>
+        constexpr auto operator()(const array_t& array, const dst_shape_t& dst_shape=dst_shape_t{}, context_t&& context=context_t{}) const
         {
             if constexpr (is_none_v<dst_shape_t>) {
-                auto dst = nmtools::copy(unwrap(array),None,None,resolver);
+                auto dst = nmtools::copy(
+                    unwrap(array)
+                    , nmtools::forward<context_t>(context)
+                    , None
+                    , resolver);
                 return dst;
             } else {
-                auto dst = unwrap(nmtools::reshape(array,dst_shape,None,None,resolver));
+                auto dst = unwrap(
+                    nmtools::reshape(array
+                        , dst_shape
+                        , nmtools::forward<context_t>(context)
+                        , None
+                        , resolver));
                 return dst;
             }
+        }
+
+        template <
+            typename array_t
+            , typename context_t
+            , enable_if_t<is_context_v<context_t>,int> = 0>
+        constexpr auto operator()(const array_t& array, context_t&& context) const
+        {
+            auto dst = nmtools::copy(
+                unwrap(array)
+                , nmtools::forward<context_t>(context)
+                , None
+                , resolver);
+            return dst;
         }
     };
 
