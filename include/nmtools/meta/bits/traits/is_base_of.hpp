@@ -6,7 +6,7 @@
 #include "nmtools/meta/expr.hpp"
 #include "nmtools/meta/bits/traits/is_class.hpp"
 
-namespace nmtools::meta::internal
+namespace nmtools::meta
 {
     namespace expr
     {
@@ -30,6 +30,6 @@ namespace nmtools::meta::internal
     
     template <typename Base, typename Derived>
     constexpr inline auto is_base_of_v = is_base_of<Base,Derived>::value;
-} // namespace nmtools::meta::internal
+} // namespace nmtools::meta
 
 #endif // NMTOOLS_META_BITS_TRAITS_IS_BASE_OF_HPP

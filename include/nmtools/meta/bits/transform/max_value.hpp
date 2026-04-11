@@ -63,4 +63,9 @@ namespace nmtools::meta
     constexpr inline auto max_value_v = max_value<T>::value;
 } // namespace nmtools::meta
 
+namespace nmtools
+{
+    using meta::max_value_v;
+}
+
 #endif // NMTOOLS_META_BITS_TRANSFORM_MAX_VALUE_HPP

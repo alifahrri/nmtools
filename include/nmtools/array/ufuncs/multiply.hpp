@@ -104,58 +104,20 @@ namespace nmtools::view
         // TODO: support Casting::EQUIV
     } // multiply
 
-    template <typename left_t, typename axis_t, typename dtype_t, typename initial_t, typename keepdims_t>
-    constexpr auto reduce_multiply(const left_t& a, const axis_t& axis, dtype_t dtype, initial_t initial, keepdims_t keepdims)
+    template <typename left_t, typename axis_t, typename dtype_t=none_t, typename initial_t=none_t, typename keepdims_t=meta::false_type>
+    constexpr auto reduce_multiply(const left_t& a, const axis_t& axis, dtype_t dtype=dtype_t{}, initial_t initial=initial_t{}, keepdims_t keepdims=keepdims_t{})
     {
         using res_t = get_dtype_t<dtype_t>;
         using op_t  = multiply_t<none_t,none_t,res_t>;
         return reduce(op_t{},a,axis,dtype,initial,keepdims);
     } // reduce_multiply
 
-    template <typename left_t, typename axis_t, typename dtype_t, typename initial_t, typename keepdims_t, typename op_t=none_t>
-    constexpr auto reduce_multiply(const left_t& a, const args::reduce<axis_t,dtype_t,initial_t,keepdims_t,op_t>& attributes)
-    {
-        return reduce_multiply(a
-            , attributes.axis
-            , attributes.dtype
-            , attributes.initial
-            , attributes.keepdims
-        );
-    }
-
-    template <typename left_t, typename axis_t, typename dtype_t, typename initial_t>
-    constexpr auto reduce_multiply(const left_t& a, const axis_t& axis, dtype_t dtype, initial_t initial)
-    {
-        using res_t = get_dtype_t<dtype_t>;
-        using op_t  = multiply_t<none_t,none_t,res_t>;
-        return reduce(op_t{},a,axis,dtype,initial);
-    } // reduce_multiply
-
-    template <typename left_t, typename axis_t, typename dtype_t>
-    constexpr auto reduce_multiply(const left_t& a, const axis_t& axis, dtype_t dtype)
-    {
-        return reduce_multiply(a,axis,dtype,None);
-    } // reduce_multiply
-
-    // TODO: use default args instead of overload
-    template <typename left_t, typename axis_t>
-    constexpr auto reduce_multiply(const left_t& a, const axis_t& axis)
-    {
-        return reduce_multiply(a,axis,None,None);
-    } // reduce_multiply
-
-    template <typename left_t, typename axis_t, typename dtype_t>
-    constexpr auto accumulate_multiply(const left_t& a, const axis_t& axis, dtype_t dtype)
+    template <typename left_t, typename axis_t, typename dtype_t=none_t>
+    constexpr auto accumulate_multiply(const left_t& a, axis_t axis, dtype_t dtype=dtype_t{})
     {
         using res_t = get_dtype_t<dtype_t>;
         using op_t  = multiply_t<none_t,none_t,res_t>;
         return accumulate(op_t{},a,axis,dtype);
-    } // accumulate_multiply
-
-    template <typename left_t, typename axis_t>
-    constexpr auto accumulate_multiply(const left_t& a, const axis_t& axis)
-    {
-        return accumulate_multiply(a,axis,None);
     } // accumulate_multiply
 
     template <typename left_t, typename right_t, typename dtype_t=none_t>
@@ -264,25 +226,83 @@ namespace nmtools
                 );
             } // operator()
 
-            template <typename output_t=none_t, typename context_t=none_t, typename resolver_t=eval_result_t<>,
-                typename dtype_t=none_t, typename initial_t=none_t,
-                typename keepdims_t=meta::false_type, typename left_t, typename axis_t>
-            static constexpr auto reduce(const left_t& a, const axis_t& axis, dtype_t dtype=dtype_t{},
-                initial_t initial=initial_t{}, keepdims_t keepdims=keepdims_t{},
-                context_t&& context=context_t{}, output_t&& output=output_t{},meta::as_value<resolver_t> resolver=meta::as_value_v<resolver_t>)
+            template <typename output_t=none_t
+                , typename context_t=none_t
+                , typename resolver_t=eval_result_t<>
+                , typename dtype_t=none_t
+                , typename initial_t=none_t
+                , typename keepdims_t=meta::false_type
+                , typename left_t
+                , typename axis_t
+                , enable_if_t<is_none_v<dtype_t> || is_dtype_v<dtype_t>,int> = 0
+                , enable_if_t<is_none_v<initial_t> || is_num_v<initial_t>,int> = 0
+                , enable_if_t<is_none_v<keepdims_t> || is_num_v<keepdims_t>,int> = 0>
+            static constexpr auto reduce(const left_t& a, const axis_t& axis, dtype_t dtype=dtype_t{}
+                , initial_t initial=initial_t{}, keepdims_t keepdims=keepdims_t{}
+                , context_t&& context=context_t{}, output_t&& output=output_t{},meta::as_value<resolver_t> resolver=meta::as_value_v<resolver_t>)
             {
                 auto multiply = view::reduce_multiply(a,axis,dtype,initial,keepdims);
                 return eval(multiply
-                    ,nmtools::forward<context_t>(context)
-                    ,nmtools::forward<output_t>(output)
-                    ,resolver
+                    , nmtools::forward<context_t>(context)
+                    , nmtools::forward<output_t>(output)
+                    , resolver
                 );
             } // reduce
 
-            template <typename output_t=none_t, typename context_t=none_t, typename resolver_t=eval_result_t<>,
-                typename dtype_t=none_t, typename left_t, typename axis_t>
-            static constexpr auto accumulate(const left_t& a, const axis_t& axis, dtype_t dtype=dtype_t{},
-                context_t&& context=context_t{}, output_t&& output=output_t{},meta::as_value<resolver_t> resolver=meta::as_value_v<resolver_t>)
+            template <typename context_t
+                , typename left_t
+                , typename axis_t
+                , typename dtype_t
+                , typename initial_t
+                , enable_if_t<is_none_v<dtype_t> || is_dtype_v<dtype_t>,int> = 0
+                , enable_if_t<is_none_v<initial_t> || is_num_v<initial_t>,int> = 0
+                , enable_if_t<is_context_v<context_t>,int> = 0>
+            static constexpr auto reduce(const left_t& a, const axis_t& axis, dtype_t dtype, initial_t initial
+                , context_t&& context)
+            {
+                auto multiply = view::reduce_multiply(a,axis,dtype,initial);
+                return eval(multiply
+                    , nmtools::forward<context_t>(context)
+                );
+            } // reduce
+
+            template <typename context_t
+                , typename left_t
+                , typename axis_t
+                , typename dtype_t
+                , enable_if_t<is_none_v<dtype_t> || is_dtype_v<dtype_t>,int> = 0
+                , enable_if_t<is_context_v<context_t>,int> = 0>
+            static constexpr auto reduce(const left_t& a, const axis_t& axis, dtype_t dtype
+                , context_t&& context)
+            {
+                auto multiply = view::reduce_multiply(a,axis,dtype);
+                return eval(multiply
+                    , nmtools::forward<context_t>(context)
+                );
+            } // reduce
+
+            template <typename context_t
+                , typename left_t
+                , typename axis_t
+                , enable_if_t<is_context_v<context_t>,int> = 0>
+            static constexpr auto reduce(const left_t& a, const axis_t& axis
+                , context_t&& context)
+            {
+                auto multiply = view::reduce_multiply(a,axis);
+                return eval(multiply
+                    , nmtools::forward<context_t>(context)
+                );
+            } // reduce
+
+            template <typename output_t=none_t
+                , typename context_t=none_t
+                , typename resolver_t=eval_result_t<>
+                , typename dtype_t=none_t
+                , typename left_t
+                , typename axis_t
+                , enable_if_t<is_none_v<dtype_t> || is_dtype_v<dtype_t>,int> = 0>
+            static constexpr auto accumulate(const left_t& a, const axis_t& axis, dtype_t dtype=dtype_t{}
+                , context_t&& context=context_t{}, output_t&& output=output_t{},meta::as_value<resolver_t> resolver=meta::as_value_v<resolver_t>)
             {
                 auto multiply = view::accumulate_multiply(a,axis,dtype);
                 return eval(multiply
@@ -292,8 +312,26 @@ namespace nmtools
                 );
             } // accumulate
 
-            template <typename output_t=none_t, typename context_t=none_t, typename resolver_t=eval_result_t<>,
-                typename dtype_t=none_t, typename left_t, typename right_t>
+            template <typename context_t
+                , typename left_t
+                , typename axis_t
+                , enable_if_t<is_context_v<context_t>,int> = 0>
+            static constexpr auto accumulate(const left_t& a, const axis_t& axis
+                , context_t&& context)
+            {
+                auto multiply = view::accumulate_multiply(a,axis);
+                return eval(multiply
+                    , nmtools::forward<context_t>(context)
+                );
+            } // accumulate
+
+            template <typename output_t=none_t
+                , typename context_t=none_t
+                , typename resolver_t=eval_result_t<>
+                , typename dtype_t=none_t
+                , typename left_t
+                , typename right_t
+                , enable_if_t<is_none_v<dtype_t> || is_dtype_v<dtype_t>,int> = 0>
             static constexpr auto outer(const left_t& a, const right_t& b, dtype_t dtype=dtype_t{},
                 context_t&& context=context_t{}, output_t&& output=output_t{},meta::as_value<resolver_t> resolver=meta::as_value_v<resolver_t>)
             {
@@ -302,6 +340,19 @@ namespace nmtools
                     ,nmtools::forward<context_t>(context)
                     ,nmtools::forward<output_t>(output)
                     ,resolver
+                );
+            } // outer
+
+            template <typename context_t
+                , typename left_t
+                , typename right_t
+                , enable_if_t<is_context_v<context_t>,int> = 0>
+            static constexpr auto outer(const left_t& a, const right_t& b
+                , context_t&& context)
+            {
+                auto multiply = view::outer_multiply(a,b);
+                return eval(multiply
+                    , nmtools::forward<context_t>(context)
                 );
             } // outer
         }; // multiply

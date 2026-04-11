@@ -208,8 +208,16 @@ namespace nmtools
      * @param output 
      * @return constexpr auto 
      */
-    template <typename output_t=none_t, typename context_t=none_t, typename resolver_t=eval_result_t<>,
-        typename array_t, typename axis_t=none_t, typename dtype_t=none_t, typename keepdims_t=meta::false_type>
+    template <typename output_t=none_t
+        , typename context_t=none_t
+        , typename resolver_t=eval_result_t<>
+        , typename array_t
+        , typename axis_t=none_t
+        , typename dtype_t=none_t
+        , typename keepdims_t=meta::false_type
+        , enable_if_t<is_none_v<dtype_t> || is_dtype_v<dtype_t>,int> = 0
+        , enable_if_t<is_none_v<axis_t> || is_index_v<axis_t> || is_index_array_v<axis_t>,int> = 0
+        , enable_if_t<is_none_v<keepdims_t> || is_index_v<keepdims_t>,int> = 0>
     constexpr auto mean(const array_t& array, const axis_t& axis=axis_t{}, dtype_t dtype=dtype_t{}, keepdims_t keepdims=keepdims_t{},
         context_t&& context=context_t{}, output_t&& output=output_t{},meta::as_value<resolver_t> resolver=meta::as_value_v<resolver_t>)
     {
@@ -220,6 +228,51 @@ namespace nmtools
             ,resolver
         );
     } // mean
+
+    template <typename context_t
+        , typename array_t
+        , typename axis_t
+        , typename dtype_t
+        , enable_if_t<is_none_v<dtype_t> || is_dtype_v<dtype_t>,int> = 0
+        , enable_if_t<is_none_v<axis_t> || is_index_v<axis_t> || is_index_array_v<axis_t>,int> = 0
+        , enable_if_t<is_context_v<context_t>,int> = 0>
+    constexpr auto mean(const array_t& a
+        , const axis_t& axis
+        , dtype_t dtype
+        , context_t&& context)
+    {
+        auto mean = view::mean(a,axis,dtype);
+        return eval(mean
+            , nmtools::forward<context_t>(context)
+        );
+    }
+
+    template <typename context_t
+        , typename array_t
+        , typename axis_t
+        , enable_if_t<is_none_v<axis_t> || is_index_v<axis_t> || is_index_array_v<axis_t>,int> = 0
+        , enable_if_t<is_context_v<context_t>,int> = 0>
+    constexpr auto mean(const array_t& a
+        , const axis_t& axis
+        , context_t&& context)
+    {
+        auto mean = view::mean(a,axis);
+        return eval(mean
+            , nmtools::forward<context_t>(context)
+        );
+    }
+
+    template <typename context_t
+        , typename array_t
+        , enable_if_t<is_context_v<context_t>,int> = 0>
+    constexpr auto mean(const array_t& a
+        , context_t&& context)
+    {
+        auto mean = view::mean(a);
+        return eval(mean
+            , nmtools::forward<context_t>(context)
+        );
+    }
 } // namespace nmtools
 
 #endif // NMTOOLS_ARRAY_ARRAY_MEAN_HPP
