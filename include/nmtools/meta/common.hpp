@@ -214,6 +214,8 @@ namespace nmtools
     using meta::as_value_v;
     using meta::as_value;
     using meta::type_t;
+    using meta::true_type;
+    using meta::false_type;
 }
 
 namespace nmtools::meta
