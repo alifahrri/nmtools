@@ -147,6 +147,11 @@ if (NMTOOLS_BUILD_OBJECT_TESTS)
     add_subdirectory(object)
 endif (NMTOOLS_BUILD_OBJECT_TESTS)
 
+option(NMTOOLS_BUILD_UNROLL_TESTS "build unroll test programs" OFF)
+if (NMTOOLS_BUILD_UNROLL_TESTS)
+    add_subdirectory(unroll)
+endif (NMTOOLS_BUILD_UNROLL_TESTS)
+
 option(NMTOOLS_BUILD_TILEKIT_TESTS "build tilekit test programs" OFF)
 if (NMTOOLS_BUILD_TILEKIT_TESTS)
     add_subdirectory(tilekit)

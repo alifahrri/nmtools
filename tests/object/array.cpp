@@ -9,6 +9,7 @@ TEST_CASE("array(case1)" * doctest::test_suite("object"))
     auto buffer = nmtools_array{1,2,3,4,5};
     auto a = nmtools::array(buffer);
     static_assert( nmtools::meta::is_ndarray_v<decltype(a)> );
+    static_assert( decltype(a)::broadcasting );
     auto result = a + 1;
     auto expect = nmtools_array{2,3,4,5,6};
     NMTOOLS_ASSERT_EQUAL( result, expect );

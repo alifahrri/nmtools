@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.13)
-project(numeric-tests-object)
+project(numeric-tests-unroll)
 
 if (CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
     find_package(nmtools REQUIRED CONFIG)
@@ -9,71 +9,39 @@ endif()
 
 include(nmtools)
 
-# TODO: cleanup
-# handle emscripten
-if(CMAKE_CXX_COMPILER MATCHES "/em\\+\\+(-[a-zA-Z0-9.])?$")
-    set (EMSCRIPTEN)
-endif()
-if (${CMAKE_SYSTEM_PROCESSOR} MATCHES "arm")
-    set (ARM)
-endif()
-
-# optionally use boost (esp. for type_id)
-find_package(Boost)
-if (Boost_FOUND)
-    include_directories(${Boost_INCLUDE_DIRS})
-endif()
-
 enable_testing()
 
-# TODO: remove, trye to detect constexpr math from stdlib
-## defer static check to runtime for clang
-## since constexpr math not supported
 if ((CMAKE_CXX_COMPILER_ID STREQUAL "Clang") OR EMSCRIPTEN OR ANDROID OR MSYS)
     add_definitions(-DDEFER_STATIC_CHECK)
 endif ()
 
-add_executable(${PROJECT_NAME}-doctest tests.cpp 
-    view.cpp
-    array.cpp
+add_executable(${PROJECT_NAME}-doctest
+    tests.cpp
     context.cpp
-
     src/add.cpp
     src/multiply.cpp
     src/subtract.cpp
     src/divide.cpp
-
-    src/sum.cpp
-    src/prod.cpp
-    src/mean.cpp
-    src/var.cpp
-    src/stddev.cpp
-
-    src/maximum.cpp
-    src/minimum.cpp
-
-    src/sqrt.cpp
-
+    src/sin.cpp
+    src/cos.cpp
+    src/tan.cpp
+    src/sinh.cpp
+    src/cosh.cpp
+    src/tanh.cpp
     src/exp.cpp
     src/exp2.cpp
-
     src/log.cpp
+    src/log1p.cpp
     src/log2.cpp
     src/log10.cpp
-    src/log1p.cpp
-
+    src/maximum.cpp
+    src/minimum.cpp
     src/less.cpp
     src/less_equal.cpp
-
     src/greater.cpp
     src/greater_equal.cpp
-
-    src/cos.cpp
-    src/sin.cpp
-    src/tan.cpp
-    src/cosh.cpp
-    src/sinh.cpp
-    src/tanh.cpp
+    src/sum.cpp
+    src/prod.cpp
 )
 add_test(
     NAME ${PROJECT_NAME}-doctest

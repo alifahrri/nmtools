@@ -19,6 +19,7 @@ NMTOOLS_TESTING_DECLARE_CASE(view, cos)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case1)
     {
+        inline int shape[2] = {3,3};
         inline float result[3][3] = {
             {math::cos(0.f),math::cos(1.f),math::cos(2.f)},
             {math::cos(3.f),math::cos(4.f),math::cos(5.f)},
