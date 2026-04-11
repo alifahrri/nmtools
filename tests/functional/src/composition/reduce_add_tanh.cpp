@@ -1,6 +1,7 @@
 #include "nmtools/array/ufuncs/add.hpp"
 #include "nmtools/array/ufuncs/tanh.hpp"
 #include "nmtools/testing/data/array/add.hpp"
+#include "nmtools/context/default.hpp"
 #include "nmtools/testing/doctest.hpp"
 
 namespace fn = nmtools::functional;

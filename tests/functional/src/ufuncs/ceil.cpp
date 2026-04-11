@@ -1,5 +1,6 @@
 #include "nmtools/array/ufuncs/ceil.hpp"
 #include "nmtools/testing/data/array/ceil.hpp"
+#include "nmtools/context/default.hpp"
 #include "nmtools/testing/doctest.hpp"
 
 namespace nm = nmtools;

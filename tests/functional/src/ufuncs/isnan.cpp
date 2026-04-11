@@ -1,5 +1,6 @@
 #include "nmtools/array/ufuncs/isnan.hpp"
 #include "nmtools/testing/data/array/isnan.hpp"
+#include "nmtools/context/default.hpp"
 #include "nmtools/testing/doctest.hpp"
 
 namespace nm = nmtools;

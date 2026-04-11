@@ -1,5 +1,6 @@
 #include "nmtools/array/ufuncs/invert.hpp"
 #include "nmtools/testing/data/array/invert.hpp"
+#include "nmtools/context/default.hpp"
 #include "nmtools/testing/doctest.hpp"
 
 namespace nm = nmtools;

@@ -1,5 +1,6 @@
 #include "nmtools/array/ufuncs/sqrt.hpp"
 #include "nmtools/testing/data/array/sqrt.hpp"
+#include "nmtools/context/default.hpp"
 #include "nmtools/testing/doctest.hpp"
 
 namespace nm = nmtools;

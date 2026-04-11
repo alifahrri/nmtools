@@ -1,5 +1,6 @@
 #include "nmtools/array/ufuncs/clip.hpp"
 #include "nmtools/testing/data/array/clip.hpp"
+#include "nmtools/context/default.hpp"
 #include "nmtools/testing/doctest.hpp"
 
 namespace nm = nmtools;

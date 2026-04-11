@@ -1,5 +1,6 @@
 #include "nmtools/array/tile.hpp"
 #include "nmtools/testing/data/array/tile.hpp"
+#include "nmtools/context/default.hpp"
 #include "nmtools/testing/doctest.hpp"
 
 namespace nm = nmtools;

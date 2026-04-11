@@ -1,5 +1,6 @@
 #include "nmtools/array/softmin.hpp"
 #include "nmtools/testing/data/array/softmin.hpp"
+#include "nmtools/context/default.hpp"
 #include "nmtools/testing/doctest.hpp"
 
 namespace nm = nmtools;

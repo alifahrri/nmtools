@@ -1,4 +1,5 @@
 #include "nmtools/array/ufuncs/add.hpp"
+#include "nmtools/context/default.hpp"
 #include "nmtools/testing/doctest.hpp"
 
 NMTOOLS_TESTING_DECLARE_CASE(functional, add_add)

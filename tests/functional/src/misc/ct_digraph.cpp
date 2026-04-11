@@ -18,6 +18,7 @@
 #include "nmtools/array/reshape.hpp"
 #include "nmtools/array/sum.hpp"
 #include "nmtools/array/matmul.hpp"
+#include "nmtools/context/default.hpp"
 #include "nmtools/testing/doctest.hpp"
 
 namespace nm = nmtools;

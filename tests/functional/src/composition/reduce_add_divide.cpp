@@ -2,6 +2,7 @@
 #include "nmtools/array/ufuncs/divide.hpp"
 #include "nmtools/core/ufunc/ufunc.hpp"
 #include "nmtools/testing/data/array/add.hpp"
+#include "nmtools/context/default.hpp"
 #include "nmtools/testing/doctest.hpp"
 
 namespace fn = nmtools::functional;

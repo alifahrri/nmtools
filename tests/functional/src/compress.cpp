@@ -1,5 +1,6 @@
 #include "nmtools/array/compress.hpp"
 #include "nmtools/testing/data/array/compress.hpp"
+#include "nmtools/context/default.hpp"
 #include "nmtools/testing/doctest.hpp"
 
 namespace nm = nmtools;

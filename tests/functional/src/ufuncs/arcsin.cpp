@@ -1,5 +1,6 @@
 #include "nmtools/array/ufuncs/arcsin.hpp"
 #include "nmtools/testing/data/array/arcsin.hpp"
+#include "nmtools/context/default.hpp"
 #include "nmtools/testing/doctest.hpp"
 
 namespace nm = nmtools;

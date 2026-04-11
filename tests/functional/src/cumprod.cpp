@@ -1,5 +1,6 @@
 #include "nmtools/array/cumprod.hpp"
 #include "nmtools/testing/data/array/multiply.hpp"
+#include "nmtools/context/default.hpp"
 #include "nmtools/testing/doctest.hpp"
 
 namespace nm = nmtools;

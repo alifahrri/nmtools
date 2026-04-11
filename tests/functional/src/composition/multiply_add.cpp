@@ -2,6 +2,7 @@
 #include "nmtools/array/ufuncs/multiply.hpp"
 #include "nmtools/array/ufuncs/tanh.hpp"
 #include "nmtools/testing/data/array/multiply.hpp"
+#include "nmtools/context/default.hpp"
 #include "nmtools/testing/doctest.hpp"
 
 namespace fn = nmtools::functional;

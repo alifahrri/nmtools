@@ -6,6 +6,7 @@
 #include "nmtools/array/ufuncs/square.hpp"
 #include "nmtools/array/ufuncs/subtract.hpp"
 #include "nmtools/array/sum.hpp"
+#include "nmtools/context/default.hpp"
 #include "nmtools/testing/doctest.hpp"
 #include "nmtools/utility/apply_isequal.hpp"
 

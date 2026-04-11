@@ -1,5 +1,6 @@
 #include "nmtools/array/transpose.hpp"
 #include "nmtools/testing/data/array/transpose.hpp"
+#include "nmtools/context/default.hpp"
 #include "nmtools/testing/doctest.hpp"
 
 namespace nm = nmtools;

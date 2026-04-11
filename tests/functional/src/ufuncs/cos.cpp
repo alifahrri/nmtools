@@ -1,5 +1,6 @@
 #include "nmtools/array/ufuncs/cos.hpp"
 #include "nmtools/testing/data/array/cos.hpp"
+#include "nmtools/context/default.hpp"
 #include "nmtools/testing/doctest.hpp"
 
 namespace nm = nmtools;

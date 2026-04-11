@@ -1,5 +1,6 @@
 #include "nmtools/array/squeeze.hpp"
 #include "nmtools/testing/data/array/squeeze.hpp"
+#include "nmtools/context/default.hpp"
 #include "nmtools/testing/doctest.hpp"
 
 namespace nm = nmtools;

@@ -18,6 +18,7 @@
 #include "nmtools/core/ufunc/ufunc.hpp"
 #include "nmtools/array/stddev.hpp"
 #include "nmtools/array/reshape.hpp"
+#include "nmtools/context/default.hpp"
 #include "nmtools/testing/doctest.hpp"
 #include "nmtools/testing/data/array/arange.hpp"
 

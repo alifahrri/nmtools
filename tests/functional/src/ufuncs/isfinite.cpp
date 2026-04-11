@@ -1,5 +1,6 @@
 #include "nmtools/array/ufuncs/isfinite.hpp"
 #include "nmtools/testing/data/array/isfinite.hpp"
+#include "nmtools/context/default.hpp"
 #include "nmtools/testing/doctest.hpp"
 
 namespace nm = nmtools;

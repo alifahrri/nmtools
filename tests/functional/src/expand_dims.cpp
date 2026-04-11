@@ -1,5 +1,6 @@
 #include "nmtools/array/expand_dims.hpp"
 #include "nmtools/testing/data/array/expand_dims.hpp"
+#include "nmtools/context/default.hpp"
 #include "nmtools/testing/doctest.hpp"
 
 namespace nm = nmtools;

@@ -1,5 +1,6 @@
 #include "nmtools/array/concatenate.hpp"
 #include "nmtools/testing/data/array/concatenate.hpp"
+#include "nmtools/context/default.hpp"
 #include "nmtools/testing/doctest.hpp"
 #include "nmtools/array/arange.hpp"
 

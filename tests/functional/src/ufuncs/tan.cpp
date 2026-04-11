@@ -1,5 +1,6 @@
 #include "nmtools/array/ufuncs/tan.hpp"
 #include "nmtools/testing/data/array/tan.hpp"
+#include "nmtools/context/default.hpp"
 #include "nmtools/testing/doctest.hpp"
 
 namespace nm = nmtools;

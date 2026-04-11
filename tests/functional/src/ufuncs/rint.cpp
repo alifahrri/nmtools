@@ -1,5 +1,6 @@
 #include "nmtools/array/ufuncs/rint.hpp"
 #include "nmtools/testing/data/array/rint.hpp"
+#include "nmtools/context/default.hpp"
 #include "nmtools/testing/doctest.hpp"
 
 namespace nm = nmtools;

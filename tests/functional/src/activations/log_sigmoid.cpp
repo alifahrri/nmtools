@@ -1,5 +1,6 @@
 #include "nmtools/array/log_sigmoid.hpp"
 #include "nmtools/testing/data/array/log_sigmoid.hpp"
+#include "nmtools/context/default.hpp"
 #include "nmtools/testing/doctest.hpp"
 
 namespace nm = nmtools;
