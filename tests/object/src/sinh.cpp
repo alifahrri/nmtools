@@ -1,5 +1,5 @@
 #include "nmtools/array/ufuncs/sinh.hpp"
-#include "nmtools/core/context/object.hpp"
+#include "nmtools/context/default.hpp"
 #include "nmtools/testing/data/array/sinh.hpp"
 #include "nmtools/testing/doctest.hpp"
 

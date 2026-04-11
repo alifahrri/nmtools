@@ -1,5 +1,5 @@
 #include "nmtools/array/ufuncs/minimum.hpp"
-#include "nmtools/core/context/object.hpp"
+#include "nmtools/context/default.hpp"
 #include "nmtools/testing/data/array/minimum.hpp"
 #include "nmtools/testing/doctest.hpp"
 

@@ -13,7 +13,7 @@ inline auto name##_ds_hb = nmtools::cast(name, nmtools::kind::ndarray_ds_hb); \
 inline auto name##_ds_db = nmtools::cast(name, nmtools::kind::ndarray_ds_db);
 
 #include "nmtools/array/mean.hpp"
-#include "nmtools/core/context/object.hpp"
+#include "nmtools/context/default.hpp"
 #include "nmtools/testing/data/array/mean.hpp"
 #include "nmtools/testing/doctest.hpp"
 

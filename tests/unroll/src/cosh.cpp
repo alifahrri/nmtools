@@ -29,7 +29,7 @@ constexpr inline auto name##_ls_hb = nmtools::cast(name, nmtools::kind::ndarray_
 
 #include "nmtools/array/ufuncs/cosh.hpp"
 #include "nmtools/testing/data/array/cosh.hpp"
-#include "nmtools/core/context/unroll.hpp"
+#include "nmtools/context/default.hpp"
 #include "nmtools/testing/doctest.hpp"
 
 namespace nm = nmtools;

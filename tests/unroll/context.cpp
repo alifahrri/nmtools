@@ -1,4 +1,4 @@
-#include "nmtools/core/context/unroll.hpp"
+#include "nmtools/context/default.hpp"
 #include "nmtools/array/full.hpp"
 #include "nmtools/array/zeros.hpp"
 #include "nmtools/array/ones.hpp"
@@ -26,11 +26,6 @@ TEST_CASE("unroll_context(case1)" * doctest::test_suite("unroll_context"))
 
         static_assert( nm::is_ndarray_v<decltype(a)> );
     }
-    {
-        auto a = ctx.disable_broadcast().create(buffer_vtype,shape_vtype);
-
-        static_assert( nm::is_ndarray_v<decltype(a)> );
-    }
 }
 
 TEST_CASE("unroll_context(case2)" * doctest::test_suite("unroll_context"))
@@ -44,13 +39,6 @@ TEST_CASE("unroll_context(case2)" * doctest::test_suite("unroll_context"))
 
     {
         auto a = ctx.create(buffer_vtype,shape);
-
-        static_assert( nm::is_ndarray_v<decltype(a)> );
-
-        NMTOOLS_ASSERT_EQUAL( nm::shape(a), shape );
-    }
-    {
-        auto a = ctx.disable_broadcast().create(buffer_vtype,shape);
 
         static_assert( nm::is_ndarray_v<decltype(a)> );
 
@@ -120,10 +108,8 @@ TEST_CASE("unroll_context(case8)" * doctest::test_suite("unroll_context"))
     auto ctx = nm::Unroll;
 
     auto a = ctx.enable_broadcast();
-    auto b = ctx.disable_broadcast();
 
     static_assert( nm::is_context_v<decltype(a)> );
-    static_assert( nm::is_context_v<decltype(b)> );
 }
 
 TEST_CASE("unroll_context(case9)" * doctest::test_suite("unroll_context"))
