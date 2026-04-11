@@ -59,3 +59,53 @@ jobs:
         run: bash scripts/download_doctest_header.sh -d include/
       - name: build
         run: ./dockcross-${{ matrix.name }} bash -c 'mkdir -p build/${{ matrix.name }} && cd build/${{ matrix.name }}/ && cmake -DNMTOOLS_BUILD_VECTOR_TESTS=ON -DNMTOOLS_VECTOR_TEST_ALL=ON -DNMTOOLS_VECTOR_TEST_ARCH=-march=${{ matrix.arch }} ../.. && make -j2 VERBOSE=1 numeric-tests-vector-doctest'
+
+  dockcross-linux-arm-object:
+    name: ${{ matrix.name }}-object
+    runs-on: ubuntu-22.04
+    strategy:
+      matrix:
+        include:
+          - name: linux-arm64
+          - name: linux-armv7
+          - name: linux-armv5
+    steps:
+      - uses: actions/checkout@v2
+      - name: setup dockcross
+        run: docker run --rm dockcross/${{ matrix.name }} > ./dockcross-${{ matrix.name }}; chmod +x ./dockcross-${{ matrix.name }}
+      - uses: actions/cache@v3
+        id: cache
+        with:
+          path: ./build/${{ matrix.name }}
+          key: ${{ github.job }}-${{ matrix.name }}-${{ hashFiles('./**') }}
+      - name: setup doctest
+        run: bash scripts/download_doctest_header.sh -d include/
+      - name: build
+        run: ./dockcross-${{ matrix.name }} bash -c 'mkdir -p build/${{ matrix.name }} && cd build/${{ matrix.name }}/ && cmake -DNMTOOLS_TEST_ALL=OFF -DNMTOOLS_BUILD_OBJECT_TESTS=ON ../.. && make -j2 VERBOSE=1'
+      - name: run tests
+        run: ./dockcross-${{ matrix.name }} bash -c 'build/${{ matrix.name }}/tests/object/numeric-tests-object-doctest'
+
+  dockcross-linux-arm-unroll:
+    name: ${{ matrix.name }}-unroll
+    runs-on: ubuntu-22.04
+    strategy:
+      matrix:
+        include:
+          - name: linux-arm64
+          - name: linux-armv7
+          - name: linux-armv5
+    steps:
+      - uses: actions/checkout@v2
+      - name: setup dockcross
+        run: docker run --rm dockcross/${{ matrix.name }} > ./dockcross-${{ matrix.name }}; chmod +x ./dockcross-${{ matrix.name }}
+      - uses: actions/cache@v3
+        id: cache
+        with:
+          path: ./build/${{ matrix.name }}
+          key: ${{ github.job }}-${{ matrix.name }}-${{ hashFiles('./**') }}
+      - name: setup doctest
+        run: bash scripts/download_doctest_header.sh -d include/
+      - name: build
+        run: ./dockcross-${{ matrix.name }} bash -c 'mkdir -p build/${{ matrix.name }} && cd build/${{ matrix.name }}/ && cmake -DNMTOOLS_TEST_ALL=OFF -DNMTOOLS_BUILD_UNROLL_TESTS=ON ../.. && make -j2 VERBOSE=1'
+      - name: run tests
+        run: ./dockcross-${{ matrix.name }} bash -c 'build/${{ matrix.name }}/tests/unroll/numeric-tests-unroll-doctest'

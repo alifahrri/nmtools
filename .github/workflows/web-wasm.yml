@@ -281,3 +281,57 @@ jobs:
           ./dockcross-${{ matrix.name }} bash -c 'mkdir -p build/${{ matrix.name }} && cd build/${{ matrix.name }}/ && cmake -DNMTOOLS_BUILD_CONSTEXPR_TESTS=ON -DNMTOOLS_BUILD_META_TESTS=OFF -DNMTOOLS_BUILD_UTL_TESTS=OFF -DNMTOOLS_TEST_ALL=OFF -DNMTOOLS_TEST_ARRAY_EVAL=ON -DNMTOOLS_TESTING_GENERIC_NDARRAY=ON -DNMTOOLS_TESTING_NOSTL=ON ../.. && make -j2 VERBOSE=1'
       - name: run tests
         run: ./dockcross-${{ matrix.name }} node build/${{ matrix.name }}/tests/array/numeric-tests-doctest.js
+
+  dockcross-wasm-object:
+    name: ${{ matrix.name }}-object
+    runs-on: ubuntu-22.04
+    strategy:
+      matrix:
+        include:
+          - name: web-wasm-latest
+            image: web-wasm
+            tag: latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: setup dockcross
+        run: docker run --rm dockcross/${{ matrix.image }}:${{ matrix.tag }} > ./dockcross-${{ matrix.name }}; chmod +x ./dockcross-${{ matrix.name }}
+      - uses: actions/cache@v3
+        id: cache
+        with:
+          path: ./build/${{ matrix.name }}
+          key: ${{ github.job }}-${{ matrix.name }}-${{ hashFiles('./**') }}
+      - name: setup doctest
+        run: bash scripts/download_doctest_header.sh -d include/
+      - name: build
+        run: |
+          ./dockcross-${{ matrix.name }} bash -c "emcc -v"
+          ./dockcross-${{ matrix.name }} bash -c 'mkdir -p build/${{ matrix.name }} && cd build/${{ matrix.name }}/ && cmake -DNMTOOLS_TEST_ALL=OFF -DNMTOOLS_BUILD_OBJECT_TESTS=ON ../.. && make -j2 VERBOSE=1'
+      - name: run tests
+        run: ./dockcross-${{ matrix.name }} node build/${{ matrix.name }}/tests/object/numeric-tests-object-doctest.js
+
+  dockcross-wasm-unroll:
+    name: ${{ matrix.name }}-unroll
+    runs-on: ubuntu-22.04
+    strategy:
+      matrix:
+        include:
+          - name: web-wasm-latest
+            image: web-wasm
+            tag: latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: setup dockcross
+        run: docker run --rm dockcross/${{ matrix.image }}:${{ matrix.tag }} > ./dockcross-${{ matrix.name }}; chmod +x ./dockcross-${{ matrix.name }}
+      - uses: actions/cache@v3
+        id: cache
+        with:
+          path: ./build/${{ matrix.name }}
+          key: ${{ github.job }}-${{ matrix.name }}-${{ hashFiles('./**') }}
+      - name: setup doctest
+        run: bash scripts/download_doctest_header.sh -d include/
+      - name: build
+        run: |
+          ./dockcross-${{ matrix.name }} bash -c "emcc -v"
+          ./dockcross-${{ matrix.name }} bash -c 'mkdir -p build/${{ matrix.name }} && cd build/${{ matrix.name }}/ && cmake -DNMTOOLS_TEST_ALL=OFF -DNMTOOLS_BUILD_UNROLL_TESTS=ON ../.. && make -j2 VERBOSE=1'
+      - name: run tests
+        run: ./dockcross-${{ matrix.name }} node build/${{ matrix.name }}/tests/unroll/numeric-tests-unroll-doctest.js

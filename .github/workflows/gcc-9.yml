@@ -108,4 +108,39 @@ jobs:
       - name: run tests
         run: |
           build/tests/array/numeric-tests-doctest
-          
+
+  gcc-9-object:
+    name: gcc-9-object
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up GCC
+        uses: egor-tensin/setup-gcc@v1
+        with:
+          version: 9
+          platform: x64
+      - name: setup doctest
+        run: bash scripts/download_doctest_header.sh -d include/
+      - name: build
+        run: mkdir -p build/ && cd build/ && cmake -DCMAKE_POLICY_VERSION_MINIMUM=3.5 -DNMTOOLS_TEST_ALL=OFF -DNMTOOLS_BUILD_OBJECT_TESTS=ON .. && make -j1 VERBOSE=1 numeric-tests-object-doctest
+      - name: run tests
+        run: |
+          build/tests/object/numeric-tests-object-doctest
+
+  gcc-9-unroll:
+    name: gcc-9-unroll
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up GCC
+        uses: egor-tensin/setup-gcc@v1
+        with:
+          version: 9
+          platform: x64
+      - name: setup doctest
+        run: bash scripts/download_doctest_header.sh -d include/
+      - name: build
+        run: mkdir -p build/ && cd build/ && cmake -DCMAKE_POLICY_VERSION_MINIMUM=3.5 -DNMTOOLS_TEST_ALL=OFF -DNMTOOLS_BUILD_UNROLL_TESTS=ON .. && make -j1 VERBOSE=1 numeric-tests-unroll-doctest
+      - name: run tests
+        run: |
+          build/tests/unroll/numeric-tests-unroll-doctest
