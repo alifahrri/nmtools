@@ -1,5 +1,6 @@
 #include "nmtools/array/outer.hpp"
 #include "nmtools/testing/data/array/outer.hpp"
+#include "nmtools/context/default.hpp"
 #include "nmtools/testing/doctest.hpp"
 
 #define OUTER_SUBCASE(case_name, ...) \

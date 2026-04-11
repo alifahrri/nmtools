@@ -404,42 +404,39 @@ namespace nmtools
      * @param output 
      * @return constexpr auto 
      */
-    template <typename output_t=none_t, typename context_t=none_t, typename resolver_t=eval_result_t<>,
+    template <typename output_t=none_t, typename context_t=default_context_t<>,
         typename array_t, typename pads_t, typename value_t=float>
     constexpr auto pad2(const array_t& array, const pads_t& pads, value_t value=static_cast<value_t>(0),
-        context_t&& context=context_t{}, output_t&& output=output_t{},meta::as_value<resolver_t> resolver=meta::as_value_v<resolver_t>)
+        context_t&& context=context_t{}, output_t&& output=output_t{})
     {
         auto padded = view::pad2(array,pads,value);
         return eval(padded
             ,nmtools::forward<context_t>(context)
             ,nmtools::forward<output_t>(output)
-            ,resolver
         );
     } // pad2
 
-    template <typename output_t=none_t, typename context_t=none_t, typename resolver_t=eval_result_t<>,
+    template <typename output_t=none_t, typename context_t=default_context_t<>,
         typename array_t, typename pad_width_t, typename constant_values_t=float>
     constexpr auto pad(const array_t& array, const pad_width_t& pad_width, constant_values_t constant_values=static_cast<constant_values_t>(0),
-        context_t&& context=context_t{}, output_t&& output=output_t{},meta::as_value<resolver_t> resolver=meta::as_value_v<resolver_t>)
+        context_t&& context=context_t{}, output_t&& output=output_t{})
     {
         auto padded = view::pad(array,pad_width,constant_values);
         return eval(padded
             ,nmtools::forward<context_t>(context)
             ,nmtools::forward<output_t>(output)
-            ,resolver
         );
     } // pad
 
-    template <typename output_t=none_t, typename context_t=none_t, typename resolver_t=eval_result_t<>,
+    template <typename output_t=none_t, typename context_t=default_context_t<>,
         typename array_t, typename pad_t, typename value_t=float>
     constexpr auto pad3(const array_t& array, const pad_t& pad, value_t value=static_cast<value_t>(0),
-        context_t&& context=context_t{}, output_t&& output=output_t{},meta::as_value<resolver_t> resolver=meta::as_value_v<resolver_t>)
+        context_t&& context=context_t{}, output_t&& output=output_t{})
     {
         auto padded = view::pad3(array,pad,value);
         return eval(padded
             ,nmtools::forward<context_t>(context)
             ,nmtools::forward<output_t>(output)
-            ,resolver
         );
     } // pad3
 } // namespace nmtools

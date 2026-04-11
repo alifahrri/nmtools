@@ -1,5 +1,6 @@
 #include "nmtools/array/cosine_similarity.hpp"
 #include "nmtools/testing/data/array/cosine_similarity.hpp"
+#include "nmtools/context/default.hpp"
 #include "nmtools/testing/doctest.hpp"
 
 #define COSINE_SIMILARITY_SUBCASE(case_name, ...) \

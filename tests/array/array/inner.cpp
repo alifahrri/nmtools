@@ -1,5 +1,6 @@
 #include "nmtools/array/inner.hpp"
 #include "nmtools/testing/data/array/inner.hpp"
+#include "nmtools/context/default.hpp"
 #include "nmtools/testing/doctest.hpp"
 
 #define INNER_SUBCASE(case_name, ...) \

@@ -1,3 +1,4 @@
+#include "nmtools/context/default.hpp"
 #include "nmtools/array/tensordot.hpp"
 #include "nmtools/testing/data/array/tensordot.hpp"
 #include "nmtools/testing/doctest.hpp"

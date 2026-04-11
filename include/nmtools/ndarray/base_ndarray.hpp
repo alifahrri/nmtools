@@ -73,14 +73,23 @@ namespace nmtools
                 if constexpr (dim > 0) {
                     // to accommodate clipped shape
                     meta::template_for<dim>([&](auto index){
-                        at(shape,index) = 1;
+                        // only assign to non-constant elements
+                        if constexpr (!meta::is_constant_index_v<decltype(at(shape,index))>) {
+                            at(shape,index) = 1;
+                        }
                     });
                 } else {
                     for (size_t i=0; i<len(shape)-1; i++) {
-                        at(shape,i) = 1;
+                        // only assign to non-constant elements
+                        if constexpr (!meta::is_constant_index_v<decltype(at(shape,i))>) {
+                            at(shape,i) = 1;
+                        }
                     }
                 }
-                at(shape,meta::ct_v<-1>) = len(buffer);
+                // only assign to non-constant last element
+                if constexpr (!meta::is_constant_index_v<decltype(at(shape,meta::ct_v<-1>))>) {
+                    at(shape,meta::ct_v<-1>) = len(buffer);
+                }
                 return shape;
             }
         }

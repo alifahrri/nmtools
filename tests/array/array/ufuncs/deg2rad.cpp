@@ -17,6 +17,7 @@ inline auto name##_ds_db = nmtools::cast(name, nmtools::kind::ndarray_cs_db);
 #include "nmtools/array/ufuncs/deg2rad.hpp"
 #include "nmtools/testing/data/array/deg2rad.hpp"
 #include "nmtools/testing/doctest.hpp"
+#include "nmtools/context/default.hpp"
 
 #define DEG2RAD_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \

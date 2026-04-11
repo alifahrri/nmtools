@@ -17,6 +17,7 @@ inline auto name##_ls_hb = nmtools::cast(name, nmtools::kind::ndarray_ls_hb); \
 inline auto name##_ls_db = nmtools::cast(name, nmtools::kind::ndarray_ls_db);
 #endif
 
+#include "nmtools/context/default.hpp"
 #include "nmtools/array/tile.hpp"
 #include "nmtools/testing/data/array/tile.hpp"
 
@@ -25,34 +26,11 @@ inline auto name##_ls_db = nmtools::cast(name, nmtools::kind::ndarray_ls_db);
 namespace nm = nmtools;
 namespace na = nmtools;
 
-#define RUN_impl(...) \
-nmtools::tile(__VA_ARGS__);
-
-#ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
-#include "nmtools/testing/benchmarks/bench.hpp"
-using nm::benchmarks::TrackedBench;
-// create immediately invoked lambda
-// that packs tile fn to callable lambda
-#define RUN_tile(case_name, ...) \
-[](auto&&...args){ \
-    auto title = std::string("tile-") + #case_name; \
-    auto name  = nm::testing::make_func_args("", args...); \
-    auto fn    = [&](){ \
-        return RUN_impl(args...); \
-    }; \
-    return TrackedBench::run(title, name, fn); \
-}(__VA_ARGS__);
-#else
-// run normally without benchmarking, ignore case_name
-#define RUN_tile(case_name, ...) \
-RUN_impl(__VA_ARGS__);
-#endif // NMTOOLS_TESTING_ENABLE_BENCHMARKS
-
 #define TILE_ARRAY_SUBCASE(case_name,array,reps) \
 SUBCASE(#case_name) \
 { \
     NMTOOLS_TESTING_USE_CASE( view, tile, case_name ); \
-    auto array_array = RUN_tile( case_name, args::array, args::reps ); \
+    auto array_array = nmtools::tile( args::array, args::reps ); \
     NMTOOLS_ASSERT_EQUAL( nm::dim(array_array), expect::dim ); \
     NMTOOLS_ASSERT_EQUAL( nm::shape(array_array), expect::shape ); \
     NMTOOLS_ASSERT_CLOSE( array_array, expect::result ); \

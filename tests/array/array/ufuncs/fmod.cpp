@@ -1,6 +1,7 @@
 #include "nmtools/array/ufuncs/fmod.hpp"
 #include "nmtools/testing/data/array/fmod.hpp"
 #include "nmtools/testing/doctest.hpp"
+#include "nmtools/context/default.hpp"
 
 #include <vector>
 #include <array>
@@ -8,35 +9,12 @@
 namespace nm = nmtools;
 namespace na = nmtools;
 
-#define RUN_fmod_impl(...) \
-nmtools::fmod(__VA_ARGS__);
-
-#ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
-#include "nmtools/testing/benchmarks/bench.hpp"
-using nm::benchmarks::TrackedBench;
-// create immediately invoked lambda
-// that packs fmod fn to callable lambda
-#define RUN_fmod(case_name, ...) \
-[](auto&&...args){ \
-    auto title = std::string("fmod-") + #case_name; \
-    auto name  = nm::testing::make_func_args("", args...); \
-    auto fn    = [&](){ \
-        return RUN_fmod_impl(args...); \
-    }; \
-    return TrackedBench::run(title, name, fn); \
-}(__VA_ARGS__);
-#else
-// run normally without benchmarking, ignore case_name
-#define RUN_fmod(case_name, ...) \
-RUN_fmod_impl(__VA_ARGS__);
-#endif // NMTOOLS_TESTING_ENABLE_BENCHMARKS
-
 #define FMOD_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
     NMTOOLS_TESTING_USE_CASE(view, fmod, case_name); \
     using namespace args; \
-    auto result = RUN_fmod(case_name, __VA_ARGS__); \
+    auto result = nm::fmod(__VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( ::nm::shape(result), expect::shape ); \
     NMTOOLS_ASSERT_CLOSE( result, expect::result ); \
 }
@@ -59,35 +37,12 @@ TEST_CASE("fmod(case2)" * doctest::test_suite("array::fmod"))
     FMOD_SUBCASE( case2, a_h, b );
 }
 
-#define RUN_reduce_fmod_impl(...) \
-nmtools::fmod.reduce(__VA_ARGS__);
-
-#ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
-#include "nmtools/testing/benchmarks/bench.hpp"
-using nm::benchmarks::TrackedBench;
-// create immediately invoked lambda
-// that packs reduce_fmod fn to callable lambda
-#define RUN_reduce_fmod(case_name, ...) \
-[](auto&&...args){ \
-    auto title = std::string("reduce_fmod-") + #case_name; \
-    auto name  = nm::testing::make_func_args("", args...); \
-    auto fn    = [&](){ \
-        return RUN_reduce_fmod_impl(args...); \
-    }; \
-    return TrackedBench::run(title, name, fn); \
-}(__VA_ARGS__);
-#else
-// run normally without benchmarking, ignore case_name
-#define RUN_reduce_fmod(case_name, ...) \
-RUN_reduce_fmod_impl(__VA_ARGS__);
-#endif // NMTOOLS_TESTING_ENABLE_BENCHMARKS
-
 #define REDUCE_FMOD_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
     NMTOOLS_TESTING_USE_CASE(view, reduce_fmod, case_name); \
     using namespace args; \
-    auto result = RUN_reduce_fmod(case_name, __VA_ARGS__); \
+    auto result = nm::fmod.reduce(__VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( ::nm::shape(result), expect::shape ); \
     NMTOOLS_ASSERT_CLOSE( result, expect::result ); \
 }
@@ -162,35 +117,12 @@ TEST_CASE("reduce_fmod(case8)" * doctest::test_suite("array::reduce_fmod"))
     REDUCE_FMOD_SUBCASE( case8, a_f, axis, dtype, initial, keepdims );
 }
 
-#define RUN_accumulate_fmod_impl(...) \
-nmtools::fmod.accumulate(__VA_ARGS__);
-
-#ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
-#include "nmtools/testing/benchmarks/bench.hpp"
-using nm::benchmarks::TrackedBench;
-// create immediately invoked lambda
-// that packs accumulate_fmod fn to callable lambda
-#define RUN_accumulate_fmod(case_name, ...) \
-[](auto&&...args){ \
-    auto title = std::string("accumulate_fmod-") + #case_name; \
-    auto name  = nm::testing::make_func_args("", args...); \
-    auto fn    = [&](){ \
-        return RUN_accumulate_fmod_impl(args...); \
-    }; \
-    return TrackedBench::run(title, name, fn); \
-}(__VA_ARGS__);
-#else
-// run normally without benchmarking, ignore case_name
-#define RUN_accumulate_fmod(case_name, ...) \
-RUN_accumulate_fmod_impl(__VA_ARGS__);
-#endif // NMTOOLS_TESTING_ENABLE_BENCHMARKS
-
 #define ACCUMULATE_FMOD_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
     NMTOOLS_TESTING_USE_CASE(view, accumulate_fmod, case_name); \
     using namespace args; \
-    auto result = RUN_accumulate_fmod(case_name, __VA_ARGS__); \
+    auto result = nm::fmod.accumulate(__VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( ::nm::shape(result), expect::shape ); \
     NMTOOLS_ASSERT_CLOSE( result, expect::result ); \
 }
@@ -225,35 +157,12 @@ TEST_CASE("accumulate_fmod(case3)" * doctest::test_suite("array::accumulate_fmod
     ACCUMULATE_FMOD_SUBCASE( case3, a_f, axis );
 }
 
-#define RUN_outer_fmod_impl(...) \
-nmtools::fmod.outer(__VA_ARGS__);
-
-#ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
-#include "nmtools/testing/benchmarks/bench.hpp"
-using nm::benchmarks::TrackedBench;
-// create immediately invoked lambda
-// that packs outer_fmod fn to callable lambda
-#define RUN_outer_fmod(case_name, ...) \
-[](auto&&...args){ \
-    auto title = std::string("outer_fmod-") + #case_name; \
-    auto name  = nm::testing::make_func_args("", args...); \
-    auto fn    = [&](){ \
-        return RUN_outer_fmod_impl(args...); \
-    }; \
-    return TrackedBench::run(title, name, fn); \
-}(__VA_ARGS__);
-#else
-// run normally without benchmarking, ignore case_name
-#define RUN_outer_fmod(case_name, ...) \
-RUN_outer_fmod_impl(__VA_ARGS__);
-#endif // NMTOOLS_TESTING_ENABLE_BENCHMARKS
-
 #define OUTER_FMOD_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
     NMTOOLS_TESTING_USE_CASE(view, outer_fmod, case_name); \
     using namespace args; \
-    auto result = RUN_outer_fmod(case_name, __VA_ARGS__); \
+    auto result = nm::fmod.outer(__VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( ::nm::shape(result), expect::shape ); \
     NMTOOLS_ASSERT_CLOSE( result, expect::result ); \
 }

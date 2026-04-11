@@ -637,8 +637,7 @@ namespace nmtools
      * @return constexpr auto 
      */
     template <typename output_t=none_t
-        , typename context_t=none_t
-        , typename resolver_t=eval_result_t<>
+        , typename context_t=default_context_t<>
         , typename array_t
         , typename kernel_size_t
         , typename stride_t=none_t
@@ -652,20 +651,17 @@ namespace nmtools
         , const dilation_t& dilation=dilation_t{}
         , ceil_mode_t ceil_mode=ceil_mode_t{}
         , context_t&& context=context_t{}
-        , output_t&& output=output_t{}
-        , meta::as_value<resolver_t> resolver=meta::as_value_v<resolver_t>)
+        , output_t&& output=output_t{})
     {
         auto pool = view::max_pool2d(array,kernel_size,stride,padding,dilation,ceil_mode);
         return eval(pool
             , nmtools::forward<context_t>(context)
             , nmtools::forward<output_t>(output)
-            , resolver
         );
     } // max_pool2d
 
     template <typename output_t=none_t
-        , typename context_t=none_t
-        , typename resolver_t=eval_result_t<>
+        , typename context_t=default_context_t<>
         , typename array_t
         , typename kernel_size_t
         , typename stride_t=none_t
@@ -679,20 +675,17 @@ namespace nmtools
         , const dilation_t& dilation=dilation_t{}
         , ceil_mode_t ceil_mode=ceil_mode_t{}
         , context_t&& context=context_t{}
-        , output_t&& output=output_t{}
-        , meta::as_value<resolver_t> resolver=meta::as_value_v<resolver_t>)
+        , output_t&& output=output_t{})
     {
         auto pool = view::max_pool1d(array,kernel_size,stride,padding,dilation,ceil_mode);
         return eval(pool
             , nmtools::forward<context_t>(context)
             , nmtools::forward<output_t>(output)
-            , resolver
         );
     } // max_pool1d
 
     template <typename output_t=none_t
-        , typename context_t=none_t
-        , typename resolver_t=eval_result_t<>
+        , typename context_t=default_context_t<>
         , typename array_t
         , typename kernel_size_t
         , typename stride_t=none_t
@@ -706,14 +699,12 @@ namespace nmtools
         , const dilation_t& dilation=dilation_t{}
         , ceil_mode_t ceil_mode=ceil_mode_t{}
         , context_t&& context=context_t{}
-        , output_t&& output=output_t{}
-        , meta::as_value<resolver_t> resolver=meta::as_value_v<resolver_t>)
+        , output_t&& output=output_t{})
     {
         auto pool = view::max_pool3d(array,kernel_size,stride,padding,dilation,ceil_mode);
         return eval(pool
             , nmtools::forward<context_t>(context)
             , nmtools::forward<output_t>(output)
-            , resolver
         );
     } // max_pool3d
 
@@ -737,8 +728,7 @@ namespace nmtools
      * @return constexpr auto 
      */
     template <typename output_t=none_t
-        , typename context_t=none_t
-        , typename resolver_t=eval_result_t<>
+        , typename context_t=default_context_t<>
         , typename array_t
         , typename kernel_size_t
         , typename stride_t=none_t
@@ -752,14 +742,12 @@ namespace nmtools
         , const dilation_t& dilation=dilation_t{}
         , ceil_mode_t ceil_mode=ceil_mode_t{}
         , context_t&& context=context_t{}
-        , output_t&& output=output_t{}
-        , meta::as_value<resolver_t> resolver=meta::as_value_v<resolver_t>)
+        , output_t&& output=output_t{})
     {
         auto pool = view::avg_pool2d(array,kernel_size,stride,padding,dilation,ceil_mode);
         return eval(pool
             ,nmtools::forward<context_t>(context)
             ,nmtools::forward<output_t>(output)
-            ,resolver
         );
     } // avg_pool
 } // namespace nmtools

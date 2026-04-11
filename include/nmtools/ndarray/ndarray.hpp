@@ -51,7 +51,7 @@ namespace nmtools
             if constexpr (meta::is_resizable_v<buffer_type>) {
                 auto numel = index::product(shape_);
                 // shape may be fixed while data is resizable
-                if (len(data_) != numel) {
+                if ((nm_size_t)len(data_) != (nm_size_t)numel) {
                     data_.resize(numel);
                 }
             }

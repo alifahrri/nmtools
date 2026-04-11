@@ -170,11 +170,9 @@ namespace nmtools::meta
 
 #endif // NMTOOLS_ARRAY_VIEW_ARANGE_HPP
 
+#include "nmtools/core/functor.hpp"
 #ifndef NMTOOLS_ARRAY_FUNCTIONAL_ARANGE_HPP
 #define NMTOOLS_ARRAY_FUNCTIONAL_ARANGE_HPP
-
-#include "nmtools/core/functor.hpp"
-#include "nmtools/array/arange.hpp"
 
 namespace nmtools::functional
 {
@@ -222,7 +220,6 @@ namespace nmtools::functional
 #define NMTOOLS_ARRAY_ARRAY_ARANGE
 
 #include "nmtools/core/eval.hpp"
-#include "nmtools/array/arange.hpp"
 #include "nmtools/constants.hpp"
 
 namespace nmtools
@@ -244,42 +241,39 @@ namespace nmtools
      * @param output 
      * @return constexpr auto 
      */
-    template <typename output_t=none_t, typename context_t=none_t, typename resolver_t=eval_result_t<>,
+    template <typename output_t=none_t, typename context_t=default_context_t<>,
         typename start_t, typename stop_t, typename step_t, typename T=float>
     constexpr auto arange(start_t start, stop_t stop, step_t step, dtype_t<T> dtype=float32,
-        context_t&& context=context_t{}, output_t&& output=output_t{},meta::as_value<resolver_t> resolver=meta::as_value_v<resolver_t>)
+        context_t&& context=context_t{}, output_t&& output=output_t{})
     {
         auto range = view::arange(start,stop,step,dtype);
         return eval(range
             ,nmtools::forward<context_t>(context)
             ,nmtools::forward<output_t>(output)
-            ,resolver
         );
     } // arange
 
-    template <typename output_t=none_t, typename context_t=none_t, typename resolver_t=eval_result_t<>,
+    template <typename output_t=none_t, typename context_t=default_context_t<>,
         typename start_t, typename stop_t, typename T=float>
     constexpr auto arange(start_t start, stop_t stop, dtype_t<T> dtype=float32,
-        context_t&& context=context_t{}, output_t&& output=output_t{},meta::as_value<resolver_t> resolver=meta::as_value_v<resolver_t>)
+        context_t&& context=context_t{}, output_t&& output=output_t{})
     {
         auto range = view::arange(start,stop,1,dtype);
         return eval(range
             ,nmtools::forward<context_t>(context)
             ,nmtools::forward<output_t>(output)
-            ,resolver
         );
     } // arange
 
-    template <typename output_t=none_t, typename context_t=none_t, typename resolver_t=eval_result_t<>,
+    template <typename output_t=none_t, typename context_t=default_context_t<>,
         typename stop_t, typename T=float>
     constexpr auto arange(stop_t stop, dtype_t<T> dtype=float32,
-        context_t&& context=context_t{}, output_t&& output=output_t{},meta::as_value<resolver_t> resolver=meta::as_value_v<resolver_t>)
+        context_t&& context=context_t{}, output_t&& output=output_t{})
     {
         auto range = view::arange(0,stop,1,dtype);
         return eval(range
             ,nmtools::forward<context_t>(context)
             ,nmtools::forward<output_t>(output)
-            ,resolver
         );
     } // arange
 } // nmtools

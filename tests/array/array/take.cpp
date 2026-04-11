@@ -17,6 +17,7 @@ inline auto name##_ls_hb = nmtools::cast(name, nmtools::kind::ndarray_ls_hb); \
 inline auto name##_ls_db = nmtools::cast(name, nmtools::kind::ndarray_ls_db);
 #endif
 
+#include "nmtools/context/default.hpp"
 #include "nmtools/array/take.hpp"
 #include "nmtools/testing/data/array/take.hpp"
 #include "nmtools/testing/doctest.hpp"
@@ -25,35 +26,12 @@ inline auto name##_ls_db = nmtools::cast(name, nmtools::kind::ndarray_ls_db);
 namespace nm = nmtools;
 namespace na = nmtools;
 
-#define RUN_take_impl(...) \
-nmtools::take(__VA_ARGS__);
-
-#ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
-#include "nmtools/testing/benchmarks/bench.hpp"
-using nm::benchmarks::TrackedBench;
-// create immediately invoked lambda
-// that packs take fn to callable lambda
-#define RUN_take(case_name, ...) \
-[](auto&&...args){ \
-    auto title = std::string("take-") + #case_name; \
-    auto name  = nm::testing::make_func_args("", args...); \
-    auto fn    = [&](){ \
-        return RUN_take_impl(args...); \
-    }; \
-    return TrackedBench::run(title, name, fn); \
-}(__VA_ARGS__);
-#else
-// run normally without benchmarking, ignore case_name
-#define RUN_take(case_name, ...) \
-RUN_take_impl(__VA_ARGS__);
-#endif // NMTOOLS_TESTING_ENABLE_BENCHMARKS
-
 #define TAKE_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
     NMTOOLS_TESTING_USE_CASE(view, take, case_name); \
     using namespace args; \
-    auto result = RUN_take(case_name, __VA_ARGS__); \
+    auto result = nmtools::take(__VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( result, expect::result ); \
 }
 

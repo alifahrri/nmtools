@@ -1,5 +1,6 @@
 #include "nmtools/array/linear.hpp"
 #include "nmtools/testing/data/array/linear.hpp"
+#include "nmtools/context/default.hpp"
 #include "nmtools/testing/doctest.hpp"
 
 #define LINEAR_SUBCASE(case_name,...) \

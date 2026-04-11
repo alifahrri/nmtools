@@ -147,7 +147,7 @@ set(ARRAY_EVAL_TEST_SOURCES
     array/zeros_like.cpp
 )
 set(ARRAY_UFUNCS_TEST_SOURCES
-    # array/ufuncs/add.cpp
+    array/ufuncs/add.cpp
     array/ufuncs/amax.cpp
     array/ufuncs/amin.cpp
     array/ufuncs/arccos.cpp

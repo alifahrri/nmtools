@@ -1,6 +1,8 @@
 #include "nmtools/array/bilinear.hpp"
 #include "nmtools/testing/data/array/bilinear.hpp"
 #include "nmtools/testing/doctest.hpp"
+#include "nmtools/context/default.hpp"
+#include "nmtools/context/default.hpp"
 
 #define BILINEAR_SUBCASE(case_name,...) \
 SUBCASE(#case_name) \

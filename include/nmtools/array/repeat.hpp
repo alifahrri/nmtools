@@ -195,16 +195,15 @@ namespace nmtools
      * @param output 
      * @return constexpr auto 
      */
-    template <typename output_t=none_t, typename context_t=none_t, typename resolver_t=eval_result_t<>,
+    template <typename output_t=none_t, typename context_t=default_context_t<>,
         typename array_t, typename repeats_t, typename axis_t=none_t>
     constexpr auto repeat(const array_t& array, const repeats_t& repeats, axis_t axis=axis_t{}
-        , context_t&& context=context_t{}, output_t&& output=output_t{},meta::as_value<resolver_t> resolver=meta::as_value_v<resolver_t>)
+        , context_t&& context=context_t{}, output_t&& output=output_t{})
     {
         auto repeated = view::repeat(array,repeats,axis);
         return eval(repeated
             ,nmtools::forward<context_t>(context)
             ,nmtools::forward<output_t>(output)
-            ,resolver
         );
     } // repeat
 } // namespace nmtools

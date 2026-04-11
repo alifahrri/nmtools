@@ -2,7 +2,7 @@
 #define NMTOOLS_TILEKIT_SCALAR_HPP
 
 #include "nmtools/core/eval.hpp"
-#include "nmtools/core/context/unroll.hpp"
+#include "nmtools/core/context.hpp"
 #include "nmtools/tilekit/tilekit.hpp"
 
 namespace nmtools::tilekit

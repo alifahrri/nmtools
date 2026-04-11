@@ -18,6 +18,7 @@ inline auto name##_ls_db = nmtools::cast(name, nmtools::kind::ndarray_ls_db);
 #endif
 
 #include "nmtools/array/reshape.hpp"
+#include "nmtools/context/default.hpp"
 #include "nmtools/testing/data/array/reshape.hpp"
 #include "nmtools/testing/doctest.hpp"
 
@@ -25,34 +26,11 @@ namespace nm = nmtools;
 namespace na = nmtools;
 namespace meta = nm::meta;
 
-#define RUN_impl(...) \
-nmtools::reshape(__VA_ARGS__);
-
-#ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
-#include "nmtools/testing/benchmarks/bench.hpp"
-using nm::benchmarks::TrackedBench;
-// create immediately invoked lambda
-// that packs reshape fn to callable lambda
-#define RUN_reshape(case_name, ...) \
-[](auto&&...args){ \
-    auto title = std::string("reshape-") + #case_name; \
-    auto name  = nm::testing::make_func_args("", args...); \
-    auto fn    = [&](){ \
-        return RUN_impl(args...); \
-    }; \
-    return TrackedBench::run(title, name, fn); \
-}(__VA_ARGS__);
-#else
-// run normally without benchmarking, ignore case_name
-#define RUN_reshape(case_name, ...) \
-RUN_impl(__VA_ARGS__);
-#endif // NMTOOLS_TESTING_ENABLE_BENCHMARKS
-
 #define RESHAPE_SUBCASE(case_name, array, newshape) \
 SUBCASE(#case_name) \
 { \
     NMTOOLS_TESTING_USE_CASE(reshape, case_name) \
-    auto array_ref = RUN_reshape(case_name, args::array, args::newshape); \
+    auto array_ref = nmtools::reshape(args::array, args::newshape); \
     NMTOOLS_ASSERT_CLOSE( array_ref, expect::expected ); \
 }
 

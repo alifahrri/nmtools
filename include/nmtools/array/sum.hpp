@@ -81,8 +81,7 @@ namespace nmtools
      */
     template <
         typename output_t=none_t
-        , typename context_t=none_t
-        , typename resolver_t=eval_result_t<>
+        , typename context_t=default_context_t<>
         , typename dtype_t=none_t
         , typename initial_t=none_t
         , typename keepdims_t=meta::false_type
@@ -94,13 +93,12 @@ namespace nmtools
         , enable_if_t<is_none_v<keepdims_t> || is_index_v<keepdims_t>,int> = 0>
     constexpr auto sum(const array_t& a, const axis_t& axis=axis_t{}, dtype_t dtype=dtype_t{},
         initial_t initial=initial_t{}, keepdims_t keepdims=keepdims_t{},
-        context_t&& context=context_t{}, output_t&& output=output_t{},meta::as_value<resolver_t> resolver=meta::as_value_v<resolver_t>)
+        context_t&& context=context_t{}, output_t&& output=output_t{})
     {
         auto sum_ = view::sum(a,axis,dtype,initial,keepdims);
         return eval(sum_
             ,nmtools::forward<context_t>(context)
             ,nmtools::forward<output_t>(output)
-            ,resolver
         );
     } // sum
 

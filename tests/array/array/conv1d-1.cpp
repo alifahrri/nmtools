@@ -20,6 +20,9 @@ inline auto name##_ls_db = nmtools::cast(name, nmtools::kind::ndarray_ls_db);
 #include "nmtools/array/conv1d.hpp"
 #include "nmtools/testing/data/array/conv1d.hpp"
 #include "nmtools/testing/doctest.hpp"
+#include "nmtools/context/default.hpp"
+#include "nmtools/context/default.hpp"
+#include "nmtools/context/default.hpp"
 
 #define CONV1D_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \

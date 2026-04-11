@@ -1,3 +1,4 @@
+#include "nmtools/context/default.hpp"
 #include "nmtools/array/trace.hpp"
 #include "nmtools/testing/data/array/trace.hpp"
 #include "nmtools/testing/doctest.hpp"

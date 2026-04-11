@@ -1,6 +1,7 @@
 #include "nmtools/array/ufuncs/minimum.hpp"
 #include "nmtools/testing/data/array/minimum.hpp"
 #include "nmtools/testing/doctest.hpp"
+#include "nmtools/context/default.hpp"
 
 #include <vector>
 #include <array>
@@ -9,35 +10,12 @@
 namespace nm = nmtools;
 namespace na = nmtools;
 
-#define RUN_minimum_impl(...) \
-nmtools::minimum(__VA_ARGS__);
-
-#ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
-#include "nmtools/testing/benchmarks/bench.hpp"
-using nm::benchmarks::TrackedBench;
-// create immediately invoked lambda
-// that packs minimum fn to callable lambda
-#define RUN_minimum(case_name, ...) \
-[](auto&&...args){ \
-    auto title = std::string("minimum-") + #case_name; \
-    auto name  = nm::testing::make_func_args("", args...); \
-    auto fn    = [&](){ \
-        return RUN_minimum_impl(args...); \
-    }; \
-    return TrackedBench::run(title, name, fn); \
-}(__VA_ARGS__);
-#else
-// run normally without benchmarking, ignore case_name
-#define RUN_minimum(case_name, ...) \
-RUN_minimum_impl(__VA_ARGS__);
-#endif // NMTOOLS_TESTING_ENABLE_BENCHMARKS
-
 #define MINIMUM_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
     NMTOOLS_TESTING_USE_CASE(view, minimum, case_name); \
     using namespace args; \
-    auto result = RUN_minimum(case_name, __VA_ARGS__); \
+    auto result = nm::minimum(__VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( ::nm::shape(result), expect::shape ); \
     NMTOOLS_ASSERT_CLOSE( result, expect::result ); \
 }
@@ -60,35 +38,12 @@ TEST_CASE("minimum(case2)" * doctest::test_suite("array::minimum"))
     MINIMUM_SUBCASE( case2, a_h, b );
 }
 
-#define RUN_reduce_minimum_impl(...) \
-nmtools::minimum.reduce(__VA_ARGS__);
-
-#ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
-#include "nmtools/testing/benchmarks/bench.hpp"
-using nm::benchmarks::TrackedBench;
-// create immediately invoked lambda
-// that packs reduce_minimum fn to callable lambda
-#define RUN_reduce_minimum(case_name, ...) \
-[](auto&&...args){ \
-    auto title = std::string("reduce_minimum-") + #case_name; \
-    auto name  = nm::testing::make_func_args("", args...); \
-    auto fn    = [&](){ \
-        return RUN_reduce_minimum_impl(args...); \
-    }; \
-    return TrackedBench::run(title, name, fn); \
-}(__VA_ARGS__);
-#else
-// run normally without benchmarking, ignore case_name
-#define RUN_reduce_minimum(case_name, ...) \
-RUN_reduce_minimum_impl(__VA_ARGS__);
-#endif // NMTOOLS_TESTING_ENABLE_BENCHMARKS
-
 #define REDUCE_MINIMUM_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
     NMTOOLS_TESTING_USE_CASE(view, reduce_minimum, case_name); \
     using namespace args; \
-    auto result = RUN_reduce_minimum(case_name, __VA_ARGS__); \
+    auto result = nm::minimum.reduce(__VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( ::nm::shape(result), expect::shape ); \
     NMTOOLS_ASSERT_CLOSE( result, expect::result ); \
 }
@@ -201,35 +156,12 @@ TEST_CASE("reduce_minimum(case12)" * doctest::test_suite("array::reduce_minimum"
     REDUCE_MINIMUM_SUBCASE( case12, a_h, axis, dtype, initial, keepdims );
 }
 
-#define RUN_accumulate_minimum_impl(...) \
-nmtools::minimum.accumulate(__VA_ARGS__);
-
-#ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
-#include "nmtools/testing/benchmarks/bench.hpp"
-using nm::benchmarks::TrackedBench;
-// create immediately invoked lambda
-// that packs accumulate_minimum fn to callable lambda
-#define RUN_accumulate_minimum(case_name, ...) \
-[](auto&&...args){ \
-    auto title = std::string("accumulate_minimum-") + #case_name; \
-    auto name  = nm::testing::make_func_args("", args...); \
-    auto fn    = [&](){ \
-        return RUN_accumulate_minimum_impl(args...); \
-    }; \
-    return TrackedBench::run(title, name, fn); \
-}(__VA_ARGS__);
-#else
-// run normally without benchmarking, ignore case_name
-#define RUN_accumulate_minimum(case_name, ...) \
-RUN_accumulate_minimum_impl(__VA_ARGS__);
-#endif // NMTOOLS_TESTING_ENABLE_BENCHMARKS
-
 #define ACCUMULATE_MINIMUM_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
     NMTOOLS_TESTING_USE_CASE(view, accumulate_minimum, case_name); \
     using namespace args; \
-    auto result = RUN_accumulate_minimum(case_name, __VA_ARGS__); \
+    auto result = nm::minimum.accumulate(__VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( ::nm::shape(result), expect::shape ); \
     NMTOOLS_ASSERT_CLOSE( result, expect::result ); \
 }
@@ -264,35 +196,12 @@ TEST_CASE("accumulate_minimum(case3)" * doctest::test_suite("array::accumulate_m
     ACCUMULATE_MINIMUM_SUBCASE( case3, a_f, axis );
 }
 
-#define RUN_outer_minimum_impl(...) \
-nmtools::minimum.outer(__VA_ARGS__);
-
-#ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
-#include "nmtools/testing/benchmarks/bench.hpp"
-using nm::benchmarks::TrackedBench;
-// create immediately invoked lambda
-// that packs outer_minimum fn to callable lambda
-#define RUN_outer_minimum(case_name, ...) \
-[](auto&&...args){ \
-    auto title = std::string("outer_minimum-") + #case_name; \
-    auto name  = nm::testing::make_func_args("", args...); \
-    auto fn    = [&](){ \
-        return RUN_outer_minimum_impl(args...); \
-    }; \
-    return TrackedBench::run(title, name, fn); \
-}(__VA_ARGS__);
-#else
-// run normally without benchmarking, ignore case_name
-#define RUN_outer_minimum(case_name, ...) \
-RUN_outer_minimum_impl(__VA_ARGS__);
-#endif // NMTOOLS_TESTING_ENABLE_BENCHMARKS
-
 #define OUTER_MINIMUM_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
     NMTOOLS_TESTING_USE_CASE(view, outer_minimum, case_name); \
     using namespace args; \
-    auto result = RUN_outer_minimum(case_name, __VA_ARGS__); \
+    auto result = nm::minimum.outer(__VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( ::nm::shape(result), expect::shape ); \
     NMTOOLS_ASSERT_CLOSE( result, expect::result ); \
 }

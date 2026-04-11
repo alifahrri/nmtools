@@ -1,6 +1,7 @@
 #include "nmtools/array/ufuncs/fmax.hpp"
 #include "nmtools/testing/data/array/fmax.hpp"
 #include "nmtools/testing/doctest.hpp"
+#include "nmtools/context/default.hpp"
 
 #include <vector>
 #include <array>
@@ -8,35 +9,12 @@
 namespace nm = nmtools;
 namespace na = nmtools;
 
-#define RUN_fmax_impl(...) \
-nmtools::fmax(__VA_ARGS__);
-
-#ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
-#include "nmtools/testing/benchmarks/bench.hpp"
-using nm::benchmarks::TrackedBench;
-// create immediately invoked lambda
-// that packs fmax fn to callable lambda
-#define RUN_fmax(case_name, ...) \
-[](auto&&...args){ \
-    auto title = std::string("fmax-") + #case_name; \
-    auto name  = nm::testing::make_func_args("", args...); \
-    auto fn    = [&](){ \
-        return RUN_fmax_impl(args...); \
-    }; \
-    return TrackedBench::run(title, name, fn); \
-}(__VA_ARGS__);
-#else
-// run normally without benchmarking, ignore case_name
-#define RUN_fmax(case_name, ...) \
-RUN_fmax_impl(__VA_ARGS__);
-#endif // NMTOOLS_TESTING_ENABLE_BENCHMARKS
-
 #define FMAX_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
     NMTOOLS_TESTING_USE_CASE(view, fmax, case_name); \
     using namespace args; \
-    auto result = RUN_fmax(case_name, __VA_ARGS__); \
+    auto result = nm::fmax(__VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( ::nm::shape(result), expect::shape ); \
     NMTOOLS_ASSERT_CLOSE( result, expect::result ); \
 }
@@ -59,35 +37,12 @@ TEST_CASE("fmax(case2)" * doctest::test_suite("array::fmax"))
     FMAX_SUBCASE( case2, a_h, b );
 }
 
-#define RUN_reduce_fmax_impl(...) \
-nmtools::fmax.reduce(__VA_ARGS__);
-
-#ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
-#include "nmtools/testing/benchmarks/bench.hpp"
-using nm::benchmarks::TrackedBench;
-// create immediately invoked lambda
-// that packs reduce_fmax fn to callable lambda
-#define RUN_reduce_fmax(case_name, ...) \
-[](auto&&...args){ \
-    auto title = std::string("reduce_fmax-") + #case_name; \
-    auto name  = nm::testing::make_func_args("", args...); \
-    auto fn    = [&](){ \
-        return RUN_reduce_fmax_impl(args...); \
-    }; \
-    return TrackedBench::run(title, name, fn); \
-}(__VA_ARGS__);
-#else
-// run normally without benchmarking, ignore case_name
-#define RUN_reduce_fmax(case_name, ...) \
-RUN_reduce_fmax_impl(__VA_ARGS__);
-#endif // NMTOOLS_TESTING_ENABLE_BENCHMARKS
-
 #define REDUCE_FMAX_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
     NMTOOLS_TESTING_USE_CASE(view, reduce_fmax, case_name); \
     using namespace args; \
-    auto result = RUN_reduce_fmax(case_name, __VA_ARGS__); \
+    auto result = nm::fmax.reduce(__VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( ::nm::shape(result), expect::shape ); \
     NMTOOLS_ASSERT_CLOSE( result, expect::result ); \
 }
@@ -208,35 +163,12 @@ TEST_CASE("reduce_fmax(case13)" * doctest::test_suite("array::reduce_fmax"))
     REDUCE_FMAX_SUBCASE( case13, a_f, axis, dtype, initial, keepdims );
 }
 
-#define RUN_accumulate_fmax_impl(...) \
-nmtools::fmax.accumulate(__VA_ARGS__);
-
-#ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
-#include "nmtools/testing/benchmarks/bench.hpp"
-using nm::benchmarks::TrackedBench;
-// create immediately invoked lambda
-// that packs accumulate_fmax fn to callable lambda
-#define RUN_accumulate_fmax(case_name, ...) \
-[](auto&&...args){ \
-    auto title = std::string("accumulate_fmax-") + #case_name; \
-    auto name  = nm::testing::make_func_args("", args...); \
-    auto fn    = [&](){ \
-        return RUN_accumulate_fmax_impl(args...); \
-    }; \
-    return TrackedBench::run(title, name, fn); \
-}(__VA_ARGS__);
-#else
-// run normally without benchmarking, ignore case_name
-#define RUN_accumulate_fmax(case_name, ...) \
-RUN_accumulate_fmax_impl(__VA_ARGS__);
-#endif // NMTOOLS_TESTING_ENABLE_BENCHMARKS
-
 #define ACCUMULATE_FMAX_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
     NMTOOLS_TESTING_USE_CASE(view, accumulate_fmax, case_name); \
     using namespace args; \
-    auto result = RUN_accumulate_fmax(case_name, __VA_ARGS__); \
+    auto result = nm::fmax.accumulate(__VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( ::nm::shape(result), expect::shape ); \
     NMTOOLS_ASSERT_CLOSE( result, expect::result ); \
 }
@@ -271,35 +203,12 @@ TEST_CASE("accumulate_fmax(case3)" * doctest::test_suite("array::accumulate_fmax
     ACCUMULATE_FMAX_SUBCASE( case3, a_f, axis );
 }
 
-#define RUN_outer_fmax_impl(...) \
-nmtools::fmax.outer(__VA_ARGS__);
-
-#ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
-#include "nmtools/testing/benchmarks/bench.hpp"
-using nm::benchmarks::TrackedBench;
-// create immediately invoked lambda
-// that packs outer_fmax fn to callable lambda
-#define RUN_outer_fmax(case_name, ...) \
-[](auto&&...args){ \
-    auto title = std::string("outer_fmax-") + #case_name; \
-    auto name  = nm::testing::make_func_args("", args...); \
-    auto fn    = [&](){ \
-        return RUN_outer_fmax_impl(args...); \
-    }; \
-    return TrackedBench::run(title, name, fn); \
-}(__VA_ARGS__);
-#else
-// run normally without benchmarking, ignore case_name
-#define RUN_outer_fmax(case_name, ...) \
-RUN_outer_fmax_impl(__VA_ARGS__);
-#endif // NMTOOLS_TESTING_ENABLE_BENCHMARKS
-
 #define OUTER_FMAX_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
     NMTOOLS_TESTING_USE_CASE(view, outer_fmax, case_name); \
     using namespace args; \
-    auto result = RUN_outer_fmax(case_name, __VA_ARGS__); \
+    auto result = nm::fmax.outer(__VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( ::nm::shape(result), expect::shape ); \
     NMTOOLS_ASSERT_CLOSE( result, expect::result ); \
 }

@@ -3,6 +3,7 @@
 
 #include "nmtools/array/pairwise_distance.hpp"
 #include "nmtools/testing/data/array/pairwise_distance.hpp"
+#include "nmtools/context/default.hpp"
 #include "nmtools/testing/doctest.hpp"
 
 #define PAIRWISE_DISTANCE_SUBCASE( case_name, ... ) \

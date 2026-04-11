@@ -151,16 +151,15 @@ namespace nmtools::functional
 
 namespace nmtools
 {
-    template <typename output_t=none_t, typename context_t=none_t, typename resolver_t=eval_result_t<>,
+    template <typename output_t=none_t, typename context_t=default_context_t<>,
         typename array_t, typename dst_shape_t>
     constexpr auto resize(const array_t& array, const dst_shape_t& dst_shape,
-        context_t&& context=context_t{}, output_t&& output=output_t{},meta::as_value<resolver_t> resolver=meta::as_value_v<resolver_t>)
+        context_t&& context=context_t{}, output_t&& output=output_t{})
     {
         auto resized = view::resize(array,dst_shape);
         return eval(resized
             ,nmtools::forward<context_t>(context)
             ,nmtools::forward<output_t>(output)
-            ,resolver
         );
     } // resize
 } // namespace nmtools

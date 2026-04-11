@@ -18,41 +18,19 @@ inline auto name##_ls_db = nmtools::cast(name, nmtools::kind::ndarray_ls_db);
 #endif
 
 #include "nmtools/array/split.hpp"
+#include "nmtools/context/default.hpp"
 #include "nmtools/testing/doctest.hpp"
 
 #include "nmtools/testing/data/array/split.hpp"
 #include "nmtools/utility/apply_isequal.hpp"
 #include "nmtools/utility/apply_to_string.hpp"
 
-#define RUN_split_impl(...) \
-nmtools::split(__VA_ARGS__);
-
-#ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
-#include "nmtools/testing/benchmarks/bench.hpp"
-using nm::benchmarks::TrackedBench;
-// create immediately invoked lambda
-// that packs split fn to callable lambda
-#define RUN_split(case_name, ...) \
-[](auto&&...args){ \
-    auto title = std::string("split-") + #case_name; \
-    auto name  = nm::testing::make_func_args("", args...); \
-    auto fn    = [&](){ \
-        return RUN_split_impl(args...); \
-    }; \
-    return TrackedBench::run(title, name, fn); \
-}(__VA_ARGS__);
-#else
-// run normally without benchmarking, ignore case_name
-#define RUN_split(case_name, ...) \
-RUN_split_impl(__VA_ARGS__);
-#endif // NMTOOLS_TESTING_ENABLE_BENCHMARKS
-
 #define SPLIT_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
     NMTOOLS_TESTING_USE_CASE(array, split, case_name); \
     using namespace args; \
-    auto result = RUN_split(case_name, __VA_ARGS__); \
+    auto result = nmtools::split(__VA_ARGS__); \
     auto msg1 = std::string("Expected:\n") + nm::utils::apply_to_string(expect::result); \
     auto msg2 = std::string("Actual:\n") + nm::utils::apply_to_string(result); \
     auto msg = msg1 + "\n" + msg2; \

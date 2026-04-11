@@ -1,5 +1,6 @@
 #include "nmtools/array/eye.hpp"
 #include "nmtools/testing/data/array/eye.hpp"
+#include "nmtools/context/default.hpp"
 #include "nmtools/testing/doctest.hpp"
 
 #define EYE_SUBCASE(case_name,...) \

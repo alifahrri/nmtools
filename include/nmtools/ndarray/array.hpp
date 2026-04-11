@@ -774,7 +774,7 @@ namespace nmtools
         constexpr auto slice(slices_t...slices) const
         {
             auto v = view::slice(*this,slices...);
-            auto result = nmtools::eval(v,None,None,as_value_v<resolver_type>);
+            auto result = nmtools::eval(v,context_);
             return nmtools::unwrap(result);
         }
 
@@ -1342,78 +1342,79 @@ namespace nmtools
 {
     struct Array
     {
+        // TODO: remove
         static constexpr auto resolver = meta::as_value_v<object_eval_resolver_t<LayoutKind::RowMajor,true>>;
 
         template <typename...args_t>
         static constexpr auto arange(args_t&&...args)
         {
-            return nmtools::arange(nmtools::forward<args_t>(args)...,None,None,resolver);
+            return nmtools::arange(nmtools::forward<args_t>(args)...);
         }
 
         template <typename...args_t>
         static constexpr auto random(args_t&&...args)
         {
-            return nmtools::random(nmtools::forward<args_t>(args)...,None,None,resolver);
+            return nmtools::random(nmtools::forward<args_t>(args)...);
         }
 
         template <typename...args_t>
         static constexpr auto eye(args_t&&...args)
         {
-            return nmtools::eye(nmtools::forward<args_t>(args)...,None,None,resolver);
+            return nmtools::eye(nmtools::forward<args_t>(args)...);
         }
 
         template <typename...args_t>
         static constexpr auto full_like(args_t&&...args)
         {
-            return nmtools::full_like(nmtools::forward<args_t>(args)...,None,None,resolver);
+            return nmtools::full_like(nmtools::forward<args_t>(args)...);
         }
 
         template <typename...args_t>
         static constexpr auto full(args_t&&...args)
         {
-            return nmtools::full(nmtools::forward<args_t>(args)...,None,None,resolver);
+            return nmtools::full(nmtools::forward<args_t>(args)...);
         }
 
         template <typename...args_t>
         static constexpr auto linspace(args_t&&...args)
         {
-            return nmtools::linspace(nmtools::forward<args_t>(args)...,None,None,resolver);
+            return nmtools::linspace(nmtools::forward<args_t>(args)...);
         }
 
         template <typename...args_t>
         static constexpr auto ones_like(args_t&&...args)
         {
-            return nmtools::ones_like(nmtools::forward<args_t>(args)...,None,None,resolver);
+            return nmtools::ones_like(nmtools::forward<args_t>(args)...);
         }
 
         template <typename...args_t>
         static constexpr auto ones(args_t&&...args)
         {
-            return nmtools::ones(nmtools::forward<args_t>(args)...,None,None,resolver);
+            return nmtools::ones(nmtools::forward<args_t>(args)...);
         }
 
         template <typename...args_t>
         static constexpr auto tri(args_t&&...args)
         {
-            return nmtools::tri(nmtools::forward<args_t>(args)...,None,None,resolver);
+            return nmtools::tri(nmtools::forward<args_t>(args)...);
         }
 
         template <typename...args_t>
         static constexpr auto tril(args_t&&...args)
         {
-            return nmtools::tril(nmtools::forward<args_t>(args)...,None,None,resolver);
+            return nmtools::tril(nmtools::forward<args_t>(args)...);
         }
 
         template <typename...args_t>
         static constexpr auto triu(args_t&&...args)
         {
-            return nmtools::triu(nmtools::forward<args_t>(args)...,None,None,resolver);
+            return nmtools::triu(nmtools::forward<args_t>(args)...);
         }
 
         template <typename...args_t>
         static constexpr auto zeros_like(args_t&&...args)
         {
-            return nmtools::zeros_like(nmtools::forward<args_t>(args)...,None,None,resolver);
+            return nmtools::zeros_like(nmtools::forward<args_t>(args)...);
         }
 
         template <
@@ -1426,8 +1427,7 @@ namespace nmtools
             return nmtools::zeros(shape
                 , dtype
                 , nmtools::forward<context_t>(context)
-                , None
-                , resolver);
+                , None);
         } // zeros
 
         template <
@@ -1441,16 +1441,14 @@ namespace nmtools
                 auto dst = nmtools::copy(
                     unwrap(array)
                     , nmtools::forward<context_t>(context)
-                    , None
-                    , resolver);
+                    , None);
                 return dst;
             } else {
                 auto dst = unwrap(
                     nmtools::reshape(array
                         , dst_shape
                         , nmtools::forward<context_t>(context)
-                        , None
-                        , resolver));
+                        , None));
                 return dst;
             }
         }
@@ -1464,8 +1462,7 @@ namespace nmtools
             auto dst = nmtools::copy(
                 unwrap(array)
                 , nmtools::forward<context_t>(context)
-                , None
-                , resolver);
+                , None);
             return dst;
         }
     };
