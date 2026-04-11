@@ -32,6 +32,17 @@ namespace nmtools
                     using type = nmtools_array<T,size>;
                     return as_value_v<type>;
                 }
+            } else if constexpr (is_clipped_index_array_v<shape_t>) {
+                constexpr auto max_shape = max_value_v<shape_t>;
+                constexpr auto max_size  = index::product(max_shape);
+                constexpr auto byte_size = sizeof(T) * max_size;
+                if constexpr (byte_size > max_static_buffer_bytes) {
+                    using type = nmtools_list<T>;
+                    return as_value_v<type>;
+                } else {
+                    using type = nmtools_static_vector<T,max_size>;
+                    return as_value_v<type>;
+                }
             } else if constexpr (is_constant_index_v<m_size_t>) {
                 constexpr auto size = m_size_t::value;
                 constexpr auto byte_size = sizeof(T) * size;

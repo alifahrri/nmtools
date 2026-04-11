@@ -9,6 +9,7 @@ constexpr inline auto name##_hs_hb = nmtools::cast(name, nmtools::kind::ndarray_
 #include "nmtools/array/transpose.hpp"
 #include "nmtools/constants.hpp"
 #include "nmtools/testing/data/constexpr/transpose.hpp"
+#include "nmtools/context/default.hpp"
 #include "nmtools/testing/doctest.hpp"
 
 namespace nm = nmtools;

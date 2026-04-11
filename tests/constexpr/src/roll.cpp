@@ -10,6 +10,7 @@ constexpr inline auto name##_ls_hb = nmtools::cast(name, nmtools::kind::ndarray_
 
 #include "nmtools/array/roll.hpp"
 #include "nmtools/testing/data/constexpr/roll.hpp"
+#include "nmtools/context/default.hpp"
 #include "nmtools/testing/doctest.hpp"
 
 namespace nm = nmtools;

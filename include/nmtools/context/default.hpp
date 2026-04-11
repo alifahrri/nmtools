@@ -221,10 +221,11 @@ namespace nmtools
                     : return_type{meta::Nothing}
                 );
             } else {
-                auto shape = nmtools::shape(unwrap(view));
+                auto shape = nmtools::shape<true>(unwrap(view));
+                auto size  = nmtools::size<true>(unwrap(view));
                 using T = get_element_type_t<view_t>;
 
-                auto result = create(dtype_t<T>{},shape);
+                auto result = create(dtype_t<T>{},shape,size);
                 eval(result,unwrap(view));
 
                 return result;

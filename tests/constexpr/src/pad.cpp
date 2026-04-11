@@ -10,6 +10,7 @@ constexpr inline auto name##_ls_hb = nmtools::cast(name, nmtools::kind::ndarray_
 
 #include "nmtools/array/pad.hpp"
 #include "nmtools/testing/data/constexpr/pad.hpp"
+#include "nmtools/context/default.hpp"
 #include "nmtools/testing/doctest.hpp"
 
 #define CONSTEXPR_PAD_SUBCASE(case_name, ...) \

@@ -39,4 +39,9 @@ namespace nmtools::meta
     #endif // __OPENCL_VERSION__
 } // namespace nmtools::meta
 
+namespace nmtools
+{
+    using meta::is_clipped_index_array_v;
+}
+
 #endif // NMTOOLS_META_BITS_TRAITS_IS_CLIPPED_INDEX_ARRAY_HPP

@@ -12,6 +12,7 @@ constexpr inline auto name##_ls_hb = nmtools::cast(name, nmtools::kind::ndarray_
 
 #include "nmtools/array/atleast_nd.hpp"
 #include "nmtools/testing/data/constexpr/atleast_nd.hpp"
+#include "nmtools/context/default.hpp"
 #include "nmtools/testing/doctest.hpp"
 
 #define CONSTEXPR_ATLEAST_ND_SUBCASE(case_name, ...) \
