@@ -2,6 +2,7 @@
 #include "nmtools/core/computational_graph.hpp"
 #include "nmtools/array/pooling.hpp"
 #include "nmtools/array/random.hpp"
+#include "nmtools/context/default.hpp"
 #include "nmtools/testing/doctest.hpp"
 
 namespace nm = nmtools;
