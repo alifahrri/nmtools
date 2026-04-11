@@ -15,6 +15,8 @@
 
 #include "nmtools/index/compute_offset.hpp"
 
+#include "nmtools/core/context.hpp"
+
 namespace nmtools
 {
     enum LayoutKind : int
@@ -23,14 +25,6 @@ namespace nmtools
         RowMajor=-1,
         ColumnMajor=0,
     };
-
-    template <typename ctx_t>
-    struct context_t : ctx_t {};
-
-    using no_context_t = context_t<none_t>;
-
-    // TODO: make this default context
-    constexpr inline auto NoContext = no_context_t {};
 
     // NOTE: old version
     // TODO: remove
@@ -54,19 +48,10 @@ namespace nmtools
 namespace nmtools::meta
 {
     template <typename T>
-    struct is_eval_context : false_type {};
-
-    template <typename T>
-    struct is_eval_context<context_t<T>> : true_type {};
-
-    template <typename T>
     struct is_eval_type_resolver : false_type {};
     
     template <typename T>
     struct is_eval_type_resolver<eval_type_resolver_t<T>> : true_type {};
-
-    template <typename T>
-    constexpr inline auto is_eval_context_v = is_eval_context<T>::value;
 
     template <typename T>
     constexpr inline auto is_eval_type_resolver_v = is_eval_type_resolver<T>::value;
@@ -226,10 +211,23 @@ namespace nmtools
     namespace detail
     {
 
-    template <typename output_t=none_t, typename context_t=none_t, typename resolver_t=eval_t, typename view_t>
-    constexpr auto eval(const view_t& view, context_t&& context=context_t{}, output_t&& output=output_t{}, [[maybe_unused]] meta::as_value<resolver_t> resolver=meta::as_value_v<resolver_t>)
+    // TODO: finalize new context and then remove resolver
+    template <
+        typename output_t=none_t
+        , typename context_t=none_t
+        , typename resolver_t=eval_t
+        , typename view_t>
+    constexpr auto eval(
+        const view_t& view
+        , context_t&& context=context_t{}
+        , [[maybe_unused]] output_t&& output=output_t{}
+        , [[maybe_unused]] meta::as_value<resolver_t> resolver=meta::as_value_v<resolver_t>)
     {
-        if constexpr (meta::is_either_v<view_t>) {
+        // put context first so it can decide how to handle either, maybe etc.
+        // e.g. object context may want to unwrap after eval
+        if constexpr (is_context_v<context_t>) {
+            return context.eval(output,view);
+        } else if constexpr (meta::is_either_v<view_t>) {
             using left_t   = meta::get_either_left_t<view_t>;
             using right_t  = meta::get_either_right_t<view_t>;
             // deduce return type for each type
