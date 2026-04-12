@@ -1,6 +1,7 @@
 #include "nmtools/array/prod.hpp"
 #include "nmtools/core/eval.hpp"
 #include "nmtools/meta.hpp"
+#include "nmtools/context/default.hpp"
 #include "nmtools/testing/doctest.hpp"
 
 namespace nm = nmtools;

@@ -1,8 +1,9 @@
 #include "nmtools/core/transform/linearize.hpp"
 #include "nmtools/utility/ct_digraph.hpp"
 #include "nmtools/array/batch_norm.hpp"
-#include "nmtools/testing/doctest.hpp"
 #include "nmtools/array/random.hpp"
+#include "nmtools/context/default.hpp"
+#include "nmtools/testing/doctest.hpp"
 
 namespace nm = nmtools;
 namespace fn = nmtools::functional;

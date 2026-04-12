@@ -21,6 +21,7 @@
 #include "nmtools/array/matmul.hpp"
 #include "nmtools/array/softmax.hpp"
 #include "nmtools/array/random.hpp"
+#include "nmtools/context/default.hpp"
 #include "nmtools/array/stddev.hpp"
 #include "nmtools/array/batch_norm.hpp"
 #include "nmtools/array/group_norm.hpp"
