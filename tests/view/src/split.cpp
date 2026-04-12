@@ -18,6 +18,7 @@ inline auto name##_ls_db = nmtools::cast(name, nmtools::kind::ndarray_ls_db);
 #endif
 
 #include "nmtools/array/split.hpp"
+#include "nmtools/context/default.hpp"
 #include "nmtools/testing/doctest.hpp"
 
 #include "nmtools/testing/data/array/split.hpp"
