@@ -315,6 +315,8 @@ namespace nmtools::meta
                 (is_constant_shape_a || is_clipped_index_array_v<ashape_t>)
                 && (is_constant_shape_b || is_clipped_index_array_v<bshape_t>)
             ) {
+                // TODO: support shape inference for mixed index array
+                // may need to return as maybe
                 constexpr auto ashape = to_value_v<ashape_t>;
                 constexpr auto bshape = to_value_v<bshape_t>;
                 constexpr auto broadcasted = index::broadcast_shape(ashape,bshape);
@@ -366,7 +368,11 @@ namespace nmtools::meta
 
                 if constexpr ((len_a > 0) && (len_b > 0)) {
                     using type [[maybe_unused]] = nmtools_array<index_t,(len_a > len_b ? len_a : len_b)>;
-                    if constexpr (!is_fail_v<decltype(c_value_a)> && (len_a >= len_b)) {
+                    // mixed index arrays (e.g., tuple<int, ct<1024>>) cannot be used in constexpr context
+                    // because to_value_v returns runtime-initialized array with nullable_num elements
+                    if constexpr (!is_fail_v<decltype(c_value_a)> && (len_a >= len_b)
+                        && !is_mixed_index_array_v<ashape_t>
+                    ) {
                         return meta::template_reduce<len_a>([&](auto init, auto index){
                             using init_type = type_t<decltype(init)>;
                             constexpr auto I = at(c_value_a,index);
@@ -378,7 +384,9 @@ namespace nmtools::meta
                                 return as_value_v<type>;
                             }
                         }, as_value_v<nmtools_tuple<>>);
-                    } else if constexpr (!is_fail_v<decltype(c_value_b)> && (len_b >= len_a)) {
+                    } else if constexpr (!is_fail_v<decltype(c_value_b)> && (len_b >= len_a)
+                        && !is_mixed_index_array_v<bshape_t>
+                    ) {
                         return meta::template_reduce<len_b>([&](auto init, auto index){
                             using init_type = type_t<decltype(init)>;
                             constexpr auto I = at(c_value_b,index);

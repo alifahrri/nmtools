@@ -306,7 +306,7 @@ namespace nmtools::tilekit::vector
             const auto dim = len(src_indices);
             auto valid = true;
             for (nm_size_t j=0; (j<dim) && valid; j++) {
-                valid = valid && ((at(src_indices,j) + at(tile_shape,j)) < at(src_shape,j));
+                valid = valid && ((nm_size_t)(at(src_indices,j) + at(tile_shape,j)) < (nm_size_t)at(src_shape,j));
             }
             if (valid) {
                 vectorized_load();
@@ -370,7 +370,7 @@ namespace nmtools::tilekit::vector
             const auto dim = len(src_indices);
             auto valid = true;
             for (nm_size_t j=0; (j<dim) && valid; j++) {
-                valid = valid && ((at(src_indices,j) + at(tile_shape,j)) < at(output_shape,j));
+                valid = valid && ((nm_size_t)(at(src_indices,j) + at(tile_shape,j)) < (nm_size_t)at(output_shape,j));
             }
             if (valid) {
                 vectorized_store();

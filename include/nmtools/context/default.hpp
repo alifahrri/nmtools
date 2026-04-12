@@ -24,6 +24,8 @@ namespace nmtools
             (!broadcast_enable ? object_enable : true)
         );
 
+        static constexpr auto broadcasting = broadcast_enable;
+
         // NOTE: actually unused
         // TODO: remove resolver when evalv2 is finalized
         using resolver_type = object_eval_resolver_t<>;
@@ -223,7 +225,7 @@ namespace nmtools
             } else {
                 auto shape = nmtools::shape<true>(unwrap(view));
                 auto size  = nmtools::size<true>(unwrap(view));
-                using T = get_element_type_t<view_t>;
+                using T = get_element_type_t<remove_cvref_t<decltype(unwrap(view))>>;
 
                 auto result = create(dtype_t<T>{},shape,size);
                 eval(result,unwrap(view));

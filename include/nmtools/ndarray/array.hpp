@@ -418,7 +418,7 @@ namespace nmtools
             if constexpr (meta::is_resizable_v<buffer_type>) {
                 auto numel = index::product(shape_);
                 // shape may be fixed while data is resizable
-                if (len(data_) != numel) {
+                if ((nm_size_t)len(data_) != (nm_size_t)numel) {
                     data_.resize(numel);
                 }
             }
@@ -1417,8 +1417,9 @@ namespace nmtools
             return nmtools::zeros_like(nmtools::forward<args_t>(args)...);
         }
 
+        // use broadcasting object context
         template <
-            typename context_t=none_t
+            typename context_t=default_context_t<true,true>
             , typename shape_t
             , typename dtype_t>
         static constexpr auto zeros(const shape_t& shape, dtype_t dtype,
@@ -1430,10 +1431,11 @@ namespace nmtools
                 , None);
         } // zeros
 
+        // use broadcasting object context
         template <
             typename array_t
             , typename dst_shape_t=none_t
-            , typename context_t=none_t
+            , typename context_t=default_context_t<true,true>
             , enable_if_t<is_none_v<dst_shape_t> || is_index_array_v<dst_shape_t>,int> = 0>
         constexpr auto operator()(const array_t& array, const dst_shape_t& dst_shape=dst_shape_t{}, context_t&& context=context_t{}) const
         {
