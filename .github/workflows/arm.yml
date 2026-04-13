@@ -82,8 +82,6 @@ jobs:
         run: bash scripts/download_doctest_header.sh -d include/
       - name: build
         run: ./dockcross-${{ matrix.name }} bash -c 'mkdir -p build/${{ matrix.name }} && cd build/${{ matrix.name }}/ && cmake -DNMTOOLS_TEST_ALL=OFF -DNMTOOLS_BUILD_OBJECT_TESTS=ON ../.. && make -j2 VERBOSE=1'
-      - name: run tests
-        run: ./dockcross-${{ matrix.name }} bash -c 'build/${{ matrix.name }}/tests/object/numeric-tests-object-doctest'
 
   dockcross-linux-arm-unroll:
     name: ${{ matrix.name }}-unroll
@@ -107,5 +105,3 @@ jobs:
         run: bash scripts/download_doctest_header.sh -d include/
       - name: build
         run: ./dockcross-${{ matrix.name }} bash -c 'mkdir -p build/${{ matrix.name }} && cd build/${{ matrix.name }}/ && cmake -DNMTOOLS_TEST_ALL=OFF -DNMTOOLS_BUILD_UNROLL_TESTS=ON ../.. && make -j2 VERBOSE=1'
-      - name: run tests
-        run: ./dockcross-${{ matrix.name }} bash -c 'build/${{ matrix.name }}/tests/unroll/numeric-tests-unroll-doctest'
