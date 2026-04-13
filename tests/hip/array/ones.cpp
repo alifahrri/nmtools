@@ -1,6 +1,7 @@
 #include "nmtools/array/ones.hpp"
 #include "nmtools/testing/data/array/ones.hpp"
 #include "nmtools/evaluator/hip.hpp"
+#include "nmtools/context/default.hpp"
 #include "nmtools/testing/doctest.hpp"
 
 namespace nm = nmtools;

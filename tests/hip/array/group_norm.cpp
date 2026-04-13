@@ -2,6 +2,7 @@
 #include "nmtools/array/group_norm.hpp"
 #include "nmtools/array/random.hpp"
 #include "nmtools/testing/data/array/group_norm.hpp"
+#include "nmtools/context/default.hpp"
 #include "nmtools/testing/doctest.hpp"
 
 namespace nm = nmtools;

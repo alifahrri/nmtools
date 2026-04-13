@@ -2,6 +2,7 @@
 #include "nmtools/array/bilinear.hpp"
 #include "nmtools/array/random.hpp"
 #include "nmtools/core/transform/linearize.hpp"
+#include "nmtools/context/default.hpp"
 #include "nmtools/testing/doctest.hpp"
 
 namespace nm = nmtools;
