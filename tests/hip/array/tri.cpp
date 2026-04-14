@@ -1,5 +1,5 @@
 #include "nmtools/array/tri.hpp"
-#include "nmtools/evaluator/hip.hpp"
+#include "nmtools/context/hip.hpp"
 #include "nmtools/testing/data/array/tri.hpp"
 #include "nmtools/context/default.hpp"
 #include "nmtools/testing/doctest.hpp"

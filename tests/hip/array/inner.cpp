@@ -1,5 +1,5 @@
 #include "nmtools/array/inner.hpp"
-#include "nmtools/evaluator/hip.hpp"
+#include "nmtools/context/hip.hpp"
 #include "nmtools/array/random.hpp"
 #include "nmtools/testing/data/array/inner.hpp"
 #include "nmtools/context/default.hpp"

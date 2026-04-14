@@ -1,7 +1,7 @@
 #include "nmtools/array/mean.hpp"
 #include "nmtools/array/arange.hpp"
 #include "nmtools/array/reshape.hpp"
-#include "nmtools/evaluator/hip.hpp"
+#include "nmtools/context/hip.hpp"
 #include "nmtools/context/default.hpp"
 #include "nmtools/testing/doctest.hpp"
 

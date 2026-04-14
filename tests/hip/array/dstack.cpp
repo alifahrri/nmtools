@@ -1,5 +1,5 @@
 #include "nmtools/array/dstack.hpp"
-#include "nmtools/evaluator/hip.hpp"
+#include "nmtools/context/hip.hpp"
 #include "nmtools/array/random.hpp"
 #include "nmtools/testing/data/array/dstack.hpp"
 #include "nmtools/context/default.hpp"

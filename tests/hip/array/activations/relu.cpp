@@ -16,9 +16,8 @@ inline auto name##_ls_hb = nmtools::cast(name, nmtools::kind::ndarray_ls_hb); \
 inline auto name##_ls_db = nmtools::cast(name, nmtools::kind::ndarray_ls_db);
 
 #include "nmtools/array/relu.hpp"
-#include "nmtools/context/default.hpp"
+#include "nmtools/context/hip.hpp"
 #include "nmtools/testing/doctest.hpp"
-#include "nmtools/evaluator/hip.hpp"
 #include "nmtools/testing/data/array/relu.hpp"
 
 namespace nm = nmtools;
@@ -38,6 +37,8 @@ SUBCASE(#case_name) \
 
 TEST_CASE("relu(case1)" * doctest::test_suite("array::relu"))
 {
+    static_assert( nmtools::is_shared_ptr_v<decltype(hip::default_context())> );
+    static_assert( nmtools::is_context_ptr_v<decltype(hip::default_context())> );
     // RELU_SUBCASE(case1, a);
     // RELU_SUBCASE(case1, a_a);
     // RELU_SUBCASE(case1, a_f);

@@ -18,7 +18,7 @@ inline auto name##_ls_db = nmtools::cast(name, nmtools::kind::ndarray_ls_db);
 #endif
 
 #include "nmtools/array/triu.hpp"
-#include "nmtools/evaluator/hip.hpp"
+#include "nmtools/context/hip.hpp"
 #include "nmtools/testing/data/array/triu.hpp"
 #include "nmtools/context/default.hpp"
 #include "nmtools/testing/doctest.hpp"
