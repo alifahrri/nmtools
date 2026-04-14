@@ -215,12 +215,12 @@ namespace nmtools::view
             [[maybe_unused]] constexpr auto B_DIM = meta::bounded_dim_v<array_t>;
             // type for slicing is DIMx2 where 2 represent start and stop
             constexpr auto slices_vtype = [&](){
-                using slice_type = nmtools_array<size_t,2>;
+                using slice_type = nmtools_array<nm_size_t,2>;
                 if constexpr (!meta::is_fail_v<decltype(DIM)>) {
-                    using slices_type = nmtools_array<slice_type,(size_t)DIM>;
+                    using slices_type = nmtools_array<slice_type,(nm_size_t)DIM>;
                     return meta::as_value_v<slices_type>;
                 } else if constexpr (!meta::is_fail_v<decltype(B_DIM)>) {
-                    using slices_type = static_vector<slice_type,(size_t)B_DIM>;
+                    using slices_type = static_vector<slice_type,(nm_size_t)B_DIM>;
                     return meta::as_value_v<slices_type>;
                 } else {
                     using slices_type = nmtools_list<slice_type>;
@@ -235,13 +235,13 @@ namespace nmtools::view
             if constexpr (meta::is_resizable_v<slices_type>) {
                 slices.resize(dim);
             }
-            for (size_t i=0; i<dim; i++) {
+            for (nm_size_t i=0; i<dim; i++) {
                 // index at axis i
                 auto s = at(indices_,i);
-                using common_t = meta::promote_index_t<decltype(axis),size_t>;
+                using common_t = meta::promote_index_t<decltype(axis),nm_size_t>;
                 auto start = (common_t)i==(common_t)axis ? 0 : s;
                 auto stop  = s + 1;
-                at(slices,i) = {start,stop};
+                at(slices,i) = {(nm_size_t)start,(nm_size_t)stop};
             }
             auto sliced = [&](){
                 if constexpr (meta::is_pointer_v<array_type>) {

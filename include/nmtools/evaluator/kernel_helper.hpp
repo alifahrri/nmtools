@@ -180,7 +180,7 @@ namespace nmtools
         } else {
             auto size = nmtools::size(output);
             auto idx = compute_offset(thread_id,block_id,block_size);
-            if (idx < size) {
+            if ((nm_size_t)idx < (nm_size_t)size) {
                 auto flat_lhs = unwrap(view::mutable_flatten(output));
                 auto flat_rhs = unwrap(view::flatten(result));
                 const auto rhs = flat_rhs(idx);

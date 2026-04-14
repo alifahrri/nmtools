@@ -4,7 +4,9 @@
 #include "nmtools/exception.hpp"
 #include "nmtools/meta.hpp"
 #include "nmtools/core/functor.hpp"
+#include "nmtools/core/context.hpp"
 #include "nmtools/core/transform/linearize.hpp"
+#include "nmtools/context/default.hpp"
 #include "nmtools/evaluator/kernel_helper.hpp"
 #include "nmtools/utility/tuple_cat.hpp"
 
@@ -102,8 +104,19 @@ namespace nmtools::hip
     template <typename T>
     using device_mem_ptr = std::shared_ptr<T>;
 
-    struct context_t
+    struct context_t : base_context_t<context_t>
     {
+        using base_type = base_context_t<context_t>;
+
+        static constexpr auto object_enable    = false;
+        static constexpr auto broadcast_enable = true;
+        static constexpr auto unroll_enable    = false;
+        // NOTE: actually unused
+        // TODO: remove resolver when evalv2 is finalized
+        using resolver_type = object_eval_resolver_t<>;
+        template <typename... args_t>
+        using layout_t = row_major_offset_t<args_t...>;
+
         // TODO: use hip stream?
         context_t([[maybe_unused]] size_t gpu_id=0) {}
 
@@ -363,6 +376,56 @@ namespace nmtools::hip
             #endif
         }
 
+        template <typename buffer_t, typename shape_t>
+        constexpr auto create(as_value<buffer_t>, as_value<shape_t>) const noexcept
+        {
+            static_assert( is_constant_index_array_v<shape_t> || !unroll_enable );
+
+            using result_t = conditional_t<object_enable
+                , object_t<buffer_t,shape_t,resolve_stride_type_t,layout_t,resolver_type,context_t,broadcast_enable>
+                , ndarray_t<buffer_t,shape_t,resolve_stride_type_t,layout_t>
+            >;
+
+            auto result = result_t {};
+            return result;
+        }
+
+        template <typename buffer_t, typename shape_t>
+        constexpr auto create(as_value<buffer_t>, const shape_t& shape) const
+        {
+            static_assert( is_constant_index_array_v<shape_t> || !unroll_enable );
+
+            using result_t = conditional_t<object_enable
+                , object_t<buffer_t,shape_t,resolve_stride_type_t,layout_t,resolver_type,context_t,broadcast_enable>
+                , ndarray_t<buffer_t,shape_t,resolve_stride_type_t,layout_t>
+            >;
+
+            auto result = result_t {};
+            if constexpr (!is_constant_index_array_v<shape_t>) {
+                result.resize(shape);
+            }
+            return result;
+        }
+
+        template <typename T, typename shape_t, typename m_size_t=none_t>
+        constexpr auto create(dtype_t<T> dtype
+            , const shape_t& shape
+            , [[maybe_unused]] const m_size_t size=m_size_t{}) const
+        {
+            if constexpr (is_none_v<shape_t>) {
+                return T{0};
+            } else {
+                auto buffer_vtype = base_type::get_buffer_vtype(dtype,shape,size);
+                return create(buffer_vtype, shape);
+            }
+        }
+
+        template <typename view_t>
+        constexpr auto eval(none_t, const view_t& view)
+        {
+            return this->eval(view);
+        }
+
         template <typename view_t>
         auto eval(const view_t& view)
         {
@@ -371,12 +434,10 @@ namespace nmtools::hip
             auto function = functional::get_function(graph);
             auto functor  = function.functor;
 
-            using result_t = meta::resolve_optype_t<eval_result_t<>,view_t,none_t>;
-            auto result    = result_t{};
-
-            if constexpr (meta::is_resizable_v<result_t>) {
-                result.resize(unwrap(shape(view)));
-            }
+            auto shape = nmtools::shape<true>(unwrap(view));
+            auto size  = nmtools::size<true>(unwrap(view));
+            using T = get_element_type_t<remove_cvref_t<decltype(unwrap(view))>>;
+            auto result = create(dtype_t<T>{},shape,size);
             this->run(functor,result,operands);
 
             return result;

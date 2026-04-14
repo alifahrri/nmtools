@@ -98,21 +98,8 @@ namespace nmtools
 namespace nmtools::meta
 {
     template <typename T>
-    struct is_context : is_base_of<base_context_t<T>,T> {};
-
-    template <typename T>
-    struct is_context<const T> : is_context<T> {};
-
-    template <typename T>
-    struct is_context<T&> : is_context<T> {};
-
-    template <typename T>
-    constexpr inline auto is_context_v = is_context<T>::value;
-}
-
-namespace nmtools
-{
-    using meta::is_context_v;
+    struct is_context<T,enable_if_t<is_base_of_v<base_context_t<T>,T>>>
+        : true_type {};
 }
 
 #endif // NMTOOLS_CORE_CONTEXT_HPP

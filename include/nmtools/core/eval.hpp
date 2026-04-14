@@ -227,6 +227,8 @@ namespace nmtools
         // e.g. object context may want to unwrap after eval
         if constexpr (is_context_v<context_t>) {
             return context.eval(output,view);
+        } else if constexpr (is_context_ptr_v<context_t>) {
+            return context->eval(output,view);
         } else if constexpr (meta::is_either_v<view_t>) {
             using left_t   = meta::get_either_left_t<view_t>;
             using right_t  = meta::get_either_right_t<view_t>;
