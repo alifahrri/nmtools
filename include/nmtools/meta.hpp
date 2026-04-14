@@ -232,4 +232,18 @@ namespace nmtools::meta
     };
 }
 
+// put here to support no-stl config
+#if __has_include(<memory>)
+
+#include <memory>
+
+namespace nmtools::meta
+{
+    template <typename T>
+    struct is_shared_ptr<::std::shared_ptr<T>>
+        : true_type {};
+}
+
+#endif // <memory>
+
 #endif // NMTOOLS_META_HPP
