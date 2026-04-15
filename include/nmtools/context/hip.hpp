@@ -7,7 +7,7 @@
 #include "nmtools/core/context.hpp"
 #include "nmtools/core/transform/linearize.hpp"
 #include "nmtools/context/default.hpp"
-#include "nmtools/evaluator/kernel_helper.hpp"
+#include "nmtools/context/gpu.hpp"
 #include "nmtools/utility/tuple_cat.hpp"
 
 #include <hip/hip_runtime.h>
@@ -58,25 +58,6 @@ namespace nmtools
 
 namespace nmtools::hip
 {
-    // TODO: move to nmtools::meta namespace
-    namespace helper
-    {
-        template <typename T>
-        struct is_shared_ptr : meta::false_type {};
-
-        template <typename T>
-        struct is_shared_ptr<std::shared_ptr<T>> : meta::true_type {};
-
-        template <typename T>
-        struct is_shared_ptr<const T> : is_shared_ptr<T> {};
-
-        template <typename T>
-        struct is_shared_ptr<T&> : is_shared_ptr<T> {};
-
-        template <typename T>
-        constexpr inline auto is_shared_ptr_v = is_shared_ptr<T>::value;
-    }
-
     template <typename T>
     struct buffer_deleter_t
     {
@@ -104,9 +85,19 @@ namespace nmtools::hip
     template <typename T>
     using device_mem_ptr = std::shared_ptr<T>;
 
-    struct context_t : base_context_t<context_t>
+    struct context_t
+        : base_context_t<context_t>
+        , gpu_base_context_t<context_t>
+        , default_context_t<true,false,false,row_major_offset_t>
     {
-        using base_type = base_context_t<context_t>;
+        using base_type     = base_context_t<context_t>;
+        using gpu_base_type = gpu_base_context_t<context_t>;
+        using default_type  = default_context_t<true,false,false,row_major_offset_t>;
+
+        using default_type::create;
+        using gpu_base_type::create_buffer;
+        using gpu_base_type::run;
+        using gpu_base_type::eval;
 
         static constexpr auto object_enable    = false;
         static constexpr auto broadcast_enable = true;
@@ -148,29 +139,6 @@ namespace nmtools::hip
             }
             auto device_ptr = device_mem_ptr<T>(device_raw_ptr,buffer_deleter_t<T>());
             return device_ptr;
-        }
-
-        template <typename array_t>
-        auto create_buffer(const array_t& array)
-        {
-            static_assert((
-                meta::is_ndarray_v<array_t>
-                || meta::is_num_v<array_t>
-                || meta::is_constant_index_array_v<array_t>
-                ) &&
-                !meta::is_view_v<array_t>
-                , "unsupported array type for create_buffer"
-            );
-            if constexpr (meta::is_ndarray_v<array_t>) {
-                auto data_ptr = nmtools::data(array);
-                auto numel    = nmtools::size(array);
-                return create_buffer(data_ptr,numel);
-            } else if constexpr (meta::is_constant_index_array_v<array_t>) {
-                constexpr auto value = meta::to_value_v<array_t>;
-                return create_buffer(value);
-            } else {
-                return create_buffer(&array,1);
-            }
         }
 
         template <typename array_t>
@@ -253,7 +221,7 @@ namespace nmtools::hip
         template <typename arg_t>
         static auto get_(arg_t arg)
         {
-            if constexpr (helper::is_shared_ptr_v<arg_t>) {
+            if constexpr (is_shared_ptr_v<arg_t>) {
                 return arg.get();
             } else {
                 return arg;
@@ -301,146 +269,6 @@ namespace nmtools::hip
             }
 
             this->copy_buffer(output_buffer,output);
-        }
-
-        template <typename F, typename operands_t, typename attributes_t>
-        auto map_to_device(const functional::functor_t<F,operands_t,attributes_t>& f)
-        {
-            if constexpr (meta::is_same_v<attributes_t,meta::empty_attributes_t>) {
-                return f;
-            } else {
-                static_assert( meta::len_v<operands_t> == 0 );
-                constexpr auto N = meta::len_v<attributes_t>;
-                auto attributes  = meta::template_reduce<N>([&](auto init, auto I){
-                    auto attribute = as_static(at(f.attributes,I));
-                    return utility::tuple_append(init,attribute);
-                }, nmtools_tuple{});
-                return functional::functor_t<F,operands_t,decltype(attributes)>{
-                    {f.fmap, f.operands, attributes}
-                };
-            }
-        } // map_to_device
-
-        template <template<typename...>typename tuple, typename...functors_t, typename operands_t>
-        auto map_to_device(const functional::functor_composition_t<tuple<functors_t...>,operands_t>& f)
-        {
-            static_assert( meta::len_v<operands_t> == 0 );
-            auto functors = meta::template_reduce<sizeof...(functors_t)>([&](auto init, auto I){
-                auto functor = map_to_device(at(f.functors,I));
-                return utility::tuple_append(init,functor);
-            }, nmtools_tuple{});
-            return functional::functor_composition_t<decltype(functors)>{functors};
-        } // map_to_device
-
-        template <typename function_t, typename output_array_t, template<typename...>typename tuple, typename...operands_t>
-        auto run(const function_t& f, output_array_t& output, const tuple<operands_t...>& operands)
-        {
-            #if 0
-            auto args_pack = [&](){
-                if constexpr (meta::is_tuple_v<arg0_t>) {
-                    static_assert( sizeof...(args_t) == 0, "nmtools error" );
-                    return static_cast<const arg0_t&>(arg0);
-                } else {
-                    return nmtools_tuple<const arg0_t&, const args_t&...>{arg0, args...};
-                }
-            }();
-            constexpr auto N = meta::len_v<decltype(args_pack)>;
-            auto gpu_args_pack = meta::template_reduce<N>([&](auto init, auto index){
-                const auto& arg_i = nmtools::get<index>(args_pack);
-                if constexpr (meta::is_num_v<decltype(arg_i)>) {
-                    return utility::tuple_append(init,arg_i);
-                } else {
-                    auto device_array = create_array(*arg_i);
-                    return utility::tuple_append(init,device_array);
-                }
-            }, nmtools_tuple{});
-
-            using sequence_t = meta::make_index_sequence<meta::len_v<decltype(gpu_args_pack)>>;
-            this->run_(output,f,gpu_args_pack,sequence_t{});
-            #else
-            constexpr auto N = sizeof...(operands_t);
-            auto device_operands = meta::template_reduce<N>([&](auto init, auto index){
-                const auto& arg_i = nmtools::at(operands,index);
-                if constexpr (meta::is_num_v<decltype(arg_i)>) {
-                    return utility::tuple_append(init,arg_i);
-                } else {
-                    auto device_array = create_array(*arg_i);
-                    return utility::tuple_append(init,device_array);
-                }
-            }, nmtools_tuple{});
-
-            // e.g. to convert dynamic allocation to static vector to run on device kernels
-            auto fn = map_to_device(f);
-            using sequence_t = meta::make_index_sequence<meta::len_v<decltype(device_operands)>>;
-            this->run_(output,fn,device_operands,sequence_t{});
-            #endif
-        }
-
-        template <typename buffer_t, typename shape_t>
-        constexpr auto create(as_value<buffer_t>, as_value<shape_t>) const noexcept
-        {
-            static_assert( is_constant_index_array_v<shape_t> || !unroll_enable );
-
-            using result_t = conditional_t<object_enable
-                , object_t<buffer_t,shape_t,resolve_stride_type_t,layout_t,resolver_type,context_t,broadcast_enable>
-                , ndarray_t<buffer_t,shape_t,resolve_stride_type_t,layout_t>
-            >;
-
-            auto result = result_t {};
-            return result;
-        }
-
-        template <typename buffer_t, typename shape_t>
-        constexpr auto create(as_value<buffer_t>, const shape_t& shape) const
-        {
-            static_assert( is_constant_index_array_v<shape_t> || !unroll_enable );
-
-            using result_t = conditional_t<object_enable
-                , object_t<buffer_t,shape_t,resolve_stride_type_t,layout_t,resolver_type,context_t,broadcast_enable>
-                , ndarray_t<buffer_t,shape_t,resolve_stride_type_t,layout_t>
-            >;
-
-            auto result = result_t {};
-            if constexpr (!is_constant_index_array_v<shape_t>) {
-                result.resize(shape);
-            }
-            return result;
-        }
-
-        template <typename T, typename shape_t, typename m_size_t=none_t>
-        constexpr auto create(dtype_t<T> dtype
-            , const shape_t& shape
-            , [[maybe_unused]] const m_size_t size=m_size_t{}) const
-        {
-            if constexpr (is_none_v<shape_t>) {
-                return T{0};
-            } else {
-                auto buffer_vtype = base_type::get_buffer_vtype(dtype,shape,size);
-                return create(buffer_vtype, shape);
-            }
-        }
-
-        template <typename view_t>
-        constexpr auto eval(none_t, const view_t& view)
-        {
-            return this->eval(view);
-        }
-
-        template <typename view_t>
-        auto eval(const view_t& view)
-        {
-            auto graph = functional::linearize(functional::get_compute_graph(unwrap(view)));
-            auto operands = functional::get_operands(graph);
-            auto function = functional::get_function(graph);
-            auto functor  = function.functor;
-
-            auto shape = nmtools::shape<true>(unwrap(view));
-            auto size  = nmtools::size<true>(unwrap(view));
-            using T = get_element_type_t<remove_cvref_t<decltype(unwrap(view))>>;
-            auto result = create(dtype_t<T>{},shape,size);
-            this->run(functor,result,operands);
-
-            return result;
         }
     };
     
