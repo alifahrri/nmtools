@@ -33,3 +33,4 @@ amdgpu-*
 *.svg
 *.old
 *.perf
+*.json
