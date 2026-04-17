@@ -1,5 +1,5 @@
 #include "nmtools/array/full_like.hpp"
-#include "nmtools/evaluator/sycl.hpp"
+#include "nmtools/context/sycl.hpp"
 #include "nmtools/testing/data/array/full_like.hpp"
 #include "nmtools/testing/doctest.hpp"
 

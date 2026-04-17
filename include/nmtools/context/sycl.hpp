@@ -6,6 +6,8 @@
 #include "nmtools/core/functor.hpp"
 #include "nmtools/core/transform/linearize.hpp"
 #include "nmtools/context/kernel.hpp"
+#include "nmtools/context/default.hpp"
+#include "nmtools/context/gpu.hpp"
 #include "nmtools/exception.hpp"
 #include "nmtools/utility/to_string.hpp"
 #include "nmtools/utility/as_static.hpp"
@@ -327,9 +329,30 @@ namespace nmtools::sycl
     using host_mem_ptr = std::shared_ptr<T>;
 
     struct context_t
+        : base_context_t<context_t>
+        , gpu_base_context_t<context_t>
+        , default_context_t<true,false,false,row_major_offset_t>
     {
         using queue_t  = ::sycl::queue;
         using device_t = ::sycl::device;
+
+        using base_type     = base_context_t<context_t>;
+        using gpu_base_type = gpu_base_context_t<context_t>;
+        using default_type  = default_context_t<true,false,false,row_major_offset_t>;
+
+        using default_type::create;
+        using gpu_base_type::create_buffer;
+        using gpu_base_type::run;
+        using gpu_base_type::eval;
+
+        static constexpr auto object_enable    = false;
+        static constexpr auto broadcast_enable = true;
+        static constexpr auto unroll_enable    = false;
+        // NOTE: actually unused
+        // TODO: remove resolver when evalv2 is finalized
+        using resolver_type = object_eval_resolver_t<>;
+        template <typename... args_t>
+        using layout_t = row_major_offset_t<args_t...>;
 
         // TODO: share same queue for same context (?)
         // std::shared_ptr<queue_t> queue;
@@ -427,11 +450,11 @@ namespace nmtools::sycl
             auto flat_array    = unwrap(view::mutable_flatten(array));
             auto size = nmtools::size(flat_array);
             auto accessor_size = host_accessor.size();
-            if (size != accessor_size) {
+            if ((nm_size_t)size != (nm_size_t)accessor_size) {
                 throw sycl_exception(std::string("unexpected size mismatch output: ") + std::to_string(size) + "; accessor: " + std::to_string(accessor_size));
             }
             // TODO: memcpy?
-            for (size_t i=0; i<size; i++) {
+            for (nm_size_t i=0; i<(nm_size_t)size; i++) {
                 at(flat_array,i) = host_accessor[i];
             }
         }
@@ -521,72 +544,6 @@ namespace nmtools::sycl
             // TODO: support async
             queue->wait_and_throw();
             this->copy_buffer(output_buffer,output);
-        }
-
-        template <typename F, typename operands_t, typename attributes_t>
-        auto map_to_device(const functional::functor_t<F,operands_t,attributes_t>& f)
-        {
-            static_assert( meta::len_v<operands_t> == 0 );
-            if constexpr (meta::is_same_v<attributes_t,meta::empty_attributes_t>) {
-                return f;
-            } else {
-                constexpr auto N = meta::len_v<attributes_t>;
-                auto attributes  = meta::template_reduce<N>([&](auto init, auto I){
-                    return utility::tuple_append(init,as_static(at(f.attributes,I)));
-                }, nmtools_tuple{});
-                return functional::functor_t<F,operands_t,decltype(attributes)>{{
-                    f.fmap, f.operands, attributes
-                }};
-            }
-        } // map_to_device
-
-        template <template<typename...>typename tuple, typename...functors_t, typename operands_t>
-        auto map_to_device(const functional::functor_composition_t<tuple<functors_t...>,operands_t>& f)
-        {
-            static_assert( meta::len_v<operands_t> == 0 );
-            auto functors = meta::template_reduce<sizeof...(functors_t)>([&](auto init, auto I){
-                return utility::tuple_append(init,map_to_device(at(f.functors,I)));
-            }, nmtools_tuple{});
-            return functional::functor_composition_t<decltype(functors)>{functors};
-        } // map_to_device
-
-        template <typename function_t, typename output_array_t, template<typename...>typename tuple, typename...operands_t>
-        auto run(const function_t& f, output_array_t& output, const tuple<operands_t...>& operands)
-        {
-            constexpr auto N = sizeof...(operands_t);
-            auto device_operands = meta::template_reduce<N>([&](auto init, auto index){
-                const auto& arg_i = nmtools::at(operands,index);
-                if constexpr (meta::is_num_v<decltype(arg_i)>) {
-                    return utility::tuple_append(init,arg_i);
-                } else {
-                    auto device_array = create_array(*arg_i);
-                    return utility::tuple_append(init,device_array);
-                }
-            }, nmtools_tuple{});
-
-            // e.g. to convert dynamic allocation to static vector to run on device kernels
-            auto fn = map_to_device(f);
-            using sequence_t = meta::make_index_sequence<meta::len_v<decltype(device_operands)>>;
-            this->run_(output,fn,device_operands,sequence_t{});
-        }
-
-        template <typename view_t>
-        auto eval(const view_t& view)
-        {
-            auto graph = functional::linearize(functional::get_compute_graph(unwrap(view)));
-            auto operands = functional::get_operands(graph);
-            auto function = functional::get_function(graph);
-            auto functor  = function.functor;
-
-            using result_t = meta::resolve_optype_t<eval_result_t<>,view_t,none_t>;
-            auto result    = result_t{};
-
-            if constexpr (meta::is_resizable_v<result_t>) {
-                result.resize(unwrap(shape(view)));
-            }
-            this->run(functor,result,operands);
-
-            return result;
         }
     };
 } // namespace nmtools::sycl
@@ -804,7 +761,7 @@ namespace nmtools::utils::impl
         auto operator()(const ::sycl::range<N>& range) const noexcept
         {
             nmtools_string str;
-            for (size_t i=0; i<N; i++) {
+            for (nm_size_t i=0; i<(nm_size_t)N; i++) {
                 str += to_string(range[i]);
                 if (i<(N-1)) {
                     str += ", ";

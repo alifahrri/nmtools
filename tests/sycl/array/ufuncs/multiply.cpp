@@ -17,7 +17,7 @@ inline auto name##_ls_db = nmtools::cast(name, nmtools::kind::ndarray_ls_db);
 
 #include "nmtools/array/ufuncs/multiply.hpp"
 #include "nmtools/testing/doctest.hpp"
-#include "nmtools/evaluator/sycl.hpp"
+#include "nmtools/context/sycl.hpp"
 #include "nmtools/testing/data/array/multiply.hpp"
 
 namespace nm = nmtools;
