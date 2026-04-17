@@ -17,7 +17,7 @@ inline auto name##_ls_db = nmtools::cast(name, nmtools::kind::ndarray_ls_db);
 
 #include "nmtools/array/atleast_nd.hpp"
 #include "nmtools/testing/doctest.hpp"
-#include "nmtools/evaluator/cuda.hpp"
+#include "nmtools/context/cuda.hpp"
 #include "nmtools/testing/data/array/atleast_nd.hpp"
 
 namespace nm = nmtools;
