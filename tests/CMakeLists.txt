@@ -188,8 +188,3 @@ if (NMTOOLS_BUILD_UTL_TESTS)
     add_subdirectory(utl/meta)
     add_subdirectory(utl/array)
 endif (NMTOOLS_BUILD_UTL_TESTS)
-
-option(NMTOOLS_BUILD_TESTBENCH "build testbench programs" OFF)
-if (NMTOOLS_BUILD_TESTBENCH)
-    add_subdirectory(testbench)
-endif (NMTOOLS_BUILD_TESTBENCH)

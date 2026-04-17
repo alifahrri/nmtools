@@ -22,21 +22,6 @@ set( META_VIEW_TEST_SOURCES
     array/view/where.cpp
 )
 
-set( META_EVAL_TEST_SOURCES
-    array/eval/arange.cpp
-    array/eval/broadcast_to.cpp
-    array/eval/concatenate.cpp
-    array/eval/full.cpp
-    array/eval/matmul.cpp
-    array/eval/prod.cpp
-    array/eval/reduce.cpp
-    array/eval/repeat.cpp
-    array/eval/take.cpp
-    array/eval/tile.cpp
-    array/eval/ufunc.cpp
-    array/eval/where.cpp
-)
-
 set( META_INDEX_TEST_SOURCES
     array/index/arange.cpp
     array/index/broadcast_shape.cpp
@@ -123,7 +108,6 @@ add_executable(${PROJECT_NAME} tests.cpp
     array/fixed.cpp
     array/hybrid.cpp
     array/error_type.cpp
-    ${META_EVAL_TEST_SOURCES}
     ${META_VIEW_TEST_SOURCES}
     ${META_INDEX_TEST_SOURCES}
     ${META_TRAIT_TEST_SOURCES}
