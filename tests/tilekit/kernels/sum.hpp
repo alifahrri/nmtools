@@ -42,7 +42,6 @@ struct sum_kernel_t
         auto v = nm::view::zeros(acc_shape,dtype);
         static_assert( nm::is_index_array_v<decltype(acc_shape)> );
         static_assert( nm::is_view_v<decltype(v)> );
-        static_assert( !nm::is_void_v<nm::resolve_optype_t<nm::object_eval_resolver_t<>,decltype(v),nm::none_t>> );
 
         for (nm_size_t j=0; j<axis_0_iter; j++) {
             auto accumulator = nm::Array::zeros(tile_shape,dtype,ctx);

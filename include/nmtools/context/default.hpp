@@ -26,10 +26,6 @@ namespace nmtools
 
         static constexpr auto broadcasting = broadcast_enable;
 
-        // NOTE: actually unused
-        // TODO: remove resolver when evalv2 is finalized
-        using resolver_type = object_eval_resolver_t<>;
-
         using base_type = base_context_t<default_context_t<broadcast_enable,object_enable,unroll_enable,layout_t>>;
 
         constexpr auto col_major() const noexcept
@@ -72,7 +68,7 @@ namespace nmtools
             static_assert( is_constant_index_array_v<shape_t> || !unroll_enable );
 
             using result_t = conditional_t<object_enable
-                , object_t<buffer_t,shape_t,resolve_stride_type_t,layout_t,resolver_type,default_context_t,broadcast_enable>
+                , object_t<buffer_t,shape_t,resolve_stride_type_t,layout_t,default_context_t,broadcast_enable>
                 , ndarray_t<buffer_t,shape_t,resolve_stride_type_t,layout_t>
             >;
 
@@ -86,7 +82,7 @@ namespace nmtools
             static_assert( is_constant_index_array_v<shape_t> || !unroll_enable );
 
             using result_t = conditional_t<object_enable
-                , object_t<buffer_t,shape_t,resolve_stride_type_t,layout_t,resolver_type,default_context_t,broadcast_enable>
+                , object_t<buffer_t,shape_t,resolve_stride_type_t,layout_t,default_context_t,broadcast_enable>
                 , ndarray_t<buffer_t,shape_t,resolve_stride_type_t,layout_t>
             >;
 

@@ -59,7 +59,7 @@ namespace nmtools::tilekit
         // TODO: remove type resolver
         static constexpr auto SIZE = index::product(to_value_v<tile_shape_t>);
         using buffer_type   = nmtools_array<element_type,SIZE>;
-        using result_type   = object_t<buffer_type,tile_shape_type,resolve_stride_type_t,row_major_offset_t,object_eval_resolver_t<LayoutKind::RowMajor>,unroll_context_t<false,true>,false>;
+        using result_type   = object_t<buffer_type,tile_shape_type,resolve_stride_type_t,row_major_offset_t,unroll_context_t<false,true>,false>;
 
         template <typename ctx_t, typename result_t, typename src_shape_t, typename offset_t, typename tile_stride_t>
         static auto load(ctx_t

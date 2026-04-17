@@ -348,9 +348,6 @@ namespace nmtools::sycl
         static constexpr auto object_enable    = false;
         static constexpr auto broadcast_enable = true;
         static constexpr auto unroll_enable    = false;
-        // NOTE: actually unused
-        // TODO: remove resolver when evalv2 is finalized
-        using resolver_type = object_eval_resolver_t<>;
         template <typename... args_t>
         using layout_t = row_major_offset_t<args_t...>;
 
