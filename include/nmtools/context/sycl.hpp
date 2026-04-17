@@ -1,11 +1,11 @@
-#ifndef NMTOOLS_ARRAY_EVAL_SYCL_CONTEXT_HPP
-#define NMTOOLS_ARRAY_EVAL_SYCL_CONTEXT_HPP
+#ifndef NMTOOLS_CONTEXT_SYCL_HPP
+#define NMTOOLS_CONTEXT_SYCL_HPP
 
 #include "nmtools/meta.hpp"
 #include "nmtools/ndarray.hpp"
 #include "nmtools/core/functor.hpp"
 #include "nmtools/core/transform/linearize.hpp"
-#include "nmtools/evaluator/kernel_helper.hpp"
+#include "nmtools/context/kernel.hpp"
 #include "nmtools/exception.hpp"
 #include "nmtools/utility/to_string.hpp"
 #include "nmtools/utility/as_static.hpp"
@@ -993,4 +993,4 @@ namespace nmtools::sycl
 #undef PRINT_SYCL_PLATFORM_PROPERTY
 #undef PRINT_SYCL_DEVICE_PROPERTY
 
-#endif // NMTOOLS_ARRAY_EVAL_SYCL_CONTEXT_HPP
+#endif // NMTOOLS_CONTEXT_SYCL_HPP
