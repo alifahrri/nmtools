@@ -107,21 +107,6 @@ if (NMTOOLS_BUILD_CONSTEXPR_TESTS)
     endif ()
 endif (NMTOOLS_BUILD_CONSTEXPR_TESTS)
 
-option(NMTOOLS_BUILD_SIMD_TESTS "build simd test programs" OFF)
-if (NMTOOLS_BUILD_SIMD_TESTS)
-    add_subdirectory(simd)
-endif (NMTOOLS_BUILD_SIMD_TESTS)
-
-option(NMTOOLS_BUILD_VECTOR_TESTS "build vector extension test programs" OFF)
-if (NMTOOLS_BUILD_VECTOR_TESTS)
-    add_subdirectory(vector)
-endif (NMTOOLS_BUILD_VECTOR_TESTS)
-
-option(NMTOOLS_BUILD_SIMDE_TESTS "build simde test programs" OFF)
-if (NMTOOLS_BUILD_SIMDE_TESTS)
-    add_subdirectory(simde)
-endif (NMTOOLS_BUILD_SIMDE_TESTS)
-
 option(NMTOOLS_BUILD_INDEX_TESTS "build index test programs" OFF)
 if (NMTOOLS_BUILD_INDEX_TESTS)
     add_subdirectory(index)
@@ -186,11 +171,6 @@ option(NMTOOLS_BUILD_SYCL_TESTS "build sycl test programs" OFF)
 if (NMTOOLS_BUILD_SYCL_TESTS)
     add_subdirectory(sycl)
 endif (NMTOOLS_BUILD_SYCL_TESTS)
-
-option(NMTOOLS_BUILD_CIRCLE_TESTS "build circle test programs" OFF)
-if (NMTOOLS_BUILD_CIRCLE_TESTS)
-    add_subdirectory(circle)
-endif (NMTOOLS_BUILD_CIRCLE_TESTS)
 
 option(NMTOOLS_BUILD_META_TESTS "build metafunctions test programs" ON)
 if (NMTOOLS_BUILD_META_TESTS)
