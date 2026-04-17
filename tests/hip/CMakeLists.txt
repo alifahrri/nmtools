@@ -144,9 +144,6 @@ set(NMTOOLS_HIP_TEST_SOURCES ${NMTOOLS_HIP_TEST_SOURCES}
     array/cumprod.cpp
     array/mean.cpp
 
-    composition/add_tanh.cpp
-    composition/reduce_add_divide.cpp
-
     array/bilinear.cpp
     array/conv2d.cpp
     array/dot.cpp
