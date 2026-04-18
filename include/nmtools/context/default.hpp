@@ -94,8 +94,9 @@ namespace nmtools
         }
 
         template <typename T, typename shape_t, typename m_size_t=none_t>
-        constexpr auto create(dtype_t<T> dtype
-            , const shape_t& shape
+        constexpr auto create(
+            [[maybe_unused]] dtype_t<T> dtype
+            , [[maybe_unused]] const shape_t& shape
             , [[maybe_unused]] const m_size_t size=m_size_t{}) const
         {
             if constexpr (is_none_v<shape_t>) {

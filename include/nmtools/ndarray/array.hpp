@@ -1119,7 +1119,6 @@ namespace nmtools
 {
     struct Array
     {
-
         template <typename...args_t>
         static constexpr auto arange(args_t&&...args)
         {

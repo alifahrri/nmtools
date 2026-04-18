@@ -144,6 +144,7 @@ namespace nmtools::index::impl
             }
             else if constexpr (is_none_v<bshape_t> && !is_none_v<ashape_t>) {
                 // similar to above case, but ashape is index array instead of bshape
+                [[maybe_unused]]
                 auto adim = len(ashape);
                 if constexpr (meta::is_resizable_v<result_t>)
                     res.resize(adim);
