@@ -152,11 +152,6 @@ if (NMTOOLS_BUILD_VIEW_TESTS)
     add_subdirectory(view)
 endif (NMTOOLS_BUILD_VIEW_TESTS)
 
-option(NMTOOLS_BUILD_OPENCL_TESTS "build opencl test programs" OFF)
-if (NMTOOLS_BUILD_OPENCL_TESTS)
-    add_subdirectory(opencl)
-endif (NMTOOLS_BUILD_OPENCL_TESTS)
-
 option(NMTOOLS_BUILD_CUDA_TESTS "build cuda test programs" OFF)
 if (NMTOOLS_BUILD_CUDA_TESTS)
     add_subdirectory(cuda)
