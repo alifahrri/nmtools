@@ -222,8 +222,9 @@ namespace nmtools
                 auto shape = nmtools::shape<true>(unwrap(view));
                 auto size  = nmtools::size<true>(unwrap(view));
                 using T = get_element_type_t<remove_cvref_t<decltype(unwrap(view))>>;
+                using element_t = conditional_t<is_same_v<T,bool>,nm_bool_t,T>;
 
-                auto result = create(dtype_t<T>{},shape,size);
+                auto result = create(dtype_t<element_t>{},shape,size);
                 eval(result,unwrap(view));
 
                 return result;
