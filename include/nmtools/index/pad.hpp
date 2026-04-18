@@ -23,14 +23,14 @@ namespace nmtools::index
     template <typename shape_t, typename pad_width_t>
     constexpr auto shape_pad(const shape_t& shape_, const pad_width_t& pad_width_)
     {
-        using result_t = meta::resolve_optype_t<shape_pad_t,shape_t,pad_width_t>;
+        using result_t = resolve_optype_t<shape_pad_t,shape_t,pad_width_t>;
         using return_t = nmtools_maybe<result_t>;
 
-        if constexpr (! meta::is_constant_index_array_v<result_t>) {
+        if constexpr (! is_constant_index_array_v<result_t>) {
             // auto ret = return_t {};
 
             auto pad_width = [&](){
-                if constexpr (meta::is_constant_index_array_v<pad_width_t>) {
+                if constexpr (is_constant_index_array_v<pad_width_t>) {
                     return meta::to_value_v<pad_width_t>;
                 } else {
                     // can't just return since may decay raw array to pointer
@@ -39,7 +39,7 @@ namespace nmtools::index
             }();
 
             auto shape = [&](){
-                if constexpr (meta::is_constant_index_array_v<shape_t>) {
+                if constexpr (is_constant_index_array_v<shape_t>) {
                     return meta::to_value_v<shape_t>;
                 } else {
                     return ref(shape_);
@@ -100,7 +100,7 @@ namespace nmtools::index
     constexpr auto pad(const index_t& index, const src_shape_t& src_shape
         , const dst_shape_t& /*dst_shape*/, const pad_width_t& pad_width)
     {
-        using result_t = meta::resolve_optype_t<pad_t,index_t,src_shape_t,dst_shape_t,pad_width_t>;
+        using result_t = resolve_optype_t<pad_t,index_t,src_shape_t,dst_shape_t,pad_width_t>;
         // use maybe type to indicate out of bound index (of src shape)
         using return_t = nmtools_maybe<result_t>;
         using idx_t    = meta::get_index_element_type_t<result_t>;
@@ -108,6 +108,7 @@ namespace nmtools::index
 
         auto res = result_t {};
 
+        [[maybe_unused]]
         auto idx_dim = len(index);
 
         // auto dst_dim = len(dst_shape);

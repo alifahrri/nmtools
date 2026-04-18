@@ -208,7 +208,8 @@ namespace nmtools::index
     struct full_t {};
 
     template <typename dim_t, typename value_t>
-    constexpr auto full(dim_t dim, value_t value)
+    constexpr auto full([[maybe_unused]] dim_t dim
+        , [[maybe_unused]] value_t value)
     {
         using result_t = resolve_optype_t<full_t,dim_t,value_t>;
 

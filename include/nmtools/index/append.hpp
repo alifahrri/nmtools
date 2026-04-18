@@ -8,14 +8,15 @@ namespace nmtools::index
     struct append_t {};
 
     template <typename indices_t, typename index_t>
-    constexpr auto append(const indices_t& indices, index_t index)
+    constexpr auto append([[maybe_unused]] const indices_t& indices
+        , [[maybe_unused]] index_t index)
     {
-        using result_t = meta::resolve_optype_t<append_t,indices_t,index_t>;
+        using result_t = resolve_optype_t<append_t,indices_t,index_t>;
 
         auto result = result_t {};
 
-        if constexpr (!meta::is_constant_index_array_v<result_t>
-            && !meta::is_fail_v<result_t>
+        if constexpr (!is_constant_index_array_v<result_t>
+            && !is_fail_v<result_t>
         ) {
             auto n = len(indices);
             if constexpr (meta::is_resizable_v<result_t>) {
@@ -28,9 +29,9 @@ namespace nmtools::index
                     at(result,i) = at(indices,i);
                 }
             };
-            constexpr auto B_SIZE = meta::bounded_size_v<indices_t>;
+            constexpr auto B_SIZE = bounded_size_v<indices_t>;
             // avoid calling at(indices,i) when indices is tuple<>
-            if constexpr (meta::is_fail_v<decltype(B_SIZE)>) {
+            if constexpr (is_fail_v<decltype(B_SIZE)>) {
                 f(indices);
             } else if constexpr (B_SIZE > 0) {
                 f(indices);

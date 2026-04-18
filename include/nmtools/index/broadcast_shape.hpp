@@ -38,10 +38,10 @@ namespace nmtools::index::impl
     template <typename ashape_t, typename bshape_t>
     constexpr auto broadcast_shape(const ashape_t& ashape, const bshape_t& bshape)
     {
-        using result_t = meta::resolve_optype_t<broadcast_shape_t,ashape_t,bshape_t>;
+        using result_t = resolve_optype_t<broadcast_shape_t,ashape_t,bshape_t>;
         using element_t [[maybe_unused]] = meta::remove_cvref_t<meta::get_index_element_type_t<result_t>>;
 
-        if constexpr (meta::is_constant_index_array_v<result_t>) {
+        if constexpr (is_constant_index_array_v<result_t>) {
             // do nothing, already computed at compile-time
             // the type holds broadcasted shape
             return result_t{};
@@ -129,6 +129,7 @@ namespace nmtools::index::impl
             else if constexpr (is_none_v<ashape_t> && !is_none_v<bshape_t>) {
                 // one of the shape is none (from shape of num type):
                 // just copy the other shape, bshape in this case
+                [[maybe_unused]]
                 auto bdim = len(bshape);
                 if constexpr (meta::is_resizable_v<result_t>)
                     res.resize(bdim);
@@ -251,7 +252,7 @@ namespace nmtools::index
                 : return_t{meta::Nothing}
             );
         } else {
-            using result_t = meta::resolve_optype_t<broadcast_size_t,dst_shape_t,a_size_t,b_size_t,other_sizes_t...>;
+            using result_t = resolve_optype_t<broadcast_size_t,dst_shape_t,a_size_t,b_size_t,other_sizes_t...>;
             if constexpr (meta::is_maybe_v<result_t>) {
                 if (static_cast<bool>(a_size)) {
                     auto result = broadcast_size(dst_shape,*a_size,b_size,other_sizes...);

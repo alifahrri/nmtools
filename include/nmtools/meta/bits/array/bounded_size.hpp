@@ -26,4 +26,9 @@ namespace nmtools::meta
     constexpr inline auto bounded_size_v = bounded_size<T>::value;
 } // namespace nmtools::meta
 
+namespace nmtools
+{
+    using meta::bounded_size_v;
+}
+
 #endif // NMTOOLS_META_BITS_ARRAY_BOUNDED_SIZE_HPP

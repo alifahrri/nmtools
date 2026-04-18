@@ -131,7 +131,7 @@ namespace nmtools::utils
      * @return nmtools_string 
      */
     template <typename T, typename formatter_t>
-    inline auto apply_to_string(const T& array, formatter_t formatter) -> nmtools_string
+    inline auto apply_to_string(const T& array, [[maybe_unused]] formatter_t formatter) -> nmtools_string
     {
         if constexpr (meta::is_list_v<T>) {
             auto str = nmtools_string();

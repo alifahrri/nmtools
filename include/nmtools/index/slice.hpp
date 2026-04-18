@@ -445,7 +445,7 @@ namespace nmtools::index
     template <typename shape_t, typename slices_t>
     constexpr auto shape_dynamic_slice(const shape_t& shape, const slices_t& slices)
     {
-        using result_t  = meta::resolve_optype_t<shape_dynamic_slice_t,shape_t,slices_t>;
+        using result_t  = resolve_optype_t<shape_dynamic_slice_t,shape_t,slices_t>;
         using size_type = meta::get_index_element_type_t<result_t>;
         using slice_t [[maybe_unused]] = meta::get_value_type_t<slices_t>;
         using namespace literals;
@@ -626,7 +626,7 @@ namespace nmtools::index
     template <typename indices_t, typename shape_t, typename slices_t>
     constexpr auto dynamic_slice(const indices_t& indices, const shape_t& shape, const slices_t& slices)
     {
-        using result_t = meta::resolve_optype_t<dynamic_slice_t,indices_t,shape_t,slices_t>;
+        using result_t = resolve_optype_t<dynamic_slice_t,indices_t,shape_t,slices_t>;
         using namespace literals;
 
         auto res = result_t {};
@@ -826,14 +826,14 @@ namespace nmtools::index
     constexpr auto shape_slice(const shape_t& shape_, const slices_t&...slices)
     {
         using namespace literals;
-        using result_t  = meta::resolve_optype_t<shape_slice_t,shape_t,slices_t...>;
+        using result_t  = resolve_optype_t<shape_slice_t,shape_t,slices_t...>;
         using size_type = meta::get_index_element_type_t<result_t>;
         // number of integer in slices, represent indexing instead of slice
         constexpr auto N_INT = (static_cast<size_t>(meta::is_index_v<slices_t>) + ...);
 
         const auto shape = [&](){
             // convert constant_index_array of shape to easily allow element access with runtime index
-            if constexpr (meta::is_constant_index_array_v<shape_t>) {
+            if constexpr (is_constant_index_array_v<shape_t>) {
                 return meta::to_value_v<shape_t>;
             } else if constexpr (meta::is_bounded_array_v<shape_t>) {
                 // raw array can't be copied (without decaying)
@@ -969,8 +969,10 @@ namespace nmtools::index
                 // (5) a[2::-2]
                 // (6) a[1::-2]
 
+                [[maybe_unused]]
                 auto s = compute_range(si,start_,stop_,step_);
 
+                [[maybe_unused]]
                 auto step = []([[maybe_unused]] auto step_){
                     using m_step_t = meta::remove_cvref_t<decltype(step_)>;
                     // NOTE: step_ is passed instead of captured to avoid clang error
@@ -1020,12 +1022,12 @@ namespace nmtools::index
     template <typename indices_t, typename shape_t, typename...slices_t>
     constexpr auto slice(const indices_t& indices, const shape_t& shape_, const slices_t&...slices)
     {
-        using return_t = meta::resolve_optype_t<slice_t,indices_t,shape_t,slices_t...>;
+        using return_t = resolve_optype_t<slice_t,indices_t,shape_t,slices_t...>;
         using index_t [[maybe_unused]]  = meta::remove_cvref_t<meta::get_index_element_type_t<return_t>>;
 
         const auto shape = [&](){
             // convert constant_index_array of shape to easily allow element access with runtime index
-            if constexpr (meta::is_constant_index_array_v<shape_t>) {
+            if constexpr (is_constant_index_array_v<shape_t>) {
                 return meta::to_value_v<shape_t>;
             } else if constexpr (meta::is_bounded_array_v<shape_t>) {
                 // raw array can't be copied (without decaying)
