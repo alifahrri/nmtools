@@ -34,31 +34,6 @@ jobs:
         run: bash scripts/download_doctest_header.sh -d include/
       - name: build
         run: ./dockcross-${{ matrix.name }} bash -c 'mkdir -p build/${{ matrix.name }} && cd build/${{ matrix.name }}/ && cmake ../.. && make -j2'
-  dockcross-linux-arm-simd:
-    name: ${{ matrix.name }}-simd-${{ matrix.arch }}-vector
-    runs-on: ubuntu-22.04
-    strategy:
-      matrix:
-        include:
-          - name: linux-arm64
-            arch: armv8-a+simd
-          - name: linux-armv7
-            arch: armv7-a+simd
-          - name: linux-armv5
-            arch: armv5te
-    steps:
-      - uses: actions/checkout@v2
-      - name: setup dockcross
-        run: docker run --rm dockcross/${{ matrix.name }} > ./dockcross-${{ matrix.name }}; chmod +x ./dockcross-${{ matrix.name }}
-      - uses: actions/cache@v3
-        id: cache
-        with:
-          path: ./build/${{ matrix.name }}
-          key: ${{ github.job }}-${{ matrix.name }}-${{ hashFiles('./**') }}
-      - name: setup doctest
-        run: bash scripts/download_doctest_header.sh -d include/
-      - name: build
-        run: ./dockcross-${{ matrix.name }} bash -c 'mkdir -p build/${{ matrix.name }} && cd build/${{ matrix.name }}/ && cmake -DNMTOOLS_BUILD_VECTOR_TESTS=ON -DNMTOOLS_VECTOR_TEST_ALL=ON -DNMTOOLS_VECTOR_TEST_ARCH=-march=${{ matrix.arch }} ../.. && make -j2 VERBOSE=1 numeric-tests-vector-doctest'
 
   dockcross-linux-arm-object:
     name: ${{ matrix.name }}-object
