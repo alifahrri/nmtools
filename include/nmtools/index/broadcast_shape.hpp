@@ -64,7 +64,6 @@ namespace nmtools::index::impl
                 auto bdim = len_(bshape);
                 using adim_t = decltype(adim);
                 using bdim_t = decltype(bdim);
-                using is_constant_index_v;
                 auto rdim = [&](){
                     if constexpr (
                         is_constant_index_v<adim_t>

@@ -39,5 +39,10 @@ namespace nmtools::meta
     #endif // __OPENCL_VERSION__
 } // namespace nmtools::meta
 
+namespace nmtools
+{
+    using meta::is_fixed_index_array_v;
+}
+
 
 #endif // NMTOOLS_META_BITS_TRAITS_IS_FIXED_INDEX_ARRAY_HPP

@@ -26,4 +26,9 @@ namespace nmtools::meta
     constexpr inline auto is_either_v = is_either<T>::value;
 } // namespace nmtools::meta
 
+namespace nmtools
+{
+    using meta::is_either_v;
+}
+
 #endif // NMTOOLS_META_BITS_TRAITS_IS_EITHER_HPP

@@ -52,4 +52,9 @@ namespace nmtools::meta
     inline constexpr auto is_signed_v = is_signed<T>::value;
 } // namespace nmtools::meta
 
+namespace nmtools
+{
+    using meta::is_signed_v;
+}
+
 #endif // NMTOOLS_META_BITS_TRAITS_IS_SIGNED_HPP

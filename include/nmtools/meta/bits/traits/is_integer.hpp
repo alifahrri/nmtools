@@ -112,6 +112,7 @@ namespace nmtools::meta
 namespace nmtools
 {
     using meta::is_integer_v;
+    using meta::is_integral_v;
 }
 
 #endif // NMTOOLS_META_BITS_TRAITS_IS_INTEGER_HPP

@@ -89,5 +89,10 @@ namespace nmtools::meta
     using promote_index_t = type_t<promote_index<rest_t...>>;
 } // namespace nmtools::meta
 
+namespace nmtools
+{
+    using meta::promote_index_t;
+}
+
 
 #endif // NMTOOLS_META_BITS_TRANSFORM_PROMOTE_INDEX_HPP

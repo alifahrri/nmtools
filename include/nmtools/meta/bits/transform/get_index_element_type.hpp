@@ -54,5 +54,10 @@ namespace nmtools::meta
     using get_index_element_type_t = type_t<get_index_element_type<T>>;
 } // namespace nmtools::meta
 
+namespace nmtools
+{
+    using meta::get_index_element_type_t;
+}
+
 
 #endif // NMTOOLS_META_BITS_TRANSFORM_GET_INDEX_ELEMENT_TYPE_HPP
