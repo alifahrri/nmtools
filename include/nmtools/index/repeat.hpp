@@ -88,7 +88,7 @@ namespace nmtools::index
                     //        [3, 4]])
                     // at axis 0, first element x(axis,0) is not repeated (repeats(0)=1)
                     // while the second element x(axis,1) is repeated once (repeats(1)=2)
-                    at(ret,axis) = sum(repeats);
+                    at(ret,axis) = index::sum(repeats);
                 }
                 else
                     at(ret,axis) = at(ret,axis) * repeats;
@@ -243,7 +243,7 @@ namespace nmtools::index
                 if constexpr (meta::is_index_v<repeats_t>) {
                     at(ret,i) = (static_cast<common_t>(i)==static_cast<common_t>(axis) ? idx / repeats : idx);
                 } else {
-                    auto csum = cumsum(repeats);
+                    auto csum = index::cumsum(repeats);
                     if (static_cast<common_t>(i)==static_cast<common_t>(axis)) {
                         // note: len(repeats) == shape[axis]
                         // simply find arg of repeats such that idx >= accumulate(repeats)[args]
