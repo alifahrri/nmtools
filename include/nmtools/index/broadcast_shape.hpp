@@ -451,6 +451,7 @@ namespace nmtools::meta
                             return nmtools_tuple{min,max};
                         }();
                         constexpr auto min_dim = nmtools::get<0>(minmax);
+                        [[maybe_unused]]
                         constexpr auto max_dim = nmtools::get<1>(minmax);
                         if constexpr (min_dim == 1) {
                             return as_value_v<type>;

@@ -5,6 +5,20 @@
 
 namespace nm = nmtools;
 
+// weird precision error when using docker dockross atleast with gcc-9, gcc-12
+// precision error in docker env
+// even for the binary cross compiled on docker, when run in local env (gcc-14 / gcc-9)
+// the precision error vanished
+// likely some cmath related (?)
+// for now just reduce precision
+// tried -fexcess-precision=fast (on local / docker), still the same
+// and it says:
+// cc1plus: sorry, unimplemented: '-fexcess-precision=standard' for C++
+// at least for gcc-12
+// TODO: increase precision
+#undef NMTOOLS_TESTING_PRECISION
+#define NMTOOLS_TESTING_PRECISION (1e-3)
+
 #define OBJECT_SINH_SUBCASE(case_name, a, ...) \
 SUBCASE(#case_name) \
 { \

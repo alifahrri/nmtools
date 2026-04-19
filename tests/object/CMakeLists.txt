@@ -80,7 +80,10 @@ add_test(
     COMMAND ${PROJECT_NAME}-doctest
 )
 
-target_compile_options(${PROJECT_NAME}-doctest PRIVATE -std=c++17)
+target_compile_options(${PROJECT_NAME}-doctest PRIVATE
+    -std=c++17
+    # -fexcess-precision=standard
+)
 if (doctest_FOUND)
     target_link_libraries(${PROJECT_NAME}-doctest PRIVATE doctest::doctest)
 endif()

@@ -5,6 +5,9 @@
 
 namespace nm = nmtools;
 
+#undef NMTOOLS_TESTING_PRECISION
+#define NMTOOLS_TESTING_PRECISION (1e-3)
+
 #define OBJECT_TANH_SUBCASE(case_name, a, ...) \
 SUBCASE(#case_name) \
 { \

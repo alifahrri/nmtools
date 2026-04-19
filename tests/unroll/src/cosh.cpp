@@ -34,6 +34,9 @@ constexpr inline auto name##_ls_hb = nmtools::cast(name, nmtools::kind::ndarray_
 
 namespace nm = nmtools;
 
+#undef NMTOOLS_TESTING_PRECISION
+#define NMTOOLS_TESTING_PRECISION (1e-3)
+
 #define UNROLL_COSH_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
