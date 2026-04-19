@@ -51,7 +51,7 @@ namespace nmtools::index
             return array(result);
         }
 
-        template <typename axis_t, typename keepdims_t=meta::false_type>
+        template <typename axis_t, typename keepdims_t=false_type>
         constexpr auto remove_dims(const axis_t& axis, keepdims_t keepdims=keepdims_t{}) const noexcept
         {
             auto result = index::remove_dims(data_,axis,keepdims);

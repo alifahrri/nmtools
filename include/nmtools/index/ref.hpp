@@ -35,7 +35,7 @@ namespace nmtools::index
         const array_t* array;
         const size_type size_;
 
-        static_assert( meta::is_index_v<size_type>);
+        static_assert( is_index_v<size_type>);
         
         constexpr ref_ptr(const array_t* array, size_type size_)
             : array(array)

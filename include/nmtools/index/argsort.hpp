@@ -17,10 +17,10 @@ namespace nmtools::index
      * @param array     input array
      * @return constexpr auto 
      */
-    template <typename array_t, meta::enable_if_t<!meta::is_maybe_v<array_t>,int> = 0>
+    template <typename array_t, enable_if_t<!is_maybe_v<array_t>,int> = 0>
     constexpr auto argsort(const array_t& array)
     {
-        using result_t = meta::resolve_optype_t<argsort_t, array_t>;
+        using result_t = resolve_optype_t<argsort_t, array_t>;
 
         auto arg = result_t{};
         [[maybe_unused]] auto dim = len(array);
@@ -30,12 +30,12 @@ namespace nmtools::index
             rhs = tmp;
         };
 
-        if constexpr (meta::is_resizable_v<result_t>) {
+        if constexpr (is_resizable_v<result_t>) {
             arg.resize(dim);
         }
 
         // assume already sorted at resolve_optype if constant index
-        if constexpr (!meta::is_constant_index_array_v<result_t>) {
+        if constexpr (!is_constant_index_array_v<result_t>) {
             // initialize with index
             for (size_t i=0; i<(size_t)dim; i++) {
                 at(arg,i) = i;
@@ -61,10 +61,10 @@ namespace nmtools::index
      * @param array 
      * @return constexpr auto 
      */
-    template <typename array_t, meta::enable_if_t<meta::is_maybe_v<array_t>,int> = 0>
+    template <typename array_t, enable_if_t<is_maybe_v<array_t>,int> = 0>
     constexpr auto argsort(const array_t& array)
     {
-        using result_t = meta::remove_cvref_t<decltype(argsort(*array))>;
+        using result_t = remove_cvref_t<decltype(argsort(*array))>;
         using return_t = nmtools_maybe<result_t>;
 
         // auto ret = return_t{};
@@ -73,8 +73,8 @@ namespace nmtools::index
             return return_t{argsort(*array)};
         } else {
             // operator= from stl's optional not constexpr 😭
-            // ret = meta::Nothing;
-            return return_t{meta::Nothing};
+            // ret = Nothing;
+            return return_t{Nothing};
         }
 
         // return ret;

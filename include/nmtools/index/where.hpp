@@ -27,9 +27,9 @@ namespace nmtools::index
     template <typename index_t=size_t, typename F, typename array_t>
     constexpr auto where(const F& f, const array_t& array)
     {
-        using return_t = meta::resolve_optype_t<where_t,array_t,index_t>;
+        using return_t = resolve_optype_t<where_t,array_t,index_t>;
         auto res = return_t{};
-        if constexpr (meta::is_resizable_v<return_t>) {
+        if constexpr (is_resizable_v<return_t>) {
             res.resize(len(array));
         }
         auto n = index_t{0};
@@ -37,14 +37,14 @@ namespace nmtools::index
             if (f(at(array,i)))
                 at(res,n++) = static_cast<index_t>(i);
         };
-        if constexpr (meta::is_fixed_index_array_v<array_t>)
-            meta::template_for<meta::len_v<array_t>>([&](auto i){
+        if constexpr (is_fixed_index_array_v<array_t>)
+            template_for<len_v<array_t>>([&](auto i){
                 where_impl(i);
             });
         else
             for (size_t i=0; i<len(array); i++)
                 where_impl(i);
-        if constexpr (meta::is_resizable_v<return_t>)
+        if constexpr (is_resizable_v<return_t>)
             res.resize(n);
         return res;
     } // where

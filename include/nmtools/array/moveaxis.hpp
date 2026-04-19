@@ -8,11 +8,6 @@
 #include "nmtools/utility/shape.hpp"
 #include "nmtools/meta.hpp"
 
-namespace nmtools::view::detail
-{
-    using nmtools::index::moveaxis_to_transpose;
-}
-
 namespace nmtools::view
 {
     /**

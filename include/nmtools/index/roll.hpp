@@ -15,15 +15,15 @@ namespace nmtools::index
     template <typename src_shape_t, typename shift_t, typename axis_t>
     constexpr auto shape_roll(const src_shape_t& shape, [[maybe_unused]] const shift_t& shift, const axis_t& axis)
     {
-        using result_t = meta::resolve_optype_t<shape_roll_t,src_shape_t,shift_t,axis_t>;
+        using result_t = resolve_optype_t<shape_roll_t,src_shape_t,shift_t,axis_t>;
 
-        if constexpr (meta::is_fail_v<result_t>
-            || meta::is_constant_index_array_v<result_t>
+        if constexpr (is_fail_v<result_t>
+            || is_constant_index_array_v<result_t>
         ) {
             auto result = result_t{};
             return result;
         } else {
-            using return_t = meta::conditional_t<
+            using return_t = conditional_t<
                 is_none_v<axis_t> /* when axis is none, always success, no need maybe type */
                 , result_t
                 , nmtools_maybe<result_t> /* otherwise whe should check for axis in range */
@@ -34,7 +34,7 @@ namespace nmtools::index
 
             auto dim = len(shape);
 
-            if constexpr (meta::is_resizable_v<result_t>) {
+            if constexpr (is_resizable_v<result_t>) {
                 result.resize(dim);
             }
 
@@ -42,19 +42,19 @@ namespace nmtools::index
                 at(result,i) = at(shape,i);
             }
 
-            if constexpr (meta::is_index_array_v<axis_t>
-                || meta::is_index_v<axis_t>
+            if constexpr (is_index_array_v<axis_t>
+                || is_index_v<axis_t>
             ) {
                 auto normalized_axis = normalize_axis(axis,len(shape));
                 // assume normalize_axis always return maybe type for this path
                 success = static_cast<bool>(normalized_axis);
             }
 
-            if constexpr (meta::is_maybe_v<return_t>) {
+            if constexpr (is_maybe_v<return_t>) {
                 if (success) {
                     return return_t{result};
                 } else {
-                    return return_t{meta::Nothing};
+                    return return_t{Nothing};
                 }
             } else {
                 return result;
@@ -68,29 +68,29 @@ namespace nmtools::index
     template <typename lhs_t, typename rhs_t>
     constexpr auto normalize_roll_length(const lhs_t& lhs, const rhs_t& rhs)
     {
-        using result_t [[maybe_unused]] = meta::resolve_optype_t<normalize_roll_length_t,lhs_t,rhs_t>;
-        if constexpr (meta::is_index_v<meta::remove_cvref_t<decltype(rhs)>>) {
+        using result_t [[maybe_unused]] = resolve_optype_t<normalize_roll_length_t,lhs_t,rhs_t>;
+        if constexpr (is_index_v<remove_cvref_t<decltype(rhs)>>) {
             // assume lhs is index
             return lhs;
-        } else if constexpr (meta::is_index_v<decltype(lhs)>
-            && meta::is_index_array_v<meta::remove_cvref_t<decltype(rhs)>>
+        } else if constexpr (is_index_v<decltype(lhs)>
+            && is_index_array_v<remove_cvref_t<decltype(rhs)>>
         ) {
             auto result = result_t {};
             auto dim = len(rhs);
-            if constexpr (meta::is_resizable_v<result_t>) {
+            if constexpr (is_resizable_v<result_t>) {
                 result.resize(dim);
             }
             for (nm_size_t i=0; i<(nm_size_t)dim; i++) {
                 at(result,i) = lhs;
             }
             return result;
-        } else /* if constexpr (meta::is_index_array_v<decltype(lhs)>
-            && meta::is_index_array_v<meta::remove_cvref_t<decltype(rhs)>>) */
+        } else /* if constexpr (is_index_array_v<decltype(lhs)>
+            && is_index_array_v<remove_cvref_t<decltype(rhs)>>) */
         {
             // assume rhs & lhs is the same length
             auto result = result_t {};
             auto dim = len(rhs);
-            if constexpr (meta::is_resizable_v<result_t>) {
+            if constexpr (is_resizable_v<result_t>) {
                 result.resize(dim);
             }
             for (nm_size_t i=0; i<(nm_size_t)dim; i++) {
@@ -103,15 +103,15 @@ namespace nmtools::index
     template <typename shape_t, typename indices_t, typename shift_t, typename axis_t=none_t>
     constexpr auto roll(const shape_t& shape, const indices_t& indices, const shift_t& shift, const axis_t& axis=axis_t{})
     {
-        using result_t = meta::resolve_optype_t<roll_t,shape_t,indices_t,shift_t,axis_t>;
+        using result_t = resolve_optype_t<roll_t,shape_t,indices_t,shift_t,axis_t>;
 
         auto result = result_t {};
 
-        if constexpr (!meta::is_fail_v<result_t>
-            && !meta::is_constant_index_array_v<result_t>
+        if constexpr (!is_fail_v<result_t>
+            && !is_constant_index_array_v<result_t>
         ) {
             auto dim = len(shape);
-            if constexpr (meta::is_resizable_v<result_t>) {
+            if constexpr (is_resizable_v<result_t>) {
                 result.resize(dim);
             }
 
@@ -137,7 +137,7 @@ namespace nmtools::index
                     auto index   = nm_index_t(at(indices,i)) - shift;
                     at(result,i) = normalize_roll_index(index,shape_i);
                 }
-            } else if constexpr (meta::is_index_v<axis_t>) {
+            } else if constexpr (is_index_v<axis_t>) {
                 // fill with index first then adjust at axis
                 for (nm_size_t i=0; i<nm_size_t(dim); i++) {
                     at(result,i) = at(indices,i);
@@ -145,7 +145,7 @@ namespace nmtools::index
                 auto shape_i = at(shape,axis);
                 auto index   = nm_index_t(at(indices,axis)) - shift;
                 at(result,axis) = normalize_roll_index(index,shape_i);
-            } else /* if constexpr (meta::is_index_array_v<axis_t>) */ {
+            } else /* if constexpr (is_index_array_v<axis_t>) */ {
                 // fill with index first then adjust at axis
                 for (nm_size_t i=0; i<nm_size_t(dim); i++) {
                     at(result,i) = at(indices,i);
@@ -203,7 +203,7 @@ namespace nmtools::meta
                 constexpr auto result = index::shape_roll(src_shape,shift,axis);
                 if constexpr (has_value(result)) {
                     using nmtools::len, nmtools::at, nmtools::unwrap;
-                    return meta::template_reduce<len(unwrap(result))>([&](auto init, auto i){
+                    return template_reduce<len(unwrap(result))>([&](auto init, auto i){
                         using init_type = type_t<decltype(init)>;
                         using result_t  = append_type_t<init_type,ct<at(unwrap(result),i)>>;
                         return as_value_v<result_t>;

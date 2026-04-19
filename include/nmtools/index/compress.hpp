@@ -18,7 +18,7 @@ namespace nmtools::index
     template <typename condition_t, typename shape_t, typename axis_t>
     constexpr auto shape_compress(const condition_t& condition, const shape_t& shape, [[maybe_unused]] const axis_t axis)
     {
-        using return_t = meta::resolve_optype_t<shape_compress_t,condition_t,shape_t,axis_t>;
+        using return_t = resolve_optype_t<shape_compress_t,condition_t,shape_t,axis_t>;
 
         auto res = return_t{};
 
@@ -48,25 +48,25 @@ namespace nmtools::index
 
         using namespace literals;
 
-        if constexpr (!meta::is_constant_index_array_v<return_t>) {
+        if constexpr (!is_constant_index_array_v<return_t>) {
             auto c_dim = len(nonzero(condition));
             if constexpr (is_none_v<axis_t>)
                 at(res,0_ct) = c_dim;
             else {
                 // array dim
                 [[maybe_unused]] auto dim = len(shape);
-                if constexpr (meta::is_resizable_v<return_t>)
+                if constexpr (is_resizable_v<return_t>)
                     res.resize(dim);
 
                 auto shape_compress_impl = [&](auto i){
-                    using a_t = meta::get_element_or_common_type_t<axis_t>;
-                    using idx_t = meta::promote_index_t<decltype(i),a_t>;
+                    using a_t = get_element_or_common_type_t<axis_t>;
+                    using idx_t = promote_index_t<decltype(i),a_t>;
                     at(res,i) = ((idx_t)i == (idx_t)axis) ? (idx_t)c_dim : (idx_t)at(shape,i);
                 };
 
-                if constexpr (meta::is_fixed_index_array_v<shape_t>) {
-                    constexpr auto N = meta::len_v<shape_t>;
-                    meta::template_for<N>(shape_compress_impl);
+                if constexpr (is_fixed_index_array_v<shape_t>) {
+                    constexpr auto N = len_v<shape_t>;
+                    template_for<N>(shape_compress_impl);
                 }
                 else {
                     for (size_t i=0; i<dim; i++)
@@ -81,13 +81,13 @@ namespace nmtools::index
     template <typename indices_t, typename condition_t, typename shape_t, typename axis_t>
     constexpr auto compress(const indices_t& indices, const condition_t& condition, const shape_t& shape, axis_t axis)
     {
-        using return_t = meta::resolve_optype_t<compress_t,indices_t,condition_t,shape_t,axis_t>;
-        static_assert (!meta::is_void_v<return_t>
+        using return_t = resolve_optype_t<compress_t,indices_t,condition_t,shape_t,axis_t>;
+        static_assert (!is_void_v<return_t>
             , "unsupported index::compress, couldn't deduce return type");
 
         auto res = return_t{};
 
-        if constexpr (meta::is_resizable_v<return_t>) {
+        if constexpr (is_resizable_v<return_t>) {
             // array dim
             auto dim = len(shape);
             res.resize(dim);
@@ -129,7 +129,7 @@ namespace nmtools::index
         // i should start form 0 to len(shape)
         [[maybe_unused]] auto compress_impl = [&](auto i){
             auto dst_i = at(indices, i);
-            using common_t = meta::promote_index_t<axis_t,decltype(i)>;
+            using common_t = promote_index_t<axis_t,decltype(i)>;
             at(res, i) = ((common_t)i == (common_t)axis) ? at(idx_nonzero,dst_i) : dst_i;
         };
 
@@ -143,9 +143,9 @@ namespace nmtools::index
         }
         else {
             // assume len(indices) == len(shape) == len(res)
-            if constexpr (meta::is_fixed_index_array_v<indices_t>) {
-                constexpr auto N = meta::len_v<indices_t>;
-                meta::template_for<N>(compress_impl);
+            if constexpr (is_fixed_index_array_v<indices_t>) {
+                constexpr auto N = len_v<indices_t>;
+                template_for<N>(compress_impl);
             }
             else {
                 auto n = len(indices);

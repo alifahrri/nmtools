@@ -21,9 +21,9 @@ namespace nmtools::index
     template <typename start_t, typename stop_t, typename step_t>
     constexpr auto arange_shape([[maybe_unused]] start_t start, [[maybe_unused]] stop_t stop, [[maybe_unused]] step_t step)
     {
-        using return_t = meta::resolve_optype_t<arange_shape_t,start_t,stop_t,step_t>;
+        using return_t = resolve_optype_t<arange_shape_t,start_t,stop_t,step_t>;
         auto ret = return_t {};
-        if constexpr (!meta::is_constant_index_array_v<return_t>) {
+        if constexpr (!is_constant_index_array_v<return_t>) {
             // TODO: use index_type instead of size_t
             size_t d = ceil_(float(stop - start) / step);
             at(ret,0) = d;

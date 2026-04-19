@@ -14,22 +14,22 @@ namespace nmtools::index
     template <typename ashape_t, typename bshape_t>
     constexpr auto shape_outer(const ashape_t& ashape, const bshape_t& bshape)
     {
-        using return_t = meta::resolve_optype_t<shape_outer_t,ashape_t,bshape_t>;
+        using return_t = resolve_optype_t<shape_outer_t,ashape_t,bshape_t>;
         auto res = return_t {};
 
-        if constexpr (!meta::is_constant_index_array_v<return_t>) {
+        if constexpr (!is_constant_index_array_v<return_t>) {
             auto adim = len(ashape);
-            if constexpr (meta::is_resizable_v<return_t>) {
+            if constexpr (is_resizable_v<return_t>) {
                 auto bdim = len(bshape);
                 auto dim  = adim + bdim;
                 res.resize(dim);
             }
 
-            constexpr auto A_DIM = meta::len_v<ashape_t>;
+            constexpr auto A_DIM = len_v<ashape_t>;
 
             auto shape_outer_impl = [&](auto i){
                 if (i<adim) {
-                    if constexpr (meta::is_constant_index_v<decltype(i)> && (A_DIM > 0)) {
+                    if constexpr (is_constant_index_v<decltype(i)> && (A_DIM > 0)) {
                         if constexpr (decltype(i)::value < A_DIM) {
                             at(res,i) = at(ashape,i);
                         }
@@ -42,9 +42,9 @@ namespace nmtools::index
                 }
             };
 
-            if constexpr (meta::is_tuple_v<return_t>) {
-                constexpr auto N = meta::len_v<return_t>;
-                meta::template_for<N>([&](auto i){
+            if constexpr (is_tuple_v<return_t>) {
+                constexpr auto N = len_v<return_t>;
+                template_for<N>([&](auto i){
                     shape_outer_impl(i);
                 });
             } else {
@@ -68,10 +68,10 @@ namespace nmtools::index
     template <typename dst_shape_t, typename a_size_t, typename b_size_t>
     constexpr auto size_outer(const dst_shape_t&, const a_size_t& a_size, const b_size_t& b_size)
     {
-        using result_t = meta::resolve_optype_t<size_outer_t,dst_shape_t,a_size_t,b_size_t>;
+        using result_t = resolve_optype_t<size_outer_t,dst_shape_t,a_size_t,b_size_t>;
         auto res = result_t {};
 
-        if constexpr (!meta::is_constant_index_v<result_t>) {
+        if constexpr (!is_constant_index_v<result_t>) {
             res = static_cast<result_t>(a_size) * static_cast<result_t>(b_size);
         }
 
@@ -89,9 +89,9 @@ namespace nmtools::index
         auto adim = len(ashape);
         auto bdim = len(bshape);
 
-        if constexpr (meta::is_resizable_v<ashape_t>)
+        if constexpr (is_resizable_v<ashape_t>)
             aidx.resize(adim);
-        if constexpr (meta::is_resizable_v<bshape_t>)
+        if constexpr (is_resizable_v<bshape_t>)
             bidx.resize(bdim);
         
         for (size_t i=0; i<adim; i++)
@@ -171,7 +171,7 @@ namespace nmtools::meta
             }
         }();
 
-        using type = type_t<meta::remove_cvref_t<decltype(vtype)>>;
+        using type = type_t<remove_cvref_t<decltype(vtype)>>;
     }; // shape_outer_t
 
     namespace error

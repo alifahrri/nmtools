@@ -50,7 +50,7 @@ namespace nmtools::index
                 }
             }();
 
-            if constexpr (meta::is_resizable_v<result_t>) {
+            if constexpr (is_resizable_v<result_t>) {
                 result.resize(dim);
             }
 
@@ -91,7 +91,7 @@ namespace nmtools::index
     template <typename indices_t, typename slices_t, template<auto...>typename sequence, auto...Is>
     constexpr auto array_slice(const indices_t& indices, const slices_t& slices, sequence<Is...>)
     {
-        return nmtools_array{apply_at(at(slices,meta::ct_v<Is>),indices)...};
+        return nmtools_array{apply_at(at(slices,ct_v<Is>),indices)...};
     }
 
     /**

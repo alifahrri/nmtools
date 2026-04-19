@@ -20,24 +20,24 @@ namespace nmtools::index
     template <typename indices_t, typename index_t, typename axis_t>
     constexpr auto insert_index(const indices_t& indices, const index_t& index, axis_t axis)
     {
-        using result_t = meta::resolve_optype_t<insert_index_t,indices_t,index_t,axis_t>;
+        using result_t = resolve_optype_t<insert_index_t,indices_t,index_t,axis_t>;
         using return_t = nmtools_maybe<result_t>;
 
         constexpr auto axis_vtype = [](){
-            if constexpr (meta::is_integral_constant_v<axis_t>) {
+            if constexpr (is_integral_constant_v<axis_t>) {
                 using type = typename axis_t::value_type;
-                return meta::as_value_v<type>;
+                return as_value_v<type>;
             } else {
                 using type = axis_t;
-                return meta::as_value_v<type>;
+                return as_value_v<type>;
             }
         }();
-        using axis_type = meta::type_t<decltype(axis_vtype)>;
+        using axis_type = type_t<decltype(axis_vtype)>;
 
         auto dim = len(indices);
         auto new_dim = dim + 1;
 
-        if constexpr (meta::is_index_array_v<index_t> || meta::is_slice_index_array_v<index_t>) {
+        if constexpr (is_index_array_v<index_t> || meta::is_slice_index_array_v<index_t>) {
             new_dim = dim + len(index);
         }
         auto maybe_axis = normalize_axis(axis,new_dim);
@@ -47,12 +47,12 @@ namespace nmtools::index
 
         auto result = result_t {};
 
-        if constexpr (meta::is_resizable_v<result_t>) {
+        if constexpr (is_resizable_v<result_t>) {
             result.resize(new_dim);
         }
 
         auto axis_ = (axis < 0 ? *maybe_axis : axis);
-        if constexpr (meta::is_index_array_v<index_t>) {
+        if constexpr (is_index_array_v<index_t>) {
             auto idx_dim = len(index);
             auto src_i = (size_t)0;
             auto idx_i = (size_t)0;

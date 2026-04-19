@@ -14,24 +14,24 @@ namespace nmtools::index
     constexpr auto flip_slices(const dim_t& dim, const axes_t& axes)
     {
         // TODO: support constant index array
-        using result_t = meta::resolve_optype_t<flip_slices_t,dim_t,axes_t>;
+        using result_t = resolve_optype_t<flip_slices_t,dim_t,axes_t>;
 
         auto result = result_t {};
 
-        if constexpr (meta::is_resizable_v<result_t>) {
+        if constexpr (is_resizable_v<result_t>) {
             result.resize(dim);
         }
 
         for (size_t i=0; i<(size_t)dim; i++) {
-            if constexpr (meta::is_index_array_v<axes_t>) {
+            if constexpr (is_index_array_v<axes_t>) {
                 auto in_axis = static_cast<bool>(
                     index::count([&](const auto ii){
-                        using common_t = meta::promote_index_t<decltype(ii),size_t>;
+                        using common_t = promote_index_t<decltype(ii),size_t>;
                         return (common_t)ii == (common_t)i;
                     }, axes)
                 );
                 nmtools::get<2>(at(result,i)) = in_axis ? -1 : 1;
-            } else if constexpr (meta::is_index_v<axes_t>) {
+            } else if constexpr (is_index_v<axes_t>) {
                 nmtools::get<2>(at(result,i)) = ((size_t)axes == i) ? -1 : 1;
             } else if constexpr (is_none_v<axes_t>) {
                 nmtools::get<2>(at(result,i)) = -1;

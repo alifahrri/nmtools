@@ -21,10 +21,10 @@ namespace nmtools::index
     template <typename array_t>
     constexpr auto sum(const array_t& vec)
     {
-        using result_t = meta::resolve_optype_t<sum_t,array_t>;
+        using result_t = resolve_optype_t<sum_t,array_t>;
         auto res = result_t{};
         // res already calculated if it is a constant index, see meta below
-        if constexpr (!meta::is_constant_index_v<result_t>) {
+        if constexpr (!is_constant_index_v<result_t>) {
             res = 0;
             for (size_t i=0; i<(size_t)len(vec); i++)
                 res = res + at(vec,i);

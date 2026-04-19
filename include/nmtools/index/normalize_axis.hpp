@@ -24,37 +24,37 @@ namespace nmtools::index
     constexpr auto normalize_axis(const axis_t& axis, [[maybe_unused]] const m_ndim_t ndim_)
     {
         // TODO: support maybe types axis & ndim
-        using result_t = meta::resolve_optype_t<normalize_axis_t,axis_t,m_ndim_t>;
+        using result_t = resolve_optype_t<normalize_axis_t,axis_t,m_ndim_t>;
 
         [[maybe_unused]] auto ndim = [&](){
-            if constexpr (meta::is_constant_index_v<m_ndim_t>) {
-                return meta::to_value_v<m_ndim_t>;
+            if constexpr (is_constant_index_v<m_ndim_t>) {
+                return to_value_v<m_ndim_t>;
             } else {
                 return ndim_;
             }
         }();
         using ndim_t [[maybe_unused]] = decltype(ndim);
 
-        static_assert( !meta::is_fail_v<result_t> && !meta::is_void_v<result_t> );
+        static_assert( !is_fail_v<result_t> && !is_void_v<result_t> );
 
-        if constexpr (! (meta::is_constant_index_v<result_t> || meta::is_constant_index_array_v<result_t>)) {
+        if constexpr (! (is_constant_index_v<result_t> || is_constant_index_array_v<result_t>)) {
             using return_t = nmtools_maybe<result_t>;
             // using return_t = utl::maybe<result_t>;
 
             // auto ret = return_t {};
 
-            if constexpr (meta::is_index_array_v<result_t>) {
+            if constexpr (is_index_array_v<result_t>) {
                 auto res = result_t{};
                 [[maybe_unused]] auto n = len(axis);
                 bool valid = true;
-                if constexpr (meta::is_resizable_v<result_t>) {
+                if constexpr (is_resizable_v<result_t>) {
                     res.resize(n);
                 }
-                using ai_t  = meta::get_element_or_common_type_t<axis_t>;
-                using idx_t = meta::promote_index_t<ndim_t,ai_t>;
+                using ai_t  = get_element_or_common_type_t<axis_t>;
+                using idx_t = promote_index_t<ndim_t,ai_t>;
                 auto normalize_axis_impl = [&](auto i){
                     auto ai = at(axis,i);
-                    if constexpr (meta::is_unsigned_v<ai_t>) {
+                    if constexpr (is_unsigned_v<ai_t>) {
                         if ((idx_t)ai < (idx_t)ndim) {
                             at(res,i) = (idx_t)ai;
                         } else {
@@ -66,8 +66,8 @@ namespace nmtools::index
                         valid = false;
                     }
                 };
-                if constexpr (meta::is_tuple_v<axis_t>) {
-                    meta::template_for<meta::len_v<axis_t>>([&](auto i){
+                if constexpr (is_tuple_v<axis_t>) {
+                    template_for<len_v<axis_t>>([&](auto i){
                         normalize_axis_impl(i);
                     });
                 } else {
@@ -80,20 +80,20 @@ namespace nmtools::index
                     return return_t{res};
                 } else {
                     // operator= from stl's optional not constexpr 😭
-                    // ret = meta::Nothing;
-                    return return_t{meta::Nothing};
+                    // ret = Nothing;
+                    return return_t{Nothing};
                 }
-            } else if constexpr (meta::is_num_v<result_t>) {
+            } else if constexpr (is_num_v<result_t>) {
                 auto res = result_t{};
-                using idx_t = meta::make_signed_t<meta::promote_index_t<ndim_t,axis_t>>;
+                using idx_t = make_signed_t<promote_index_t<ndim_t,axis_t>>;
                 if ((-(idx_t)ndim <= (idx_t)axis) && ((idx_t)axis < (idx_t)ndim)) {
                     res = (axis < 0)  ? nm_index_t(ndim + axis) : nm_index_t(axis);
                     // ret = res;
                     return return_t{res};
                 } else {
                     // operator= from stl's optional not constexpr 😭
-                    // ret = meta::Nothing;
-                    return return_t{meta::Nothing};
+                    // ret = Nothing;
+                    return return_t{Nothing};
                 }
             }
 
@@ -105,7 +105,7 @@ namespace nmtools::index
 
             auto valid = [&](){
                 const auto result = result_t {};
-                if constexpr (meta::is_index_array_v<result_t>) {
+                if constexpr (is_index_array_v<result_t>) {
                     for (size_t i=0; i<(size_t)len(result); i++) {
                         const auto result_i = at(result,i);
                         if (result_i < 0 || result_i >= ndim) {
@@ -119,7 +119,7 @@ namespace nmtools::index
             }();
 
             if (!valid) {
-                return return_t{meta::Nothing};
+                return return_t{Nothing};
             } else {
                 auto ret = return_t {result_t{}};
                 return ret;

@@ -14,41 +14,41 @@ namespace nmtools::index
     template <typename shape_t, typename axes_t>
     constexpr auto shape_transpose(const shape_t& shape, const axes_t& axes)
     {
-        using result_t = meta::resolve_optype_t<shape_transpose_t,shape_t,axes_t>;
+        using result_t = resolve_optype_t<shape_transpose_t,shape_t,axes_t>;
 
-        if constexpr (meta::is_maybe_v<result_t>) {
+        if constexpr (is_maybe_v<result_t>) {
             // assume shape is maybe when result is maybe
             if (static_cast<bool>(shape)) {
                 auto result = shape_transpose(*shape,axes);
                 // avoid nested optional/maybe
-                if constexpr (meta::is_maybe_v<decltype(result)>) {
+                if constexpr (is_maybe_v<decltype(result)>) {
                     if (static_cast<bool>(result)) {
                         return result_t{*result};
                     } else {
-                        return result_t{meta::Nothing};
+                        return result_t{Nothing};
                     }
                 } else {
                     return result_t{result};
                 }
             } else {
-                return result_t{meta::Nothing};
+                return result_t{Nothing};
             }
         } else {
             auto res = result_t {};
 
             using size_type = size_t;
 
-            if constexpr (! meta::is_constant_index_array_v<result_t>) {
+            if constexpr (! is_constant_index_array_v<result_t>) {
                 auto N = (size_type)len(shape);
-                if constexpr (meta::is_resizable_v<result_t>) {
+                if constexpr (is_resizable_v<result_t>) {
                     res.resize(N);
                 }
                 if constexpr (is_none_v<axes_t>) {
                     // simply reverse
-                    if constexpr (meta::is_tuple_v<shape_t>) {
-                        constexpr auto N = meta::len_v<shape_t>;
-                        meta::template_for<N>([&](auto i){
-                            constexpr auto I = meta::ct_v<(N-1)-decltype(i)::value>;
+                    if constexpr (is_tuple_v<shape_t>) {
+                        constexpr auto N = len_v<shape_t>;
+                        template_for<N>([&](auto i){
+                            constexpr auto I = ct_v<(N-1)-decltype(i)::value>;
                             at(res,i) = at(shape,I);
                         });
                     } else {
@@ -58,9 +58,9 @@ namespace nmtools::index
                     }
                 } else {
                     // TODO: support partial index
-                    if constexpr (meta::is_tuple_v<result_t>) {
-                        constexpr auto N = meta::len_v<result_t>;
-                        meta::template_for<N>([&](auto i){
+                    if constexpr (is_tuple_v<result_t>) {
+                        constexpr auto N = len_v<result_t>;
+                        template_for<N>([&](auto i){
                             at(res,i) = at(shape,at(axes,i));
                         });
                     } else {

@@ -19,7 +19,7 @@ namespace nmtools::index
             && !is_fail_v<result_t>
         ) {
             auto n = len(indices);
-            if constexpr (meta::is_resizable_v<result_t>) {
+            if constexpr (is_resizable_v<result_t>) {
                 result.resize(n+1);
             }
             [[maybe_unused]]

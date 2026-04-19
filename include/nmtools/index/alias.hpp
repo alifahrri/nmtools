@@ -21,7 +21,7 @@ namespace nmtools::index
             && !is_fail_v<result_t>
         ) {
             auto size = len(operands_ids);
-            if constexpr (meta::is_resizable_v<result_t>) {
+            if constexpr (is_resizable_v<result_t>) {
                 result.resize(size);
             }
             nm_index_t max_reserved_id = [&]{
@@ -65,7 +65,7 @@ namespace nmtools::index
     #endif
 
     // polynomial rolling hash
-    template <typename aliases_t, typename base_t=meta::ct<NMTOOLS_ALIAS_DEFAULT_BASE>, typename prime_t=meta::ct<NMTOOLS_ALIAS_DEFAULT_PRIME>>
+    template <typename aliases_t, typename base_t=ct<NMTOOLS_ALIAS_DEFAULT_BASE>, typename prime_t=ct<NMTOOLS_ALIAS_DEFAULT_PRIME>>
     constexpr auto generate_alias(const aliases_t& aliases
         , [[maybe_unused]] base_t base=base_t{}
         , [[maybe_unused]] prime_t prime=prime_t{})
@@ -74,7 +74,7 @@ namespace nmtools::index
 
         auto result = result_t {};
 
-        if constexpr (!meta::is_constant_index_v<result_t>
+        if constexpr (!is_constant_index_v<result_t>
             && !is_fail_v<result_t>
         ) {
             result = 0;
@@ -161,7 +161,7 @@ namespace nmtools::meta
                 constexpr auto base    = to_value_v<base_t>;
                 constexpr auto prime   = to_value_v<prime_t>;
                 constexpr auto result  = index::generate_alias(aliases,base,prime);
-                using type = meta::ct<(nm_index_t)result>;
+                using type = ct<(nm_index_t)result>;
                 return as_value_v<type>;
             } else {
                 using type = nm_size_t;

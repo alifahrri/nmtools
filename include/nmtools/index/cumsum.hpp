@@ -26,18 +26,18 @@ namespace nmtools::index
     template <typename array_t>
     constexpr auto cumsum(const array_t& array)
     {
-        using return_t = meta::resolve_optype_t<cumsum_t,array_t>;
+        using return_t = resolve_optype_t<cumsum_t,array_t>;
         auto ret = return_t {};
-        if constexpr (meta::is_resizable_v<return_t>)
+        if constexpr (is_resizable_v<return_t>)
             ret.resize(len(array));
         
-        if constexpr (!meta::is_constant_index_array_v<return_t>) {
+        if constexpr (!is_constant_index_array_v<return_t>) {
             using namespace literals;
             at(ret,0_ct) = at(array,0_ct);
-            if constexpr (meta::is_tuple_v<return_t>) {
-                constexpr auto N = meta::len_v<return_t>;
-                meta::template_for<N-1>([&](auto I){
-                    constexpr auto I_plus_1 = meta::ct_v<(size_t)I+1>;
+            if constexpr (is_tuple_v<return_t>) {
+                constexpr auto N = len_v<return_t>;
+                template_for<N-1>([&](auto I){
+                    constexpr auto I_plus_1 = ct_v<(size_t)I+1>;
                     at(ret,I_plus_1) = at(ret,I) + at(array,I_plus_1);
                 });
             } else {

@@ -22,7 +22,7 @@ namespace nmtools::index
     {
         using shape_type  = const shape_t&;
         using stride_type = resolve_optype_t<compute_strides_t,shape_t>;
-        using size_type   = remove_cvref_t<meta::get_index_element_type_t<shape_t>>;
+        using size_type   = remove_cvref_t<get_index_element_type_t<shape_t>>;
 
         shape_type shape;
         stride_type stride;
@@ -71,7 +71,7 @@ namespace nmtools::index
     template <typename shape_t>
     constexpr auto ndindex(const shape_t& shape)
     {
-        static_assert( meta::is_index_array_v<shape_t>
+        static_assert( is_index_array_v<shape_t>
             , "unsupported ndindex" );
         return ndindex_t(shape);
     } // ndindex

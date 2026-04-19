@@ -25,29 +25,29 @@ namespace nmtools::index
     nmtools_index_attribute
     constexpr auto compute_offset(const indices_t& indices, const strides_t& strides)
     {
-        using return_t = meta::resolve_optype_t<compute_offset_t,indices_t,strides_t>;
+        using return_t = resolve_optype_t<compute_offset_t,indices_t,strides_t>;
 
-        if constexpr (meta::is_maybe_v<indices_t>) {
+        if constexpr (is_maybe_v<indices_t>) {
             if (static_cast<bool>(indices)) {
                 auto result = compute_offset(*indices,strides);
-                if constexpr (meta::is_maybe_v<decltype(result)>) {
-                    return (result ? return_t{*result} : return_t{meta::Nothing});
+                if constexpr (is_maybe_v<decltype(result)>) {
+                    return (result ? return_t{*result} : return_t{Nothing});
                 } else {
                     return return_t{result};
                 }
             } else {
-                return return_t{meta::Nothing};
+                return return_t{Nothing};
             }
-        } else if constexpr (meta::is_maybe_v<strides_t>) {
+        } else if constexpr (is_maybe_v<strides_t>) {
             if (static_cast<bool>(strides)) {
                 auto result = compute_offset(indices,*strides);
                 return return_t{result};
             } else {
-                return return_t{meta::Nothing};
+                return return_t{Nothing};
             }
         } else if constexpr (
-            meta::is_constant_index_v<return_t>
-            || meta::is_fail_v<return_t>
+            is_constant_index_v<return_t>
+            || is_fail_v<return_t>
         ) {
             auto result = return_t{};
             return result;
@@ -56,10 +56,10 @@ namespace nmtools::index
             size_type offset = 0;
             [[maybe_unused]] auto m = (size_type)len(indices);
             [[maybe_unused]] auto n = (size_type)len(strides);
-            constexpr auto N = meta::len_v<indices_t>;
-            constexpr auto M = meta::len_v<strides_t>;
+            constexpr auto N = len_v<indices_t>;
+            constexpr auto M = len_v<strides_t>;
             if constexpr ((N > 0) && (M > 0)) {
-                meta::template_for<N>([&](auto index){
+                template_for<N>([&](auto index){
                     offset += static_cast<size_type>(at(strides,index)) * static_cast<size_type>(at(indices,index));
                 });
             } else {

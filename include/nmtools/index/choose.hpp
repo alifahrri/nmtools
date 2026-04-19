@@ -30,11 +30,11 @@ namespace nmtools::index
     constexpr auto choose(const indices_t& indices, const array_t& array)
     {
         // TODO: support constant index array
-        using return_t = meta::resolve_optype_t<choose_t,indices_t,array_t>;
+        using return_t = resolve_optype_t<choose_t,indices_t,array_t>;
         auto res = return_t{};
 
-        if constexpr (!meta::is_constant_index_array_v<return_t>) {
-            if constexpr (meta::is_resizable_v<return_t>) {
+        if constexpr (!is_constant_index_array_v<return_t>) {
+            if constexpr (is_resizable_v<return_t>) {
                 res.resize(len(indices));
             }
 
@@ -46,8 +46,8 @@ namespace nmtools::index
                 at(res,i) = s;
             }; // choose_impl
 
-            if constexpr (meta::is_fixed_index_array_v<indices_t>) {
-                meta::template_for<meta::len_v<indices_t>>([&](auto i){
+            if constexpr (is_fixed_index_array_v<indices_t>) {
+                template_for<len_v<indices_t>>([&](auto i){
                     choose_impl(i);
                 });
             } else {
@@ -91,7 +91,7 @@ namespace nmtools::meta
                 constexpr auto array   = to_value_v<array_t>;
                 constexpr auto result  = index::choose(indices,array);
                 using nmtools::len, nmtools::at;
-                return meta::template_reduce<len(result)>([&](auto init, auto index){
+                return template_reduce<len(result)>([&](auto init, auto index){
                     constexpr auto I  = at(result,index);
                     using init_type   = type_t<decltype(init)>;
                     using result_type = append_type_t<init_type,ct<(nm_size_t)I>>;

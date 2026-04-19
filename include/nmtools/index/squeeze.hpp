@@ -13,12 +13,12 @@ namespace nmtools::index
     template <typename shape_t>
     constexpr auto shape_squeeze(const shape_t& shape)
     {
-        using result_t = meta::resolve_optype_t<shape_squeeze_t,shape_t>;
+        using result_t = resolve_optype_t<shape_squeeze_t,shape_t>;
 
         auto result = result_t {};
 
-        if constexpr (!meta::is_constant_index_array_v<result_t>) {
-            if constexpr (meta::is_resizable_v<result_t>) {
+        if constexpr (!is_constant_index_array_v<result_t>) {
+            if constexpr (is_resizable_v<result_t>) {
                 auto non_single_count = 0;
                 for (size_t i=0; i<(size_t)len(shape); i++) {
                     if (at(shape,i)>1) {
@@ -27,10 +27,10 @@ namespace nmtools::index
                 }
                 result.resize(non_single_count);
             }
-            if constexpr (meta::is_tuple_v<result_t>) {
-                constexpr auto DIM = meta::len_v<result_t>;
+            if constexpr (is_tuple_v<result_t>) {
+                constexpr auto DIM = len_v<result_t>;
                 auto offset = 0ul;
-                meta::template_for<DIM>([&](auto index){
+                template_for<DIM>([&](auto index){
                     auto s_i = 0ul;
                     for (size_t i=index; i<len(shape); i++) {
                         s_i = at(shape,index+offset);

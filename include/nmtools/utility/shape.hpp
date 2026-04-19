@@ -420,7 +420,7 @@ namespace nmtools
             constexpr auto fixed_size = meta::fixed_size_v<array_t>;
             [[maybe_unused]]
             constexpr auto bounded_size = meta::bounded_size_v<array_t>;
-            constexpr auto c_shape = meta::to_value_v<decltype(shape(array))>;
+            constexpr auto c_shape = meta::to_value_v<decltype(nmtools::shape(array))>;
             using c_shape_t [[maybe_unused]] = decltype(c_shape);
             // TODO: propagate minimum value when c_shape is mixed index array
             if constexpr (!meta::is_fail_v<decltype(fixed_size)>) {

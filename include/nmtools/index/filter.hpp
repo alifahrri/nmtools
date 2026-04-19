@@ -23,8 +23,8 @@ namespace nmtools::index
     {
         auto indices = where(f,array);
         auto chosen  = choose(indices,array);
-        using indices_t = meta::remove_cvref_t<decltype(indices)>;
-        using chosen_t  = meta::remove_cvref_t<decltype(chosen)>;
+        using indices_t = remove_cvref_t<decltype(indices)>;
+        using chosen_t  = remove_cvref_t<decltype(chosen)>;
         using return_t  = nmtools_tuple<indices_t,chosen_t>;
         return return_t{indices, chosen};
     } // filter

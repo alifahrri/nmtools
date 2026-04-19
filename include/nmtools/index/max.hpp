@@ -15,10 +15,10 @@ namespace nmtools::index
     {
         auto reduce = [](auto& f, auto initial, const auto& array){
             auto ret = initial;
-            using array_type = meta::remove_cvref_t<decltype(array)>;
-            if constexpr (meta::is_fixed_index_array_v<array_type>) {
-                constexpr auto N = meta::len_v<array_type>;
-                meta::template_for<N>([&](auto index){
+            using array_type = remove_cvref_t<decltype(array)>;
+            if constexpr (is_fixed_index_array_v<array_type>) {
+                constexpr auto N = len_v<array_type>;
+                template_for<N>([&](auto index){
                     constexpr auto i = decltype(index)::value;
                     ret = f(ret, at<i>(array));
                 });
@@ -34,7 +34,7 @@ namespace nmtools::index
         auto f = [](auto i, auto a) {
             using i_t = decltype(i);
             using a_t = decltype(a);
-            using c_t = meta::promote_index_t<i_t,a_t>;
+            using c_t = promote_index_t<i_t,a_t>;
             if ((c_t)i > (c_t)a) {
                 return i;
             } else {
@@ -43,7 +43,7 @@ namespace nmtools::index
         };
 
         using namespace ::nmtools::literals;
-        using return_t = meta::resolve_optype_t<max_t,array_t>;
+        using return_t = resolve_optype_t<max_t,array_t>;
         auto initial = static_cast<return_t>(at(array, 0_ct));
 
         return reduce(f,initial,array);

@@ -31,7 +31,7 @@ namespace nmtools::index
 
             auto pad_width = [&](){
                 if constexpr (is_constant_index_array_v<pad_width_t>) {
-                    return meta::to_value_v<pad_width_t>;
+                    return to_value_v<pad_width_t>;
                 } else {
                     // can't just return since may decay raw array to pointer
                     return ref(pad_width_);
@@ -40,7 +40,7 @@ namespace nmtools::index
 
             auto shape = [&](){
                 if constexpr (is_constant_index_array_v<shape_t>) {
-                    return meta::to_value_v<shape_t>;
+                    return to_value_v<shape_t>;
                 } else {
                     return ref(shape_);
                 }
@@ -51,15 +51,15 @@ namespace nmtools::index
 
             if (dim*2 == n_pad) {
                 auto res = result_t {};
-                if constexpr (meta::is_resizable_v<result_t>) {
+                if constexpr (is_resizable_v<result_t>) {
                     res.resize(dim);
                 }
                 auto shape_pad_impl = [&](auto i){
                     at(res,i) = at(shape,i) + at(pad_width,i) + at(pad_width,dim+i);
                 };
-                if constexpr (meta::is_tuple_v<result_t>) {
-                    constexpr auto N = meta::len_v<result_t>;
-                    meta::template_for<N>(shape_pad_impl);
+                if constexpr (is_tuple_v<result_t>) {
+                    constexpr auto N = len_v<result_t>;
+                    template_for<N>(shape_pad_impl);
                 } else {
                     for (size_t i=0; i<dim; i++) {
                         shape_pad_impl(i);
@@ -69,7 +69,7 @@ namespace nmtools::index
                 // ret = res;
                 return return_t{res};
             } else {
-                // ret = meta::Nothing;
+                // ret = Nothing;
                 return return_t{};
             }
 
@@ -103,8 +103,8 @@ namespace nmtools::index
         using result_t = resolve_optype_t<pad_t,index_t,src_shape_t,dst_shape_t,pad_width_t>;
         // use maybe type to indicate out of bound index (of src shape)
         using return_t = nmtools_maybe<result_t>;
-        using idx_t    = meta::get_index_element_type_t<result_t>;
-        using s_idx_t  = meta::make_signed_t<idx_t>;
+        using idx_t    = get_index_element_type_t<result_t>;
+        using s_idx_t  = make_signed_t<idx_t>;
 
         auto res = result_t {};
 
@@ -115,7 +115,7 @@ namespace nmtools::index
         // auto n_pad    = len(pad_width);
         // assume src_dim*2 == n_pad, dst_dim == src_dim == idx_dim
 
-        if constexpr (meta::is_resizable_v<result_t>) {
+        if constexpr (is_resizable_v<result_t>) {
             auto src_dim = len(src_shape);
             res.resize(src_dim);
         }
@@ -133,9 +133,9 @@ namespace nmtools::index
                 at(res,i) = idx - p_i;
             }
         };
-        if constexpr (meta::is_tuple_v<result_t>) {
-            constexpr auto N = meta::len_v<result_t>;
-            meta::template_for<N>(pad_impl);
+        if constexpr (is_tuple_v<result_t>) {
+            constexpr auto N = len_v<result_t>;
+            template_for<N>(pad_impl);
         } else {
             for (size_t i=0; (i<idx_dim) && (!out_of_bound); i++) {
                 pad_impl(i);
@@ -145,7 +145,7 @@ namespace nmtools::index
         if (!out_of_bound) {
             return return_t{res};
         } else {
-            return return_t{meta::Nothing};
+            return return_t{Nothing};
         }
     } // pad
 } // namespace nmtools::index

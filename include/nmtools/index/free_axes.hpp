@@ -27,30 +27,30 @@ namespace nmtools::index
     template <typename ashape_t, typename bshape_t>
     constexpr auto free_axes(const ashape_t& ashape, const bshape_t& bshape)
     {
-        using return_t = meta::resolve_optype_t<free_axes_t,ashape_t,bshape_t>;
+        using return_t = resolve_optype_t<free_axes_t,ashape_t,bshape_t>;
 
-        if constexpr (meta::is_maybe_v<ashape_t>) {
+        if constexpr (is_maybe_v<ashape_t>) {
             if (static_cast<bool>(ashape)) {
                 auto result = free_axes(*ashape,bshape);
-                if constexpr (meta::is_maybe_v<decltype(result)>) {
+                if constexpr (is_maybe_v<decltype(result)>) {
                     return (result
                         ? return_t{*result}
-                        : return_t{meta::Nothing}
+                        : return_t{Nothing}
                     );
                 } else {
                     return return_t{result};
                 }
             } else {
-                return return_t{meta::Nothing};
+                return return_t{Nothing};
             }
-        } else if constexpr (meta::is_maybe_v<bshape_t>) {
+        } else if constexpr (is_maybe_v<bshape_t>) {
             if (static_cast<bool>(bshape)) {
                 auto result = free_axes(ashape,*bshape);
                 return return_t{result};
             } else {
-                return return_t{meta::Nothing};
+                return return_t{Nothing};
             }
-        } else if constexpr (meta::is_constant_index_array_v<return_t>) {
+        } else if constexpr (is_constant_index_array_v<return_t>) {
             auto result = return_t{};
             return result;
         } else {
@@ -60,12 +60,12 @@ namespace nmtools::index
             auto n = len(bshape);
             auto s = m;
 
-            if constexpr (meta::is_resizable_v<return_t>)
+            if constexpr (is_resizable_v<return_t>)
                 res.resize(s);
             
             auto free_axes_impl = [&](auto i){
                 // @todo support type list (tuple of int constant)
-                using idx_t = meta::make_signed_t<decltype(m-i-1)>;
+                using idx_t = make_signed_t<decltype(m-i-1)>;
                 idx_t bi = n - i - 1;
                 idx_t si = s - i - 1;
                 auto free = (bi < 0);

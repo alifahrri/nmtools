@@ -21,8 +21,8 @@ namespace nmtools::index
         nmtools_index_attribute
         constexpr auto compute_indices(indices_t& indices, const offset_t& offset, const shape_t& shape, const strides_t& strides)
         {
-            constexpr auto n = meta::len_v<shape_t>;
-            constexpr auto m = meta::len_v<strides_t>;
+            constexpr auto n = len_v<shape_t>;
+            constexpr auto m = len_v<strides_t>;
 
             using size_type = size_t;
 
@@ -31,7 +31,7 @@ namespace nmtools::index
                 static_assert (m==n
                     , "unsupported compute_indices, mismatched shape for shape and strides"
                 );
-                meta::template_for<n>([&](auto index){
+                template_for<n>([&](auto index){
                     constexpr auto i = decltype(index)::value;
                     at<i>(indices) = (offset / at<i>(strides)) % at<i>(shape);
                 });
@@ -55,42 +55,42 @@ namespace nmtools::index
     nmtools_index_attribute
     constexpr auto compute_indices(const offset_t& offset, const shape_t& shape, const strides_t& strides)
     {
-        using return_t = meta::resolve_optype_t<compute_indices_t,offset_t,shape_t,strides_t>;
-        if constexpr (meta::is_maybe_v<offset_t>) {
+        using return_t = resolve_optype_t<compute_indices_t,offset_t,shape_t,strides_t>;
+        if constexpr (is_maybe_v<offset_t>) {
             if (static_cast<bool>(offset)) {
                 auto result = compute_indices(*offset,shape,strides);
-                if constexpr (meta::is_maybe_v<decltype(result)>) {
-                    return (result ? return_t{*result} : return_t{meta::Nothing});
+                if constexpr (is_maybe_v<decltype(result)>) {
+                    return (result ? return_t{*result} : return_t{Nothing});
                 } else {
                     return return_t{result};
                 }
             } else {
-                return return_t{meta::Nothing};
+                return return_t{Nothing};
             }
-        } else if constexpr (meta::is_maybe_v<shape_t>) {
+        } else if constexpr (is_maybe_v<shape_t>) {
             if (static_cast<bool>(shape)) {
                 auto result = compute_indices(offset,*shape,strides);
-                if constexpr (meta::is_maybe_v<decltype(result)>) {
-                    return (result ? return_t{*result} : return_t{meta::Nothing});
+                if constexpr (is_maybe_v<decltype(result)>) {
+                    return (result ? return_t{*result} : return_t{Nothing});
                 } else {
                     return return_t{result};
                 }
             } else {
-                return return_t{meta::Nothing};
+                return return_t{Nothing};
             }
-        } else if constexpr (meta::is_maybe_v<strides_t>) {
+        } else if constexpr (is_maybe_v<strides_t>) {
             if (static_cast<bool>(strides)) {
                 auto result = compute_indices(offset,shape,*strides);
                 return return_t{result};
             } else {
-                return return_t{meta::Nothing};
+                return return_t{Nothing};
             }
-        } else if constexpr (meta::is_constant_index_array_v<return_t>) {
+        } else if constexpr (is_constant_index_array_v<return_t>) {
             auto result = return_t{};
             return result;
         } else {
             auto indices = return_t{};
-            if constexpr (meta::is_resizable_v<return_t>)
+            if constexpr (is_resizable_v<return_t>)
                 indices.resize(len(shape));
 
             impl::compute_indices(indices, offset, shape, strides);

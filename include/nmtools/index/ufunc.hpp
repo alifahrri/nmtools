@@ -12,14 +12,14 @@ namespace nmtools::index
     template <typename shape_t, typename...shapes_t>
     constexpr auto shape_ufunc(const shape_t& shape, const shapes_t&...shapes)
     {
-        using result_t = meta::resolve_optype_t<shape_ufunc_t,shape_t,shapes_t...>;
+        using result_t = resolve_optype_t<shape_ufunc_t,shape_t,shapes_t...>;
         using return_t = nmtools_maybe<result_t>;
 
         using shapes_type = nmtools_tuple<const shapes_t&...>;
         auto shapes_tuple = shapes_type{shapes...};
 
         auto valid = true;
-        meta::template_for<sizeof...(shapes)>([&](auto index){
+        template_for<sizeof...(shapes)>([&](auto index){
             const auto shape_I = at(shapes_tuple,index);
             if (len(shape) != len(shape_I)) {
                 valid = false;
@@ -40,13 +40,13 @@ namespace nmtools::index
 
         auto result = result_t {};
 
-        if constexpr (!meta::is_constant_index_array_v<result_t>) {
-            if constexpr (meta::is_resizable_v<result_t>) {
+        if constexpr (!is_constant_index_array_v<result_t>) {
+            if constexpr (is_resizable_v<result_t>) {
                 result.resize(len(shape));
             }
-            if constexpr (meta::is_tuple_v<result_t>) {
-                constexpr auto N = meta::len_v<result_t>;
-                meta::template_for<N>([&](auto i){
+            if constexpr (is_tuple_v<result_t>) {
+                constexpr auto N = len_v<result_t>;
+                template_for<N>([&](auto i){
                     at(result,i) = at(shape,i);
                 });
             } else {
@@ -64,20 +64,20 @@ namespace nmtools::index
     template <typename dst_shape_t, typename a_size_t, typename...sizes_t>
     constexpr auto size_ufunc(const dst_shape_t& dst_shape, [[maybe_unused]] a_size_t a_size, sizes_t...)
     {
-        using result_t = meta::resolve_optype_t<size_ufunc_t,dst_shape_t,a_size_t,sizes_t...>;
-        if constexpr (meta::is_maybe_v<result_t>) {
+        using result_t = resolve_optype_t<size_ufunc_t,dst_shape_t,a_size_t,sizes_t...>;
+        if constexpr (is_maybe_v<result_t>) {
             // assume a_size is maybe type when result_t is maybe
             // TODO: handle other sizes & dst_shape
             if (static_cast<bool>(a_size)) {
                 auto res = product(unwrap(dst_shape));
                 return result_t{res};
             } else {
-                return result_t{meta::Nothing};
+                return result_t{Nothing};
             }
         } else {
             auto res = result_t {};
 
-            if constexpr (!meta::is_constant_index_v<result_t>) {
+            if constexpr (!is_constant_index_v<result_t>) {
                 res = product(dst_shape);
             }
 

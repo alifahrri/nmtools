@@ -12,19 +12,19 @@ namespace nmtools::index
     template <typename array_t, typename value_t>
     constexpr auto contains(const array_t& array, const value_t& value)
     {
-        if constexpr (meta::is_maybe_v<array_t>
-            || meta::is_maybe_v<value_t>
+        if constexpr (is_maybe_v<array_t>
+            || is_maybe_v<value_t>
         ) {
             using result_t = decltype(contains(unwrap(array),unwrap(value)));
-            using return_t = meta::conditional_t<meta::is_maybe_v<result_t>,result_t,nmtools_maybe<result_t>>;
+            using return_t = conditional_t<is_maybe_v<result_t>,result_t,nmtools_maybe<result_t>>;
             return (has_value(array) && has_value(value)
                 ? return_t{contains(unwrap(array),unwrap(value))}
-                : return_t{meta::Nothing}
+                : return_t{Nothing}
             );
         } else {
-            using result_t = meta::resolve_optype_t<contains_t,array_t,value_t>;
+            using result_t = resolve_optype_t<contains_t,array_t,value_t>;
 
-            if constexpr (!meta::is_constant_index_v<result_t> && !meta::is_fail_v<result_t>) {
+            if constexpr (!is_constant_index_v<result_t> && !is_fail_v<result_t>) {
                 for (nm_size_t i=0; i<(nm_size_t)len(array); i++) {
                     if (utils::isequal(at(array,i),value)) {
                         return true;
@@ -62,7 +62,7 @@ namespace nmtools::meta
                 constexpr auto array = to_value_v<array_t>;
                 constexpr auto value = to_value_v<value_t>;
                 constexpr auto result = index::contains(array,value);
-                using type = meta::ct<unwrap(result)>;
+                using type = ct<unwrap(result)>;
                 return as_value_v<type>;
             } else {
                 using type = bool;

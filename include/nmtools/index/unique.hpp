@@ -12,20 +12,20 @@ namespace nmtools::index
     template <typename index_array_t>
     constexpr auto unique(const index_array_t& array)
     {
-        if constexpr (meta::is_maybe_v<index_array_t>) {
+        if constexpr (is_maybe_v<index_array_t>) {
             using result_t = decltype(unique(unwrap(array)));
-            using return_t = meta::conditional_t<meta::is_maybe_v<result_t>,result_t,nmtools_maybe<result_t>>;
+            using return_t = conditional_t<is_maybe_v<result_t>,result_t,nmtools_maybe<result_t>>;
             return (has_value(array)
                 ? return_t{unique(unwrap(array))}
-                : return_t{meta::Nothing}
+                : return_t{Nothing}
             );
         } else {
-            using result_t = meta::resolve_optype_t<unique_t,index_array_t>;
+            using result_t = resolve_optype_t<unique_t,index_array_t>;
 
             auto result = result_t {};
 
-            if constexpr (!meta::is_fail_v<result_t>
-                && !meta::is_constant_index_array_v<result_t>
+            if constexpr (!is_fail_v<result_t>
+                && !is_constant_index_array_v<result_t>
             ) {
                 // assume has push_back
                 auto n = len(array);

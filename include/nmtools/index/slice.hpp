@@ -39,7 +39,7 @@ namespace nmtools::index
             if constexpr (is_none_v<stop_t>)
                 return si;
             else {
-                using stop_type = meta::promote_index_t<stop_t,meta::remove_cvref_t<decltype(si)>>;
+                using stop_type = promote_index_t<stop_t,remove_cvref_t<decltype(si)>>;
                 return static_cast<stop_type>(stop_) < static_cast<stop_type>(si) ?
                     static_cast<stop_type>(stop_) : static_cast<stop_type>(si);
             }
@@ -55,19 +55,19 @@ namespace nmtools::index
         }
         // need start + 1 for such following case: 2::-?
         // for such case, allowed indices should be (0,1,2) (range of 3) hence start + 1
-        else if constexpr (meta::is_index_v<start_t> && is_none_v<stop_t> && meta::is_index_v<step_t>) {
+        else if constexpr (is_index_v<start_t> && is_none_v<stop_t> && is_index_v<step_t>) {
             return (step_ < 0 && start >= 0) ? start + 1 : si - start;
         }
-        else if constexpr (meta::is_index_v<start_t> && is_none_v<stop_t>) {
+        else if constexpr (is_index_v<start_t> && is_none_v<stop_t>) {
             return si - start;
         }
         // start is none, a.k.a. zero
-        else if constexpr (is_none_v<start_t> && meta::is_index_v<stop_t>) {
+        else if constexpr (is_none_v<start_t> && is_index_v<stop_t>) {
             return (stop_ < 0 ? (si + stop_) : stop);
         }
-        else /* if constexpr (meta::is_index_v<start_t> && meta::is_index_v<stop_t>) */ {
+        else /* if constexpr (is_index_v<start_t> && is_index_v<stop_t>) */ {
             // to make sure we have consistent return types
-            using result_t = meta::promote_index_t<start_t,stop_t>;
+            using result_t = promote_index_t<start_t,stop_t>;
             // note that here we use "stop" instead of "stop_",
             // also note that stop is already normalized
             if ((stop < 0) && (start < 0)) {
@@ -95,7 +95,7 @@ namespace nmtools::index
         // NOTE: step_ is passed instead of captured to avoid clang error
         if constexpr (is_none_v<step_t>)
             return 1ul;
-        else if constexpr (meta::is_unsigned_v<step_t>)
+        else if constexpr (is_unsigned_v<step_t>)
             return step_;
         else {
             return (step_ < 0 ? -step_ : step_);
@@ -105,8 +105,8 @@ namespace nmtools::index
     template <typename indices_t, typename si_t, typename start_t, typename stop_t, typename step_t, typename i_i_t>
     constexpr inline auto compute_index(const indices_t& indices, si_t si, start_t start_, stop_t stop_, step_t step_, i_i_t i_i)
     {
-        using index_t [[maybe_unused]]  = meta::get_index_element_type_t<indices_t>;
-        using sindex_t [[maybe_unused]] = meta::make_signed_t<index_t>;
+        using index_t [[maybe_unused]]  = get_index_element_type_t<indices_t>;
+        using sindex_t [[maybe_unused]] = make_signed_t<index_t>;
         using result_t [[maybe_unused]] = meta::make_unsigned_t<index_t>;
         [[maybe_unused]] auto start = start_; // just alias
         // following numpy, stop is actually (stop,shape_i)
@@ -115,7 +115,7 @@ namespace nmtools::index
                 return si;
             // clip value, keep sign
             else {
-                using common_t = meta::promote_index_t<stop_t,si_t>;
+                using common_t = promote_index_t<stop_t,si_t>;
                 auto s = static_cast<common_t>(stop_) < static_cast<common_t>(si)
                             ? static_cast<common_t>(stop_) : static_cast<common_t>(si);
                         s = static_cast<common_t>(s) > static_cast<common_t>(-si)
@@ -133,7 +133,7 @@ namespace nmtools::index
             return (result_t)index;
         }
         // (2) only start is integer
-        else if constexpr (meta::is_index_v<start_t> && is_none_v<stop_t> && is_none_v<step_t>) {
+        else if constexpr (is_index_v<start_t> && is_none_v<stop_t> && is_none_v<step_t>) {
             // example case:
             // a[0::]
             // a[-1::]
@@ -142,7 +142,7 @@ namespace nmtools::index
             // return {start >= 0 ? start : stop - start, 1};
         }
         // (3) start and stop is integer, can be positive or negative
-        else if constexpr (meta::is_index_v<start_t> && meta::is_index_v<stop_t> && is_none_v<step_t>) {
+        else if constexpr (is_index_v<start_t> && is_index_v<stop_t> && is_none_v<step_t>) {
             // example case:
             // a[0:2:]
             // a[-2:3:]
@@ -161,7 +161,7 @@ namespace nmtools::index
             return (result_t)index;
         }
         // (4) all three is integer, can be positive or negative
-        else if constexpr (meta::is_index_v<start_t> && meta::is_index_v<stop_t> && meta::is_index_v<step_t>) {
+        else if constexpr (is_index_v<start_t> && is_index_v<stop_t> && is_index_v<step_t>) {
             auto _start = index_t{0};
             auto _step  = index_t{0};
             // step is negative:
@@ -208,11 +208,11 @@ namespace nmtools::index
             }
             auto index = _start + at(indices,i_i) * _step;
             return (result_t)index;
-        } else if constexpr (is_none_v<start_t> && meta::is_index_v<stop_t> && is_none_v<step_t>) {
+        } else if constexpr (is_none_v<start_t> && is_index_v<stop_t> && is_none_v<step_t>) {
             auto index = at(indices,i_i);
             return (result_t)index;
             // return {0,1};
-        } else if constexpr (is_none_v<start_t> && meta::is_index_v<stop_t> && meta::is_index_v<step_t>) {
+        } else if constexpr (is_none_v<start_t> && is_index_v<stop_t> && is_index_v<step_t>) {
             auto _start = index_t{0};
             auto _step  = index_t{0};
             if (stop > 0 && step > 0) {
@@ -235,7 +235,7 @@ namespace nmtools::index
             auto index = _start + at(indices,i_i) * _step;
             return (result_t)index;
         }
-        else if constexpr (is_none_v<start_t> && is_none_v<stop_t> && meta::is_index_v<step_t>) {
+        else if constexpr (is_none_v<start_t> && is_none_v<stop_t> && is_index_v<step_t>) {
             // example case:
             // a[::-1]
             auto _start = sindex_t{0};
@@ -252,7 +252,7 @@ namespace nmtools::index
             auto index = _start + at(indices,i_i) * _step;
             return (result_t)index;
         }
-        else /* if constexpr (meta::is_index_v<start_t> && is_none_v<stop_t> && meta::is_index_v<step_t>) */ {
+        else /* if constexpr (is_index_v<start_t> && is_none_v<stop_t> && is_index_v<step_t>) */ {
             auto _start = index_t{0};
             auto _step  = index_t{0};
             if (start >= 0 && step > 0) {
@@ -287,7 +287,7 @@ namespace nmtools::index
     template <typename value_t>
     constexpr auto is_int(const value_t& value)
     {
-        if constexpr (meta::is_either_v<value_t>) {
+        if constexpr (is_either_v<value_t>) {
             using left_t  = meta::get_either_left_t<value_t>;
             using right_t = meta::get_either_right_t<value_t>;
             auto l_ptr = nmtools::get_if<left_t>(&value);
@@ -298,7 +298,7 @@ namespace nmtools::index
                 return is_int(*r_ptr);
             }
         } else {
-            return meta::is_index_v<value_t>;
+            return is_index_v<value_t>;
         }
     }
 
@@ -312,7 +312,7 @@ namespace nmtools::index
     template <typename value_t>
     constexpr auto is_ellipsis(const value_t& value)
     {
-        if constexpr (meta::is_either_v<value_t>) {
+        if constexpr (is_either_v<value_t>) {
             using left_t  = meta::get_either_left_t<value_t>;
             using right_t = meta::get_either_right_t<value_t>;
             auto l_ptr = nmtools::get_if<left_t>(&value);
@@ -337,28 +337,28 @@ namespace nmtools::index
     template <typename slice_t>
     constexpr auto get_index_array(const slice_t& slice)
     {
-        if constexpr (meta::is_either_v<slice_t>) {
+        if constexpr (is_either_v<slice_t>) {
             using left_t  = meta::get_either_left_t<slice_t>;
             using right_t = meta::get_either_right_t<slice_t>;
             auto l_ptr = nmtools::get_if<left_t>(&slice);
             auto r_ptr = nmtools::get_if<right_t>(&slice);
             // assume ther no other index array in this possibly-nested either
             // TODO: consider to use flatten_either
-            if constexpr (meta::is_index_array_v<left_t>) {
+            if constexpr (is_index_array_v<left_t>) {
                 return l_ptr;
-            } else if constexpr (meta::is_index_array_v<right_t>) {
+            } else if constexpr (is_index_array_v<right_t>) {
                 return r_ptr;
             }
             // if neither left or right is index array,
             // then the only possible index array is those who is either
-            else if constexpr (meta::is_either_v<left_t>) {
+            else if constexpr (is_either_v<left_t>) {
                 using return_t = decltype(get_index_array(*l_ptr));
                 if (l_ptr) {
                     return static_cast<return_t>(get_index_array(*l_ptr));
                 } else {
                     return static_cast<return_t>(nullptr);
                 }
-            } else if constexpr (meta::is_either_v<right_t>) {
+            } else if constexpr (is_either_v<right_t>) {
                 using return_t = decltype(get_index_array(*r_ptr));
                 if (r_ptr) {
                     return static_cast<return_t>(get_index_array(*r_ptr));
@@ -373,7 +373,7 @@ namespace nmtools::index
             }
         } else {
             using return_t = const slice_t*;
-            if (meta::is_index_array_v<slice_t>) {
+            if (is_index_array_v<slice_t>) {
                 return static_cast<return_t>(&slice);
             } else {
                 return static_cast<return_t>(nullptr);
@@ -391,26 +391,26 @@ namespace nmtools::index
     template <typename slice_t>
     constexpr auto get_tuple(const slice_t& slice)
     {
-        if constexpr (meta::is_either_v<slice_t>) {
+        if constexpr (is_either_v<slice_t>) {
             using left_t  = meta::get_either_left_t<slice_t>;
             using right_t = meta::get_either_right_t<slice_t>;
             auto l_ptr = nmtools::get_if<left_t>(&slice);
             auto r_ptr = nmtools::get_if<right_t>(&slice);
-            if constexpr (meta::is_tuple_v<left_t>) {
+            if constexpr (is_tuple_v<left_t>) {
                 return l_ptr;
-            } else if constexpr (meta::is_tuple_v<right_t>) {
+            } else if constexpr (is_tuple_v<right_t>) {
                 return r_ptr;
             }
             // if neither left or right is tuple,
             // then the only possible tuple is on those who is either type
-            else if constexpr (meta::is_either_v<left_t>) {
+            else if constexpr (is_either_v<left_t>) {
                 using return_t = decltype(get_tuple(*l_ptr));
                 if (l_ptr) {
                     return static_cast<return_t>(get_tuple(*l_ptr));
                 } else {
                     return static_cast<return_t>(nullptr);
                 }
-            } else if constexpr (meta::is_either_v<right_t>) {
+            } else if constexpr (is_either_v<right_t>) {
                 using return_t = decltype(get_tuple(*r_ptr));
                 if (r_ptr) {
                     return static_cast<return_t>(get_tuple(*r_ptr));
@@ -425,7 +425,7 @@ namespace nmtools::index
             }
         } else {
             using return_t = const slice_t*;
-            if (meta::is_tuple_v<slice_t>) {
+            if (is_tuple_v<slice_t>) {
                 return static_cast<return_t>(&slice);
             } else {
                 return static_cast<return_t>(nullptr);
@@ -446,7 +446,7 @@ namespace nmtools::index
     constexpr auto shape_dynamic_slice(const shape_t& shape, const slices_t& slices)
     {
         using result_t  = resolve_optype_t<shape_dynamic_slice_t,shape_t,slices_t>;
-        using size_type = meta::get_index_element_type_t<result_t>;
+        using size_type = get_index_element_type_t<result_t>;
         using slice_t [[maybe_unused]] = meta::get_value_type_t<slices_t>;
         using namespace literals;
 
@@ -459,9 +459,9 @@ namespace nmtools::index
             auto stop  = at(slice,1_ct);
             // NOTE: can not explicitly capture only slice, clang may triggers warning
             auto step  = [&](){
-                using m_slice_t = meta::remove_cvref_t<decltype(slice)>;
+                using m_slice_t = remove_cvref_t<decltype(slice)>;
                 // TODO: assert for fixed-size value_type of slices_t
-                constexpr auto N = meta::len_v<m_slice_t>;
+                constexpr auto N = len_v<m_slice_t>;
                 if constexpr (N == 3) {
                     return at(slice,2_ct);
                 } else {
@@ -493,7 +493,7 @@ namespace nmtools::index
         }();
         // TODO: error handling for ellipsis > 1
 
-        if constexpr (meta::is_resizable_v<result_t>) {
+        if constexpr (is_resizable_v<result_t>) {
             res.resize(dim-n_int);
         }
 
@@ -524,13 +524,13 @@ namespace nmtools::index
             else {
                 auto index_ptr = get_index_array(slice);
                 auto tuple_ptr = get_tuple(slice);
-                using index_t = meta::remove_cvref_t<decltype(*index_ptr)>;
-                using tuple_t = meta::remove_cvref_t<decltype(*tuple_ptr)>;
+                using index_t = remove_cvref_t<decltype(*index_ptr)>;
+                using tuple_t = remove_cvref_t<decltype(*tuple_ptr)>;
                 if (index_ptr) {
                     // avoid compile-time instantiation on ellipsis, int or other type
                     // should not be encountered at runtime,
                     // ellipsis or int at runtime should be handled by first top-level if branch
-                    if constexpr (meta::is_index_array_v<index_t>) {
+                    if constexpr (is_index_array_v<index_t>) {
                         const auto& slice_ = *index_ptr;
                         auto shape_i = at(shape,shp_i);
                         at(res,res_i) = apply_range_slice(slice_,shape_i);
@@ -541,7 +541,7 @@ namespace nmtools::index
                     // avoid compile-time instantiation on ellipsis, int or other type
                     // should not be encountered at runtime,
                     // ellipsis or int at runtime should be handled by first top-level if branch
-                    if constexpr (meta::is_tuple_v<tuple_t>) {
+                    if constexpr (is_tuple_v<tuple_t>) {
                         const auto& slice_ = *tuple_ptr;
                         auto shape_i = at(shape,shp_i);
                         at(res,res_i) = apply_range_slice(slice_,shape_i);
@@ -568,28 +568,28 @@ namespace nmtools::index
         // NOTE: use maybe type to allow nullability,
         // while also make sure the returned type is indeed index type (no either type)
         using empty_t = nmtools_maybe<int>;
-        [[maybe_unused]] auto empty = empty_t{meta::Nothing};
-        if constexpr (meta::is_either_v<value_t>) {
+        [[maybe_unused]] auto empty = empty_t{Nothing};
+        if constexpr (is_either_v<value_t>) {
             using left_t  = meta::get_either_left_t<value_t>;
             using right_t = meta::get_either_right_t<value_t>;
             auto l_ptr = nmtools::get_if<left_t>(&value);
             auto r_ptr = nmtools::get_if<right_t>(&value);
             // assume there is no other int in this possibly-nested either
             // TODO: consider to use flatten_either
-            if constexpr (meta::is_index_v<left_t>) {
+            if constexpr (is_index_v<left_t>) {
                 return l_ptr;
-            } else if constexpr (meta::is_index_v<right_t>) {
+            } else if constexpr (is_index_v<right_t>) {
                 return r_ptr;
             }
             // try to find int in left or right
-            else if constexpr (meta::is_either_v<left_t>) {
+            else if constexpr (is_either_v<left_t>) {
                 using return_t = decltype(get_int(*l_ptr));
                 if (l_ptr) {
                     return static_cast<return_t>(get_int(*l_ptr));
                 } else {
                     return static_cast<return_t>(nullptr);
                 }
-            } else if constexpr (meta::is_either_v<right_t>) {
+            } else if constexpr (is_either_v<right_t>) {
                 using return_t = decltype(get_int(*r_ptr));
                 if (r_ptr) {
                     return static_cast<return_t>(get_int(*r_ptr));
@@ -602,7 +602,7 @@ namespace nmtools::index
             else {
                 return static_cast<const int*>(nullptr);
             }
-        } else if constexpr (meta::is_index_v<value_t>) {
+        } else if constexpr (is_index_v<value_t>) {
             using return_t = const value_t*;
             return static_cast<return_t>(&value);
         } else {
@@ -633,7 +633,7 @@ namespace nmtools::index
         auto dim = len(shape);
         const auto n_slices = len(slices);
 
-        if constexpr (meta::is_resizable_v<result_t>) {
+        if constexpr (is_resizable_v<result_t>) {
             res.resize(dim);
         }
 
@@ -660,8 +660,8 @@ namespace nmtools::index
                     [[maybe_unused]]
                     auto si    = at(shape,shape_i++);
                     // TODO: use normalize axis
-                    using index_t = meta::remove_cvref_t<decltype(index)>;
-                    if constexpr (meta::is_signed_v<index_t>) {
+                    using index_t = remove_cvref_t<decltype(index)>;
+                    if constexpr (is_signed_v<index_t>) {
                         at(res,result_i++) = (index < 0 ? si - abs_(index) : index);
                     } else {
                         at(res,result_i++) = index;
@@ -680,7 +680,7 @@ namespace nmtools::index
             auto handle_index_array = [&](auto slice){
                 const auto [start_, stop_, step_] = [&](){
                     // assume slice has tuple_size
-                    constexpr auto NS = meta::len_v<decltype(slice)>;
+                    constexpr auto NS = len_v<decltype(slice)>;
                     if constexpr (NS==2) {
                         const auto [start, stop] = slice;
                         using mresult_t = nmtools_tuple<decltype(start),decltype(stop),none_t>;
@@ -695,25 +695,25 @@ namespace nmtools::index
                 at(res,result_i) = index;
                 slice_i++, shape_i++, index_i++, result_i++;
             };
-            if constexpr (meta::is_either_v<slice_t>) {
+            if constexpr (is_either_v<slice_t>) {
                 // may be nested either, use flatten either
                 const auto slice_ptrs = flatten_either(slice);
-                constexpr auto N = meta::len_v<decltype(slice_ptrs)>;
-                meta::template_for<N>([&](auto index){
+                constexpr auto N = len_v<decltype(slice_ptrs)>;
+                template_for<N>([&](auto index){
                     constexpr auto I = decltype(index)::value;
                     const auto slice_ptr = nmtools::get<I>(slice_ptrs);
-                    using m_slice_t = meta::remove_cvref_t<decltype(*slice_ptr)>;
+                    using m_slice_t = remove_cvref_t<decltype(*slice_ptr)>;
                     if constexpr (is_ellipsis_v<m_slice_t>) {
                         if (slice_ptr) {
                             [[maybe_unused]] const auto& slice = *slice_ptr;
                             handle_ellipsis();
                         }
-                    } else if constexpr (meta::is_index_v<m_slice_t>) {
+                    } else if constexpr (is_index_v<m_slice_t>) {
                         if (slice_ptr) {
                             const auto& slice = *slice_ptr;
                             handle_integer(slice);
                         }
-                    } else /* if constexpr (meta::is_index_array_v<m_slice_t> || meta::is_tuple_v<m_slice_t>) */ {
+                    } else /* if constexpr (is_index_array_v<m_slice_t> || is_tuple_v<m_slice_t>) */ {
                         if (slice_ptr) {
                             const auto& slice = *slice_ptr;
                             handle_index_array(slice);
@@ -722,7 +722,7 @@ namespace nmtools::index
                 });
             } else if constexpr (is_ellipsis_v<slice_t>) {
                 handle_ellipsis();
-            } else if constexpr (meta::is_integer_v<slice_t>) {
+            } else if constexpr (is_integer_v<slice_t>) {
                 handle_integer(slice);
             } else {
                 handle_index_array(slice);
@@ -827,18 +827,18 @@ namespace nmtools::index
     {
         using namespace literals;
         using result_t  = resolve_optype_t<shape_slice_t,shape_t,slices_t...>;
-        using size_type = meta::get_index_element_type_t<result_t>;
+        using size_type = get_index_element_type_t<result_t>;
         // number of integer in slices, represent indexing instead of slice
-        constexpr auto N_INT = (static_cast<size_t>(meta::is_index_v<slices_t>) + ...);
+        constexpr auto N_INT = (static_cast<size_t>(is_index_v<slices_t>) + ...);
 
         const auto shape = [&](){
             // convert constant_index_array of shape to easily allow element access with runtime index
             if constexpr (is_constant_index_array_v<shape_t>) {
-                return meta::to_value_v<shape_t>;
+                return to_value_v<shape_t>;
             } else if constexpr (meta::is_bounded_array_v<shape_t>) {
                 // raw array can't be copied (without decaying)
                 return index::ref(shape_);
-            } else /* if constexpr (meta::is_index_array_v<shape_t>) */ {
+            } else /* if constexpr (is_index_array_v<shape_t>) */ {
                 // assume copyable
                 return shape_;
             }
@@ -855,7 +855,7 @@ namespace nmtools::index
         // Ellipsis doesn't contribute to dimension reduction.
         // Not all constexpr branches are using dim
         [[maybe_unused]] auto dim = len(shape) - N_INT;
-        if constexpr (meta::is_resizable_v<result_t>) {
+        if constexpr (is_resizable_v<result_t>) {
             res.resize(dim);
         }
         
@@ -870,7 +870,7 @@ namespace nmtools::index
         [[maybe_unused]]
         auto assign_tuple = [](auto& tuple, auto i, auto value){
             constexpr auto N = len_v<decltype(tuple)>;
-            meta::template_for<N>([&](auto index){
+            template_for<N>([&](auto index){
                 constexpr auto I = decltype(index)::value;
                 if constexpr (is_assignable_v<decltype(nmtools::get<I>(tuple)),decltype(value)>) {
                     if (i == index) {
@@ -880,7 +880,7 @@ namespace nmtools::index
             });
         };
 
-        meta::template_reduce<N_SLICES>([&](auto init, auto i){
+        template_reduce<N_SLICES>([&](auto init, auto i){
             // r_i:
             // since res and shape may have different dim,
             // this var is to keep track of the active result index
@@ -894,12 +894,12 @@ namespace nmtools::index
 
             auto slice = at(slices_pack, i);
             [[maybe_unused]] auto si = at(shape,s_i);
-            using slice_t = meta::remove_cvref_t<decltype(slice)>;
+            using slice_t = remove_cvref_t<decltype(slice)>;
 
             // helper lambda to decompose start stop and step
             [[maybe_unused]] auto decompose = [&](auto slice){
                 // assume slice has tuple_size
-                constexpr auto NS = meta::len_v<decltype(slice)>;
+                constexpr auto NS = len_v<decltype(slice)>;
                 if constexpr (NS==2) {
                     const auto [start, stop] = slice;
                     return nmtools_tuple{start,stop,None};
@@ -915,7 +915,7 @@ namespace nmtools::index
             // which is simply copy shape at the corresponding axis
             if constexpr (is_ellipsis_v<slice_t> && (DIM > 0)) {
                 constexpr auto N = DIM - (N_SLICES-1);
-                auto r_idx = meta::template_reduce<N>([&](auto r_i, auto index){
+                auto r_idx = template_reduce<N>([&](auto r_i, auto index){
                     if constexpr (!is_constant_index_v<decltype(at(res,r_i))>) {
                         at(res,r_i) = at(shape,index+s_i);
                     }
@@ -951,9 +951,9 @@ namespace nmtools::index
             // when slice is mixed with indexing,
             // the resulting dimension is len(shape) - N_INT
             // simply ignore if there is integer
-            else if constexpr (!meta::is_index_v<slice_t>) {
+            else if constexpr (!is_index_v<slice_t>) {
                 const auto [start_,stop_,step_] = decompose(slice);
-                using step_t [[maybe_unused]] = meta::remove_cvref_t<decltype(step_)>;
+                using step_t [[maybe_unused]] = remove_cvref_t<decltype(step_)>;
 
                 // some tricky case:
                 // shape of the following is the same, assume shape = (4,2)
@@ -974,11 +974,11 @@ namespace nmtools::index
 
                 [[maybe_unused]]
                 auto step = []([[maybe_unused]] auto step_){
-                    using m_step_t = meta::remove_cvref_t<decltype(step_)>;
+                    using m_step_t = remove_cvref_t<decltype(step_)>;
                     // NOTE: step_ is passed instead of captured to avoid clang error
                     if constexpr (is_none_v<m_step_t>)
                         return 1ul;
-                    else if constexpr (meta::is_unsigned_v<m_step_t>)
+                    else if constexpr (is_unsigned_v<m_step_t>)
                         return step_;
                     else {
                         using unsigned_step_t = meta::make_unsigned_t<m_step_t>;
@@ -998,12 +998,12 @@ namespace nmtools::index
                     at(res,r_i) = static_cast<size_type>(math::constexpr_ceil(static_cast<float>(s) / step));
                 }
                 return nmtools_tuple{r_i+1_ct,s_i+1_ct};
-            } else /* if constexpr (meta::is_index_v<slice_t>) */ {
+            } else /* if constexpr (is_index_v<slice_t>) */ {
                 // only reduce the dimension,
                 // doesn't contributes to shape computation
                 return nmtools_tuple{r_i,s_i+1_ct};
             }
-        }, nmtools_tuple{meta::ct_v<0ul>,meta::ct_v<0ul>});
+        }, nmtools_tuple{ct_v<0ul>,ct_v<0ul>});
 
         return res;
     } // shape_slice
@@ -1023,16 +1023,16 @@ namespace nmtools::index
     constexpr auto slice(const indices_t& indices, const shape_t& shape_, const slices_t&...slices)
     {
         using return_t = resolve_optype_t<slice_t,indices_t,shape_t,slices_t...>;
-        using index_t [[maybe_unused]]  = meta::remove_cvref_t<meta::get_index_element_type_t<return_t>>;
+        using index_t [[maybe_unused]]  = remove_cvref_t<get_index_element_type_t<return_t>>;
 
         const auto shape = [&](){
             // convert constant_index_array of shape to easily allow element access with runtime index
             if constexpr (is_constant_index_array_v<shape_t>) {
-                return meta::to_value_v<shape_t>;
+                return to_value_v<shape_t>;
             } else if constexpr (meta::is_bounded_array_v<shape_t>) {
                 // raw array can't be copied (without decaying)
                 return index::ref(shape_);
-            } else /* if constexpr (meta::is_index_array_v<shape_t>) */ {
+            } else /* if constexpr (is_index_array_v<shape_t>) */ {
                 // assume copyable
                 return shape_;
             }
@@ -1040,7 +1040,7 @@ namespace nmtools::index
 
         auto res = return_t {};
         auto dim = len(shape);
-        if constexpr (meta::is_resizable_v<return_t>)
+        if constexpr (is_resizable_v<return_t>)
             res.resize(dim);
         
         auto slices_pack = nmtools_tuple<const slices_t&...>{slices...};
@@ -1056,13 +1056,13 @@ namespace nmtools::index
         // TODO: provide overloads that accepts unpacked `start`, `stop`, `step`
         constexpr auto N_SLICES = sizeof...(slices);
         auto abs_ = [](auto v) { return v < 0 ? -v : v; };
-        meta::template_for<N_SLICES>([&](auto i){
+        template_for<N_SLICES>([&](auto i){
             auto slice = at(slices_pack, i);
             // si may not be used in all constexpr branch
             [[maybe_unused]] size_t si  = at(shape,s_i);
-            using slice_t = meta::remove_cvref_t<decltype(slice)>;
-            if constexpr (meta::is_index_v<slice_t>) {
-                if constexpr (meta::is_signed_v<slice_t>) {
+            using slice_t = remove_cvref_t<decltype(slice)>;
+            if constexpr (is_index_v<slice_t>) {
+                if constexpr (is_signed_v<slice_t>) {
                     at(res,r_i) = (slice < 0 ? si - abs_(slice) : slice);
                 } else {
                     at(res,r_i) = slice;
@@ -1072,8 +1072,8 @@ namespace nmtools::index
                 for (size_t j=0; j<n; j++) {
                     // we're on ellipsis, active shape index may also shifted
                     auto index = at(indices,i_i+j);
-                    using index_t = meta::remove_cvref_t<decltype(index)>;
-                    if constexpr (meta::is_signed_v<index_t>) {
+                    using index_t = remove_cvref_t<decltype(index)>;
+                    if constexpr (is_signed_v<index_t>) {
                         auto si    = at(shape,s_i+j);
                         at(res,r_i+j) = (index < 0 ? si - abs_(index) : index);
                     } else {
@@ -1094,7 +1094,7 @@ namespace nmtools::index
             } else {
                 const auto [start_, stop_, step_] = [&](){
                     // assume slice has tuple_size
-                    constexpr auto NS = meta::len_v<decltype(slice)>;
+                    constexpr auto NS = len_v<decltype(slice)>;
                     if constexpr (NS==2) {
                         const auto [start, stop] = slice;
                         using mresult_t = nmtools_tuple<decltype(start),decltype(stop),none_t>;
@@ -1104,9 +1104,9 @@ namespace nmtools::index
                     else if constexpr (NS==3)
                         return slice;
                 }();
-                using start_t [[maybe_unused]] = meta::remove_cvref_t<decltype(start_)>;
-                using stop_t [[maybe_unused]]  = meta::remove_cvref_t<decltype(stop_)>;
-                using step_t [[maybe_unused]]  = meta::remove_cvref_t<decltype(step_)>;
+                using start_t [[maybe_unused]] = remove_cvref_t<decltype(start_)>;
+                using stop_t [[maybe_unused]]  = remove_cvref_t<decltype(stop_)>;
+                using step_t [[maybe_unused]]  = remove_cvref_t<decltype(step_)>;
 
                 // some tricky case: assume shape=(4,2)
                 // (1) a[::-2,1::-2]
@@ -1172,13 +1172,13 @@ namespace nmtools::meta
                 if constexpr (is_mixed_index_array_v<type> || is_constant_index_array_v<type>) {
                     return vtype;
                 } else {
-                    constexpr auto n_integer = ((static_cast<nm_size_t>(meta::is_index_v<slices_t>)) + ...);
+                    constexpr auto n_integer = ((static_cast<nm_size_t>(is_index_v<slices_t>)) + ...);
                     constexpr auto dim = len_v<shape_t> - n_integer;
                     using type = nmtools_array<nm_index_t,dim>;
                     return as_value_v<type>;
                 }
             } else if constexpr (is_fixed_index_array_v<shape_t>) {
-                constexpr auto n_integer = ((static_cast<nm_size_t>(meta::is_index_v<slices_t>)) + ...);
+                constexpr auto n_integer = ((static_cast<nm_size_t>(is_index_v<slices_t>)) + ...);
                 constexpr auto dim = len_v<shape_t> - n_integer;
                 using index_t = get_index_element_type_t<shape_t>;
                 using type = nmtools_array<index_t,dim>;
@@ -1244,20 +1244,20 @@ namespace nmtools::index
     template <typename indices_t, typename shape_t, typename slices_t>
     constexpr auto apply_slice(const indices_t& indices, const shape_t& shape, const slices_t& slices)
     {
-        constexpr auto N = meta::len_v<slices_t>;
+        constexpr auto N = len_v<slices_t>;
         constexpr auto element_vtype = [](){
-            if constexpr (meta::is_tuple_v<slices_t>) {
+            if constexpr (is_tuple_v<slices_t>) {
                 using type = void;
-                return meta::as_value_v<type>;
+                return as_value_v<type>;
             } else {
                 // assume has value_type
                 using type = meta::get_value_type_t<slices_t>;
-                return meta::as_value_v<type>;
+                return as_value_v<type>;
             }
         }();
-        using element_t = meta::type_t<decltype(element_vtype)>;
+        using element_t = type_t<decltype(element_vtype)>;
         // NOTE: variadic version doesn't handle either type properly
-        if constexpr ((N > 0) && !meta::is_either_v<element_t>) {
+        if constexpr ((N > 0) && !is_either_v<element_t>) {
             return index::apply_slice(indices,shape,slices,meta::make_index_sequence<N>{});
         } else {
             return index::dynamic_slice(indices,shape,slices);
@@ -1284,20 +1284,20 @@ namespace nmtools::index
     template <typename shape_t, typename slices_t>
     constexpr auto apply_shape_slice(const shape_t& shape, const slices_t& slices)
     {
-        constexpr auto N = meta::len_v<slices_t>;
+        constexpr auto N = len_v<slices_t>;
         constexpr auto element_vtype = [](){
-            if constexpr (meta::is_tuple_v<slices_t>) {
+            if constexpr (is_tuple_v<slices_t>) {
                 using type = void;
-                return meta::as_value_v<type>;
+                return as_value_v<type>;
             } else {
                 // assume has value_type
                 using type = meta::get_value_type_t<slices_t>;
-                return meta::as_value_v<type>;
+                return as_value_v<type>;
             }
         }();
-        using element_t = meta::type_t<decltype(element_vtype)>;
+        using element_t = type_t<decltype(element_vtype)>;
         // NOTE: variadic version doesn't handle either type properly
-        if constexpr ((N > 0) && !meta::is_either_v<element_t>) {
+        if constexpr ((N > 0) && !is_either_v<element_t>) {
             return apply_shape_slice(shape,slices,meta::make_index_sequence<N>{});
         } else {
             return shape_dynamic_slice(shape,slices);
