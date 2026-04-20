@@ -11,21 +11,21 @@ namespace nmtools::index
     template <typename dst_type_t, typename array_t>
     constexpr auto cast(const array_t& array, dtype_t<dst_type_t> = dtype_t<dst_type_t>{})
     {
-        using result_t = meta::resolve_optype_t<cast_t,dst_type_t,array_t>;
+        using result_t = resolve_optype_t<cast_t,dst_type_t,array_t>;
 
         auto result = result_t {};
 
         [[maybe_unused]] auto dim = len(array);
-        if constexpr (meta::is_resizable_v<result_t>) {
+        if constexpr (is_resizable_v<result_t>) {
             result.resize(dim);
         }
 
-        constexpr auto N = meta::len_v<array_t>;
+        constexpr auto N = len_v<array_t>;
 
-        if constexpr (meta::is_num_v<result_t>) {
+        if constexpr (is_num_v<result_t>) {
             result = array;
-        } else if constexpr (!meta::is_fail_v<decltype(N)>) {
-            meta::template_for<N>([&](auto i){
+        } else if constexpr (!is_fail_v<decltype(N)>) {
+            template_for<N>([&](auto i){
                 at(result,i) = at(array,i);
             });
         } else {

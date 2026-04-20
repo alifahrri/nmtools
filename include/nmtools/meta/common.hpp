@@ -212,7 +212,10 @@ namespace nmtools
     using meta::enable_if_t;
     using meta::is_same_v;
     using meta::as_value_v;
+    using meta::as_value;
     using meta::type_t;
+    using meta::true_type;
+    using meta::false_type;
 }
 
 namespace nmtools::meta

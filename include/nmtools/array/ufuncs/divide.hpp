@@ -87,18 +87,18 @@ namespace nmtools
     {
         struct divide
         {
-            template <typename output_t=none_t, typename context_t=none_t, typename resolver_t=eval_result_t<>, typename left_t, typename right_t>
-            inline constexpr auto operator()(const left_t& a, const right_t& b, context_t&& context=context_t{}, output_t&& output=output_t{}, meta::as_value<resolver_t> resolver=meta::as_value_v<resolver_t>) const
+            template <typename output_t=none_t, typename context_t=default_context_t<>, typename left_t, typename right_t>
+            inline constexpr auto operator()(const left_t& a, const right_t& b, context_t&& context=context_t{}, output_t&& output=output_t{}) const
             {
                 auto divide = view::divide(a,b);
-                return eval(divide, nmtools::forward<context_t>(context), nmtools::forward<output_t>(output), resolver);
+                return eval(divide, nmtools::forward<context_t>(context), nmtools::forward<output_t>(output));
             } // operator()
 
-            template <typename output_t=none_t, typename context_t=none_t, typename resolver_t=eval_result_t<>, typename left_t, typename right_t>
-            inline constexpr auto operator()(const left_t& a, const right_t& b, casting::same_kind_t, context_t&& context=context_t{}, output_t&& output=output_t{}, meta::as_value<resolver_t> resolver=meta::as_value_v<resolver_t>) const
+            template <typename output_t=none_t, typename context_t=default_context_t<>, typename left_t, typename right_t>
+            inline constexpr auto operator()(const left_t& a, const right_t& b, casting::same_kind_t, context_t&& context=context_t{}, output_t&& output=output_t{}) const
             {
                 auto divide = view::divide(a,b);
-                return eval(divide, nmtools::forward<context_t>(context), nmtools::forward<output_t>(output), resolver);
+                return eval(divide, nmtools::forward<context_t>(context), nmtools::forward<output_t>(output));
             } // operator()
         }; // divide
     } // namespace fn

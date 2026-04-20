@@ -3,18 +3,28 @@
 
 #include "nmtools/meta.hpp"
 #include "nmtools/ndarray/ndarray.hpp"
+
 #include "nmtools/core/alias.hpp"
 #include "nmtools/core/broadcast_to.hpp"
 #include "nmtools/core/reshape.hpp"
 #include "nmtools/core/slice.hpp"
 #include "nmtools/core/mutable_slice.hpp"
 #include "nmtools/core/eval.hpp"
+#include "nmtools/core/context.hpp"
+#include "nmtools/core/math.hpp"
+
 #include "nmtools/array/ufuncs/add.hpp"
 #include "nmtools/array/ufuncs/amax.hpp"
 #include "nmtools/array/ufuncs/amin.hpp"
 #include "nmtools/array/ufuncs/clip.hpp"
+
 #include "nmtools/array/ufuncs/cos.hpp"
 #include "nmtools/array/ufuncs/sin.hpp"
+#include "nmtools/array/ufuncs/tan.hpp"
+#include "nmtools/array/ufuncs/cosh.hpp"
+#include "nmtools/array/ufuncs/sinh.hpp"
+#include "nmtools/array/ufuncs/tanh.hpp"
+
 #include "nmtools/array/ufuncs/exp.hpp"
 #include "nmtools/array/ufuncs/exp2.hpp"
 #include "nmtools/array/ufuncs/greater.hpp"
@@ -24,6 +34,7 @@
 #include "nmtools/array/ufuncs/log.hpp"
 #include "nmtools/array/ufuncs/log2.hpp"
 #include "nmtools/array/ufuncs/log10.hpp"
+#include "nmtools/array/ufuncs/log1p.hpp"
 #include "nmtools/array/ufuncs/maximum.hpp"
 #include "nmtools/array/ufuncs/minimum.hpp"
 #include "nmtools/array/ufuncs/multiply.hpp"
@@ -331,17 +342,35 @@ namespace nmtools::meta
 
 namespace nmtools
 {
-    template <LayoutKind BufferLayout=LayoutKind::RowMajor, auto broadcast_enable=true>
-    struct object_eval_resolver_t {};
-
     // TODO: propagate evaluator context
     #define nmtools_ndarray_method(method) \
     template <typename...args_t> \
     constexpr auto method(const args_t&...args) const \
     { \
         auto v = view::method(*this,args...); \
-        auto result = nmtools::eval(v,None,None,as_value_v<resolver_type>); \
+        auto result = nmtools::eval(v,context_,None); \
         return nmtools::unwrap(result); \
+    }
+
+    #define nmtools_ndarray_reduce(method) \
+    template <typename axis_t, typename dtype_t=none_t, typename initial_t=none_t, typename keepdims_t=meta::false_type> \
+    constexpr auto reduce_##method(const axis_t& axis, dtype_t dtype=dtype_t{}, initial_t initial=initial_t{}, keepdims_t keepdims=keepdims_t{}) const \
+    { \
+        return nmtools::method.reduce(*this,axis,dtype,initial,keepdims,context_); \
+    }
+
+    #define nmtools_ndarray_accumulate(method) \
+    template <typename axis_t, typename dtype_t=none_t> \
+    constexpr auto accumulate_##method(const axis_t& axis, dtype_t dtype=dtype_t{}) const \
+    { \
+        return nmtools::method.accumulate(*this,axis,dtype,context_); \
+    }
+
+    #define nmtools_ndarray_outer(method) \
+    template <typename rhs_t, typename dtype_t=none_t> \
+    constexpr auto outer_##method(const rhs_t& rhs, dtype_t dtype=dtype_t{}) const \
+    { \
+        return nmtools::method.outer(*this,rhs,dtype,context_); \
     }
 
     template <
@@ -349,21 +378,18 @@ namespace nmtools
         , typename shape_buffer_t
         , template <typename...>typename stride_buffer_t=resolve_stride_type_t
         , template <typename...>typename compute_offset_t=row_major_offset_t
-        , typename resolver_t=object_eval_resolver_t<>
         , typename context_t=none_t
         , auto broadcast_enable=true
         , typename=void>
-    struct object_t : base_ndarray_t<object_t<buffer_t,shape_buffer_t,stride_buffer_t,compute_offset_t,resolver_t,context_t>>
+    struct object_t : base_ndarray_t<object_t<buffer_t,shape_buffer_t,stride_buffer_t,compute_offset_t,context_t>>
     {
+        using base_type   = base_ndarray_t<object_t>;
         using buffer_type = buffer_t;
         using value_type  = meta::get_element_type_t<buffer_type>;
         using shape_type  = shape_buffer_t;
         using index_type  = meta::get_element_or_common_type_t<shape_type>;
         using stride_type = stride_buffer_t<shape_type>;
-        using base_type   = base_ndarray_t<object_t>;
         using offset_type = compute_offset_t<shape_type,stride_type>;
-        // TODO: remove resolver when evalv2 is finalized
-        using resolver_type = resolver_t;
         using context_type  = context_t;
 
         static constexpr auto broadcasting = broadcast_enable;
@@ -386,7 +412,7 @@ namespace nmtools
             if constexpr (meta::is_resizable_v<buffer_type>) {
                 auto numel = index::product(shape_);
                 // shape may be fixed while data is resizable
-                if (len(data_) != numel) {
+                if ((nm_size_t)len(data_) != (nm_size_t)numel) {
                     data_.resize(numel);
                 }
             }
@@ -394,14 +420,12 @@ namespace nmtools
 
         template <
             typename other_context_t
-            , typename other_resolver_t
             , auto other_broadcast>
         constexpr object_t(const object_t<
             buffer_t
             , shape_buffer_t
             , stride_buffer_t
             , compute_offset_t
-            , other_resolver_t
             , other_context_t
             , other_broadcast>& other
         )
@@ -510,11 +534,13 @@ namespace nmtools
             return true;
         } // resize
 
+        /******************************************************************* */
+
         template <typename rhs_t>
         constexpr auto add(const rhs_t& rhs) const
         {
             auto v = view::add<broadcast_enable>(*this,rhs);
-            auto result = nmtools::eval(v,None,None,as_value_v<resolver_type>);
+            auto result = nmtools::eval(v,context_,None);
             return nmtools::unwrap(result);
         }
 
@@ -522,7 +548,7 @@ namespace nmtools
         constexpr auto subtract(const rhs_t& rhs) const
         {
             auto v = view::subtract<broadcast_enable>(*this,rhs);
-            auto result = nmtools::eval(v,None,None,as_value_v<resolver_type>);
+            auto result = nmtools::eval(v,context_,None);
             return nmtools::unwrap(result);
         }
 
@@ -530,7 +556,7 @@ namespace nmtools
         constexpr auto multiply(const rhs_t& rhs) const
         {
             auto v = view::multiply<broadcast_enable>(*this,rhs);
-            auto result = nmtools::eval(v,None,None,as_value_v<resolver_type>);
+            auto result = nmtools::eval(v,context_,None);
             return nmtools::unwrap(result);
         }
 
@@ -538,28 +564,73 @@ namespace nmtools
         constexpr auto divide(const rhs_t& rhs) const
         {
             auto v = view::divide<broadcast_enable>(*this,rhs);
-            auto result = nmtools::eval(v,None,None,as_value_v<resolver_type>);
+            auto result = nmtools::eval(v,context_,None);
             return nmtools::unwrap(result);
         }
+
+        /******************************************************************* */
 
         template <typename F>
         constexpr auto ufunc(F&& f) const
         {
+            // TODO: pass broadcasting
             auto v = view::unary_ufunc(nmtools::forward<F>(f),*this);
-            auto result = nmtools::eval(v,None,None,as_value_v<resolver_type>);
+            auto result = nmtools::eval(v,context_,None);
             return nmtools::unwrap(result);
         }
 
+        template <typename F, typename axis_t, typename dtype_t=none_t, typename initial_t=none_t, typename keepdims_t=meta::false_type>
+        constexpr auto reduce(F&& f, const axis_t& axis, dtype_t dtype=dtype_t{}, initial_t initial=initial_t{}, keepdims_t keepdims=keepdims_t{}) const
+        {
+            auto v = view::reduce(nmtools::forward<F>(f),*this,axis,dtype,initial,keepdims);
+            auto result = nmtools::eval(v,context_,None);
+            return nmtools::unwrap(result);
+        }
+
+        template <typename F, typename axis_t, typename dtype_t=none_t>
+        constexpr auto accumulate(F&& f, const axis_t& axis, dtype_t dtype=dtype_t{}) const
+        {
+            auto v = view::accumulate(nmtools::forward<F>(f),*this,axis,dtype);
+            auto result = nmtools::eval(v,context_,None);
+            return nmtools::unwrap(result);
+        }
+
+        template <typename F, typename rhs_t, typename dtype_t=none_t>
+        constexpr auto outer(F&& f, const rhs_t& rhs, dtype_t dtype=dtype_t{}) const
+        {
+            auto v = view::outer(nmtools::forward<F>(f),*this,rhs,dtype);
+            auto result = nmtools::eval(v,context_,None);
+            return nmtools::unwrap(result);
+        }
+
+        /******************************************************************* */
+
+        nmtools_ndarray_reduce(add)
+        nmtools_ndarray_reduce(multiply)
+        nmtools_ndarray_reduce(subtract)
+
+        /******************************************************************* */
+
+        nmtools_ndarray_accumulate(add)
+        nmtools_ndarray_accumulate(multiply)
+        nmtools_ndarray_accumulate(subtract)
+
+        /******************************************************************* */
+
+        nmtools_ndarray_outer(add)
+        nmtools_ndarray_outer(multiply)
+        nmtools_ndarray_outer(subtract)
+
+        /******************************************************************* */
+
         template <
             typename other_context_t
-            , typename other_resolver_t
             , auto other_broadcast>
         constexpr auto operator=(const object_t<
             buffer_t
             , shape_buffer_t
             , stride_buffer_t
             , compute_offset_t
-            , other_resolver_t
             , other_context_t
             , other_broadcast>& other)
         {
@@ -572,15 +643,16 @@ namespace nmtools
 
         nmtools_ndarray_method(broadcast_to)
 
+        /******************************************************************* */
         nmtools_ndarray_method(less)
         nmtools_ndarray_method(less_equal)
         nmtools_ndarray_method(greater)
         nmtools_ndarray_method(greater_equal)
 
+        /******************************************************************* */
         nmtools_ndarray_method(clip)
-        nmtools_ndarray_method(cumprod)
-        nmtools_ndarray_method(cumsum)
         nmtools_ndarray_method(diagonal)
+        nmtools_ndarray_method(flatten)
         nmtools_ndarray_method(reshape)
         nmtools_ndarray_method(repeat)
         nmtools_ndarray_method(squeeze)
@@ -588,23 +660,53 @@ namespace nmtools
         nmtools_ndarray_method(trace)
         nmtools_ndarray_method(transpose)
 
+        /******************************************************************* */
         nmtools_ndarray_method(cos)
         nmtools_ndarray_method(sin)
+        nmtools_ndarray_method(tan)
+        nmtools_ndarray_method(cosh)
+        nmtools_ndarray_method(sinh)
+        nmtools_ndarray_method(tanh)
 
+        /******************************************************************* */
         nmtools_ndarray_method(exp)
         nmtools_ndarray_method(exp2)
         nmtools_ndarray_method(log)
         nmtools_ndarray_method(log2)
         nmtools_ndarray_method(log10)
+        nmtools_ndarray_method(log1p)
+
+        /******************************************************************* */
+        // numpy's ndarray doesn't have maximum/minimum member, but torch's Tensor does
+        // also extend to reduce, accumulate, outer
+        nmtools_ndarray_method(maximum)
+        nmtools_ndarray_method(minimum)
+
+        nmtools_ndarray_reduce(maximum)
+        nmtools_ndarray_reduce(minimum)
+
+        nmtools_ndarray_outer(maximum)
+        nmtools_ndarray_outer(minimum)
+        
+        nmtools_ndarray_accumulate(maximum)
+        nmtools_ndarray_accumulate(minimum)
+        /******************************************************************* */
 
         nmtools_ndarray_method(max)
         nmtools_ndarray_method(min)
         nmtools_ndarray_method(prod)
         nmtools_ndarray_method(sum)
-        nmtools_ndarray_method(flatten)
         nmtools_ndarray_method(mean)
         nmtools_ndarray_method(var)
         nmtools_ndarray_method(std)
+
+        /******************************************************************* */
+        nmtools_ndarray_method(cumprod)
+        nmtools_ndarray_method(cumsum)
+
+        /******************************************************************* */
+        // numpy's ndarray doesn't have sqrt member, but torch's Tensor does
+        nmtools_ndarray_method(sqrt)
 
         template <typename other_t>
         constexpr auto operator+(const other_t& other) const
@@ -662,7 +764,7 @@ namespace nmtools
         constexpr auto slice(slices_t...slices) const
         {
             auto v = view::slice(*this,slices...);
-            auto result = nmtools::eval(v,None,None,as_value_v<resolver_type>);
+            auto result = nmtools::eval(v,context_);
             return nmtools::unwrap(result);
         }
 
@@ -690,207 +792,35 @@ namespace nmtools
     }; // object_t
 
     #undef nmtools_ndarray_method
+    #undef nmtools_ndarray_reduce
+    #undef nmtools_ndarray_accumulate
+    #undef nmtools_ndarray_outer
 } // nmtools
 
+// TODO: move to meta?
 namespace nmtools::meta
 {
-    template <LayoutKind BufferLayout, auto broadcast_enable, typename view_t>
-    struct resolve_optype<
-        void, object_eval_resolver_t<BufferLayout,broadcast_enable>, view_t, none_t
-    >
-    {
-        template <typename buffer_t, typename shape_buffer_t>
-        static constexpr auto make_ndarray(as_value<buffer_t>, as_value<shape_buffer_t>)
-        {
-            using resolver_t = object_eval_resolver_t<BufferLayout,broadcast_enable>;
-            if constexpr (BufferLayout == LayoutKind::RowMajor) {
-                using type = object_t<buffer_t,shape_buffer_t,resolve_stride_type_t,row_major_offset_t,resolver_t,none_t,broadcast_enable>;
-                return as_value_v<type>;
-            } else if constexpr (BufferLayout == LayoutKind::ColumnMajor) {
-                using type = object_t<buffer_t,shape_buffer_t,resolve_stride_type_t,column_major_offset_t,resolver_t,none_t,broadcast_enable>;
-                return as_value_v<type>;
-            } else {
-                using type = error::EVAL_RESULT_UNSUPPORTED<view_t,none_t,as_type<BufferLayout>>;
-                return as_value_v<type>;
-            }
-        }
+    template <typename T>
+    struct is_object_ndarray : false_type {};
 
-        static constexpr auto vtype = [](){
-            using element_type = get_element_type_t<view_t>;
-            using error_type [[maybe_unused]] = error::EVAL_RESULT_UNSUPPORTED<view_t,none_t,as_type<BufferLayout>>;
-            // TODO: remove, try to read from `nmtools::shape(declval<view_t>())` instead
-            // the following is kept for temporary backward compatibility
-            constexpr auto shape  = fixed_shape_v<view_t>;
-            constexpr auto dim    = fixed_dim_v<view_t>;
-            constexpr auto size   = fixed_size_v<view_t>;
-            constexpr auto b_dim  = bounded_dim_v<view_t>;
-            constexpr auto b_size = bounded_size_v<view_t>;
-            using shape_type  = decltype(shape);
-            using dim_type    = decltype(dim);
-            using size_type   = decltype(size);
-            using b_dim_type  = decltype(b_dim);
-            using b_size_type = decltype(b_size);
-            using nmtools::len, nmtools::at;
-            // constant shape
-            constexpr auto c_shape_vtype = [&](){
-                if constexpr (!is_fail_v<shape_type>) {
-                    return template_reduce<len(shape)-1>([&](auto init, auto index){
-                        using init_type = type_t<decltype(init)>;
-                        return as_value_v<append_type_t<init_type,ct<(size_t)at(shape,ct_v<decltype(index)::value+1>)>>>;
-                    }, as_value_v<nmtools_tuple<ct<(size_t)at(shape,ct_v<0>)>>>);
-                } else {
-                    return as_value_v<error_type>;
-                }
-            }();
-            // clipped shape
-            constexpr auto cl_shape_vtype = [&](){
-                using shape_t = decltype(nmtools::shape(declval<view_t>()));
-                if constexpr (is_clipped_index_array_v<shape_t>) {
-                    return as_value_v<shape_t>;
-                } else {
-                    return as_value_v<error_type>;
-                }
-            }();
-            // fixed shape
-            constexpr auto f_shape_vtype = [&](){
-                if constexpr (!is_fail_v<dim_type>) {
-                    using type = nmtools_array<size_t,dim>;
-                    return as_value_v<type>;
-                } else {
-                    return as_value_v<error_type>;
-                }
-            }();
-            // bounded shape (for bounded dim)
-            constexpr auto b_shape_vtype = [&](){
-                if constexpr (!is_fail_v<b_dim_type>) {
-                    using type = nmtools_static_vector<size_t,b_dim>;
-                    return as_value_v<type>;
-                } else {
-                    return as_value_v<error_type>;
-                }
-            }();
-            // fixed buffer
-            constexpr auto f_buffer_vtype = [&](){
-                if constexpr (!is_fail_v<size_type>) {
-                    using type = nmtools_array<element_type,size>;
-                    return as_value_v<type>;
-                } else {
-                    return as_value_v<error_type>;
-                }
-            }();
-            // bounded buffer
-            constexpr auto b_buffer_vtype = [&](){
-                if constexpr (!is_fail_v<type_t<decltype(cl_shape_vtype)>>) {
-                    constexpr auto size = index::product(to_value_v<type_t<decltype(cl_shape_vtype)>>);
-                    using type = nmtools_static_vector<element_type,size>;
-                    return as_value_v<type>;
-                } else if constexpr (!is_fail_v<b_size_type>) {
-                    using type = nmtools_static_vector<element_type,b_size>;
-                    return as_value_v<type>;
-                } else {
-                    return as_value_v<error_type>;
-                }
-            }();
+    template <typename T>
+    constexpr inline auto is_object_ndarray_v = is_object_ndarray<T>::value;
 
-            using c_shape_type  [[maybe_unused]] = type_t<decltype(c_shape_vtype)>;
-            using l_shape_type  [[maybe_unused]] = type_t<decltype(cl_shape_vtype)>;
-            using f_shape_type  [[maybe_unused]] = type_t<decltype(f_shape_vtype)>;
-            using b_shape_type  [[maybe_unused]] = type_t<decltype(b_shape_vtype)>;
-            using f_buffer_type [[maybe_unused]] = type_t<decltype(f_buffer_vtype)>;
-            using b_buffer_type [[maybe_unused]] = type_t<decltype(b_buffer_vtype)>;
-            // dynamic buffer
-            using d_buffer_type [[maybe_unused]] = nmtools_list<element_type>;
-            // TODO: add small vector optimization fo shape
-            using d_shape_type  [[maybe_unused]] = nmtools_list<size_t>;
+    template <
+          typename buffer_t
+        , typename shape_buffer_t
+        , template <typename...>typename stride_buffer_t
+        , template <typename...>typename compute_offset_t
+        , typename context_t
+        , auto broadcast_enable>
+    struct is_object_ndarray<
+        object_t<buffer_t,shape_buffer_t,stride_buffer_t,compute_offset_t,context_t,broadcast_enable>
+    > : true_type {};
+}
 
-            if constexpr (is_num_v<view_t>) {
-                return as_value_v<element_type>;
-            // prefer constant-shape, no-dynamic allocation
-            } else if constexpr (
-                !is_fail_v<c_shape_type>
-                && !is_fail_v<f_buffer_type>
-            ) {
-                return make_ndarray(as_value_v<f_buffer_type>,as_value_v<c_shape_type>);
-            } else if constexpr (
-                !is_fail_v<c_shape_type>
-                && !is_fail_v<b_buffer_type>
-            ) {
-                return make_ndarray(as_value_v<b_buffer_type>,as_value_v<c_shape_type>);
-            } else if constexpr (
-                !is_fail_v<l_shape_type>
-                && !is_fail_v<f_buffer_type>
-            ) {
-                return make_ndarray(as_value_v<f_buffer_type>,as_value_v<l_shape_type>);
-            } else if constexpr (
-                !is_fail_v<l_shape_type>
-                && !is_fail_v<b_buffer_type>
-            ) {
-                return make_ndarray(as_value_v<b_buffer_type>,as_value_v<l_shape_type>);
-            } else if constexpr (
-                !is_fail_v<f_shape_type>
-                && !is_fail_v<f_buffer_type>
-            ) {
-                return make_ndarray(as_value_v<f_buffer_type>,as_value_v<f_shape_type>);
-            } else if constexpr (
-                !is_fail_v<f_shape_type>
-                && !is_fail_v<b_buffer_type>
-            ) {
-                return make_ndarray(as_value_v<b_buffer_type>,as_value_v<f_shape_type>);
-            }
-            // bounded shape
-            else if constexpr (
-                !is_fail_v<b_shape_type>
-                && !is_fail_v<f_buffer_type>
-            ) {
-                return make_ndarray(as_value_v<f_buffer_type>,as_value_v<b_shape_type>);
-            } else if constexpr (
-                !is_fail_v<b_shape_type>
-                && !is_fail_v<b_buffer_type>
-            ) {
-                return make_ndarray(as_value_v<b_buffer_type>,as_value_v<b_shape_type>);
-            }
-            // dynamic shape
-            else if constexpr (
-                !is_fail_v<d_shape_type>
-                && !is_fail_v<f_buffer_type>
-            ) {
-                return make_ndarray(as_value_v<f_buffer_type>,as_value_v<d_shape_type>);
-            } else if constexpr (
-                !is_fail_v<d_shape_type>
-                && !is_fail_v<b_buffer_type>
-            ) {
-                return make_ndarray(as_value_v<b_buffer_type>,as_value_v<d_shape_type>);
-            } else if constexpr (
-                !is_fail_v<c_shape_type>
-                && !is_fail_v<d_buffer_type>
-            ) {
-                return make_ndarray(as_value_v<d_buffer_type>,as_value_v<c_shape_type>);
-            } else if constexpr (
-                !is_fail_v<l_shape_type>
-                && !is_fail_v<d_buffer_type>
-            ) {
-                return make_ndarray(as_value_v<d_buffer_type>,as_value_v<l_shape_type>);
-            } else if constexpr (
-                !is_fail_v<f_shape_type>
-                && !is_fail_v<d_buffer_type>
-            ) {
-                return make_ndarray(as_value_v<d_buffer_type>,as_value_v<f_shape_type>);
-            } else if constexpr (
-                !is_fail_v<b_shape_type>
-                && !is_fail_v<d_buffer_type>
-            ) {
-                return make_ndarray(as_value_v<d_buffer_type>,as_value_v<b_shape_type>);
-            } else if constexpr (
-                !is_fail_v<d_shape_type>
-                && !is_fail_v<d_buffer_type>
-            ) {
-                return make_ndarray(as_value_v<d_buffer_type>,as_value_v<d_shape_type>);
-            } else {
-                return as_value_v<error_type>;
-            }
-        }();
-        using type = type_t<decltype(vtype)>;
-    };
+namespace nmtools
+{
+    using meta::is_object_ndarray_v;
 }
 
 namespace nmtools
@@ -900,12 +830,11 @@ namespace nmtools
         , typename shape_buffer_t
         , template <typename...>typename stride_buffer_t
         , template <typename...>typename offset_compute_t
-        , typename resolver_t
         , typename context_t
         , auto broadcast_enable>
-    struct get_t<I,object_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t,resolver_t,context_t,broadcast_enable>>
+    struct get_t<I,object_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t,context_t,broadcast_enable>>
     {
-        using array_type = object_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t,resolver_t,context_t,broadcast_enable>;
+        using array_type = object_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t,context_t,broadcast_enable>;
 
         static constexpr auto vtype = [](){
             constexpr auto dim = meta::len_v<shape_buffer_t>;
@@ -947,12 +876,11 @@ namespace nmtools::meta
         , typename shape_buffer_t
         , template <typename...>typename stride_buffer_t
         , template <typename...>typename offset_compute_t
-        , typename resolver_t
         , typename context_t
         , auto broadcast_enable>
-    struct get_element_type<object_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t,resolver_t,context_t,broadcast_enable>>
+    struct get_element_type<object_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t,context_t,broadcast_enable>>
     {
-        using array_type = object_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t,resolver_t,context_t,broadcast_enable>;
+        using array_type = object_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t,context_t,broadcast_enable>;
         static constexpr auto vtype = [](){
             using T = typename array_type::value_type;
             if constexpr (is_num_v<T>) {
@@ -969,14 +897,13 @@ namespace nmtools::meta
         , typename shape_buffer_t
         , template <typename...>typename stride_buffer_t
         , template <typename...>typename offset_compute_t
-        , typename resolver_t
         , typename context_t
         , auto broadcast_enable>
     struct is_ndarray<
-        object_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t,resolver_t,context_t,broadcast_enable>
+        object_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t,context_t,broadcast_enable>
     >
     {
-        using array_type = object_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t,resolver_t,context_t,broadcast_enable>;
+        using array_type = object_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t,context_t,broadcast_enable>;
         using element_type = typename array_type::value_type;
         static constexpr auto value = is_num_v<element_type>;
     }; // is_ndarray
@@ -986,14 +913,13 @@ namespace nmtools::meta
         , typename shape_buffer_t
         , template <typename...>typename stride_buffer_t
         , template <typename...>typename offset_compute_t
-        , typename resolver_t
         , typename context_t
         , auto broadcast_enable>
     struct fixed_dim<
-        object_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t,resolver_t,context_t,broadcast_enable>
+        object_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t,context_t,broadcast_enable>
     >
     {
-        using array_type = object_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t,resolver_t,context_t,broadcast_enable>;
+        using array_type = object_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t,context_t,broadcast_enable>;
         using shape_type = typename array_type::shape_type;
 
         static constexpr auto value = [](){
@@ -1011,14 +937,13 @@ namespace nmtools::meta
         , typename shape_buffer_t
         , template <typename...>typename stride_buffer_t
         , template <typename...>typename offset_compute_t
-        , typename resolver_t
         , typename context_t
         , auto broadcast_enable>
     struct fixed_shape<
-        object_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t,resolver_t,context_t,broadcast_enable>
+        object_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t,context_t,broadcast_enable>
     >
     {
-        using array_type = object_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t,resolver_t,context_t,broadcast_enable>;
+        using array_type = object_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t,context_t,broadcast_enable>;
         using shape_type = typename array_type::shape_type;
 
         static constexpr auto value = [](){
@@ -1036,14 +961,13 @@ namespace nmtools::meta
         , typename shape_buffer_t
         , template <typename...>typename stride_buffer_t
         , template <typename...>typename offset_compute_t
-        , typename resolver_t
         , typename context_t
         , auto broadcast_enable>
     struct fixed_size<
-        object_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t,resolver_t,context_t,broadcast_enable>
+        object_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t,context_t,broadcast_enable>
     >
     {
-        using array_type  = object_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t,resolver_t,context_t,broadcast_enable>;
+        using array_type  = object_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t,context_t,broadcast_enable>;
         using shape_type  = typename array_type::shape_type;
         using buffer_type = typename array_type::buffer_type;
 
@@ -1064,14 +988,13 @@ namespace nmtools::meta
         , typename shape_buffer_t
         , template <typename...>typename stride_buffer_t
         , template <typename...>typename offset_compute_t
-        , typename resolver_t
         , typename context_t
         , auto broadcast_enable>
     struct bounded_dim<
-        object_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t,resolver_t,context_t,broadcast_enable>
+        object_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t,context_t,broadcast_enable>
     >
     {
-        using array_type  = object_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t,resolver_t,context_t,broadcast_enable>;
+        using array_type  = object_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t,context_t,broadcast_enable>;
         using shape_type  = typename array_type::shape_type;
         using buffer_type = typename array_type::buffer_type;
 
@@ -1093,14 +1016,13 @@ namespace nmtools::meta
         , typename shape_buffer_t
         , template <typename...>typename stride_buffer_t
         , template <typename...>typename offset_compute_t
-        , typename resolver_t
         , typename context_t
         , auto broadcast_enable>
     struct bounded_size<
-        object_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t,resolver_t,context_t,broadcast_enable>
+        object_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t,context_t,broadcast_enable>
     >
     {
-        using array_type  = object_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t,resolver_t,context_t,broadcast_enable>;
+        using array_type  = object_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t,context_t,broadcast_enable>;
         using shape_type  = typename array_type::shape_type;
         using buffer_type = typename array_type::buffer_type;
 
@@ -1121,15 +1043,14 @@ namespace nmtools::meta
         , typename shape_buffer_t
         , template <typename...>typename stride_buffer_t
         , template <typename...>typename offset_compute_t
-        , typename resolver_t
         , typename context_t
         , auto broadcast_enable>
     struct replace_element_type<
-        object_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t,resolver_t,context_t,broadcast_enable>, U
+        object_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t,context_t,broadcast_enable>, U
     >
     {
         using buffer_type = replace_element_type_t<buffer_t,U>;
-        using type = object_t<buffer_type,shape_buffer_t,stride_buffer_t,offset_compute_t,resolver_t,context_t,broadcast_enable>;
+        using type = object_t<buffer_type,shape_buffer_t,stride_buffer_t,offset_compute_t,context_t,broadcast_enable>;
     }; // replace_element_type
 
     template <
@@ -1137,11 +1058,10 @@ namespace nmtools::meta
         , typename shape_buffer_t
         , template <typename...>typename stride_buffer_t
         , template <typename...>typename offset_compute_t
-        , typename resolver_t
         , typename context_t
         , auto broadcast_enable>
     struct is_index_array<
-        object_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t,resolver_t,context_t,broadcast_enable>
+        object_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t,context_t,broadcast_enable>
     >
     {
         static constexpr auto value = [](){
@@ -1157,13 +1077,12 @@ namespace nmtools::meta
         , typename shape_buffer_t
         , template <typename...>typename stride_buffer_t
         , template <typename...>typename offset_compute_t
-        , typename resolver_t
         , typename context_t
         , auto broadcast_enable>
     struct contiguous_axis<
-        object_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t,resolver_t,context_t,broadcast_enable>
+        object_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t,context_t,broadcast_enable>
     > {
-        using array_type  = object_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t,resolver_t,context_t,broadcast_enable>;
+        using array_type  = object_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t,context_t,broadcast_enable>;
         using offset_type = typename array_type::offset_type;
         static constexpr auto value = [](){
             if constexpr (is_row_major_offset_v<offset_type>) {
@@ -1200,82 +1119,81 @@ namespace nmtools
 {
     struct Array
     {
-        static constexpr auto resolver = meta::as_value_v<object_eval_resolver_t<LayoutKind::RowMajor,true>>;
-
         template <typename...args_t>
         static constexpr auto arange(args_t&&...args)
         {
-            return nmtools::arange(nmtools::forward<args_t>(args)...,None,None,resolver);
+            return nmtools::arange(nmtools::forward<args_t>(args)...);
         }
 
         template <typename...args_t>
         static constexpr auto random(args_t&&...args)
         {
-            return nmtools::random(nmtools::forward<args_t>(args)...,None,None,resolver);
+            return nmtools::random(nmtools::forward<args_t>(args)...);
         }
 
         template <typename...args_t>
         static constexpr auto eye(args_t&&...args)
         {
-            return nmtools::eye(nmtools::forward<args_t>(args)...,None,None,resolver);
+            return nmtools::eye(nmtools::forward<args_t>(args)...);
         }
 
         template <typename...args_t>
         static constexpr auto full_like(args_t&&...args)
         {
-            return nmtools::full_like(nmtools::forward<args_t>(args)...,None,None,resolver);
+            return nmtools::full_like(nmtools::forward<args_t>(args)...);
         }
 
         template <typename...args_t>
         static constexpr auto full(args_t&&...args)
         {
-            return nmtools::full(nmtools::forward<args_t>(args)...,None,None,resolver);
+            return nmtools::full(nmtools::forward<args_t>(args)...);
         }
 
         template <typename...args_t>
         static constexpr auto linspace(args_t&&...args)
         {
-            return nmtools::linspace(nmtools::forward<args_t>(args)...,None,None,resolver);
+            return nmtools::linspace(nmtools::forward<args_t>(args)...);
         }
 
         template <typename...args_t>
         static constexpr auto ones_like(args_t&&...args)
         {
-            return nmtools::ones_like(nmtools::forward<args_t>(args)...,None,None,resolver);
+            return nmtools::ones_like(nmtools::forward<args_t>(args)...);
         }
 
         template <typename...args_t>
         static constexpr auto ones(args_t&&...args)
         {
-            return nmtools::ones(nmtools::forward<args_t>(args)...,None,None,resolver);
+            return nmtools::ones(nmtools::forward<args_t>(args)...);
         }
 
         template <typename...args_t>
         static constexpr auto tri(args_t&&...args)
         {
-            return nmtools::tri(nmtools::forward<args_t>(args)...,None,None,resolver);
+            return nmtools::tri(nmtools::forward<args_t>(args)...);
         }
 
         template <typename...args_t>
         static constexpr auto tril(args_t&&...args)
         {
-            return nmtools::tril(nmtools::forward<args_t>(args)...,None,None,resolver);
+            return nmtools::tril(nmtools::forward<args_t>(args)...);
         }
 
         template <typename...args_t>
         static constexpr auto triu(args_t&&...args)
         {
-            return nmtools::triu(nmtools::forward<args_t>(args)...,None,None,resolver);
+            return nmtools::triu(nmtools::forward<args_t>(args)...);
         }
 
         template <typename...args_t>
         static constexpr auto zeros_like(args_t&&...args)
         {
-            return nmtools::zeros_like(nmtools::forward<args_t>(args)...,None,None,resolver);
+            return nmtools::zeros_like(nmtools::forward<args_t>(args)...);
         }
 
+        // use broadcasting object context
         template <
-            typename context_t=none_t
+            typename context_t=default_context_t<true,true>
             , typename shape_t
             , typename dtype_t>
         static constexpr auto zeros(const shape_t& shape, dtype_t dtype,
@@ -1284,20 +1202,44 @@ namespace nmtools
             return nmtools::zeros(shape
                 , dtype
                 , nmtools::forward<context_t>(context)
-                , None
-                , resolver);
+                , None);
         } // zeros
 
-        template <typename array_t, typename dst_shape_t=none_t>
-        constexpr auto operator()(const array_t& array, const dst_shape_t& dst_shape=dst_shape_t{}) const
+        // use broadcasting object context
+        template <
+            typename array_t
+            , typename dst_shape_t=none_t
+            , typename context_t=default_context_t<true,true>
+            , enable_if_t<is_none_v<dst_shape_t> || is_index_array_v<dst_shape_t>,int> = 0>
+        constexpr auto operator()(const array_t& array, const dst_shape_t& dst_shape=dst_shape_t{}, context_t&& context=context_t{}) const
         {
             if constexpr (is_none_v<dst_shape_t>) {
-                auto dst = nmtools::copy(unwrap(array),None,None,resolver);
+                auto dst = nmtools::copy(
+                    unwrap(array)
+                    , nmtools::forward<context_t>(context)
+                    , None);
                 return dst;
             } else {
-                auto dst = unwrap(nmtools::reshape(array,dst_shape,None,None,resolver));
+                auto dst = unwrap(
+                    nmtools::reshape(array
+                        , dst_shape
+                        , nmtools::forward<context_t>(context)
+                        , None));
                 return dst;
             }
+        }
+
+        template <
+            typename array_t
+            , typename context_t
+            , enable_if_t<is_context_v<context_t>,int> = 0>
+        constexpr auto operator()(const array_t& array, context_t&& context) const
+        {
+            auto dst = nmtools::copy(
+                unwrap(array)
+                , nmtools::forward<context_t>(context)
+                , None);
+            return dst;
         }
     };
 

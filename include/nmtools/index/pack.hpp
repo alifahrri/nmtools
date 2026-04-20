@@ -18,12 +18,12 @@ namespace nmtools::index
     constexpr auto pack_indices(size_type index_, size_types...indices)
     {
         // error: pack expansion used as argument for non-pack parameter of alias template :|
-        // using common_t = meta::promote_index_t<size_types...>;
-        using common_t = meta::type_t<meta::promote_index<size_type,size_types...>>;
-        if constexpr (meta::is_integral_v<common_t>) {
+        // using common_t = promote_index_t<size_types...>;
+        using common_t = type_t<meta::promote_index<size_type,size_types...>>;
+        if constexpr (is_integral_v<common_t>) {
             using array_t = nmtools_array<common_t,1+sizeof...(indices)>;
             return array_t{static_cast<common_t>(index_),static_cast<common_t>(indices)...};
-        } else /* if constexpr (meta::is_index_array_v<size_type>) */ {
+        } else /* if constexpr (is_index_array_v<size_type>) */ {
             static_assert (sizeof...(indices)==0
                 , "unsupported indices for pack"
             );

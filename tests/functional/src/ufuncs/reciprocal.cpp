@@ -1,5 +1,6 @@
 #include "nmtools/array/ufuncs/reciprocal.hpp"
 #include "nmtools/testing/data/array/reciprocal.hpp"
+#include "nmtools/context/default.hpp"
 #include "nmtools/testing/doctest.hpp"
 
 namespace nm = nmtools;

@@ -43,7 +43,13 @@ namespace nmtools::meta
     struct get_element_or_common_type<T&> : get_element_or_common_type<T> {};
 
     template <typename T>
-    using get_element_or_common_type_t = type_t<get_element_or_common_type<T>>;
+using get_element_or_common_type_t = type_t<get_element_or_common_type<T>>;
 } // namespace nmtools::meta
+
+namespace nmtools
+{
+    using meta::get_element_or_common_type_t;
+}
+
 
 #endif // NMTOOLS_META_BIT_TRANSFORM_GET_ELEMENT_OR_COMMON_TYPE_HPP

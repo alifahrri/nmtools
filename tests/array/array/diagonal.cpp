@@ -19,6 +19,7 @@ inline auto name##_ls_db = nmtools::cast(name, nmtools::kind::ndarray_ls_db);
 
 #include "nmtools/array/diagonal.hpp"
 #include "nmtools/testing/data/array/diagonal.hpp"
+#include "nmtools/context/default.hpp"
 #include "nmtools/testing/doctest.hpp"
 
 #define DIAGONAL_SUBCASE(case_name, ...) \

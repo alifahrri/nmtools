@@ -59,6 +59,8 @@ NMTOOLS_TESTING_DECLARE_CASE(view, subtract)
 
 NMTOOLS_TESTING_DECLARE_CASE(view, reduce_subtract)
 {
+    using namespace literals;
+
     NMTOOLS_TESTING_DECLARE_ARGS(case1)
     {
         inline int a[2][3][2] = {
@@ -74,6 +76,7 @@ NMTOOLS_TESTING_DECLARE_CASE(view, reduce_subtract)
             },
         };
         inline int axis = 0;
+        inline auto axis_ct = 0_ct;
         NMTOOLS_CAST_ARRAYS(a)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case1)
@@ -101,6 +104,7 @@ NMTOOLS_TESTING_DECLARE_CASE(view, reduce_subtract)
             },
         };
         inline int axis = 1;
+        inline auto axis_ct = 1_ct;
         NMTOOLS_CAST_ARRAYS(a)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case2)
@@ -127,6 +131,7 @@ NMTOOLS_TESTING_DECLARE_CASE(view, reduce_subtract)
             },
         };
         inline int axis = 2;
+        inline auto axis_ct = 2_ct;
         NMTOOLS_CAST_ARRAYS(a)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case3)
@@ -288,6 +293,8 @@ NMTOOLS_TESTING_DECLARE_CASE(view, reduce_subtract)
 
 NMTOOLS_TESTING_DECLARE_CASE(view, accumulate_subtract)
 {
+    using namespace literals;
+
     NMTOOLS_TESTING_DECLARE_ARGS(case1)
     {
         inline int a[2][3][2] = {
@@ -303,6 +310,7 @@ NMTOOLS_TESTING_DECLARE_CASE(view, accumulate_subtract)
             },
         };
         inline int axis = 0;
+        inline auto axis_ct = 0_ct;
         NMTOOLS_CAST_ARRAYS(a)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case1)
@@ -337,6 +345,7 @@ NMTOOLS_TESTING_DECLARE_CASE(view, accumulate_subtract)
             },
         };
         inline int axis = 1;
+        inline auto axis_ct = 1_ct;
         NMTOOLS_CAST_ARRAYS(a)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case2)

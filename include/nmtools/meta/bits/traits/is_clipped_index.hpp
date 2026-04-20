@@ -12,4 +12,9 @@ namespace nmtools::meta
     constexpr inline auto is_clipped_index_v = is_clipped_index<T>::value;
 }
 
+namespace nmtools
+{
+    using meta::is_clipped_index_v;
+}
+
 #endif // NMTOOLS_META_BITS_TRAITS_IS_CLIPPED_INDEX_HPP

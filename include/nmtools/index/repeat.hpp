@@ -39,29 +39,29 @@ namespace nmtools::index
     template <typename shape_t, typename repeats_t, typename axis_t>
     constexpr auto shape_repeat(const shape_t& shape, const repeats_t& repeats, [[maybe_unused]] axis_t axis)
     {
-        using return_t = meta::resolve_optype_t<shape_repeat_t,shape_t,repeats_t,axis_t>;
-        static_assert (meta::is_index_array_v<return_t>
+        using return_t = resolve_optype_t<shape_repeat_t,shape_t,repeats_t,axis_t>;
+        static_assert (is_index_array_v<return_t>
             , "unsupported shape_repeat, maybe specialization of resolve_optype_t<shape_repeat_t,...> required"
         );
         auto ret = return_t {};
 
-        if constexpr (!meta::is_constant_index_array_v<return_t>) {
+        if constexpr (!is_constant_index_array_v<return_t>) {
             // when axis is None, repeat the flattened array
             // so the resulting shape is 1-dimensional
             if constexpr (is_none_v<axis_t>) {
                 auto p = product(shape);
-                at(ret,meta::ct_v<0>) = p * repeats;
+                at(ret,ct_v<0>) = p * repeats;
             }
             else {
                 [[maybe_unused]]
                 auto n = len(shape);
 
-                if constexpr (meta::is_resizable_v<meta::remove_address_space_t<return_t>>)
+                if constexpr (is_resizable_v<meta::remove_address_space_t<return_t>>)
                     ret.resize(n);
                 
-                if constexpr (meta::is_tuple_v<return_t>) {
-                    constexpr auto N = meta::len_v<return_t>;
-                    meta::template_for<N>([&](auto i){
+                if constexpr (is_tuple_v<return_t>) {
+                    constexpr auto N = len_v<return_t>;
+                    template_for<N>([&](auto i){
                         at(ret,i) = at(shape,i);
                     });
                 } else {
@@ -69,10 +69,10 @@ namespace nmtools::index
                         at(ret,i) = at(shape,i);
                 }
 
-                if constexpr (meta::is_index_array_v<meta::remove_address_space_t<repeats_t>>) {
+                if constexpr (is_index_array_v<meta::remove_address_space_t<repeats_t>>) {
                     auto r_a = at(ret,axis);
                     auto n   = len(repeats);
-                    using common_t [[maybe_unused]] = meta::promote_index_t<decltype(r_a),decltype(n)>;
+                    using common_t [[maybe_unused]] = promote_index_t<decltype(r_a),decltype(n)>;
                     // TODO: support optional
                     nmtools_assert ( (common_t)r_a == (common_t)n
                         , "unsupported shape_repeat"
@@ -88,7 +88,7 @@ namespace nmtools::index
                     //        [3, 4]])
                     // at axis 0, first element x(axis,0) is not repeated (repeats(0)=1)
                     // while the second element x(axis,1) is repeated once (repeats(1)=2)
-                    at(ret,axis) = sum(repeats);
+                    at(ret,axis) = index::sum(repeats);
                 }
                 else
                     at(ret,axis) = at(ret,axis) * repeats;
@@ -198,8 +198,8 @@ namespace nmtools::index
     template <typename shape_t, typename indices_t, typename repeats_t, typename axis_t>
     constexpr auto repeat(const shape_t& shape, const indices_t& indices, const repeats_t& repeats, [[maybe_unused]] axis_t axis)
     {
-        using return_t = meta::resolve_optype_t<repeat_t,shape_t,indices_t,repeats_t,axis_t>;
-        static_assert (meta::is_index_array_v<return_t>
+        using return_t = resolve_optype_t<repeat_t,shape_t,indices_t,repeats_t,axis_t>;
+        static_assert (is_index_array_v<return_t>
             , "unsupported index::repeat, could not deduce return type" );
         auto ret = return_t {};
 
@@ -207,10 +207,10 @@ namespace nmtools::index
         // and indices must be integral type or array with size exactly 1
         if constexpr (is_none_v<axis_t>) {
             auto i = [&](){
-                if constexpr (meta::is_integral_v<indices_t>)
+                if constexpr (is_integral_v<indices_t>)
                     return indices / repeats;
                 else {
-                    static_assert (meta::len_v<indices_t> == 1
+                    static_assert (len_v<indices_t> == 1
                         , "unsupported index::repeat, expect array with size of 1 when axis is None"
                     );
                     return at<0>(indices) / repeats;
@@ -218,15 +218,15 @@ namespace nmtools::index
             }();
 
             auto indices = compute_indices(i,shape);
-            if constexpr (meta::is_resizable_v<return_t>) {
+            if constexpr (is_resizable_v<return_t>) {
                 ret.resize(len(indices));
             }
             auto assign_result = [&](auto i){
                 at(ret,i) = at(indices,i);
             };
-            if constexpr (meta::is_tuple_v<return_t>) {
-                constexpr auto N = meta::len_v<return_t>;
-                meta::template_for<N>(assign_result);
+            if constexpr (is_tuple_v<return_t>) {
+                constexpr auto N = len_v<return_t>;
+                template_for<N>(assign_result);
             } else {
                 for (size_t i=0; i<len(ret); i++) {
                     assign_result(i);
@@ -235,20 +235,20 @@ namespace nmtools::index
         }
         else {
             auto n = len(indices);
-            if constexpr (meta::is_resizable_v<return_t>)
+            if constexpr (is_resizable_v<return_t>)
                 ret.resize(n);
             for (size_t i=0; i<n; i++) {
-                using common_t = meta::promote_index_t<size_t,axis_t>;
+                using common_t = promote_index_t<size_t,axis_t>;
                 auto idx = at(indices,i);
-                if constexpr (meta::is_index_v<repeats_t>) {
+                if constexpr (is_index_v<repeats_t>) {
                     at(ret,i) = (static_cast<common_t>(i)==static_cast<common_t>(axis) ? idx / repeats : idx);
                 } else {
-                    auto csum = cumsum(repeats);
+                    auto csum = index::cumsum(repeats);
                     if (static_cast<common_t>(i)==static_cast<common_t>(axis)) {
                         // note: len(repeats) == shape[axis]
                         // simply find arg of repeats such that idx >= accumulate(repeats)[args]
                         auto f = [&](auto a){
-                            using common_t = meta::promote_index_t<decltype(idx),decltype(a)>;
+                            using common_t = promote_index_t<decltype(idx),decltype(a)>;
                             return (common_t)idx<(common_t)a;
                         };
                         auto arg = where(f, csum);

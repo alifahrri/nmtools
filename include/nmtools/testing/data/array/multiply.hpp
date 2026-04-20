@@ -61,6 +61,8 @@ NMTOOLS_TESTING_DECLARE_CASE(view, multiply)
 
 NMTOOLS_TESTING_DECLARE_CASE(view, reduce_multiply)
 {
+    using namespace literals;
+
     NMTOOLS_TESTING_DECLARE_ARGS(case1)
     {
         inline int a[2][3][2] = {
@@ -76,6 +78,7 @@ NMTOOLS_TESTING_DECLARE_CASE(view, reduce_multiply)
             },
         };
         inline int axis = 0;
+        inline auto axis_ct = 0_ct;
         NMTOOLS_CAST_ARRAYS(a)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case1)
@@ -103,6 +106,7 @@ NMTOOLS_TESTING_DECLARE_CASE(view, reduce_multiply)
             },
         };
         inline int axis = 1;
+        inline auto axis_ct = 1_ct;
         NMTOOLS_CAST_ARRAYS(a)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case2)
@@ -129,6 +133,7 @@ NMTOOLS_TESTING_DECLARE_CASE(view, reduce_multiply)
             }
         };
         inline int axis = 2;
+        inline auto axis_ct = 2_ct;
         NMTOOLS_CAST_ARRAYS(a)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case3)
@@ -156,6 +161,7 @@ NMTOOLS_TESTING_DECLARE_CASE(view, reduce_multiply)
         };
         inline int axis[2] = {0,1};
         NMTOOLS_CAST_ARRAYS(a)
+        NMTOOLS_CAST_INDEX_ARRAYS(axis)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case4)
     {
@@ -179,6 +185,7 @@ NMTOOLS_TESTING_DECLARE_CASE(view, reduce_multiply)
         };
         inline int axis[2] = {0,2};
         NMTOOLS_CAST_ARRAYS(a)
+        NMTOOLS_CAST_INDEX_ARRAYS(axis)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case5)
     {
@@ -202,6 +209,7 @@ NMTOOLS_TESTING_DECLARE_CASE(view, reduce_multiply)
         };
         inline int axis[2] = {1,2};
         NMTOOLS_CAST_ARRAYS(a)
+        NMTOOLS_CAST_INDEX_ARRAYS(axis)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case6)
     {
@@ -225,6 +233,7 @@ NMTOOLS_TESTING_DECLARE_CASE(view, reduce_multiply)
         };
         inline int axis[3] = {0,1,2};
         NMTOOLS_CAST_ARRAYS(a)
+        NMTOOLS_CAST_INDEX_ARRAYS(axis)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case7)
     {
@@ -250,6 +259,7 @@ NMTOOLS_TESTING_DECLARE_CASE(view, reduce_multiply)
         inline auto dtype = uint32;
         inline auto initial = 256;
         NMTOOLS_CAST_ARRAYS(a)
+        NMTOOLS_CAST_INDEX_ARRAYS(axis)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case8)
     {
@@ -366,6 +376,7 @@ NMTOOLS_TESTING_DECLARE_CASE(view, reduce_multiply)
         inline auto initial = None;
         inline auto keepdims = false;
         NMTOOLS_CAST_ARRAYS(a)
+        NMTOOLS_CAST_INDEX_ARRAYS(axis)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case12)
     {
@@ -392,6 +403,7 @@ NMTOOLS_TESTING_DECLARE_CASE(view, reduce_multiply)
         inline auto initial = None;
         inline auto keepdims = true;
         NMTOOLS_CAST_ARRAYS(a)
+        NMTOOLS_CAST_INDEX_ARRAYS(axis)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case13)
     {
@@ -525,6 +537,8 @@ NMTOOLS_TESTING_DECLARE_CASE(view, reduce_multiply)
 
 NMTOOLS_TESTING_DECLARE_CASE(view, accumulate_multiply)
 {
+    using namespace literals;
+
     NMTOOLS_TESTING_DECLARE_ARGS(case1)
     {
         inline int a[2][3][2] = {
@@ -540,6 +554,7 @@ NMTOOLS_TESTING_DECLARE_CASE(view, accumulate_multiply)
             },
         };
         inline int axis = 0;
+        inline auto axis_ct = 0_ct;
         NMTOOLS_CAST_ARRAYS(a)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case1)
@@ -574,6 +589,7 @@ NMTOOLS_TESTING_DECLARE_CASE(view, accumulate_multiply)
             },
         };
         inline int axis = 1;
+        inline auto axis_ct = 1_ct;
         NMTOOLS_CAST_ARRAYS(a)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case2)
@@ -608,6 +624,7 @@ NMTOOLS_TESTING_DECLARE_CASE(view, accumulate_multiply)
             },
         };
         inline int axis = 2;
+        inline auto axis_ct = 2_ct;
         NMTOOLS_CAST_ARRAYS(a)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case3)

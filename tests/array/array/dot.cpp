@@ -1,5 +1,6 @@
 #include "nmtools/array/dot.hpp"
 #include "nmtools/testing/data/array/dot.hpp"
+#include "nmtools/context/default.hpp"
 #include "nmtools/testing/doctest.hpp"
 
 #define DOT_SUBCASE(case_name, ...) \

@@ -13,7 +13,7 @@ namespace nmtools::index
     template <typename F, typename array_t>
     constexpr auto count(const F& f, const array_t& array)
     {
-        using return_t = meta::resolve_optype_t<count_t,F,array_t>;
+        using return_t = resolve_optype_t<count_t,F,array_t>;
 
         auto res = return_t {0};
 
@@ -21,9 +21,9 @@ namespace nmtools::index
             res += static_cast<bool>(f(at(array,i))) ? 1 : 0;
         };
 
-        if constexpr (meta::is_fixed_index_array_v<array_t>) {
-            constexpr auto N = meta::len_v<array_t>;
-            meta::template_for<N>(count_impl);
+        if constexpr (is_fixed_index_array_v<array_t>) {
+            constexpr auto N = len_v<array_t>;
+            template_for<N>(count_impl);
         }
         else {
             auto n = len(array);

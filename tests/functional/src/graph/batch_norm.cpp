@@ -7,6 +7,7 @@
 #include "nmtools/array/batch_norm.hpp"
 #include "nmtools/array/batch_norm.hpp"
 #include "nmtools/utility/has_value.hpp"
+#include "nmtools/context/default.hpp"
 #include "nmtools/testing/doctest.hpp"
 
 namespace nm = nmtools;

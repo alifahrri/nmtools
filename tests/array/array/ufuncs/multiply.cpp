@@ -1,4 +1,5 @@
 #include "nmtools/array/ufuncs/multiply.hpp"
+#include "nmtools/context/default.hpp"
 #include "nmtools/testing/data/array/multiply.hpp"
 #include "nmtools/testing/doctest.hpp"
 
@@ -8,35 +9,12 @@
 namespace nm = nmtools;
 namespace na = nmtools;
 
-#define RUN_multiply_impl(...) \
-nm::view::multiply(__VA_ARGS__);
-
-#ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
-#include "nmtools/testing/benchmarks/bench.hpp"
-using nm::benchmarks::TrackedBench;
-// create immediately invoked lambda
-// that packs multiply fn to callable lambda
-#define RUN_multiply(case_name, ...) \
-[](auto&&...args){ \
-    auto title = std::string("multiply-") + #case_name; \
-    auto name  = nm::testing::make_func_args("", args...); \
-    auto fn    = [&](){ \
-        return RUN_multiply_impl(args...); \
-    }; \
-    return TrackedBench::run(title, name, fn); \
-}(__VA_ARGS__);
-#else
-// run normally without benchmarking, ignore case_name
-#define RUN_multiply(case_name, ...) \
-RUN_multiply_impl(__VA_ARGS__);
-#endif // NMTOOLS_TESTING_ENABLE_BENCHMARKS
-
 #define MULTIPLY_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
     NMTOOLS_TESTING_USE_CASE(view, multiply, case_name); \
     using namespace args; \
-    auto result = RUN_multiply(case_name, __VA_ARGS__); \
+    auto result = nm::multiply(__VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( ::nm::shape(result), expect::shape ); \
     NMTOOLS_ASSERT_CLOSE( result, expect::result ); \
 }
@@ -59,35 +37,12 @@ TEST_CASE("multiply(case2)" * doctest::test_suite("array::multiply"))
     MULTIPLY_SUBCASE( case2, a_h, b );
 }
 
-#define RUN_reduce_multiply_impl(...) \
-nmtools::multiply.reduce(__VA_ARGS__);
-
-#ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
-#include "nmtools/testing/benchmarks/bench.hpp"
-using nm::benchmarks::TrackedBench;
-// create immediately invoked lambda
-// that packs reduce_multiply fn to callable lambda
-#define RUN_reduce_multiply(case_name, ...) \
-[](auto&&...args){ \
-    auto title = std::string("reduce_multiply-") + #case_name; \
-    auto name  = nm::testing::make_func_args("", args...); \
-    auto fn    = [&](){ \
-        return RUN_reduce_multiply_impl(args...); \
-    }; \
-    return TrackedBench::run(title, name, fn); \
-}(__VA_ARGS__);
-#else
-// run normally without benchmarking, ignore case_name
-#define RUN_reduce_multiply(case_name, ...) \
-RUN_reduce_multiply_impl(__VA_ARGS__);
-#endif // NMTOOLS_TESTING_ENABLE_BENCHMARKS
-
 #define REDUCE_MULTIPLY_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
     NMTOOLS_TESTING_USE_CASE(view, reduce_multiply, case_name); \
     using namespace args; \
-    auto result = RUN_reduce_multiply(case_name, __VA_ARGS__); \
+    auto result = nm::multiply.reduce(__VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( ::nm::shape(result), expect::shape ); \
     NMTOOLS_ASSERT_CLOSE( result, expect::result ); \
 }
@@ -97,8 +52,6 @@ TEST_CASE("reduce_multiply(case1)" * doctest::test_suite("array::reduce_multiply
     REDUCE_MULTIPLY_SUBCASE( case1,   a, axis );
     REDUCE_MULTIPLY_SUBCASE( case1, a_a, axis );
     REDUCE_MULTIPLY_SUBCASE( case1, a_f, axis );
-    // reduce doesnt work with dynamic ndarray for now
-    // REDUCE_MULTIPLY_SUBCASE( case1, a_d, axis );
     REDUCE_MULTIPLY_SUBCASE( case1, a_h, axis );
 }
 
@@ -141,14 +94,6 @@ TEST_CASE("reduce_multiply(case6)" * doctest::test_suite("array::reduce_multiply
     REDUCE_MULTIPLY_SUBCASE( case6, a_f, axis );
     REDUCE_MULTIPLY_SUBCASE( case6, a_h, axis );
 }
-
-// TEST_CASE("reduce_multiply(case7)" * doctest::test_suite("array::reduce_multiply"))
-// {
-//     REDUCE_MULTIPLY_SUBCASE( case7,   a, axis );
-//     REDUCE_MULTIPLY_SUBCASE( case7, a_a, axis 
-//     REDUCE_MULTIPLY_SUBCASE( case7, a_f, axis );
-//     REDUCE_MULTIPLY_SUBCASE( case7, a_h, axis );
-// }
 
 TEST_CASE("reduce_multiply(case8)" * doctest::test_suite("array::reduce_multiply"))
 {
@@ -198,35 +143,12 @@ TEST_CASE("reduce_multiply(case13)" * doctest::test_suite("array::reduce_multipl
     REDUCE_MULTIPLY_SUBCASE( case13, a_h, axis, dtype, initial, keepdims );
 }
 
-#define RUN_accumulate_multiply_impl(...) \
-nmtools::multiply.accumulate(__VA_ARGS__);
-
-#ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
-#include "nmtools/testing/benchmarks/bench.hpp"
-using nm::benchmarks::TrackedBench;
-// create immediately invoked lambda
-// that packs accumulate_multiply fn to callable lambda
-#define RUN_accumulate_multiply(case_name, ...) \
-[](auto&&...args){ \
-    auto title = std::string("accumulate_multiply-") + #case_name; \
-    auto name  = nm::testing::make_func_args("", args...); \
-    auto fn    = [&](){ \
-        return RUN_accumulate_multiply_impl(args...); \
-    }; \
-    return TrackedBench::run(title, name, fn); \
-}(__VA_ARGS__);
-#else
-// run normally without benchmarking, ignore case_name
-#define RUN_accumulate_multiply(case_name, ...) \
-RUN_accumulate_multiply_impl(__VA_ARGS__);
-#endif // NMTOOLS_TESTING_ENABLE_BENCHMARKS
-
 #define ACCUMULATE_MULTIPLY_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
     NMTOOLS_TESTING_USE_CASE(view, accumulate_multiply, case_name); \
     using namespace args; \
-    auto result = RUN_accumulate_multiply(case_name, __VA_ARGS__); \
+    auto result = nm::multiply.accumulate(__VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( ::nm::shape(result), expect::shape ); \
     NMTOOLS_ASSERT_CLOSE( result, expect::result ); \
 }
@@ -236,8 +158,6 @@ TEST_CASE("accumulate_multiply(case1)" * doctest::test_suite("array::accumulate_
     ACCUMULATE_MULTIPLY_SUBCASE( case1,   a, axis );
     ACCUMULATE_MULTIPLY_SUBCASE( case1, a_a, axis );
     ACCUMULATE_MULTIPLY_SUBCASE( case1, a_f, axis );
-    // reduce doesnt work with dynamic ndarray for now
-    // ACCUMULATE_MULTIPLY_SUBCASE( case1, a_d, axis );
     ACCUMULATE_MULTIPLY_SUBCASE( case1, a_h, axis );
 }
 
@@ -246,8 +166,6 @@ TEST_CASE("accumulate_multiply(case2)" * doctest::test_suite("array::accumulate_
     ACCUMULATE_MULTIPLY_SUBCASE( case2,   a, axis );
     ACCUMULATE_MULTIPLY_SUBCASE( case2, a_a, axis );
     ACCUMULATE_MULTIPLY_SUBCASE( case2, a_f, axis );
-    // reduce doesnt work with dynamic ndarray for now
-    // ACCUMULATE_MULTIPLY_SUBCASE( case2, a_d, axis );
     ACCUMULATE_MULTIPLY_SUBCASE( case2, a_h, axis );
 }
 
@@ -256,40 +174,15 @@ TEST_CASE("accumulate_multiply(case3)" * doctest::test_suite("array::accumulate_
     ACCUMULATE_MULTIPLY_SUBCASE( case3,   a, axis );
     ACCUMULATE_MULTIPLY_SUBCASE( case3, a_a, axis );
     ACCUMULATE_MULTIPLY_SUBCASE( case3, a_f, axis );
-    // reduce doesnt work with dynamic ndarray for now
-    // ACCUMULATE_MULTIPLY_SUBCASE( case3, a_d, axis );
     ACCUMULATE_MULTIPLY_SUBCASE( case3, a_h, axis );
 }
-
-#define RUN_outer_multiply_impl(...) \
-nmtools::multiply.outer(__VA_ARGS__);
-
-#ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
-#include "nmtools/testing/benchmarks/bench.hpp"
-using nm::benchmarks::TrackedBench;
-// create immediately invoked lambda
-// that packs outer_multiply fn to callable lambda
-#define RUN_outer_multiply(case_name, ...) \
-[](auto&&...args){ \
-    auto title = std::string("outer_multiply-") + #case_name; \
-    auto name  = nm::testing::make_func_args("", args...); \
-    auto fn    = [&](){ \
-        return RUN_outer_multiply_impl(args...); \
-    }; \
-    return TrackedBench::run(title, name, fn); \
-}(__VA_ARGS__);
-#else
-// run normally without benchmarking, ignore case_name
-#define RUN_outer_multiply(case_name, ...) \
-RUN_outer_multiply_impl(__VA_ARGS__);
-#endif // NMTOOLS_TESTING_ENABLE_BENCHMARKS
 
 #define OUTER_MULTIPLY_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
     NMTOOLS_TESTING_USE_CASE(view, outer_multiply, case_name); \
     using namespace args; \
-    auto result = RUN_outer_multiply(case_name, __VA_ARGS__); \
+    auto result = nm::multiply.outer(__VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( ::nm::shape(result), expect::shape ); \
     NMTOOLS_ASSERT_CLOSE( result, expect::result ); \
 }
@@ -298,7 +191,6 @@ TEST_CASE("outer_multiply(case1)" * doctest::test_suite("array::outer_multiply")
 {
     OUTER_MULTIPLY_SUBCASE( case1,   a,   b );
     OUTER_MULTIPLY_SUBCASE( case1, a_a, b_a );
-    // TODO: remove support for nested vector as ndarray
     OUTER_MULTIPLY_SUBCASE( case1, a_f, b_f );
     OUTER_MULTIPLY_SUBCASE( case1, a_d, b_d );
     OUTER_MULTIPLY_SUBCASE( case1, a_h, b_h );

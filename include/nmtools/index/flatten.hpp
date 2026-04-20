@@ -13,12 +13,12 @@ namespace nmtools::index
     template <typename shape_t, typename fixed_size_t>
     constexpr auto shape_flatten(const shape_t& shape, const fixed_size_t)
     {
-        using result_t = meta::resolve_optype_t<shape_flatten_t,shape_t,fixed_size_t>;
+        using result_t = resolve_optype_t<shape_flatten_t,shape_t,fixed_size_t>;
 
         using namespace literals;
 
         auto result = result_t {};
-        if constexpr (!meta::is_constant_index_array_v<result_t>) {
+        if constexpr (!is_constant_index_array_v<result_t>) {
             auto n = len(shape);
             // assume result is single size
             at(result,0_ct) = 1;

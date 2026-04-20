@@ -1,6 +1,7 @@
 #include "nmtools/network/digraph.hpp"
 #include "nmtools/core/computational_graph.hpp"
 #include "nmtools/array/mean.hpp"
+#include "nmtools/context/default.hpp"
 #include "nmtools/testing/doctest.hpp"
 #include "nmtools/array/random.hpp"
 

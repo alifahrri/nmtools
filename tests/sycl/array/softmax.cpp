@@ -1,4 +1,4 @@
-#include "nmtools/evaluator/sycl.hpp"
+#include "nmtools/context/sycl.hpp"
 #include "nmtools/array/softmax.hpp"
 #include "nmtools/array/random.hpp"
 #include "nmtools/testing/doctest.hpp"

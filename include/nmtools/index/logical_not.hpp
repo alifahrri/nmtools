@@ -21,21 +21,21 @@ namespace nmtools::index
     template <typename array_t>
     constexpr auto logical_not(const array_t& array)
     {
-        using return_t = meta::resolve_optype_t<logical_not_t,array_t>;
-        if constexpr (meta::is_maybe_v<return_t>) {
+        using return_t = resolve_optype_t<logical_not_t,array_t>;
+        if constexpr (is_maybe_v<return_t>) {
             if (static_cast<bool>(array)) {
                 auto result = logical_not(*array);
                 return return_t{result};
             } else {
-                return return_t{meta::Nothing};
+                return return_t{Nothing};
             }
         } else {
             auto res = return_t{};
 
             // only compute if not constant, otherwise assume already computed
-            if constexpr (!meta::is_constant_index_array_v<return_t>) {
+            if constexpr (!is_constant_index_array_v<return_t>) {
                 auto s = len(array);
-                if constexpr (meta::is_resizable_v<return_t>)
+                if constexpr (is_resizable_v<return_t>)
                     res.resize(s);
                 for (size_t i=0; i<s; i++)
                     at(res,i) = !static_cast<bool>(at(array,i));

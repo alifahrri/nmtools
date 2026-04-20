@@ -28,10 +28,10 @@ namespace nmtools::index
     template <typename shape_t, typename reps_t>
     constexpr auto shape_tile(const shape_t& shape, const reps_t& reps)
     {
-        using return_t = meta::resolve_optype_t<shape_tile_t,shape_t,reps_t>;
+        using return_t = resolve_optype_t<shape_tile_t,shape_t,reps_t>;
         auto ret = return_t {};
 
-        if constexpr (!meta::is_constant_index_array_v<return_t>) {
+        if constexpr (!is_constant_index_array_v<return_t>) {
             auto m = len(shape);
             auto n = len(reps);
             // TODO: better deduction
@@ -43,12 +43,12 @@ namespace nmtools::index
                 }
             }();
 
-            if constexpr (meta::is_resizable_v<return_t>)
+            if constexpr (is_resizable_v<return_t>)
                 ret.resize(s);
 
             auto shape_tile_impl = [&](auto i){
-                using idx_t  = meta::remove_address_space_t<meta::get_index_element_type_t<shape_t>>;
-                using sidx_t = meta::make_signed_t<idx_t>;
+                using idx_t  = meta::remove_address_space_t<get_index_element_type_t<shape_t>>;
+                using sidx_t = make_signed_t<idx_t>;
                 sidx_t ai = m - i - 1;
                 sidx_t bi = n - i - 1;
                 sidx_t si = s - i - 1;
@@ -193,7 +193,7 @@ namespace nmtools::index
     template <typename shape_t, typename reps_t, typename indices_t>
     constexpr auto tile(const shape_t& shape, const reps_t&, const indices_t& indices)
     {
-        using return_t = meta::resolve_optype_t<tile_t,shape_t,reps_t,indices_t>;
+        using return_t = resolve_optype_t<tile_t,shape_t,reps_t,indices_t>;
 
         auto ret = return_t {};
 
@@ -210,7 +210,7 @@ namespace nmtools::index
             }
         }();
 
-        if constexpr (meta::is_resizable_v<return_t>)
+        if constexpr (is_resizable_v<return_t>)
             ret.resize(len(shape));
         
         // use int since ai/bi may be negative

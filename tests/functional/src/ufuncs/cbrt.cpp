@@ -1,5 +1,6 @@
 #include "nmtools/array/ufuncs/cbrt.hpp"
 #include "nmtools/testing/data/array/cbrt.hpp"
+#include "nmtools/context/default.hpp"
 #include "nmtools/testing/doctest.hpp"
 
 namespace nm = nmtools;

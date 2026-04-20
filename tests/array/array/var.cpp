@@ -1,38 +1,16 @@
 #include "nmtools/array/var.hpp"
 #include "nmtools/testing/data/array/var.hpp"
+#include "nmtools/context/default.hpp"
 #include "nmtools/testing/doctest.hpp"
 
 namespace nm = nmtools;
-
-#define RUN_var_impl(...) \
-nmtools::var(__VA_ARGS__);
-
-#ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
-#include "nmtools/testing/benchmarks/bench.hpp"
-using nm::benchmarks::TrackedBench;
-// create immediately invoked lambda
-// that packs var fn to callable lambda
-#define RUN_var(case_name, ...) \
-[](auto&&...args){ \
-    auto title = std::string("array::var-") + #case_name; \
-    auto name  = nm::testing::make_func_args("", args...); \
-    auto fn    = [&](){ \
-        return RUN_var_impl(args...); \
-    }; \
-    return TrackedBench::run(title, name, fn); \
-}(__VA_ARGS__);
-#else
-// run normally without benchmarking, ignore case_name
-#define RUN_var(case_name, ...) \
-RUN_var_impl(__VA_ARGS__);
-#endif // NMTOOLS_TESTING_ENABLE_BENCHMARKS
 
 #define VAR_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
     NMTOOLS_TESTING_USE_CASE(array, var, case_name); \
     using namespace args; \
-    auto result = RUN_var(case_name, __VA_ARGS__); \
+    auto result = nmtools::var(__VA_ARGS__); \
     NMTOOLS_ASSERT_CLOSE( result, expect::result ); \
 }
 

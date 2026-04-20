@@ -1,5 +1,6 @@
 #include "nmtools/network/has_path.hpp"
 #include "nmtools/testing/data/network/has_path.hpp"
+#include "nmtools/context/default.hpp"
 #include "nmtools/testing/doctest.hpp"
 
 #define HAS_PATH_SUBCASE(case_name, ...) \

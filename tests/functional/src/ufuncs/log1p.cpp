@@ -1,5 +1,6 @@
 #include "nmtools/array/ufuncs/log1p.hpp"
 #include "nmtools/testing/data/array/log1p.hpp"
+#include "nmtools/context/default.hpp"
 #include "nmtools/testing/doctest.hpp"
 
 namespace nm = nmtools;

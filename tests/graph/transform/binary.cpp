@@ -2,6 +2,7 @@
 #include "nmtools/network/multi_digraph.hpp"
 #include "nmtools/core/transform/binary_fusion.hpp"
 #include "nmtools/array/random.hpp"
+#include "nmtools/context/default.hpp"
 #include "nmtools/testing/doctest.hpp"
 #include "nmtools/testing/data/transform/binary.hpp"
 

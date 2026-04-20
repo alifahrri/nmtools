@@ -4,6 +4,7 @@
 #include "nmtools/core/ufunc/ufunc.hpp"
 #include "nmtools/array/sum.hpp"
 #include "nmtools/testing/data/array/square.hpp"
+#include "nmtools/context/default.hpp"
 #include "nmtools/testing/doctest.hpp"
 
 namespace fn = nmtools::functional;

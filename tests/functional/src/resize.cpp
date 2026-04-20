@@ -3,6 +3,7 @@
 #include "nmtools/testing/data/array/resize.hpp"
 #include "nmtools/core/indexing.hpp"
 #include "nmtools/utility/to_string.hpp"
+#include "nmtools/context/default.hpp"
 #include "nmtools/testing/doctest.hpp"
 
 namespace nm = nmtools;

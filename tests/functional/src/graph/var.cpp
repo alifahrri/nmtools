@@ -20,6 +20,7 @@
 #include "nmtools/array/var.hpp"
 #include "nmtools/utility/has_value.hpp"
 #include "nmtools/array/reshape.hpp"
+#include "nmtools/context/default.hpp"
 #include "nmtools/testing/doctest.hpp"
 #include "nmtools/testing/data/array/arange.hpp"
 

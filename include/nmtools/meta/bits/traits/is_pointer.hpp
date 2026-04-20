@@ -15,4 +15,9 @@ namespace nmtools::meta
     constexpr inline auto is_pointer_v = is_pointer<T>::value;
 } // namespace nmtools::meta
 
+namespace nmtools
+{
+    using meta::is_pointer_v;
+}
+
 #endif // NMTOOLS_BITS_TRAITS_IS_POINTER_HPP

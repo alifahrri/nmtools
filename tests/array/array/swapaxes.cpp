@@ -17,6 +17,7 @@ inline auto name##_ls_hb = nmtools::cast(name, nmtools::kind::ndarray_ls_hb); \
 inline auto name##_ls_db = nmtools::cast(name, nmtools::kind::ndarray_ls_db);
 #endif
 
+#include "nmtools/context/default.hpp"
 #include "nmtools/array/swapaxes.hpp"
 #include "nmtools/testing/data/array/swapaxes.hpp"
 #include "nmtools/testing/doctest.hpp"

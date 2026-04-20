@@ -34,17 +34,16 @@ namespace nmtools::view
 
 namespace nmtools
 {
-    template <typename output_t=none_t, typename context_t=none_t, typename resolver_t=eval_result_t<>
+    template <typename output_t=none_t, typename context_t=default_context_t<>
         , typename array_t, typename dtype_t=none_t>
     constexpr auto zeros_like(const array_t& array, dtype_t dtype=dtype_t{}
-        , context_t&& context=context_t{}, output_t&& output=output_t{},meta::as_value<resolver_t> resolver=meta::as_value_v<resolver_t>)
+        , context_t&& context=context_t{}, output_t&& output=output_t{})
     {
         auto a = view::zeros_like(array,dtype);
         return eval(
             a
             , nmtools::forward<context_t>(context)
             , nmtools::forward<output_t>(output)
-            , resolver
         );
     } // zeros_like
 } // nmtools

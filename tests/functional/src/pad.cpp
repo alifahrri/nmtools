@@ -1,5 +1,6 @@
 #include "nmtools/array/pad.hpp"
 #include "nmtools/testing/data/array/pad.hpp"
+#include "nmtools/context/default.hpp"
 #include "nmtools/testing/doctest.hpp"
 
 namespace nm = nmtools;

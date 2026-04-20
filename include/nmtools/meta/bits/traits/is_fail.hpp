@@ -15,7 +15,7 @@ namespace nmtools::meta
      * @tparam T type to check
      */
     template <typename T, typename=void>
-    struct is_fail : internal::is_base_of<detail::fail_t,T> {};
+    struct is_fail : is_base_of<detail::fail_t,T> {};
 
     template <typename T>
     struct is_fail<const T, enable_if_t<!has_address_space_v<T>>> : is_fail<T> {};

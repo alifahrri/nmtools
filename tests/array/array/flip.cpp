@@ -2,6 +2,7 @@
 #include "nmtools/testing/data/array/flip.hpp"
 #include "nmtools/testing/data/array/fliplr.hpp"
 #include "nmtools/testing/data/array/flipud.hpp"
+#include "nmtools/context/default.hpp"
 #include "nmtools/testing/doctest.hpp"
 
 namespace nm = nmtools;

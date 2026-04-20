@@ -31,16 +31,16 @@ namespace nmtools::index
     template <typename vector_t, typename indices_t>
     constexpr auto gather(const vector_t& vector, const indices_t& indices)
     {
-        using return_t = meta::resolve_optype_t<gather_t,vector_t,indices_t>;
+        using return_t = resolve_optype_t<gather_t,vector_t,indices_t>;
 
-        if constexpr (meta::is_maybe_v<vector_t>) {
+        if constexpr (is_maybe_v<vector_t>) {
             // assume return_t is also maybe type
             if (static_cast<bool>(vector)) {
                 auto result = gather(*vector,indices);
                 // TODO: handle nested optional
                 return return_t{result};
             } else {
-                return return_t{meta::Nothing};
+                return return_t{Nothing};
             }
         } else {
             [[maybe_unused]] auto m = len(indices);
@@ -49,7 +49,7 @@ namespace nmtools::index
 
             auto ret = return_t{};
 
-            if constexpr (meta::is_resizable_v<return_t>)
+            if constexpr (is_resizable_v<return_t>)
                 ret.resize(m);
             
             [[maybe_unused]] auto gather_impl = [&](auto& ret, const auto& vec, const auto& indices, auto i){
@@ -59,9 +59,9 @@ namespace nmtools::index
             }; // gather_impl
 
             // assume the result is computed at compile-time if its constant index array
-            if constexpr (!meta::is_constant_index_array_v<return_t>) {
-                if constexpr (meta::is_fixed_index_array_v<indices_t>)
-                    meta::template_for<meta::len_v<indices_t>>([&](auto i){
+            if constexpr (!is_constant_index_array_v<return_t>) {
+                if constexpr (is_fixed_index_array_v<indices_t>)
+                    template_for<len_v<indices_t>>([&](auto i){
                         gather_impl(ret, vec, indices, i);
                     });
                 else

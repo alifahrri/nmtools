@@ -9,6 +9,7 @@
 #include "nmtools/index/product.hpp"
 #include "nmtools/index/add_indices.hpp"
 #include "nmtools/ndarray/array.hpp"
+#include "nmtools/context/default.hpp"
 
 namespace nmtools::tilekit
 {

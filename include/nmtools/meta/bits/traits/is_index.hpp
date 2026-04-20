@@ -43,4 +43,5 @@ namespace nmtools
     using meta::is_index_v;
 }
 
+
 #endif // NMTOOLS_META_BITS_TRAITS_IS_INDEX_HPP

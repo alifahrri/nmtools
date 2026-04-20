@@ -3,6 +3,7 @@
 #include "nmtools/array/reshape.hpp"
 #include "nmtools/array/ufuncs/multiply.hpp"
 #include "nmtools/array/ufuncs/add.hpp"
+#include "nmtools/context/default.hpp"
 #include "nmtools/testing/doctest.hpp"
 
 namespace nm = nmtools;

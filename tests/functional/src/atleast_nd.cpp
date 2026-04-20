@@ -3,6 +3,7 @@
 #include "nmtools/testing/data/array/atleast_1d.hpp"
 #include "nmtools/testing/data/array/atleast_2d.hpp"
 #include "nmtools/testing/data/array/atleast_nd.hpp"
+#include "nmtools/context/default.hpp"
 #include "nmtools/testing/doctest.hpp"
 
 namespace nm = nmtools;

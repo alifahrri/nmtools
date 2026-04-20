@@ -17,38 +17,16 @@ inline auto name##_ls_hb = nmtools::cast(name, nmtools::kind::ndarray_ls_hb); \
 inline auto name##_ls_db = nmtools::cast(name, nmtools::kind::ndarray_ls_db);
 #endif
 
+#include "nmtools/context/default.hpp"
 #include "nmtools/array/where.hpp"
 #include "nmtools/testing/doctest.hpp"
 #include "nmtools/testing/data/array/where.hpp"
-
-#define RUN_impl(...) \
-nmtools::where(__VA_ARGS__);
-
-#ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
-#include "nmtools/testing/benchmarks/bench.hpp"
-using nm::benchmarks::TrackedBench;
-// create immediately invoked lambda
-// that packs where fn to callable lambda
-#define RUN_where(case_name, ...) \
-[](auto&&...args){ \
-    auto title = std::string("where-") + #case_name; \
-    auto name  = nm::testing::make_func_args("", args...); \
-    auto fn    = [&](){ \
-        return RUN_impl(args...); \
-    }; \
-    return TrackedBench::run(title, name, fn); \
-}(__VA_ARGS__);
-#else
-// run normally without benchmarking, ignore case_name
-#define RUN_where(case_name, ...) \
-RUN_impl(__VA_ARGS__);
-#endif // NMTOOLS_TESTING_ENABLE_BENCHMARKS
 
 #define WHERE_SUBCASE(case_name,condition,x,y) \
 SUBCASE(#case_name) \
 { \
     NMTOOLS_TESTING_USE_CASE( view, where, case_name ); \
-    auto array_array = RUN_where( case_name, args::condition, args::x, args::y ); \
+    auto array_array = nmtools::where( args::condition, args::x, args::y ); \
     NMTOOLS_ASSERT_EQUAL( nm::dim(array_array), expect::dim ); \
     NMTOOLS_ASSERT_EQUAL( nm::shape(array_array), expect::shape ); \
     NMTOOLS_ASSERT_CLOSE( array_array, expect::result ); \

@@ -1,5 +1,6 @@
 #include "nmtools/array/selu.hpp"
 #include "nmtools/testing/data/array/selu.hpp"
+#include "nmtools/context/default.hpp"
 #include "nmtools/testing/doctest.hpp"
 
 namespace nm = nmtools;

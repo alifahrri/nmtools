@@ -37,4 +37,10 @@ namespace nmtools::meta
     using make_signed_t = type_t<make_signed<T>>;
 } // namespace nmtools::meta
 
+namespace nmtools
+{
+    using meta::make_signed_t;
+}
+
+
 #endif // NMTOOLS_META_BITS_TRANSFORM_MAKE_SIGNED_HPP

@@ -1,6 +1,6 @@
 #include "nmtools/array/ones.hpp"
 #include "nmtools/testing/data/array/ones.hpp"
-#include "nmtools/evaluator/cuda.hpp"
+#include "nmtools/context/cuda.hpp"
 #include "nmtools/testing/doctest.hpp"
 
 namespace nm = nmtools;

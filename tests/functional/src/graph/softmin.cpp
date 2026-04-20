@@ -3,6 +3,7 @@
 #include "nmtools/core/ufunc/ufunc.hpp"
 #include "nmtools/array/softmin.hpp"
 #include "nmtools/utility/has_value.hpp"
+#include "nmtools/context/default.hpp"
 #include "nmtools/testing/doctest.hpp"
 
 namespace nm = nmtools;

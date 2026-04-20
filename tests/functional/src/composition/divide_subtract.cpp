@@ -3,6 +3,7 @@
 #include "nmtools/array/ufuncs/subtract.hpp"
 #include "nmtools/core/ufunc/ufunc.hpp"
 #include "nmtools/testing/data/array/subtract.hpp"
+#include "nmtools/context/default.hpp"
 #include "nmtools/testing/doctest.hpp"
 
 namespace fn = nmtools::functional;

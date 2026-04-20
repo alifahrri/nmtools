@@ -17,7 +17,7 @@ namespace nmtools::index
     {
         auto minus_1_count = 0;
         auto dst_numel = (size_t)0;
-        using index_t = meta::get_index_element_type_t<dst_shape_t>;
+        using index_t = get_index_element_type_t<dst_shape_t>;
         for (size_t i=0; i<(size_t)len(dst_shape); i++) {
             const auto d_i = at(dst_shape,i);
             if (i==0) {
@@ -45,11 +45,11 @@ namespace nmtools::index
     template <typename src_shape_t, typename dst_shape_t>
     constexpr auto shape_reshape(const src_shape_t& src_shape, const dst_shape_t& dst_shape)
     {
-        using result_t [[maybe_unused]] = meta::resolve_optype_t<shape_reshape_t,src_shape_t,dst_shape_t>;
+        using result_t [[maybe_unused]] = resolve_optype_t<shape_reshape_t,src_shape_t,dst_shape_t>;
         using m_result_t [[maybe_unused]] = meta::get_maybe_type_t<result_t>;
 
         // TODO: try to provide common function-lifting utility
-        if constexpr (meta::is_maybe_v<src_shape_t>) {
+        if constexpr (is_maybe_v<src_shape_t>) {
             // when src_shape is maybe, then assume the result_t is maybe
             if (static_cast<bool>(src_shape)) {
                 auto result = shape_reshape(*src_shape,dst_shape);
@@ -58,12 +58,12 @@ namespace nmtools::index
                 // since dst_shape may be different shape with src
                 // because std::optional<std::optional<int>> is actually allowed
                 // TODO: support get_if for optional, or add unwrap_if
-                if constexpr (meta::is_maybe_v<decltype(result)>) {
+                if constexpr (is_maybe_v<decltype(result)>) {
                     // assume get_maybe_type_t of result == m_result_t
                     if (static_cast<bool>(result)) {
                         return result_t{*result};
                     } else {
-                        return result_t{meta::Nothing};
+                        return result_t{Nothing};
                     }
                 } else {
                     return result_t{result};
@@ -72,43 +72,43 @@ namespace nmtools::index
                 using return_t = result_t;
                 return (has_value(result)
                     ? return_t{unwrap(result)}
-                    : return_t{meta::Nothing}
+                    : return_t{Nothing}
                 );
                 #endif
             } else {
-                return result_t{meta::Nothing};
+                return result_t{Nothing};
             }
-        } else if constexpr (meta::is_maybe_v<dst_shape_t>) {
+        } else if constexpr (is_maybe_v<dst_shape_t>) {
             using dst_shape_type = meta::get_maybe_type_t<dst_shape_t>;
-            using result_t = meta::resolve_optype_t<shape_reshape_t,src_shape_t,dst_shape_type>;
-            using return_t = meta::conditional_t<meta::is_maybe_v<result_t>,result_t,nmtools_maybe<result_t>>;
+            using result_t = resolve_optype_t<shape_reshape_t,src_shape_t,dst_shape_type>;
+            using return_t = conditional_t<is_maybe_v<result_t>,result_t,nmtools_maybe<result_t>>;
             return (static_cast<bool>(dst_shape)
                 ? return_t{shape_reshape(src_shape,*dst_shape)}
-                : return_t{meta::Nothing}
+                : return_t{Nothing}
             );
-        } else if constexpr (meta::is_fail_v<result_t>) {
+        } else if constexpr (is_fail_v<result_t>) {
             // let the caller decides what to do
             return result_t {};
-        } else if constexpr (meta::is_constant_index_array_v<m_result_t>) {
+        } else if constexpr (is_constant_index_array_v<m_result_t>) {
             // already computed, but need to validate at runtime.
             // this maybe path is useful to determine constant dst shape, but runtime shape
             // simply make sure the numel is same
             auto src_numel = index::product(src_shape);
             auto dst_numel = index::product(m_result_t{});
-            using idx_t = meta::promote_index_t<decltype(src_numel),decltype(dst_numel)>;
+            using idx_t = promote_index_t<decltype(src_numel),decltype(dst_numel)>;
             if ((idx_t)src_numel == (idx_t)dst_numel) {
                 return result_t{m_result_t{}};
             } else {
-                return result_t{meta::Nothing};
+                return result_t{Nothing};
             }
-        } else if constexpr (meta::is_constant_index_array_v<result_t>) {
+        } else if constexpr (is_constant_index_array_v<result_t>) {
             // already computed
             return result_t {};
         } else {
             auto result = result_t {};
             using return_t = nmtools_maybe<result_t>;
-            using element_t = meta::get_index_element_type_t<result_t>;
-            using index_t = meta::make_signed_t<element_t>; // for comparison
+            using element_t = get_index_element_type_t<result_t>;
+            using index_t = make_signed_t<element_t>; // for comparison
 
             // number of "-1" in dst_shape
             #if 0
@@ -120,18 +120,18 @@ namespace nmtools::index
             #endif
 
             if (minus_1_count > 1) {
-                return return_t{meta::Nothing};
+                return return_t{Nothing};
             }
 
             auto src_numel = (size_t)product(src_shape);
 
             if ((minus_1_count == 0) && (src_numel != dst_numel)) {
-                return return_t{meta::Nothing};
+                return return_t{Nothing};
             } else if (static_cast<bool>(src_numel % dst_numel)) {
-                return return_t{meta::Nothing};
+                return return_t{Nothing};
             }
 
-            if constexpr (meta::is_resizable_v<result_t>) {
+            if constexpr (is_resizable_v<result_t>) {
                 result.resize(len(dst_shape));
             }
 
@@ -143,9 +143,9 @@ namespace nmtools::index
                     at(result,i) = at(dst_shape,i);
                 }
             };
-            if constexpr (meta::is_tuple_v<result_t>) {
-                constexpr auto N = meta::len_v<result_t>;
-                meta::template_for<N>(shape_reshape_impl);
+            if constexpr (is_tuple_v<result_t>) {
+                constexpr auto N = len_v<result_t>;
+                template_for<N>(shape_reshape_impl);
             } else {              
                 for (size_t i=0; i<(size_t)len(dst_shape); i++) {
                     shape_reshape_impl(i);
@@ -240,7 +240,7 @@ namespace nmtools::meta
                         constexpr auto DIM = nmtools::len(*result);
                         return template_reduce<DIM>([&](auto init, auto index_){
                             using init_t = type_t<decltype(init)>;
-                            if constexpr (meta::is_same_v<init_t,none_t>) {
+                            if constexpr (is_same_v<init_t,none_t>) {
                                 using type = nmtools_tuple<ct<at(*result,index_)>>;
                                 return as_value_v<type>;
                             } else {
@@ -292,7 +292,7 @@ namespace nmtools::meta
                 } else {
                     using nmtools::at;
                     constexpr auto negative_shape = nmtools::get<1>(result);
-                    return meta::template_reduce<N>([&](auto init, auto index){
+                    return template_reduce<N>([&](auto init, auto index){
                         using init_t = type_t<decltype(init)>;
                         constexpr auto min = at(clipped_min,index);
                         constexpr auto max = at(clipped_max,index);

@@ -1,7 +1,7 @@
 #include "nmtools/array/prod.hpp"
 #include "nmtools/array/arange.hpp"
 #include "nmtools/array/reshape.hpp"
-#include "nmtools/evaluator/sycl.hpp"
+#include "nmtools/context/sycl.hpp"
 #include "nmtools/testing/doctest.hpp"
 
 namespace nm = nmtools;

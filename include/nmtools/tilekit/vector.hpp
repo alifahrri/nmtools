@@ -306,7 +306,7 @@ namespace nmtools::tilekit::vector
             const auto dim = len(src_indices);
             auto valid = true;
             for (nm_size_t j=0; (j<dim) && valid; j++) {
-                valid = valid && ((at(src_indices,j) + at(tile_shape,j)) < at(src_shape,j));
+                valid = valid && ((nm_size_t)(at(src_indices,j) + at(tile_shape,j)) < (nm_size_t)at(src_shape,j));
             }
             if (valid) {
                 vectorized_load();
@@ -370,7 +370,7 @@ namespace nmtools::tilekit::vector
             const auto dim = len(src_indices);
             auto valid = true;
             for (nm_size_t j=0; (j<dim) && valid; j++) {
-                valid = valid && ((at(src_indices,j) + at(tile_shape,j)) < at(output_shape,j));
+                valid = valid && ((nm_size_t)(at(src_indices,j) + at(tile_shape,j)) < (nm_size_t)at(output_shape,j));
             }
             if (valid) {
                 vectorized_store();
@@ -548,208 +548,6 @@ namespace nmtools::meta
                     using type = nmtools_list<element_t>;
                     return as_value_v<type>;
                 }
-            }
-        }();
-        using type = type_t<decltype(vtype)>;
-    };
-}
-
-namespace nmtools::meta
-{
-    // TODO parametrize, unify with array version
-    template <auto bit_width, LayoutKind BufferLayout, typename view_t, typename context_t>
-    struct resolve_optype<
-        void, tilekit::vector::vector_eval_resolver_t<bit_width, BufferLayout>, view_t, context_t
-    >
-    {
-        template <typename buffer_t, typename shape_buffer_t>
-        static constexpr auto make_ndarray(as_value<buffer_t>, as_value<shape_buffer_t>)
-        {
-            // TODO: parametrize bit_width
-            if constexpr (BufferLayout == LayoutKind::RowMajor) {
-                using type = tilekit::vector::object_t<buffer_t,shape_buffer_t,bit_width,resolve_stride_type_t,row_major_offset_t>;
-                return as_value_v<type>;
-            } else if constexpr (BufferLayout == LayoutKind::ColumnMajor) {
-                using type = tilekit::vector::object_t<buffer_t,shape_buffer_t,bit_width,resolve_stride_type_t,column_major_offset_t>;
-                return as_value_v<type>;
-            } else {
-                using type = error::EVAL_RESULT_UNSUPPORTED<view_t,none_t,as_type<bit_width>,as_type<BufferLayout>>;
-                return as_value_v<type>;
-            }
-        }
-
-        static constexpr auto vtype = [](){
-            using element_type = get_element_type_t<view_t>;
-            using error_type [[maybe_unused]] = error::EVAL_RESULT_UNSUPPORTED<view_t,none_t,as_type<BufferLayout>>;
-            // TODO: remove, try to read from `nmtools::shape(declval<view_t>())` instead
-            // the following is kept for temporary backward compatibility
-            constexpr auto shape  = fixed_shape_v<view_t>;
-            constexpr auto dim    = fixed_dim_v<view_t>;
-            constexpr auto size   = fixed_size_v<view_t>;
-            constexpr auto b_dim  = bounded_dim_v<view_t>;
-            constexpr auto b_size = bounded_size_v<view_t>;
-            using shape_type  = decltype(shape);
-            using dim_type    = decltype(dim);
-            using size_type   = decltype(size);
-            using b_dim_type  = decltype(b_dim);
-            using b_size_type = decltype(b_size);
-            using nmtools::len, nmtools::at;
-            // constant shape
-            constexpr auto c_shape_vtype = [&](){
-                if constexpr (!is_fail_v<shape_type>) {
-                    return template_reduce<len(shape)-1>([&](auto init, auto index){
-                        using init_type = type_t<decltype(init)>;
-                        return as_value_v<append_type_t<init_type,ct<(size_t)at(shape,ct_v<decltype(index)::value+1>)>>>;
-                    }, as_value_v<nmtools_tuple<ct<(size_t)at(shape,ct_v<0>)>>>);
-                } else {
-                    return as_value_v<error_type>;
-                }
-            }();
-            // clipped shape
-            constexpr auto cl_shape_vtype = [&](){
-                using shape_t = decltype(nmtools::shape(declval<view_t>()));
-                if constexpr (is_clipped_index_array_v<shape_t>) {
-                    return as_value_v<shape_t>;
-                } else {
-                    return as_value_v<error_type>;
-                }
-            }();
-            // fixed shape
-            constexpr auto f_shape_vtype = [&](){
-                if constexpr (!is_fail_v<dim_type>) {
-                    using type = nmtools_array<size_t,dim>;
-                    return as_value_v<type>;
-                } else {
-                    return as_value_v<error_type>;
-                }
-            }();
-            // bounded shape (for bounded dim)
-            constexpr auto b_shape_vtype = [&](){
-                if constexpr (!is_fail_v<b_dim_type>) {
-                    using type = nmtools_static_vector<size_t,b_dim>;
-                    return as_value_v<type>;
-                } else {
-                    return as_value_v<error_type>;
-                }
-            }();
-            // fixed buffer
-            constexpr auto f_buffer_vtype = [&](){
-                if constexpr (!is_fail_v<size_type>) {
-                    using type = nmtools_array<element_type,size>;
-                    return as_value_v<type>;
-                } else {
-                    return as_value_v<error_type>;
-                }
-            }();
-            // bounded buffer
-            constexpr auto b_buffer_vtype = [&](){
-                if constexpr (!is_fail_v<type_t<decltype(cl_shape_vtype)>>) {
-                    constexpr auto size = index::product(to_value_v<type_t<decltype(cl_shape_vtype)>>);
-                    using type = nmtools_static_vector<element_type,size>;
-                    return as_value_v<type>;
-                } else if constexpr (!is_fail_v<b_size_type>) {
-                    using type = nmtools_static_vector<element_type,b_size>;
-                    return as_value_v<type>;
-                } else {
-                    return as_value_v<error_type>;
-                }
-            }();
-
-            using c_shape_type  [[maybe_unused]] = type_t<decltype(c_shape_vtype)>;
-            using l_shape_type  [[maybe_unused]] = type_t<decltype(cl_shape_vtype)>;
-            using f_shape_type  [[maybe_unused]] = type_t<decltype(f_shape_vtype)>;
-            using b_shape_type  [[maybe_unused]] = type_t<decltype(b_shape_vtype)>;
-            using f_buffer_type [[maybe_unused]] = type_t<decltype(f_buffer_vtype)>;
-            using b_buffer_type [[maybe_unused]] = type_t<decltype(b_buffer_vtype)>;
-            // dynamic buffer
-            using d_buffer_type [[maybe_unused]] = nmtools_list<element_type>;
-            // TODO: add small vector optimization fo shape
-            using d_shape_type  [[maybe_unused]] = nmtools_list<size_t>;
-
-            if constexpr (is_num_v<view_t>) {
-                return as_value_v<element_type>;
-            // prefer constant-shape, no-dynamic allocation
-            } else if constexpr (
-                !is_fail_v<c_shape_type>
-                && !is_fail_v<f_buffer_type>
-            ) {
-                return make_ndarray(as_value_v<f_buffer_type>,as_value_v<c_shape_type>);
-            } else if constexpr (
-                !is_fail_v<c_shape_type>
-                && !is_fail_v<b_buffer_type>
-            ) {
-                return make_ndarray(as_value_v<b_buffer_type>,as_value_v<c_shape_type>);
-            } else if constexpr (
-                !is_fail_v<l_shape_type>
-                && !is_fail_v<f_buffer_type>
-            ) {
-                return make_ndarray(as_value_v<f_buffer_type>,as_value_v<l_shape_type>);
-            } else if constexpr (
-                !is_fail_v<l_shape_type>
-                && !is_fail_v<b_buffer_type>
-            ) {
-                return make_ndarray(as_value_v<b_buffer_type>,as_value_v<l_shape_type>);
-            } else if constexpr (
-                !is_fail_v<f_shape_type>
-                && !is_fail_v<f_buffer_type>
-            ) {
-                return make_ndarray(as_value_v<f_buffer_type>,as_value_v<f_shape_type>);
-            } else if constexpr (
-                !is_fail_v<f_shape_type>
-                && !is_fail_v<b_buffer_type>
-            ) {
-                return make_ndarray(as_value_v<b_buffer_type>,as_value_v<f_shape_type>);
-            }
-            // bounded shape
-            else if constexpr (
-                !is_fail_v<b_shape_type>
-                && !is_fail_v<f_buffer_type>
-            ) {
-                return make_ndarray(as_value_v<f_buffer_type>,as_value_v<b_shape_type>);
-            } else if constexpr (
-                !is_fail_v<b_shape_type>
-                && !is_fail_v<b_buffer_type>
-            ) {
-                return make_ndarray(as_value_v<b_buffer_type>,as_value_v<b_shape_type>);
-            }
-            // dynamic shape
-            else if constexpr (
-                !is_fail_v<d_shape_type>
-                && !is_fail_v<f_buffer_type>
-            ) {
-                return make_ndarray(as_value_v<f_buffer_type>,as_value_v<d_shape_type>);
-            } else if constexpr (
-                !is_fail_v<d_shape_type>
-                && !is_fail_v<b_buffer_type>
-            ) {
-                return make_ndarray(as_value_v<b_buffer_type>,as_value_v<d_shape_type>);
-            } else if constexpr (
-                !is_fail_v<c_shape_type>
-                && !is_fail_v<d_buffer_type>
-            ) {
-                return make_ndarray(as_value_v<d_buffer_type>,as_value_v<c_shape_type>);
-            } else if constexpr (
-                !is_fail_v<l_shape_type>
-                && !is_fail_v<d_buffer_type>
-            ) {
-                return make_ndarray(as_value_v<d_buffer_type>,as_value_v<l_shape_type>);
-            } else if constexpr (
-                !is_fail_v<f_shape_type>
-                && !is_fail_v<d_buffer_type>
-            ) {
-                return make_ndarray(as_value_v<d_buffer_type>,as_value_v<f_shape_type>);
-            } else if constexpr (
-                !is_fail_v<b_shape_type>
-                && !is_fail_v<d_buffer_type>
-            ) {
-                return make_ndarray(as_value_v<d_buffer_type>,as_value_v<b_shape_type>);
-            } else if constexpr (
-                !is_fail_v<d_shape_type>
-                && !is_fail_v<d_buffer_type>
-            ) {
-                return make_ndarray(as_value_v<d_buffer_type>,as_value_v<d_shape_type>);
-            } else {
-                return as_value_v<error_type>;
             }
         }();
         using type = type_t<decltype(vtype)>;

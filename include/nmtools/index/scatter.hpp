@@ -31,12 +31,12 @@ namespace nmtools::index
     template <typename vector_t, typename indices_t>
     constexpr auto scatter(const vector_t& vec, const indices_t& indices)
     {
-        using result_t = meta::resolve_optype_t<scatter_t,vector_t,indices_t>;
+        using result_t = resolve_optype_t<scatter_t,vector_t,indices_t>;
         using size_type = size_t;
 
         auto ret = result_t{};
 
-        if constexpr (!meta::is_constant_index_array_v<result_t>) {
+        if constexpr (!is_constant_index_array_v<result_t>) {
             // get the size of vec, add namespace to avoid ambiguous call
             [[maybe_unused]] auto n = (size_type)len(vec);
             // get the size of indices
@@ -47,7 +47,7 @@ namespace nmtools::index
                 , "unsupported scatter, mismatched dimension between vec and indices"
             );
 
-            if constexpr (meta::is_resizable_v<result_t>)
+            if constexpr (is_resizable_v<result_t>)
                 ret.resize(len(vec)); // assuming indices has size
 
             auto scatter_impl = [&](auto& ret, const auto& vec, const auto& indices, auto i){
@@ -57,8 +57,8 @@ namespace nmtools::index
             }; // scatter_impl
 
             // handle tuple if it has common_type
-            if constexpr (meta::is_fixed_index_array_v<vector_t>)
-                meta::template_for<meta::len_v<vector_t>>([&](auto i){
+            if constexpr (is_fixed_index_array_v<vector_t>)
+                template_for<len_v<vector_t>>([&](auto i){
                     scatter_impl(ret, vec, indices, i);
                 });
             else

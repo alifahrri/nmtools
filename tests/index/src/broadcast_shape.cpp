@@ -392,3 +392,16 @@ TEST_CASE("constexpr_broadcast_shape(case11)" * doctest::test_suite("index::broa
 {
     CONSTEXPR_BROADCAST_SHAPE_SUBCASE(case11, a, b, c, d, e, f, g);
 }
+
+TEST_CASE("broadcast_shape(mixed)" * doctest::test_suite("index::broadcast_shape"))
+{
+    // Test mixed index arrays: tuple<int, integral_constant>
+    // This was previously causing "constexpr if condition is not a constant expression" error
+    // because to_value_v returns runtime-initialized array for mixed tuples
+    using namespace nmtools::literals;
+    auto a = nmtools_tuple{1024, 1024_ct};
+    auto b = nmtools_tuple{1024, 1024_ct};
+    const auto result = nmtools::index::broadcast_shape(a, b);
+    auto expected = nmtools_array<int,2>{1024, 1024};
+    NMTOOLS_ASSERT_EQUAL( result, expected );
+}

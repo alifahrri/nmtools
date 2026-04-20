@@ -1,5 +1,5 @@
 #include "nmtools/array/inner.hpp"
-#include "nmtools/evaluator/sycl.hpp"
+#include "nmtools/context/sycl.hpp"
 #include "nmtools/array/random.hpp"
 #include "nmtools/testing/data/array/inner.hpp"
 #include "nmtools/testing/doctest.hpp"

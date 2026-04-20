@@ -31,18 +31,18 @@ namespace nmtools::index
     template <typename src_shape_t, typename dst_shape_t>
     constexpr auto shape_resize([[maybe_unused]] const src_shape_t& src_shape, const dst_shape_t& dst_shape)
     {
-        using return_t = meta::resolve_optype_t<shape_resize_t,src_shape_t,dst_shape_t>;
+        using return_t = resolve_optype_t<shape_resize_t,src_shape_t,dst_shape_t>;
         
-        if constexpr (!meta::is_constant_index_array_v<return_t>) {
+        if constexpr (!is_constant_index_array_v<return_t>) {
             auto valid = check_shape_resize(src_shape,dst_shape);
             // assume return_t is maybe type
             if (!valid) {
-                return return_t{meta::Nothing};
+                return return_t{Nothing};
             } else {
                 using result_t = meta::get_maybe_type_t<return_t>;
                 auto result = result_t{};
                 auto dim = len(dst_shape);
-                if constexpr (meta::is_resizable_v<result_t>) {
+                if constexpr (is_resizable_v<result_t>) {
                     result.resize(dim);
                 }
                 for (nm_size_t i=0; i<(nm_size_t)dim; i++) {
@@ -60,13 +60,13 @@ namespace nmtools::index
     template <typename indices_t, typename src_shape_t, typename dst_shape_t>
     constexpr auto resize(const indices_t& indices, const src_shape_t& src_shape, const dst_shape_t& dst_shape)
     {
-        using result_t = meta::resolve_optype_t<resize_t,indices_t,src_shape_t,dst_shape_t>;
-        using index_t  = meta::get_index_element_type_t<result_t>;
+        using result_t = resolve_optype_t<resize_t,indices_t,src_shape_t,dst_shape_t>;
+        using index_t  = get_index_element_type_t<result_t>;
 
         auto result = result_t{};
         
         const auto dim = len(src_shape);
-        if constexpr (meta::is_resizable_v<result_t>) {
+        if constexpr (is_resizable_v<result_t>) {
             result.resize(dim);
         }
 

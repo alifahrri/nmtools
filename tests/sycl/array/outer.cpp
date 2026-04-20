@@ -1,5 +1,5 @@
 #include "nmtools/array/outer.hpp"
-#include "nmtools/evaluator/sycl.hpp"
+#include "nmtools/context/sycl.hpp"
 #include "nmtools/testing/data/array/outer.hpp"
 #include "nmtools/testing/doctest.hpp"
 

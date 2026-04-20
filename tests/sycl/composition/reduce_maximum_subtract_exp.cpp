@@ -3,7 +3,7 @@
 #include "nmtools/array/ufuncs/exp.hpp"
 #include "nmtools/array/arange.hpp"
 #include "nmtools/array/reshape.hpp"
-#include "nmtools/evaluator/sycl.hpp"
+#include "nmtools/context/sycl.hpp"
 #include "nmtools/testing/doctest.hpp"
 #include "nmtools/testing/data/array/arange.hpp"
 #include "nmtools/array/ufuncs/maximum.hpp"

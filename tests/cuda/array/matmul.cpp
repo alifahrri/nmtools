@@ -1,4 +1,4 @@
-#include "nmtools/evaluator/cuda.hpp"
+#include "nmtools/context/cuda.hpp"
 #include "nmtools/array/matmul.hpp"
 #include "nmtools/array/copy.hpp"
 #include "nmtools/array/reshape.hpp"

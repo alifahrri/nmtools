@@ -19,6 +19,7 @@ inline auto name##_ds_db = nmtools::cast(name, nmtools::kind::ndarray_cs_db);
 #include "nmtools/array/ufuncs/rad2deg.hpp"
 #include "nmtools/testing/data/array/rad2deg.hpp"
 #include "nmtools/testing/doctest.hpp"
+#include "nmtools/context/default.hpp"
 
 #define RAD2DEG_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \

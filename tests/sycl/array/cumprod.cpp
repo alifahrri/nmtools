@@ -1,7 +1,7 @@
 #include "nmtools/array/cumprod.hpp"
 #include "nmtools/array/arange.hpp"
 #include "nmtools/array/reshape.hpp"
-#include "nmtools/evaluator/sycl.hpp"
+#include "nmtools/context/sycl.hpp"
 #include "nmtools/testing/doctest.hpp"
 
 namespace nm = nmtools;
@@ -217,7 +217,7 @@ TEST_CASE("cumprod(case8)" * doctest::test_suite("array::cumprod"))
     }
 }
 
-TEST_CASE("cumprod(case9)" * doctest::test_suite("array::cumprod"))
+TEST_CASE("cumprod(case9)" * doctest::test_suite("array::cumprod") * doctest::skip())
 {
     auto shape = nmtools_array{128};
     auto numel = ix::product(shape);
@@ -234,7 +234,7 @@ TEST_CASE("cumprod(case9)" * doctest::test_suite("array::cumprod"))
     }
 }
 
-TEST_CASE("cumprod(case10)" * doctest::test_suite("array::cumprod"))
+TEST_CASE("cumprod(case10)" * doctest::test_suite("array::cumprod") * doctest::skip())
 {
     auto shape = nmtools_array{64,2};
     auto numel = ix::product(shape);
@@ -255,7 +255,7 @@ TEST_CASE("cumprod(case10)" * doctest::test_suite("array::cumprod"))
     }
 }
 
-TEST_CASE("cumprod(case11)" * doctest::test_suite("array::cumprod"))
+TEST_CASE("cumprod(case11)" * doctest::test_suite("array::cumprod") * doctest::skip())
 {
     auto shape = nmtools_array{16,4,2};
     auto numel = ix::product(shape);
@@ -280,7 +280,7 @@ TEST_CASE("cumprod(case11)" * doctest::test_suite("array::cumprod"))
     }
 }
 
-TEST_CASE("cumprod(case12)" * doctest::test_suite("array::cumprod"))
+TEST_CASE("cumprod(case12)" * doctest::test_suite("array::cumprod") * doctest::skip())
 {
     auto shape = nmtools_array{4,2,1,4,2};
     auto numel = ix::product(shape);

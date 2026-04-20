@@ -1,5 +1,6 @@
 #include "nmtools/network/filter_nodes.hpp"
 #include "nmtools/testing/data/network/filter_nodes.hpp"
+#include "nmtools/context/default.hpp"
 #include "nmtools/testing/doctest.hpp"
 
 namespace meta = nmtools::meta;

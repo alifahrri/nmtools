@@ -35,12 +35,12 @@ namespace nmtools::index
     template <typename shape_t, typename axes_t>
     constexpr auto shape_expand_dims([[maybe_unused]] const shape_t& shape, [[maybe_unused]] const axes_t& axes)
     {
-        using result_t = meta::resolve_optype_t<shape_expand_dims_t,shape_t,axes_t>;
+        using result_t = resolve_optype_t<shape_expand_dims_t,shape_t,axes_t>;
         auto new_shape = result_t{};
 
-        if constexpr (!meta::is_constant_index_array_v<result_t>) {
+        if constexpr (!is_constant_index_array_v<result_t>) {
             auto n_axes = [&](){
-                if constexpr (meta::is_index_array_v<axes_t>)
+                if constexpr (is_index_array_v<axes_t>)
                     return len(axes);
                 else return 1ul;
             }();
@@ -51,23 +51,23 @@ namespace nmtools::index
             auto normalized_axes = unwrap(normalize_axis(axes,n));
 
             // resize output if necessary
-            if constexpr (meta::is_resizable_v<result_t>) {
+            if constexpr (is_resizable_v<result_t>) {
                 new_shape.resize(n);
             }
             
             auto idx = nm_size_t{0};
             auto shape_expand_dims_impl = [&](auto i){
                 auto in_axis = [&](){
-                    if constexpr (meta::is_index_array_v<axes_t>)
+                    if constexpr (is_index_array_v<axes_t>)
                         return contains(normalized_axes,i);
                     else return i == (nm_size_t)normalized_axes;
                 }();
                 at(new_shape,i) = (in_axis ? 1 : at(shape,idx));
                 idx += (!in_axis ? 1 : 0);
             };
-            if constexpr (meta::is_tuple_v<result_t>) {
-                constexpr auto N = meta::len_v<result_t>;
-                meta::template_for<N>(shape_expand_dims_impl);
+            if constexpr (is_tuple_v<result_t>) {
+                constexpr auto N = len_v<result_t>;
+                template_for<N>(shape_expand_dims_impl);
             } else {
                 for (size_t i=0; i<n; i++) {
                     shape_expand_dims_impl(i);

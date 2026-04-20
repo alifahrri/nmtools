@@ -8,6 +8,7 @@ constexpr inline auto name##_hs_hb = nmtools::cast(name, nmtools::kind::ndarray_
 
 #include "nmtools/array/moveaxis.hpp"
 #include "nmtools/testing/data/constexpr/moveaxis.hpp"
+#include "nmtools/context/default.hpp"
 #include "nmtools/testing/doctest.hpp"
 
 namespace nm = nmtools;

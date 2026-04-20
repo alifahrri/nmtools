@@ -1,5 +1,6 @@
 #include "nmtools/network/out_edges.hpp"
 #include "nmtools/testing/data/network/out_edges.hpp"
+#include "nmtools/context/default.hpp"
 #include "nmtools/testing/doctest.hpp"
 
 #define OUT_EDGES_SUBCASE(case_name, ...) \

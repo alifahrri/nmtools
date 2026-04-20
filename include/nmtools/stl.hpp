@@ -61,4 +61,9 @@ namespace nmtools::meta
     constexpr inline auto Nothing = nmtools_nothing;
 }
 
+namespace nmtools
+{
+    using meta::Nothing;
+}
+
 #endif // NMTOOLS_STL_HPP

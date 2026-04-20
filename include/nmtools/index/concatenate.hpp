@@ -34,8 +34,8 @@ namespace nmtools::index
     constexpr auto concatenate(const ashape_t& ashape, const bshape_t& bshape, const indices_t& indices, [[maybe_unused]] axis_t axis)
     {
         // TODO: allow negative axis
-        using a_indices_t = meta::resolve_optype_t<concatenate_t,ashape_t,indices_t,axis_t>;
-        using b_indices_t = meta::resolve_optype_t<concatenate_t,bshape_t,indices_t,axis_t>;
+        using a_indices_t = resolve_optype_t<concatenate_t,ashape_t,indices_t,axis_t>;
+        using b_indices_t = resolve_optype_t<concatenate_t,bshape_t,indices_t,axis_t>;
 
         auto a_indices = a_indices_t {};
         auto b_indices = b_indices_t {};
@@ -46,9 +46,9 @@ namespace nmtools::index
         [[maybe_unused]] auto ad = len(ashape);
         [[maybe_unused]] auto bd = len(bshape);
 
-        if constexpr (meta::is_resizable_v<a_indices_t>)
+        if constexpr (is_resizable_v<a_indices_t>)
             a_indices.resize(ad);
-        if constexpr (meta::is_resizable_v<b_indices_t>)
+        if constexpr (is_resizable_v<b_indices_t>)
             b_indices.resize(bd);
 
         // assume len(indices) == len(ashape) == len(bshape)
@@ -88,7 +88,7 @@ namespace nmtools::index
             }
             // also take account for offset
             else if (ia<(ba+aa)) {
-                using idx_t = meta::promote_index_t<size_t,axis_t>;
+                using idx_t = promote_index_t<size_t,axis_t>;
                 bflag = true;
                 // select ashape, must apply offset from ashape
                 for (size_t i=0; i<bd; i++) {
@@ -166,9 +166,9 @@ namespace nmtools::index
     constexpr auto shape_concatenate(const ashape_t& ashape, const bshape_t& bshape, [[maybe_unused]] axis_t axis, asize_t=asize_t{}, bsize_t=bsize_t{})
     {
         // TODO: allow negative axis
-        using result_t = meta::resolve_optype_t<shape_concatenate_t,ashape_t,bshape_t,axis_t,asize_t,bsize_t>;
+        using result_t = resolve_optype_t<shape_concatenate_t,ashape_t,bshape_t,axis_t,asize_t,bsize_t>;
 
-        if constexpr (meta::is_constant_index_array_v<result_t>) {
+        if constexpr (is_constant_index_array_v<result_t>) {
             // TODO: no need to return tuple
             // TODO: use optional instead
             return nmtools_tuple{true, result_t {}};
@@ -179,7 +179,7 @@ namespace nmtools::index
             [[maybe_unused]] auto ad = len(ashape);
             [[maybe_unused]] auto bd = len(bshape);
 
-            if constexpr (meta::is_resizable_v<result_t>)
+            if constexpr (is_resizable_v<result_t>)
                 ret.resize(ad); // ad must be == bd
 
             using namespace literals;
@@ -191,7 +191,7 @@ namespace nmtools::index
                 at(ret,0_ct) = na + nb;
             }
             else if (ad==bd) {
-                using idx_t = meta::promote_index_t<size_t,axis_t>;
+                using idx_t = promote_index_t<size_t,axis_t>;
                 auto shape_concatenate_impl = [&](auto i){
                     auto ai = at(ashape,i);
                     auto bi = at(bshape,i);
@@ -207,9 +207,9 @@ namespace nmtools::index
                         success = false;
                     }
                 };
-                if constexpr (meta::is_tuple_v<result_t>) {
-                    constexpr auto N = meta::len_v<result_t>;
-                    meta::template_for<N>([&](auto I){
+                if constexpr (is_tuple_v<result_t>) {
+                    constexpr auto N = len_v<result_t>;
+                    template_for<N>([&](auto I){
                         shape_concatenate_impl(I);
                     });
                 } else {

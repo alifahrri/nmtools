@@ -19,6 +19,7 @@ inline auto name##_ls_db = nmtools::cast(name, nmtools::kind::ndarray_ls_db);
 
 #include "nmtools/array/pooling.hpp"
 #include "nmtools/testing/data/array/max_pool1d.hpp"
+#include "nmtools/context/default.hpp"
 #include "nmtools/testing/doctest.hpp"
 
 #define MAX_POOL1D_SUBCASE(case_name, ...) \

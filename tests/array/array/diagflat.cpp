@@ -19,6 +19,7 @@ inline auto name##_ls_db = nmtools::cast(name, nmtools::kind::ndarray_ls_db);
 
 #include "nmtools/array/diagflat.hpp"
 #include "nmtools/testing/data/array/diagflat.hpp"
+#include "nmtools/context/default.hpp"
 #include "nmtools/testing/doctest.hpp"
 
 #define DIAGFLAT_SUBCASE( case_name, ... ) \

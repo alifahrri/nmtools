@@ -22,6 +22,7 @@ inline auto name##_ls_db = nmtools::cast(name, nmtools::kind::ndarray_ls_db);
 
 #include "nmtools/constants.hpp"
 #include "nmtools/testing/doctest.hpp"
+#include "nmtools/context/default.hpp"
 
 #include <vector>
 #include <array>
@@ -30,34 +31,11 @@ inline auto name##_ls_db = nmtools::cast(name, nmtools::kind::ndarray_ls_db);
 namespace nm = nmtools;
 namespace na = nmtools;
 
-#define RUN_impl(...) \
-nmtools::concatenate(__VA_ARGS__);
-
-#ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
-#include "nmtools/testing/benchmarks/bench.hpp"
-using nm::benchmarks::TrackedBench;
-// create immediately invoked lambda
-// that packs concatenate fn to callable lambda
-#define RUN_concatenate(case_name, ...) \
-[](auto&&...args){ \
-    auto title = std::string("concatenate-") + #case_name; \
-    auto name  = nm::testing::make_func_args("", args...); \
-    auto fn    = [&](){ \
-        return RUN_impl(args...); \
-    }; \
-    return TrackedBench::run(title, name, fn); \
-}(__VA_ARGS__);
-#else
-// run normally without benchmarking, ignore case_name
-#define RUN_concatenate(case_name, ...) \
-RUN_impl(__VA_ARGS__);
-#endif // NMTOOLS_TESTING_ENABLE_BENCHMARKS
-
 #define CONCATENATE_SUBCASE(case_name, lhs, rhs, axis) \
 SUBCASE(#case_name) \
 { \
     NMTOOLS_TESTING_USE_CASE(view, concatenate, case_name); \
-    auto array_ref = RUN_concatenate(case_name, args::lhs, args::rhs, args::axis); \
+    auto array_ref = nmtools::concatenate(args::lhs, args::rhs, args::axis); \
     NMTOOLS_ASSERT_EQUAL( nm::shape(array_ref), expect::shape ); \
     NMTOOLS_ASSERT_CLOSE( array_ref, expect::expected ); \
 }

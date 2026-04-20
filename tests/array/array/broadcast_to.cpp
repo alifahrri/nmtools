@@ -20,6 +20,8 @@ inline auto name##_ls_db = nmtools::cast(name, nmtools::kind::ndarray_ls_db);
 #include "nmtools/array/broadcast_to.hpp"
 #include "nmtools/testing/data/array/broadcast_to.hpp"
 #include "nmtools/testing/doctest.hpp"
+#include "nmtools/context/default.hpp"
+#include "nmtools/context/default.hpp"
 
 namespace nm = nmtools;
 namespace na = nmtools;

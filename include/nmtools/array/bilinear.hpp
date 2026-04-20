@@ -232,19 +232,19 @@ namespace nmtools::view
 #include "nmtools/array/bilinear.hpp"
 #include "nmtools/core/eval.hpp"
 
+
 namespace nmtools
 {
-    template <typename output_t=none_t, typename context_t=none_t, typename resolver_t=eval_result_t<>
+    template <typename output_t=none_t, typename context_t=default_context_t<>
         , typename lhs_t, typename rhs_t, typename weight_t, typename bias_t=none_t>
     constexpr auto bilinear(const lhs_t& lhs, const rhs_t& rhs, const weight_t& weight, const bias_t& bias=bias_t{}
-        , context_t&& context=context_t{}, output_t&& output=output_t{}, meta::as_value<resolver_t> resolver=meta::as_value_v<resolver_t>)
+        , context_t&& context=context_t{}, output_t&& output=output_t{})
     {
         auto a = view::bilinear(lhs,rhs,weight,bias);
         return eval(
             a
             , nmtools::forward<context_t>(context)
             , nmtools::forward<output_t>(output)
-            , resolver
         );
     } // bilinear
 } // nmtools

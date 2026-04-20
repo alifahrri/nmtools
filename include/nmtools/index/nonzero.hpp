@@ -25,19 +25,19 @@ namespace nmtools::index
     template <typename index_array_t>
     constexpr auto nonzero(const index_array_t& a)
     {
-        using return_t = meta::resolve_optype_t<nonzero_t,index_array_t>;
+        using return_t = resolve_optype_t<nonzero_t,index_array_t>;
 
-        if constexpr (meta::is_maybe_v<return_t>) {
+        if constexpr (is_maybe_v<return_t>) {
             if (static_cast<bool>(a)) {
                 auto result = nonzero(*a);
                 return return_t{result};
             } else {
-                return return_t{meta::Nothing};
+                return return_t{Nothing};
             }
         } else {
             auto ret = return_t{};
 
-            if constexpr (!meta::is_constant_index_array_v<return_t>) {
+            if constexpr (!is_constant_index_array_v<return_t>) {
                 ret.resize(len(a));
             
                 auto n = nm_size_t{0}; // number of nonzero elements
@@ -50,9 +50,9 @@ namespace nmtools::index
                     }
                 }; // nonzero_impl
                 
-                if constexpr (meta::is_tuple_v<index_array_t>) {
-                    constexpr auto N = meta::len_v<index_array_t>;
-                    meta::template_for<N>(nonzero_impl);
+                if constexpr (is_tuple_v<index_array_t>) {
+                    constexpr auto N = len_v<index_array_t>;
+                    template_for<N>(nonzero_impl);
                 } else {
                     for (nm_size_t idx=0; idx<len(a); idx++)
                         nonzero_impl(idx);

@@ -22,7 +22,7 @@ namespace nmtools::index
     template <typename shape_t, typename index_t>
     constexpr auto split(const shape_t& shape, index_t N)
     {
-        using result_t = meta::resolve_optype_t<split_index_t,shape_t,index_t>;
+        using result_t = resolve_optype_t<split_index_t,shape_t,index_t>;
         using left_t   = meta::at_t<result_t,0>;
         using right_t  = meta::at_t<result_t,1>;
 
@@ -30,7 +30,7 @@ namespace nmtools::index
         auto axis = (size_t)dim; // quick workaround to make axis runtime
         using axis_t [[maybe_unused]] = decltype(axis);
 
-        if constexpr (meta::is_signed_v<index_t>) {
+        if constexpr (is_signed_v<index_t>) {
             axis = (N<0) ? (dim+N) : N;
         } else {
             // unsigned, no need to check
@@ -40,11 +40,11 @@ namespace nmtools::index
         
         auto left  = left_t  {};
         auto right = right_t {};
-        if constexpr (meta::is_resizable_v<left_t>) {
+        if constexpr (is_resizable_v<left_t>) {
             auto ldim  = axis;
             left.resize(ldim);
         }
-        if constexpr (meta::is_resizable_v<right_t>) {
+        if constexpr (is_resizable_v<right_t>) {
             auto rdim  = dim - axis;
             right.resize(rdim);
         }

@@ -1,5 +1,6 @@
 #include "nmtools/array/zeros_like.hpp"
 #include "nmtools/testing/data/array/zeros_like.hpp"
+#include "nmtools/context/default.hpp"
 #include "nmtools/testing/doctest.hpp"
 
 #define ZEROS_LIKE_SUBCASE(case_name, ...) \

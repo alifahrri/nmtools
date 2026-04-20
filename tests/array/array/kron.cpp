@@ -1,5 +1,6 @@
 #include "nmtools/array/kron.hpp"
 #include "nmtools/testing/data/array/kron.hpp"
+#include "nmtools/context/default.hpp"
 #include "nmtools/testing/doctest.hpp"
 
 #define KRON_SUBCASE(case_name,...) \

@@ -1,5 +1,6 @@
 #include "nmtools/array/ones_like.hpp"
 #include "nmtools/testing/data/array/ones_like.hpp"
+#include "nmtools/context/default.hpp"
 #include "nmtools/testing/doctest.hpp"
 
 #define ONES_LIKE_SUBCASE(case_name, ...) \

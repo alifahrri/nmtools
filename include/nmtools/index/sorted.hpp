@@ -13,27 +13,27 @@ namespace nmtools::index
     template <typename indices_t>
     constexpr auto sorted(const indices_t& indices)
     {
-        if constexpr (meta::is_maybe_v<indices_t>) {
+        if constexpr (is_maybe_v<indices_t>) {
             using result_t = decltype(sorted(unwrap(indices)));
-            using return_t = meta::conditional_t<meta::is_maybe_v<result_t>,result_t,nmtools_maybe<result_t>>;
+            using return_t = conditional_t<is_maybe_v<result_t>,result_t,nmtools_maybe<result_t>>;
             return (has_value(indices)
                 ? return_t{sorted(unwrap(indices))}
-                : return_t{meta::Nothing}
+                : return_t{Nothing}
             );
         } else {
-            using result_t = meta::resolve_optype_t<sorted_t,indices_t>;
+            using result_t = resolve_optype_t<sorted_t,indices_t>;
 
             auto result = result_t {};
 
-            if constexpr (!meta::is_constant_index_array_v<result_t>
-                && !meta::is_fail_v<result_t>
+            if constexpr (!is_constant_index_array_v<result_t>
+                && !is_fail_v<result_t>
             ) {
                 // TODO: propagate errors
                 auto sort_idx = index::argsort(indices);
 
                 auto size = len(indices);
 
-                if constexpr (meta::is_resizable_v<result_t>) {
+                if constexpr (is_resizable_v<result_t>) {
                     result.resize(size);
                 }
 

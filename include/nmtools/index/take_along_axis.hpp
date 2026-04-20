@@ -26,9 +26,9 @@ namespace nmtools::index
     constexpr auto shape_take_along_axis(const shape_t& shape, const shape_indices_t& indices, axis_t axis)
     {
         // TODO: take actual indices instead of the shape of indices, to allow bound check
-        using result_t = meta::resolve_optype_t<shape_take_along_axis_t,shape_t,shape_indices_t,axis_t>;
+        using result_t = resolve_optype_t<shape_take_along_axis_t,shape_t,shape_indices_t,axis_t>;
 
-        if constexpr (!meta::is_fail_v<result_t>) {
+        if constexpr (!is_fail_v<result_t>) {
             // TODO: make maybe type at resolve_optype
             using return_t = nmtools_maybe<result_t>;
 
@@ -47,7 +47,7 @@ namespace nmtools::index
 
             auto result = result_t {};
             auto axis_  = *maybe_axis;
-            if constexpr (meta::is_resizable_v<result_t>) {
+            if constexpr (is_resizable_v<result_t>) {
                 result.resize(shape_dim);
             }
 

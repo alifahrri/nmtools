@@ -17,6 +17,7 @@ inline auto name##_ds_db = nmtools::cast(name, nmtools::kind::ndarray_cs_db);
 #include "nmtools/array/ufuncs/radians.hpp"
 #include "nmtools/testing/data/array/radians.hpp"
 #include "nmtools/testing/doctest.hpp"
+#include "nmtools/context/default.hpp"
 
 #define RADIANS_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \

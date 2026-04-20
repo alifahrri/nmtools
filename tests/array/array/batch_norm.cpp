@@ -1,40 +1,18 @@
 #include "nmtools/array/batch_norm.hpp"
 #include "nmtools/testing/data/array/batch_norm.hpp"
 #include "nmtools/testing/doctest.hpp"
+#include "nmtools/context/default.hpp"
 
 // TODO: improve precision
 #undef NMTOOLS_TESTING_PRECISION
 #define NMTOOLS_TESTING_PRECISION (1e-4)
-
-#define RUN_batch_norm_impl(...) \
-nmtools::batch_norm(__VA_ARGS__);
-
-#ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
-#include "nmtools/testing/benchmarks/bench.hpp"
-using nmtools::benchmarks::TrackedBench;
-// create immediately invoked lambda
-// that packs batch_norm fn to callable lambda
-#define RUN_batch_norm(case_name, ...) \
-[](auto&&...args){ \
-    auto title = std::string("array::batch_norm-") + #case_name; \
-    auto name  = nmtools::testing::make_func_args("", args...); \
-    auto fn    = [&](){ \
-        return RUN_batch_norm_impl(args...); \
-    }; \
-    return TrackedBench::run(title, name, fn); \
-}(__VA_ARGS__);
-#else
-// run normally without benchmarking, ignore case_name
-#define RUN_batch_norm(case_name, ...) \
-RUN_batch_norm_impl(__VA_ARGS__);
-#endif // NMTOOLS_TESTING_ENABLE_BENCHMARKS
 
 #define BATCH_NORM_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
     NMTOOLS_TESTING_USE_CASE(array, batch_norm, case_name); \
     using namespace args; \
-    auto result = RUN_batch_norm(case_name, __VA_ARGS__); \
+    auto result = nmtools::batch_norm(__VA_ARGS__); \
     NMTOOLS_ASSERT_CLOSE( result, expect::result ); \
 }
 

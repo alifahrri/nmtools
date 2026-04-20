@@ -22,15 +22,15 @@ namespace nmtools::index
     template <typename shape_t>
     constexpr auto product(const shape_t& shape)
     {
-        using result_t = meta::resolve_optype_t<product_t, shape_t>;
+        using result_t = resolve_optype_t<product_t, shape_t>;
         auto ret = result_t {};
 
-        if constexpr (! meta::is_constant_index_v<result_t>) {
-            using element_t = meta::get_index_element_type_t<shape_t>;
+        if constexpr (! is_constant_index_v<result_t>) {
+            using element_t = get_index_element_type_t<shape_t>;
             ret = element_t{1};
-            if constexpr (meta::is_fixed_index_array_v<shape_t>) {
-                constexpr auto n = meta::len_v<shape_t>;
-                meta::template_for<n>([&](auto index){
+            if constexpr (is_fixed_index_array_v<shape_t>) {
+                constexpr auto n = len_v<shape_t>;
+                template_for<n>([&](auto index){
                     constexpr auto i = decltype(index)::value;
                     auto p = ret * at<i>(shape);
                     ret = p;

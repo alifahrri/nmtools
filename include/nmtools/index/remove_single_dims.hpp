@@ -24,11 +24,11 @@ namespace nmtools::index
     template <typename shape_t>
     constexpr auto remove_single_dims(const shape_t& shape)
     {
-        using return_t = meta::resolve_optype_t<remove_single_dims_t, shape_t>;
+        using return_t = resolve_optype_t<remove_single_dims_t, shape_t>;
 
         auto res = return_t{};
 
-        if constexpr (!meta::is_constant_index_array_v<return_t>) {
+        if constexpr (!is_constant_index_array_v<return_t>) {
             constexpr auto f = [](auto a){
                 return a > 1;
             };
@@ -36,7 +36,7 @@ namespace nmtools::index
             // manual assignment
             auto n = len(squeezed);
 
-            if constexpr (meta::is_resizable_v<return_t>) {
+            if constexpr (is_resizable_v<return_t>) {
                 res.resize(n);
             }
 

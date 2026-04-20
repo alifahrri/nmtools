@@ -17,51 +17,51 @@ namespace nmtools::index
     template <typename shape_t, typename nd_t>
     constexpr auto shape_atleast_nd(const shape_t& shape, [[maybe_unused]] nd_t nd)
     {
-        using result_t [[maybe_unused]] = meta::resolve_optype_t<shape_atleast_nd_t,shape_t,nd_t>;
+        using result_t [[maybe_unused]] = resolve_optype_t<shape_atleast_nd_t,shape_t,nd_t>;
 
-        if constexpr (meta::is_maybe_v<shape_t>) {
+        if constexpr (is_maybe_v<shape_t>) {
             using shape_type = meta::get_maybe_type_t<shape_t>;
-            using result_t   = meta::resolve_optype_t<shape_atleast_nd_t,shape_type,nd_t>;
-            using return_t   = meta::conditional_t<meta::is_maybe_v<result_t>,result_t,nmtools_maybe<result_t>>;
+            using result_t   = resolve_optype_t<shape_atleast_nd_t,shape_type,nd_t>;
+            using return_t   = conditional_t<is_maybe_v<result_t>,result_t,nmtools_maybe<result_t>>;
             return (static_cast<bool>(shape)
                 ? return_t{shape_atleast_nd(*shape,nd)}
-                : return_t{meta::Nothing}
+                : return_t{Nothing}
             );
-        } else if constexpr (meta::is_constant_index_array_v<result_t>) {
+        } else if constexpr (is_constant_index_array_v<result_t>) {
             return result_t {};
         } else {
             auto result = result_t {};
 
             [[maybe_unused]]
-            constexpr auto N = meta::len_v<shape_t>;
+            constexpr auto N = len_v<shape_t>;
 
             auto dim = len(shape);
             auto max_dim = [&](){
-                if constexpr ((N>0) && meta::is_constant_index_v<nd_t>) {
+                if constexpr ((N>0) && is_constant_index_v<nd_t>) {
                     constexpr auto nd = nd_t{};
                     constexpr auto max_dim = ((nm_size_t)N > (nm_size_t)nd ? N : nd);
-                    return meta::ct_v<max_dim>;
+                    return ct_v<max_dim>;
                 } else {
                     return ((nm_size_t)dim > (nm_size_t)nd ? dim : nd);
                 }
             }();
             auto diff = [&](){
-                if constexpr ((N>0) && meta::is_constant_index_v<decltype(max_dim)>) {
+                if constexpr ((N>0) && is_constant_index_v<decltype(max_dim)>) {
                     constexpr auto diff = max_dim - N;
-                    return meta::ct_v<diff>;
+                    return ct_v<diff>;
                 } else {
                     return max_dim - dim;
                 }
             }();
-            if constexpr (meta::is_resizable_v<result_t>) {
+            if constexpr (is_resizable_v<result_t>) {
                 result.resize(max_dim);
             }
 
             // assume diff is constant index
-            constexpr auto DIFF = meta::to_value_v<decltype(diff)>;
+            constexpr auto DIFF = to_value_v<decltype(diff)>;
 
-            if constexpr (meta::is_tuple_v<result_t> && !meta::is_fail_v<decltype(DIFF)>) {
-                meta::template_for<(size_t)DIFF>([&](auto i){
+            if constexpr (is_tuple_v<result_t> && !is_fail_v<decltype(DIFF)>) {
+                template_for<(size_t)DIFF>([&](auto i){
                     at(result,i) = 1;
                 });
             } else {
@@ -72,10 +72,10 @@ namespace nmtools::index
             }
 
             // fill the rest with src shape
-            if constexpr (meta::is_tuple_v<shape_t> && !meta::is_fail_v<decltype(DIFF)>) {
-                meta::template_for<N>([&](auto index){
+            if constexpr (is_tuple_v<shape_t> && !is_fail_v<decltype(DIFF)>) {
+                template_for<N>([&](auto index){
                     constexpr auto i = decltype(index)::value+diff;
-                    constexpr auto I = meta::ct_v<i>;
+                    constexpr auto I = ct_v<i>;
                     at(result,I) = at(shape,index);
                 });
             } else {

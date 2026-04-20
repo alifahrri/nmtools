@@ -113,13 +113,6 @@ if (doctest_FOUND)
     target_link_libraries(${PROJECT_NAME}-doctest PRIVATE doctest::doctest)
 endif()
 
-option(NMTOOLS_ENABLE_TEST_BENCHMARKS "build benchmark programs" OFF)
-if (NMTOOLS_ENABLE_TEST_BENCHMARKS)
-    add_definitions(-DNMTOOLS_TESTING_ENABLE_BENCHMARKS)
-    add_library(nanobench nanobench.cpp)
-    target_link_libraries(${PROJECT_NAME}-doctest PRIVATE nanobench)
-endif()
-
 target_compile_options(${PROJECT_NAME}-doctest PRIVATE -std=c++17)
 target_include_directories(
     ${PROJECT_NAME}-doctest PRIVATE

@@ -4,6 +4,7 @@
 #include "nmtools/array/instance_norm.hpp"
 #include "nmtools/core/functor.hpp"
 #include "nmtools/array/batch_norm.hpp"
+#include "nmtools/context/default.hpp"
 #include "nmtools/testing/doctest.hpp"
 
 namespace nm = nmtools;

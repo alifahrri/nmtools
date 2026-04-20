@@ -1,5 +1,6 @@
 #include "nmtools/array/relu6.hpp"
 #include "nmtools/testing/data/array/relu6.hpp"
+#include "nmtools/context/default.hpp"
 #include "nmtools/testing/doctest.hpp"
 
 namespace nm = nmtools;

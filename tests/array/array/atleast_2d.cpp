@@ -20,6 +20,8 @@ inline auto name##_ls_db = nmtools::cast(name, nmtools::kind::ndarray_ls_db);
 #include "nmtools/array/atleast_2d.hpp"
 #include "nmtools/testing/data/array/atleast_2d.hpp"
 #include "nmtools/testing/doctest.hpp"
+#include "nmtools/context/default.hpp"
+#include "nmtools/context/default.hpp"
 
 #define ATLEAST_2D_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \

@@ -13,15 +13,15 @@ namespace nmtools::index
     template <typename operands_ids_t, typename reserved_ids_t>
     constexpr auto alias(const operands_ids_t& operands_ids, const reserved_ids_t& reserved_ids)
     {
-        using result_t = meta::resolve_optype_t<alias_t,operands_ids_t,reserved_ids_t>;
+        using result_t = resolve_optype_t<alias_t,operands_ids_t,reserved_ids_t>;
 
         auto result = result_t{};
 
-        if constexpr (!meta::is_constant_index_array_v<result_t>
-            && !meta::is_fail_v<result_t>
+        if constexpr (!is_constant_index_array_v<result_t>
+            && !is_fail_v<result_t>
         ) {
             auto size = len(operands_ids);
-            if constexpr (meta::is_resizable_v<result_t>) {
+            if constexpr (is_resizable_v<result_t>) {
                 result.resize(size);
             }
             nm_index_t max_reserved_id = [&]{
@@ -32,7 +32,7 @@ namespace nmtools::index
                 }
             }();
             nm_index_t max_operands_id = [&]{
-                if constexpr (meta::is_constant_index_array_v<operands_ids_t>) {
+                if constexpr (is_constant_index_array_v<operands_ids_t>) {
                     return max(operands_ids);
                 } else {
                     return -1;
@@ -65,15 +65,17 @@ namespace nmtools::index
     #endif
 
     // polynomial rolling hash
-    template <typename aliases_t, typename base_t=meta::ct<NMTOOLS_ALIAS_DEFAULT_BASE>, typename prime_t=meta::ct<NMTOOLS_ALIAS_DEFAULT_PRIME>>
-    constexpr auto generate_alias(const aliases_t& aliases, base_t base=base_t{}, prime_t prime=prime_t{})
+    template <typename aliases_t, typename base_t=ct<NMTOOLS_ALIAS_DEFAULT_BASE>, typename prime_t=ct<NMTOOLS_ALIAS_DEFAULT_PRIME>>
+    constexpr auto generate_alias(const aliases_t& aliases
+        , [[maybe_unused]] base_t base=base_t{}
+        , [[maybe_unused]] prime_t prime=prime_t{})
     {
-        using result_t = meta::resolve_optype_t<generate_alias_t,aliases_t,base_t,prime_t>;
+        using result_t = resolve_optype_t<generate_alias_t,aliases_t,base_t,prime_t>;
 
         auto result = result_t {};
 
-        if constexpr (!meta::is_constant_index_v<result_t>
-            && !meta::is_fail_v<result_t>
+        if constexpr (!is_constant_index_v<result_t>
+            && !is_fail_v<result_t>
         ) {
             result = 0;
             auto N = len(aliases);
@@ -159,7 +161,7 @@ namespace nmtools::meta
                 constexpr auto base    = to_value_v<base_t>;
                 constexpr auto prime   = to_value_v<prime_t>;
                 constexpr auto result  = index::generate_alias(aliases,base,prime);
-                using type = meta::ct<(nm_index_t)result>;
+                using type = ct<(nm_index_t)result>;
                 return as_value_v<type>;
             } else {
                 using type = nm_size_t;

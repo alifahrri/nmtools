@@ -1,5 +1,6 @@
 #include "nmtools/array/ufuncs/exp.hpp"
 #include "nmtools/testing/data/array/exp.hpp"
+#include "nmtools/context/default.hpp"
 #include "nmtools/testing/doctest.hpp"
 
 namespace nm = nmtools;

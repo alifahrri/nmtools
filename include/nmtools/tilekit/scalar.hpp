@@ -2,107 +2,44 @@
 #define NMTOOLS_TILEKIT_SCALAR_HPP
 
 #include "nmtools/core/eval.hpp"
-#include "nmtools/core/unroll.hpp"
+#include "nmtools/core/context.hpp"
+#include "nmtools/context/default.hpp"
 #include "nmtools/tilekit/tilekit.hpp"
 
 namespace nmtools::tilekit
 {
+    // TODO: mark this as tilekit context
     struct scalar_t
+        : base_context_t<scalar_t>
+        , unroll_context_t<false,true>
     {
+        using unroll_base_type = unroll_context_t<false,true>;
+
         nm_size_t worker_id = 0;
         nm_size_t worker_size = 1;
+
+        constexpr scalar_t() {}
+
+        constexpr scalar_t(const scalar_t& other)
+            : worker_id(other.worker_id)
+            , worker_size(other.worker_size)
+        {}
+
+        constexpr scalar_t(nm_size_t worker_id, nm_size_t worker_size)
+            : worker_id(worker_id)
+            , worker_size(worker_size)
+        {}
 
         static auto create_context(nm_size_t worker_id, nm_size_t worker_size)
         {
             return scalar_t{worker_id,worker_size};
         }
+
+        using unroll_base_type::create;
+        using unroll_base_type::eval;
     };
 
     constexpr inline auto Scalar = scalar_t {};
-}
-
-namespace nmtools
-{
-    template <typename view_t, typename resolver_t>
-    struct evaluator_t<view_t,tilekit::scalar_t,resolver_t>
-    {
-        using view_type    = const view_t&;
-        using context_type = const tilekit::scalar_t&;
-        // TODO: move output type as template params
-        using output_type  = meta::resolve_optype_t<resolver_t,view_t,none_t>;
-
-        view_type view;
-        context_type context;
-
-        template <typename output_t>
-        constexpr auto operator()(output_t& output) const
-            -> meta::enable_if_t<meta::is_ndarray_v<output_t>>
-        {
-            const auto out_shape = ::nmtools::shape(output);
-            const auto inp_shape = ::nmtools::shape(view);
-
-            // must be same shape
-            // nmtools_assert must return, atm returning from this mem fn is
-            // not supported, for now skip if mismatch
-            // nmtools_assert( ::nmtools::utils::isequal(out_shape,inp_shape),
-            //     "mismatched shape for evaluator call"
-            // );
-
-            if (!::nmtools::utils::isequal(out_shape,inp_shape))
-                return;
-
-            using ::nmtools::index::ndindex;
-            auto out_index = ndindex(out_shape);
-            auto inp_index = ndindex(inp_shape);
-
-            constexpr auto OUT_SIZE = len_v<decltype(out_index)>;
-            constexpr auto INP_SIZE = len_v<decltype(inp_index)>;
-            static_assert( (OUT_SIZE > 0) && (INP_SIZE > 0) );
-
-            const auto out_stride = index::compute_strides(out_shape);
-            // const auto inp_stride = index::compute_strides(inp_shape);
-            template_for<OUT_SIZE>([&](auto i){
-                auto inp_idx = inp_index[i];
-                auto out_idx = out_index[i];
-                // auto flat_inp_idx = index::compute_offset(inp_idx,inp_stride);
-                auto flat_out_idx = index::compute_offset(out_idx,out_stride);
-                output.data()[flat_out_idx] = apply_at(view,inp_idx);
-            });
-        } // operator()
-
-        template <typename output_t>
-        constexpr auto operator()(output_t& output) const
-            -> meta::enable_if_t<meta::is_num_v<output_t>>
-        {
-            output = static_cast<output_t>(view);
-        } // operator()
-
-        template <typename output_t=output_type, meta::enable_if_t<!meta::is_void_v<output_t>,int> = 0>
-        constexpr auto operator()() const
-        {
-            using result_t = meta::transform_bounded_array_t<output_t>;
-            auto output = result_t{};
-            if constexpr (meta::is_resizable_v<result_t>) {
-                auto inp_shape = ::nmtools::shape(view);
-                ::nmtools::detail::apply_resize(output,inp_shape);
-            }
-
-            (*this)(output);
-
-            return output;
-        } // operator()
-
-        template <typename output_t>
-        constexpr auto operator()(meta::as_value<output_t>) const
-        {
-            return (*this).template operator()<output_t>();
-        } // operator()
-
-        constexpr auto operator()(none_t) const
-        {
-            return (*this)();
-        } // operator()
-    }; // evaluator_t
 }
 
 namespace nmtools::tilekit
@@ -119,9 +56,10 @@ namespace nmtools::tilekit
         using element_type    = get_element_type_t<array_t>;
         using padding_type    = padding_t;
 
+        // TODO: remove type resolver
         static constexpr auto SIZE = index::product(to_value_v<tile_shape_t>);
         using buffer_type   = nmtools_array<element_type,SIZE>;
-        using result_type   = object_t<buffer_type,tile_shape_type,resolve_stride_type_t,row_major_offset_t,object_eval_resolver_t<LayoutKind::RowMajor>,unroll_t,false>;
+        using result_type   = object_t<buffer_type,tile_shape_type,resolve_stride_type_t,row_major_offset_t,unroll_context_t<false,true>,false>;
 
         template <typename ctx_t, typename result_t, typename src_shape_t, typename offset_t, typename tile_stride_t>
         static auto load(ctx_t
@@ -140,7 +78,7 @@ namespace nmtools::tilekit
                     auto dim = len(src_indices);
                     auto valid = true;
                     for (nm_size_t j=0; (j<dim) && valid; j++) {
-                        valid = valid && (at(src_indices,j) < at(src_shape,j));
+                        valid = valid && ((nm_size_t)at(src_indices,j) < (nm_size_t)at(src_shape,j));
                     }
                     // TODO: configurable padding value
                     result.data()[i] = (!valid ? 0 : apply_at(array,src_indices));
@@ -201,7 +139,7 @@ namespace nmtools::tilekit
                     auto dim = len(src_indices);
                     auto valid = true;
                     for (nm_size_t j=0; (j<dim) && valid; j++) {
-                        valid = valid && (at(src_indices,j) < at(src_shape,j));
+                        valid = valid && ((nm_size_t)at(src_indices,j) < (nm_size_t)at(src_shape,j));
                     }
                     if (valid) {
                         apply_at(output,src_indices) = result.data()[i];

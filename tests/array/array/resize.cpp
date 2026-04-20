@@ -19,39 +19,17 @@ inline auto name##_ls_db = nmtools::cast(name, nmtools::kind::ndarray_ls_db);
 
 #include "nmtools/array/resize.hpp"
 #include "nmtools/testing/data/array/resize.hpp"
+#include "nmtools/context/default.hpp"
 #include "nmtools/testing/doctest.hpp"
 
 namespace nm = nmtools;
-
-#define RUN_resize_impl(...) \
-nmtools::resize(__VA_ARGS__);
-
-#ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
-#include "nmtools/testing/benchmarks/bench.hpp"
-using nm::benchmarks::TrackedBench;
-// create immediately invoked lambda
-// that packs resize fn to callable lambda
-#define RUN_resize(case_name, ...) \
-[](auto&&...args){ \
-    auto title = std::string("resize-") + #case_name; \
-    auto name  = nm::testing::make_func_args("", args...); \
-    auto fn    = [&](){ \
-        return RUN_resize_impl(args...); \
-    }; \
-    return TrackedBench::run(title, name, fn); \
-}(__VA_ARGS__);
-#else
-// run normally without benchmarking, ignore case_name
-#define RUN_resize(case_name, ...) \
-RUN_resize_impl(__VA_ARGS__);
-#endif // NMTOOLS_TESTING_ENABLE_BENCHMARKS
 
 #define RESIZE_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
     NMTOOLS_TESTING_USE_CASE(resize, case_name); \
     using namespace args; \
-    auto result = RUN_resize(case_name, __VA_ARGS__); \
+    auto result = nmtools::resize(__VA_ARGS__); \
     NMTOOLS_ASSERT_CLOSE( result, expect::expected ); \
 }
 

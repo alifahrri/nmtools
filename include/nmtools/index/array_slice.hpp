@@ -24,8 +24,8 @@ namespace nmtools::index
     template <typename shape_t, typename slice0_t, typename...slices_t>
     constexpr auto shape_array_slice(const shape_t& shape, const slice0_t& slice, const slices_t&...slices)
     {
-        using result_t = meta::resolve_optype_t<shape_array_slice_t,shape_t,slice0_t,slices_t...>;
-        if constexpr (!meta::is_fail_v<result_t>) {
+        using result_t = resolve_optype_t<shape_array_slice_t,shape_t,slice0_t,slices_t...>;
+        if constexpr (!is_fail_v<result_t>) {
             using return_t = nmtools_maybe<result_t>;
 
             auto result = result_t {};
@@ -50,11 +50,13 @@ namespace nmtools::index
                 }
             }();
 
-            if constexpr (meta::is_resizable_v<result_t>) {
+            if constexpr (is_resizable_v<result_t>) {
                 result.resize(dim);
             }
 
             const auto bcast_result = [&](){
+                // for gcc-9, redefine here
+                constexpr auto n_slices = sizeof...(slices_t) + 1;
                 if constexpr (n_slices > 1) {
                     return broadcast_shape(slice,slices...);
                 } else {
@@ -89,7 +91,7 @@ namespace nmtools::index
     template <typename indices_t, typename slices_t, template<auto...>typename sequence, auto...Is>
     constexpr auto array_slice(const indices_t& indices, const slices_t& slices, sequence<Is...>)
     {
-        return nmtools_array{apply_at(at(slices,meta::ct_v<Is>),indices)...};
+        return nmtools_array{apply_at(at(slices,ct_v<Is>),indices)...};
     }
 
     /**

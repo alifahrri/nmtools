@@ -4,6 +4,7 @@
 #include "nmtools/array/conv2d.hpp"
 #include "nmtools/core/functor.hpp"
 #include "nmtools/array/conv2d.hpp"
+#include "nmtools/context/default.hpp"
 #include "nmtools/testing/doctest.hpp"
 
 namespace nm = nmtools;

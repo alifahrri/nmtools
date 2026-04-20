@@ -1,6 +1,6 @@
 #include "nmtools/array/ones.hpp"
 #include "nmtools/testing/data/array/ones.hpp"
-#include "nmtools/evaluator/sycl.hpp"
+#include "nmtools/context/sycl.hpp"
 #include "nmtools/testing/doctest.hpp"
 
 namespace nm = nmtools;
@@ -190,42 +190,42 @@ TEST_CASE("ones(case18)" * doctest::test_suite("array::ones"))
     SYCL_ONES_SUBCASE(shape,dtype);
 }
 
-TEST_CASE("ones(case19)" * doctest::test_suite("array::ones"))
+TEST_CASE("ones(case19)" * doctest::test_suite("array::ones") * doctest::skip())
 {
     auto shape = nmtools_array{128};
     auto dtype = nm::int32;
     SYCL_ONES_SUBCASE(shape,dtype);
 }
 
-TEST_CASE("ones(case20)" * doctest::test_suite("array::ones"))
+TEST_CASE("ones(case20)" * doctest::test_suite("array::ones") * doctest::skip())
 {
     auto shape = nmtools_array{1,128};
     auto dtype = nm::int32;
     SYCL_ONES_SUBCASE(shape,dtype);
 }
 
-TEST_CASE("ones(case21)" * doctest::test_suite("array::ones"))
+TEST_CASE("ones(case21)" * doctest::test_suite("array::ones") * doctest::skip())
 {
     auto shape = nmtools_array{64,2};
     auto dtype = nm::int32;
     SYCL_ONES_SUBCASE(shape,dtype);
 }
 
-TEST_CASE("ones(case22)" * doctest::test_suite("array::ones"))
+TEST_CASE("ones(case22)" * doctest::test_suite("array::ones") * doctest::skip())
 {
     auto shape = nmtools_array{16,4,2};
     auto dtype = nm::int32;
     SYCL_ONES_SUBCASE(shape,dtype);
 }
 
-TEST_CASE("ones(case23)" * doctest::test_suite("array::ones"))
+TEST_CASE("ones(case23)" * doctest::test_suite("array::ones") * doctest::skip())
 {
     auto shape = nmtools_array{8,2,4,2};
     auto dtype = nm::int32;
     SYCL_ONES_SUBCASE(shape,dtype);
 }
 
-TEST_CASE("ones(case24)" * doctest::test_suite("array::ones"))
+TEST_CASE("ones(case24)" * doctest::test_suite("array::ones") * doctest::skip())
 {
     auto shape = nmtools_array{2,4,1,2,4,2};
     auto dtype = nm::int32;

@@ -29,50 +29,50 @@ namespace nmtools::index
     {
         // TODO: consider to take dim instead of shape
 
-        using result_t = meta::resolve_optype_t<moveaxis_to_transpose_t, shape_t, source_t, destination_t>;
+        using result_t = resolve_optype_t<moveaxis_to_transpose_t, shape_t, source_t, destination_t>;
 
-        if constexpr (meta::is_maybe_v<result_t>) {
+        if constexpr (is_maybe_v<result_t>) {
             // when result is maybe, assume shape is also maybe
             if (static_cast<bool>(shape)) {
                 auto result = moveaxis_to_transpose(*shape,source,destination);
                 // note that stl optional can be nested, we avoid that here
-                if constexpr (meta::is_maybe_v<decltype(result)>) {
+                if constexpr (is_maybe_v<decltype(result)>) {
                     if (static_cast<bool>(result)) {
                         return result_t{*result};
                     } else {
-                        return result_t{meta::Nothing};
+                        return result_t{Nothing};
                     }
                 } else {
                     return result_t{result};
                 }
             } else {
-                return result_t{meta::Nothing};
+                return result_t{Nothing};
             }
-        } else if constexpr (!meta::is_fail_v<result_t>
-            && !meta::is_constant_index_array_v<result_t>
+        } else if constexpr (!is_fail_v<result_t>
+            && !is_constant_index_array_v<result_t>
         ) {
             using return_t = nmtools_maybe<result_t>;
 
             auto dim = [&](){
-                if constexpr (meta::is_constant_index_array_v<shape_t>) {
-                    return meta::ct_v<meta::len_v<shape_t>>;
+                if constexpr (is_constant_index_array_v<shape_t>) {
+                    return ct_v<len_v<shape_t>>;
                 } else {
                     return len(shape);
                 }
             }();
 
             auto order = result_t {};
-            if constexpr (meta::is_resizable_v<result_t>) {
+            if constexpr (is_resizable_v<result_t>) {
                 order.resize(dim);
             }
 
             auto as_array = [](const auto& a){
-                using a_t = meta::remove_cvref_t<decltype(a)>;
-                if constexpr (meta::is_constant_index_v<a_t>) {
+                using a_t = remove_cvref_t<decltype(a)>;
+                if constexpr (is_constant_index_v<a_t>) {
                     return nmtools_tuple{a};
-                } else if constexpr (meta::is_index_v<a_t>) {
+                } else if constexpr (is_index_v<a_t>) {
                     return nmtools_array{a};
-                } else if constexpr (meta::is_constant_index_array_v<a_t>) {
+                } else if constexpr (is_constant_index_array_v<a_t>) {
                     return a_t {};
                 } else {
                     // TODO: check if we can use index::ref
@@ -80,7 +80,7 @@ namespace nmtools::index
                     using type = meta::transform_bounded_array_t<a_t>;
                     auto res   = type{};
                     auto dim   = len(a);
-                    if constexpr (meta::is_resizable_v<type>) {
+                    if constexpr (is_resizable_v<type>) {
                         res.resize(dim);
                     }
                     for (size_t i=0; i<(size_t)dim; i++)
@@ -99,12 +99,12 @@ namespace nmtools::index
             if (!src || !dst) {
                 valid = false;
                 // NOTE: early return to allow constexpr
-                // return return_t{meta::Nothing};
+                // return return_t{Nothing};
                 return return_t{};
             } else if (len(*src) != len(*dst)) {
                 valid = false;
                 // NOTE: early return to allow constexpr
-                // return return_t{meta::Nothing};
+                // return return_t{Nothing};
                 return return_t{};
             }
 
@@ -150,8 +150,8 @@ namespace nmtools::index
                 // ret = order;
                 return return_t(order);
             } else {
-                // ret = meta::Nothing;
-                // return return_t(meta::Nothing);
+                // ret = Nothing;
+                // return return_t(Nothing);
                 return return_t{};
             }
 
@@ -159,7 +159,7 @@ namespace nmtools::index
         } else {
             // NOTE: quick hack so no need to modify caller to handle non maybe type
             using return_t = nmtools_maybe<result_t>;
-            static_assert( !meta::is_fail_v<result_t>
+            static_assert( !is_fail_v<result_t>
                 , "unsupported moveaxis_to_transpose"
             );
             return return_t {result_t{}};

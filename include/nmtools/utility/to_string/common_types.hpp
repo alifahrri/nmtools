@@ -157,7 +157,7 @@ namespace nmtools::utils::impl
                     }
                 };
 
-                auto shape_ = shape(array);
+                auto shape_ = ::nmtools::shape(array);
                 auto s = as_array(shape_);
                 auto indices = ndindex(s);
 

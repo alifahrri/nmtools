@@ -20,19 +20,19 @@ namespace nmtools::index
     template <typename indices_t>
     constexpr auto reverse(const indices_t& indices)
     {
-        using result_t = meta::resolve_optype_t<reverse_t,indices_t>;
+        using result_t = resolve_optype_t<reverse_t,indices_t>;
         using size_type = size_t;
         auto ret = result_t{};
         // assume already reversed at meta::resolve if result_t is constant
-        if constexpr (!meta::is_constant_index_array_v<result_t>) {
+        if constexpr (!is_constant_index_array_v<result_t>) {
             [[maybe_unused]] auto n = (size_type)len(indices);
-            if constexpr (meta::is_resizable_v<result_t>)
+            if constexpr (is_resizable_v<result_t>)
                 ret.resize(n);
             // some fn still allow tuple of runtime index, must be unrolled
             // TODO: consider to drop tuple of runtime index
-            if constexpr (meta::is_fixed_index_array_v<indices_t>) {
-                constexpr auto N = meta::len_v<indices_t>;
-                meta::template_for<N>([&](auto index){
+            if constexpr (is_fixed_index_array_v<indices_t>) {
+                constexpr auto N = len_v<indices_t>;
+                template_for<N>([&](auto index){
                     constexpr auto i = N-1-index;
                     at(ret,index) = at<i>(indices);
                 });

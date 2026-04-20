@@ -30,6 +30,7 @@ constexpr inline auto name##_ls_hb = nmtools::cast(name, nmtools::kind::ndarray_
 #endif
 
 #include "nmtools/array/ufuncs/add.hpp"
+#include "nmtools/context/default.hpp"
 #include "nmtools/testing/data/array/add.hpp"
 #include "nmtools/testing/doctest.hpp"
 
@@ -44,35 +45,12 @@ using nm::None;
 using nm::False;
 using nm::True;
 
-#define RUN_add_impl(...) \
-na::add(__VA_ARGS__);
-
-#ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
-#include "nmtools/testing/benchmarks/bench.hpp"
-using nm::benchmarks::TrackedBench;
-// create immediately invoked lambda
-// that packs add fn to callable lambda
-#define RUN_add(case_name, ...) \
-[](auto&&...args){ \
-    auto title = std::string("add-") + #case_name; \
-    auto name  = nm::testing::make_func_args("", args...); \
-    auto fn    = [&](){ \
-        return RUN_add_impl(args...); \
-    }; \
-    return TrackedBench::run(title, name, fn); \
-}(__VA_ARGS__);
-#else
-// run normally without benchmarking, ignore case_name
-#define RUN_add(case_name, ...) \
-RUN_add_impl(__VA_ARGS__);
-#endif // NMTOOLS_TESTING_ENABLE_BENCHMARKS
-
 #define ADD_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
     NMTOOLS_TESTING_USE_CASE(view, add, case_name); \
     using namespace args; \
-    auto result = RUN_add(case_name, __VA_ARGS__); \
+    auto result = nm::add(__VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( ::nm::shape(result), expect::shape ); \
     NMTOOLS_ASSERT_CLOSE( result, expect::result ); \
 }
@@ -82,40 +60,17 @@ SUBCASE(#case_name) \
 { \
     NMTOOLS_TESTING_USE_CASE(array, constexpr_add, case_name); \
     using namespace args; \
-    constexpr auto result = RUN_add(case_name, __VA_ARGS__); \
+    constexpr auto result = nm::add(__VA_ARGS__); \
     NMTOOLS_STATIC_ASSERT_EQUAL( ::nm::shape(result), expect::shape ); \
     NMTOOLS_STATIC_ASSERT_CLOSE( result, expect::result ); \
 }
-
-#define RUN_reduce_add_impl(...) \
-na::fn::add::reduce(__VA_ARGS__);
-
-#ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
-#include "nmtools/testing/benchmarks/bench.hpp"
-using nm::benchmarks::TrackedBench;
-// create immediately invoked lambda
-// that packs add.reduce fn to callable lambda
-#define RUN_reduce_add(case_name, ...) \
-[](auto&&...args){ \
-    auto title = std::string("add.reduce-") + #case_name; \
-    auto name  = nm::testing::make_func_args("", args...); \
-    auto fn    = [&](){ \
-        return RUN_reduce_add_impl(args...); \
-    }; \
-    return TrackedBench::run(title, name, fn); \
-}(__VA_ARGS__);
-#else
-// run normally without benchmarking, ignore case_name
-#define RUN_reduce_add(case_name, ...) \
-RUN_reduce_add_impl(__VA_ARGS__);
-#endif // NMTOOLS_TESTING_ENABLE_BENCHMARKS
 
 #define REDUCE_ADD_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
     NMTOOLS_TESTING_USE_CASE(view, reduce_add, case_name); \
     using namespace args; \
-    auto result = RUN_reduce_add(case_name, __VA_ARGS__); \
+    auto result = nm::add.reduce(__VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( nm::shape(result), expect::shape ); \
     NMTOOLS_ASSERT_CLOSE( result, expect::result ); \
 }
@@ -125,40 +80,17 @@ SUBCASE(#case_name) \
 { \
     NMTOOLS_TESTING_USE_CASE(array, constexpr_reduce_add, case_name); \
     using namespace args; \
-    constexpr auto result = RUN_reduce_add(case_name, __VA_ARGS__); \
+    constexpr auto result = nm::add.reduce(__VA_ARGS__); \
     NMTOOLS_STATIC_ASSERT_EQUAL( nm::shape(result), expect::shape ); \
     NMTOOLS_STATIC_ASSERT_CLOSE( result, expect::result ); \
 }
-
-#define RUN_accumulate_add_impl(...) \
-na::add.accumulate(__VA_ARGS__);
-
-#ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
-#include "nmtools/testing/benchmarks/bench.hpp"
-using nm::benchmarks::TrackedBench;
-// create immediately invoked lambda
-// that packs add.accumulate fn to callable lambda
-#define RUN_accumulate_add(case_name, ...) \
-[](auto&&...args){ \
-    auto title = std::string("add.accumulate-") + #case_name; \
-    auto name  = nm::testing::make_func_args("", args...); \
-    auto fn    = [&](){ \
-        return RUN_accumulate_add_impl(args...); \
-    }; \
-    return TrackedBench::run(title, name, fn); \
-}(__VA_ARGS__);
-#else
-// run normally without benchmarking, ignore case_name
-#define RUN_accumulate_add(case_name, ...) \
-RUN_accumulate_add_impl(__VA_ARGS__);
-#endif // NMTOOLS_TESTING_ENABLE_BENCHMARKS
 
 #define ACCUMULATE_ADD_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
     NMTOOLS_TESTING_USE_CASE(view, accumulate_add, case_name); \
     using namespace args; \
-    auto result = RUN_accumulate_add(case_name, __VA_ARGS__); \
+    auto result = nm::add.accumulate(__VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( nm::shape(result), expect::shape ); \
     NMTOOLS_ASSERT_CLOSE( result, expect::result ); \
 }
@@ -168,40 +100,17 @@ SUBCASE(#case_name) \
 { \
     NMTOOLS_TESTING_USE_CASE(array, constexpr_accumulate_add, case_name); \
     using namespace args; \
-    constexpr auto result = RUN_accumulate_add(case_name, __VA_ARGS__); \
+    constexpr auto result = nm::add.accumulate(__VA_ARGS__); \
     NMTOOLS_STATIC_ASSERT_EQUAL( nm::shape(result), expect::shape ); \
     NMTOOLS_STATIC_ASSERT_CLOSE( result, expect::result ); \
 }
-
-#define RUN_outer_add_impl(...) \
-na::add.outer(__VA_ARGS__);
-
-#ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
-#include "nmtools/testing/benchmarks/bench.hpp"
-using nm::benchmarks::TrackedBench;
-// create immediately invoked lambda
-// that packs add.outer fn to callable lambda
-#define RUN_outer_add(case_name, ...) \
-[](auto&&...args){ \
-    auto title = std::string("add.outer-") + #case_name; \
-    auto name  = nm::testing::make_func_args("", args...); \
-    auto fn    = [&](){ \
-        return RUN_outer_add_impl(args...); \
-    }; \
-    return TrackedBench::run(title, name, fn); \
-}(__VA_ARGS__);
-#else
-// run normally without benchmarking, ignore case_name
-#define RUN_outer_add(case_name, ...) \
-RUN_outer_add_impl(__VA_ARGS__);
-#endif // NMTOOLS_TESTING_ENABLE_BENCHMARKS
 
 #define OUTER_ADD_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
     NMTOOLS_TESTING_USE_CASE(view, outer_add, case_name); \
     using namespace args; \
-    auto result = RUN_outer_add(case_name, __VA_ARGS__); \
+    auto result = nm::add.outer(__VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( nm::shape(result), expect::shape ); \
     NMTOOLS_ASSERT_CLOSE( result, expect::result ); \
 }
@@ -211,7 +120,7 @@ SUBCASE(#case_name) \
 { \
     NMTOOLS_TESTING_USE_CASE(array, constexpr_outer_add, case_name); \
     using namespace args; \
-    constexpr auto result = RUN_outer_add(case_name, __VA_ARGS__); \
+    constexpr auto result = nm::add.outer(__VA_ARGS__); \
     NMTOOLS_STATIC_ASSERT_EQUAL( nm::shape(result), expect::shape ); \
     NMTOOLS_STATIC_ASSERT_CLOSE( result, expect::result ); \
 }

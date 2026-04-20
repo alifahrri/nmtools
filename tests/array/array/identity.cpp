@@ -1,5 +1,6 @@
 #include "nmtools/array/identity.hpp"
 #include "nmtools/testing/data/array/identity.hpp"
+#include "nmtools/context/default.hpp"
 #include "nmtools/testing/doctest.hpp"
 
 #define IDENTITY_SUBCASE(case_name, ...) \

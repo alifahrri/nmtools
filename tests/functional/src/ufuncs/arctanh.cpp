@@ -1,5 +1,6 @@
 #include "nmtools/array/ufuncs/arctanh.hpp"
 #include "nmtools/testing/data/array/arctanh.hpp"
+#include "nmtools/context/default.hpp"
 #include "nmtools/testing/doctest.hpp"
 
 namespace nm = nmtools;

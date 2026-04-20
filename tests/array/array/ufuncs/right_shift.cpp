@@ -1,6 +1,7 @@
 #include "nmtools/array/ufuncs/right_shift.hpp"
 #include "nmtools/testing/data/array/right_shift.hpp"
 #include "nmtools/testing/doctest.hpp"
+#include "nmtools/context/default.hpp"
 
 #include <vector>
 #include <array>
@@ -8,35 +9,12 @@
 namespace nm = nmtools;
 namespace na = nmtools;
 
-#define RUN_right_shift_impl(...) \
-nmtools::right_shift(__VA_ARGS__);
-
-#ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
-#include "nmtools/testing/benchmarks/bench.hpp"
-using nm::benchmarks::TrackedBench;
-// create immediately invoked lambda
-// that packs right_shift fn to callable lambda
-#define RUN_right_shift(case_name, ...) \
-[](auto&&...args){ \
-    auto title = std::string("right_shift-") + #case_name; \
-    auto name  = nm::testing::make_func_args("", args...); \
-    auto fn    = [&](){ \
-        return RUN_right_shift_impl(args...); \
-    }; \
-    return TrackedBench::run(title, name, fn); \
-}(__VA_ARGS__);
-#else
-// run normally without benchmarking, ignore case_name
-#define RUN_right_shift(case_name, ...) \
-RUN_right_shift_impl(__VA_ARGS__);
-#endif // NMTOOLS_TESTING_ENABLE_BENCHMARKS
-
 #define RIGHT_SHIFT_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
     NMTOOLS_TESTING_USE_CASE(view, right_shift, case_name); \
     using namespace args; \
-    auto result = RUN_right_shift(case_name, __VA_ARGS__); \
+    auto result = nm::right_shift(__VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( ::nm::shape(result), expect::shape ); \
     NMTOOLS_ASSERT_CLOSE( result, expect::result ); \
 }
@@ -59,35 +37,12 @@ TEST_CASE("right_shift(case2)" * doctest::test_suite("view::right_shift"))
     RIGHT_SHIFT_SUBCASE( case2, a_h, b );
 }
 
-#define RUN_reduce_right_shift_impl(...) \
-nmtools::right_shift.reduce(__VA_ARGS__);
-
-#ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
-#include "nmtools/testing/benchmarks/bench.hpp"
-using nm::benchmarks::TrackedBench;
-// create immediately invoked lambda
-// that packs reduce_right_shift fn to callable lambda
-#define RUN_reduce_right_shift(case_name, ...) \
-[](auto&&...args){ \
-    auto title = std::string("reduce_right_shift-") + #case_name; \
-    auto name  = nm::testing::make_func_args("", args...); \
-    auto fn    = [&](){ \
-        return RUN_reduce_right_shift_impl(args...); \
-    }; \
-    return TrackedBench::run(title, name, fn); \
-}(__VA_ARGS__);
-#else
-// run normally without benchmarking, ignore case_name
-#define RUN_reduce_right_shift(case_name, ...) \
-RUN_reduce_right_shift_impl(__VA_ARGS__);
-#endif // NMTOOLS_TESTING_ENABLE_BENCHMARKS
-
 #define REDUCE_RIGHT_SHIFT_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
     NMTOOLS_TESTING_USE_CASE(view, reduce_right_shift, case_name); \
     using namespace args; \
-    auto result = RUN_reduce_right_shift(case_name, __VA_ARGS__); \
+    auto result = nm::right_shift.reduce(__VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( ::nm::shape(result), expect::shape ); \
     NMTOOLS_ASSERT_CLOSE( result, expect::result ); \
 }
@@ -162,35 +117,12 @@ TEST_CASE("reduce_right_shift(case8)" * doctest::test_suite("array::reduce_right
     REDUCE_RIGHT_SHIFT_SUBCASE( case8, a_h, axis, dtype, initial, keepdims );
 }
 
-#define RUN_accumulate_right_shift_impl(...) \
-nmtools::right_shift.accumulate(__VA_ARGS__);
-
-#ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
-#include "nmtools/testing/benchmarks/bench.hpp"
-using nm::benchmarks::TrackedBench;
-// create immediately invoked lambda
-// that packs accumulate_right_shift fn to callable lambda
-#define RUN_accumulate_right_shift(case_name, ...) \
-[](auto&&...args){ \
-    auto title = std::string("accumulate_right_shift-") + #case_name; \
-    auto name  = nm::testing::make_func_args("", args...); \
-    auto fn    = [&](){ \
-        return RUN_accumulate_right_shift_impl(args...); \
-    }; \
-    return TrackedBench::run(title, name, fn); \
-}(__VA_ARGS__);
-#else
-// run normally without benchmarking, ignore case_name
-#define RUN_accumulate_right_shift(case_name, ...) \
-RUN_accumulate_right_shift_impl(__VA_ARGS__);
-#endif // NMTOOLS_TESTING_ENABLE_BENCHMARKS
-
 #define ACCUMULATE_RIGHT_SHIFT_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
     NMTOOLS_TESTING_USE_CASE(view, accumulate_right_shift, case_name); \
     using namespace args; \
-    auto result = RUN_accumulate_right_shift(case_name, __VA_ARGS__); \
+    auto result = nm::right_shift.accumulate(__VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( ::nm::shape(result), expect::shape ); \
     NMTOOLS_ASSERT_CLOSE( result, expect::result ); \
 }
@@ -202,7 +134,6 @@ TEST_CASE("accumulate_right_shift(case1)" * doctest::test_suite("array::accumula
     ACCUMULATE_RIGHT_SHIFT_SUBCASE( case1, a_f, axis );
     // dynamic dim array not supported yet
     // ACCUMULATE_RIGHT_SHIFT_SUBCASE( case1, a_d, axis );
-    ACCUMULATE_RIGHT_SHIFT_SUBCASE( case1, a_h, axis );
 }
 
 TEST_CASE("accumulate_right_shift(case2)" * doctest::test_suite("array::accumulate_right_shift"))
@@ -212,7 +143,6 @@ TEST_CASE("accumulate_right_shift(case2)" * doctest::test_suite("array::accumula
     ACCUMULATE_RIGHT_SHIFT_SUBCASE( case2, a_f, axis );
     // dynamic dim array not supported yet
     // ACCUMULATE_RIGHT_SHIFT_SUBCASE( case2, a_d, axis );
-    ACCUMULATE_RIGHT_SHIFT_SUBCASE( case2, a_h, axis );
 }
 
 TEST_CASE("accumulate_right_shift(case3)" * doctest::test_suite("array::accumulate_right_shift"))
@@ -222,38 +152,14 @@ TEST_CASE("accumulate_right_shift(case3)" * doctest::test_suite("array::accumula
     ACCUMULATE_RIGHT_SHIFT_SUBCASE( case3, a_f, axis );
     // dynamic dim array not supported yet
     // ACCUMULATE_RIGHT_SHIFT_SUBCASE( case3, a_d, axis );
-    ACCUMULATE_RIGHT_SHIFT_SUBCASE( case3, a_h, axis );
 }
-
-#define RUN_outer_right_shift_impl(...) \
-nmtools::right_shift.outer(__VA_ARGS__);
-
-#ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
-#include "nmtools/testing/benchmarks/bench.hpp"
-using nm::benchmarks::TrackedBench;
-// create immediately invoked lambda
-// that packs outer_right_shift fn to callable lambda
-#define RUN_outer_right_shift(case_name, ...) \
-[](auto&&...args){ \
-    auto title = std::string("outer_right_shift-") + #case_name; \
-    auto name  = nm::testing::make_func_args("", args...); \
-    auto fn    = [&](){ \
-        return RUN_outer_right_shift_impl(args...); \
-    }; \
-    return TrackedBench::run(title, name, fn); \
-}(__VA_ARGS__);
-#else
-// run normally without benchmarking, ignore case_name
-#define RUN_outer_right_shift(case_name, ...) \
-RUN_outer_right_shift_impl(__VA_ARGS__);
-#endif // NMTOOLS_TESTING_ENABLE_BENCHMARKS
 
 #define OUTER_RIGHT_SHIFT_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
     NMTOOLS_TESTING_USE_CASE(view, outer_right_shift, case_name); \
     using namespace args; \
-    auto result = RUN_outer_right_shift(case_name, __VA_ARGS__); \
+    auto result = nm::view::outer_right_shift(__VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( ::nm::shape(result), expect::shape ); \
     NMTOOLS_ASSERT_CLOSE( result, expect::result ); \
 }

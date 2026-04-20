@@ -15,6 +15,7 @@ inline auto name##_ds_db = nmtools::cast(name, nmtools::kind::ndarray_cs_db);
 #endif
 
 #include "nmtools/array/ufuncs/cos.hpp"
+#include "nmtools/context/default.hpp"
 #include "nmtools/testing/data/array/cos.hpp"
 #include "nmtools/testing/doctest.hpp"
 
@@ -24,35 +25,12 @@ inline auto name##_ds_db = nmtools::cast(name, nmtools::kind::ndarray_cs_db);
 namespace nm = nmtools;
 namespace na = nmtools;
 
-#define RUN_cos_impl(...) \
-nmtools::cos(__VA_ARGS__);
-
-#ifdef NMTOOLS_TESTING_ENABLE_BENCHMARKS
-#include "nmtools/testing/benchmarks/bench.hpp"
-using nm::benchmarks::TrackedBench;
-// create immediately invoked lambda
-// that packs cos fn to callable lambda
-#define RUN_cos(case_name, ...) \
-[](auto&&...args){ \
-    auto title = std::string("cos-") + #case_name; \
-    auto name  = nm::testing::make_func_args("", args...); \
-    auto fn    = [&](){ \
-        return RUN_cos_impl(args...); \
-    }; \
-    return TrackedBench::run(title, name, fn); \
-}(__VA_ARGS__);
-#else
-// run normally without benchmarking, ignore case_name
-#define RUN_cos(case_name, ...) \
-RUN_cos_impl(__VA_ARGS__);
-#endif // NMTOOLS_TESTING_ENABLE_BENCHMARKS
-
 #define COS_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \
     NMTOOLS_TESTING_USE_CASE(view, cos, case_name); \
     using namespace args; \
-    auto result = RUN_cos(case_name, __VA_ARGS__); \
+    auto result = nm::cos(__VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( nmtools::shape(result), nmtools::shape(expect::result) ); \
     NMTOOLS_ASSERT_CLOSE( result, expect::result ); \
 }

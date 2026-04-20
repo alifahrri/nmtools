@@ -1,5 +1,6 @@
 #include "nmtools/array/full_like.hpp"
 #include "nmtools/testing/data/array/full_like.hpp"
+#include "nmtools/context/default.hpp"
 #include "nmtools/testing/doctest.hpp"
 
 #define FULL_LIKE_SUBCASE(case_name, ...) \

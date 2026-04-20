@@ -15,4 +15,9 @@ namespace nmtools::meta
     inline constexpr auto is_unsigned_v = is_unsigned<T>::value;
 } // namespace nmtools::meta
 
+namespace nmtools
+{
+    using meta::is_unsigned_v;
+}
+
 #endif // NMTOOLS_META_BITS_TRAITS_IS_UNSIGNED_HPP

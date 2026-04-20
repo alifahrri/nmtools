@@ -19,18 +19,18 @@ namespace nmtools::index
     {
         using array_type = const array_t&;
         static constexpr auto shape_vtype = [](){
-            using shape_type = meta::remove_cvref_t<decltype(nmtools::shape(meta::declval<array_t>()))>;
-            if constexpr (meta::is_constant_index_array_v<shape_type>) {
-                return meta::as_value_v<decltype(meta::to_value_v<shape_type>)>;
+            using shape_type = remove_cvref_t<decltype(nmtools::shape(meta::declval<array_t>()))>;
+            if constexpr (is_constant_index_array_v<shape_type>) {
+                return as_value_v<decltype(to_value_v<shape_type>)>;
             } else {
-                return meta::as_value_v<shape_type>;
+                return as_value_v<shape_type>;
             }
         }();
-        using shape_type = meta::type_t<decltype(shape_vtype)>;
+        using shape_type = type_t<decltype(shape_vtype)>;
         // for now assume array_t has default constructor
         using ndindex_type = ndindex_t<shape_type>;
-        using element_type = meta::get_element_type_t<array_t>;
-        using index_type   = meta::remove_cvref_t<decltype(meta::declval<ndindex_type>()[0])>;
+        using element_type = get_element_type_t<array_t>;
+        using index_type   = remove_cvref_t<decltype(meta::declval<ndindex_type>()[0])>;
 
         array_type array;
         shape_type shape;
@@ -41,8 +41,8 @@ namespace nmtools::index
             , shape([&](){
                 // TODO: use init_attribute_type
                 auto shape_ = ::nmtools::shape(array);
-                if constexpr (meta::is_constant_index_array_v<decltype(shape_)>) {
-                    return meta::to_value_v<decltype(shape_)>;
+                if constexpr (is_constant_index_array_v<decltype(shape_)>) {
+                    return to_value_v<decltype(shape_)>;
                 } else {
                     return shape_;
                 }

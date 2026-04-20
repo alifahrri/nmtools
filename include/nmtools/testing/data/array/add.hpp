@@ -294,6 +294,7 @@ NMTOOLS_TESTING_DECLARE_CASE(view, reduce_add)
         // use a from case1 to save space
         using case1::args::a;
         inline int8_t axis[2] = {0,1};
+        inline auto axis_ct = nmtools_tuple{0_ct,1_ct};
         NMTOOLS_CAST_ARRAYS(a)
         NMTOOLS_CAST_INDEX_ARRAYS(axis)
     }
@@ -371,6 +372,7 @@ NMTOOLS_TESTING_DECLARE_CASE(view, reduce_add)
             }
         };
         inline int8_t axis = 1;
+        inline auto axis_ct = 1_ct;
         NMTOOLS_CAST_ARRAYS(a)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case2)
@@ -397,6 +399,7 @@ NMTOOLS_TESTING_DECLARE_CASE(view, reduce_add)
             }
         };
         inline int8_t axis = 2;
+        inline auto axis_ct = 2_ct;
         NMTOOLS_CAST_ARRAYS(a)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case3)
@@ -423,6 +426,7 @@ NMTOOLS_TESTING_DECLARE_CASE(view, reduce_add)
             }
         };
         inline int8_t axis[2] = {0,2};
+        inline auto axis_ct = nmtools_tuple{0_ct,2_ct};
         NMTOOLS_CAST_ARRAYS(a)
         NMTOOLS_CAST_INDEX_ARRAYS(axis)
     }
@@ -447,6 +451,7 @@ NMTOOLS_TESTING_DECLARE_CASE(view, reduce_add)
             }
         };
         inline int8_t axis[2] = {1,2};
+        inline auto axis_ct = nmtools_tuple{1_ct,2_ct};
         NMTOOLS_CAST_ARRAYS(a)
         NMTOOLS_CAST_INDEX_ARRAYS(axis)
     }
@@ -471,6 +476,7 @@ NMTOOLS_TESTING_DECLARE_CASE(view, reduce_add)
             }
         };
         inline int8_t axis = 0;
+        inline auto axis_ct = 0_ct;
         // must provide dtype for correct result
         inline auto dtype = int16;
         NMTOOLS_CAST_ARRAYS(a)
@@ -500,6 +506,7 @@ NMTOOLS_TESTING_DECLARE_CASE(view, reduce_add)
             }
         };
         inline int8_t axis = 2;
+        inline auto axis_ct = 2_ct;
         // must provide dtype for correct result
         inline auto dtype = int16;
         inline auto initial = 255;
@@ -915,6 +922,8 @@ NMTOOLS_TESTING_DECLARE_CASE(view, reduce_add)
 
 NMTOOLS_TESTING_DECLARE_CASE(view, accumulate_add)
 {
+    using namespace literals;
+
     NMTOOLS_TESTING_DECLARE_ARGS(case1)
     {
         inline int8_t a[2][3][2] = {
@@ -930,6 +939,7 @@ NMTOOLS_TESTING_DECLARE_CASE(view, accumulate_add)
             }
         };
         inline int8_t axis = 0;
+        inline auto axis_ct = 0_ct;
         NMTOOLS_CAST_ARRAYS(a)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case1)
@@ -954,6 +964,7 @@ NMTOOLS_TESTING_DECLARE_CASE(view, accumulate_add)
         // use a from case1 to save space
         using case1::args::a;
         inline int8_t axis = 1;
+        inline auto axis_ct = 1_ct;
         NMTOOLS_CAST_ARRAYS(a)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case2)
@@ -978,6 +989,7 @@ NMTOOLS_TESTING_DECLARE_CASE(view, accumulate_add)
         // use a from case1 to save space
         using case1::args::a;
         inline int8_t axis = 2;
+        inline auto axis_ct = 2_ct;
         NMTOOLS_CAST_ARRAYS(a)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case3)

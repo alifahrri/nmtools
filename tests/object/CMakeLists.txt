@@ -36,13 +36,54 @@ endif ()
 add_executable(${PROJECT_NAME}-doctest tests.cpp 
     view.cpp
     array.cpp
+    context.cpp
+
+    src/add.cpp
+    src/multiply.cpp
+    src/subtract.cpp
+    src/divide.cpp
+
+    src/sum.cpp
+    src/prod.cpp
+    src/mean.cpp
+    src/var.cpp
+    src/stddev.cpp
+
+    src/maximum.cpp
+    src/minimum.cpp
+
+    src/sqrt.cpp
+
+    src/exp.cpp
+    src/exp2.cpp
+
+    src/log.cpp
+    src/log2.cpp
+    src/log10.cpp
+    src/log1p.cpp
+
+    src/less.cpp
+    src/less_equal.cpp
+
+    src/greater.cpp
+    src/greater_equal.cpp
+
+    src/cos.cpp
+    src/sin.cpp
+    src/tan.cpp
+    src/cosh.cpp
+    src/sinh.cpp
+    src/tanh.cpp
 )
 add_test(
     NAME ${PROJECT_NAME}-doctest
     COMMAND ${PROJECT_NAME}-doctest
 )
 
-target_compile_options(${PROJECT_NAME}-doctest PRIVATE -std=c++17)
+target_compile_options(${PROJECT_NAME}-doctest PRIVATE
+    -std=c++17
+    # -fexcess-precision=standard
+)
 if (doctest_FOUND)
     target_link_libraries(${PROJECT_NAME}-doctest PRIVATE doctest::doctest)
 endif()

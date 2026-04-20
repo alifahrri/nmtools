@@ -2,6 +2,7 @@
 #include "nmtools/network/digraph.hpp"
 #include "nmtools/network/multi_digraph.hpp"
 #include "nmtools/testing/data/network/topological_generations.hpp"
+#include "nmtools/context/default.hpp"
 #include "nmtools/testing/doctest.hpp"
 
 using nmtools::unwrap;

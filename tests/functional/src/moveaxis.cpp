@@ -1,5 +1,6 @@
 #include "nmtools/array/moveaxis.hpp"
 #include "nmtools/testing/data/array/moveaxis.hpp"
+#include "nmtools/context/default.hpp"
 #include "nmtools/testing/doctest.hpp"
 
 namespace nm = nmtools;

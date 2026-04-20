@@ -1,5 +1,6 @@
 #include "nmtools/array/dstack.hpp"
 #include "nmtools/testing/data/array/dstack.hpp"
+#include "nmtools/context/default.hpp"
 #include "nmtools/testing/doctest.hpp"
 
 #define DSTACK_SUBCASE( case_name, ... ) \

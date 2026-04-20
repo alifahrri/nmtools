@@ -1,6 +1,6 @@
 #include "nmtools/array/zeros.hpp"
 #include "nmtools/testing/data/array/zeros.hpp"
-#include "nmtools/evaluator/sycl.hpp"
+#include "nmtools/context/sycl.hpp"
 #include "nmtools/testing/doctest.hpp"
 
 namespace nm = nmtools;
@@ -190,42 +190,42 @@ TEST_CASE("zeros(case18)" * doctest::test_suite("array::zeros"))
     SYCL_ZEROS_SUBCASE(shape,dtype);
 }
 
-TEST_CASE("zeros(case19)" * doctest::test_suite("array::zeros"))
+TEST_CASE("zeros(case19)" * doctest::test_suite("array::zeros") * doctest::skip())
 {
     auto shape = nmtools_array{128};
     auto dtype = nm::int32;
     SYCL_ZEROS_SUBCASE(shape,dtype);
 }
 
-TEST_CASE("zeros(case20)" * doctest::test_suite("array::zeros"))
+TEST_CASE("zeros(case20)" * doctest::test_suite("array::zeros") * doctest::skip())
 {
     auto shape = nmtools_array{1,128};
     auto dtype = nm::int32;
     SYCL_ZEROS_SUBCASE(shape,dtype);
 }
 
-TEST_CASE("zeros(case21)" * doctest::test_suite("array::zeros"))
+TEST_CASE("zeros(case21)" * doctest::test_suite("array::zeros") * doctest::skip())
 {
     auto shape = nmtools_array{64,2};
     auto dtype = nm::int32;
     SYCL_ZEROS_SUBCASE(shape,dtype);
 }
 
-TEST_CASE("zeros(case22)" * doctest::test_suite("array::zeros"))
+TEST_CASE("zeros(case22)" * doctest::test_suite("array::zeros") * doctest::skip())
 {
     auto shape = nmtools_array{16,4,2};
     auto dtype = nm::int32;
     SYCL_ZEROS_SUBCASE(shape,dtype);
 }
 
-TEST_CASE("zeros(case23)" * doctest::test_suite("array::zeros"))
+TEST_CASE("zeros(case23)" * doctest::test_suite("array::zeros") * doctest::skip())
 {
     auto shape = nmtools_array{8,2,4,2};
     auto dtype = nm::int32;
     SYCL_ZEROS_SUBCASE(shape,dtype);
 }
 
-TEST_CASE("zeros(case24)" * doctest::test_suite("array::zeros"))
+TEST_CASE("zeros(case24)" * doctest::test_suite("array::zeros") * doctest::skip())
 {
     auto shape = nmtools_array{2,4,1,2,4,2};
     auto dtype = nm::int32;

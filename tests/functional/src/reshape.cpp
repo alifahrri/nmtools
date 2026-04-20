@@ -1,5 +1,6 @@
 #include "nmtools/array/reshape.hpp"
 #include "nmtools/testing/data/array/reshape.hpp"
+#include "nmtools/context/default.hpp"
 #include "nmtools/testing/doctest.hpp"
 
 namespace nm = nmtools;

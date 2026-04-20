@@ -1,5 +1,6 @@
 #include "nmtools/array/cumsum.hpp"
 #include "nmtools/testing/data/array/add.hpp"
+#include "nmtools/context/default.hpp"
 #include "nmtools/testing/doctest.hpp"
 
 namespace nm = nmtools;

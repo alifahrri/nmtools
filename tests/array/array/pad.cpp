@@ -19,6 +19,7 @@ inline auto name##_ls_db = nmtools::cast(name, nmtools::kind::ndarray_ls_db);
 
 #include "nmtools/array/pad.hpp"
 #include "nmtools/testing/data/array/pad.hpp"
+#include "nmtools/context/default.hpp"
 #include "nmtools/testing/doctest.hpp"
 
 #define PAD2_SUBCASE(case_name, ...) \

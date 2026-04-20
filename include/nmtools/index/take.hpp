@@ -16,11 +16,11 @@ namespace nmtools::index
     template <typename shape_t, typename indices_t, typename axis_t>
     constexpr auto shape_take(const shape_t& shape, const indices_t& indices, [[maybe_unused]] axis_t axis)
     {
-        using return_t = meta::resolve_optype_t<shape_take_t,shape_t,indices_t,axis_t>;
+        using return_t = resolve_optype_t<shape_take_t,shape_t,indices_t,axis_t>;
 
         auto res = return_t {};
 
-        if constexpr (!meta::is_constant_index_array_v<return_t>) {
+        if constexpr (!is_constant_index_array_v<return_t>) {
             auto n = len(indices);
             // TODO: error when n > at(shape,axis)
 
@@ -29,18 +29,18 @@ namespace nmtools::index
             if constexpr (is_none_v<axis_t>)
                 at(res,0_ct) = n;
             else {
-                using element_t = meta::get_index_element_type_t<return_t>;
+                using element_t = get_index_element_type_t<return_t>;
                 auto shape_take_impl = [&](auto i){
-                    using common_t = meta::promote_index_t<axis_t,decltype(i)>;
+                    using common_t = promote_index_t<axis_t,decltype(i)>;
                     at(res,i) = ((common_t)i == (common_t)axis) ? (element_t)n : (element_t)at(shape,i);
                 };
                 [[maybe_unused]] auto dim = len(shape);
-                if constexpr (meta::is_resizable_v<return_t>)
+                if constexpr (is_resizable_v<return_t>)
                     res.resize(dim);
 
-                if constexpr (meta::is_fixed_index_array_v<shape_t>) {
-                    constexpr auto DIM = meta::len_v<shape_t>;
-                    meta::template_for<DIM>(shape_take_impl);
+                if constexpr (is_fixed_index_array_v<shape_t>) {
+                    constexpr auto DIM = len_v<shape_t>;
+                    template_for<DIM>(shape_take_impl);
                 }
                 else {
                     for (size_t i=0; i<dim; i++)
@@ -55,11 +55,11 @@ namespace nmtools::index
     template <typename index_t, typename shape_t, typename indices_t, typename axis_t>
     constexpr auto take(const index_t& index, const shape_t& shape, const indices_t& indices, [[maybe_unused]] axis_t axis)
     {
-        using return_t = meta::resolve_optype_t<take_t,index_t,shape_t,indices_t,axis_t>;
+        using return_t = resolve_optype_t<take_t,index_t,shape_t,indices_t,axis_t>;
 
         auto res = return_t {};
         [[maybe_unused]] auto dim = len(shape);
-        if constexpr (meta::is_resizable_v<return_t>)
+        if constexpr (is_resizable_v<return_t>)
             res.resize(dim);
 
         // map dst index to src index (original array) at given axis
@@ -85,12 +85,12 @@ namespace nmtools::index
         else {
             auto take_impl = [&](auto i){
                 auto dst_i = at(index,i);
-                using common_t = meta::promote_index_t<axis_t,decltype(i)>;
+                using common_t = promote_index_t<axis_t,decltype(i)>;
                 at(res, i) = ((common_t)i == (common_t)axis) ? at(indices,dst_i) : dst_i;
             };
-            if constexpr (meta::is_fixed_index_array_v<index_t>) {
-                constexpr auto DIM = meta::len_v<index_t>;
-                meta::template_for<DIM>(take_impl);
+            if constexpr (is_fixed_index_array_v<index_t>) {
+                constexpr auto DIM = len_v<index_t>;
+                template_for<DIM>(take_impl);
             }
             else {
                 for (size_t i=0; i<dim; i++)

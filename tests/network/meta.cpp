@@ -1,4 +1,5 @@
 #include "nmtools/meta.hpp"
+#include "nmtools/context/default.hpp"
 #include "nmtools/testing/doctest.hpp"
 #include "nmtools/network/cast.hpp"
 

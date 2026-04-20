@@ -89,11 +89,11 @@ namespace nmtools
     {
         struct fabs
         {
-            template <typename output_t=none_t, typename context_t=none_t, typename resolver_t=eval_result_t<>, typename left_t>
-            inline constexpr auto operator()(const left_t& a, context_t&& context=context_t{}, output_t&& output=output_t{}, meta::as_value<resolver_t> resolver=meta::as_value_v<resolver_t>) const
+            template <typename output_t=none_t, typename context_t=default_context_t<>, typename left_t>
+            inline constexpr auto operator()(const left_t& a, context_t&& context=context_t{}, output_t&& output=output_t{}) const
             {
                 auto fabs = view::fabs(a);
-                return eval(fabs, nmtools::forward<context_t>(context), nmtools::forward<output_t>(output), resolver);
+                return eval(fabs, nmtools::forward<context_t>(context), nmtools::forward<output_t>(output));
             } // operator()
         }; // fabs
     } // namespace fn

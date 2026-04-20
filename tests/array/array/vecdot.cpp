@@ -1,3 +1,4 @@
+#include "nmtools/context/default.hpp"
 #include "nmtools/array/vecdot.hpp"
 #include "nmtools/testing/data/array/vecdot.hpp"
 #include "nmtools/testing/doctest.hpp"

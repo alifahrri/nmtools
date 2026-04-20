@@ -22,11 +22,11 @@ namespace nmtools::index
     nmtools_index_attribute
     constexpr auto stride(const array_t& shape, m_size_type k)
     {
-        using result_t = meta::resolve_optype_t<stride_t,array_t,m_size_type>;
+        using result_t = resolve_optype_t<stride_t,array_t,m_size_type>;
         using size_type = size_t;
         auto p = result_t {};
-        if constexpr (!meta::is_constant_index_v<result_t>) {
-            constexpr auto n = meta::len_v<array_t>;
+        if constexpr (!is_constant_index_v<result_t>) {
+            constexpr auto n = len_v<array_t>;
             p = 1;
             if constexpr (n > 0) {
                 // note that k may be runtime value
@@ -84,27 +84,27 @@ namespace nmtools::index
     nmtools_index_attribute
     constexpr auto compute_strides(const array_t& shape)
     {
-        using return_t  = meta::resolve_optype_t<compute_strides_t,array_t>;
+        using return_t  = resolve_optype_t<compute_strides_t,array_t>;
         // assume when return_t is maybe then shape_t is also maybe
-        if constexpr (meta::is_maybe_v<return_t>) {
+        if constexpr (is_maybe_v<return_t>) {
             if (static_cast<bool>(shape)) {
                 auto result = compute_strides(*shape);
                 return return_t{result};
             } else {
-                return return_t{meta::Nothing};
+                return return_t{Nothing};
             }
         } else {
             using size_type = size_t;
             auto result = return_t{};
             if constexpr (!is_constant_index_array_v<return_t> && is_index_array_v<return_t>) {
                 [[maybe_unused]] auto n = (size_type)len(shape);
-                if constexpr (meta::is_resizable_v<return_t>) {
+                if constexpr (is_resizable_v<return_t>) {
                     result.resize(n);
                 }
                 constexpr auto N = len_v<return_t>;
                 if constexpr (N>0) {
                     // this may be clipped shape
-                    meta::template_for<N>([&](auto i){
+                    template_for<N>([&](auto i){
                         constexpr auto I = decltype(i)::value;
                         if constexpr (!is_constant_index_v<type_at_t<return_t,I>>) {
                             at(result,i) = stride(shape,i);

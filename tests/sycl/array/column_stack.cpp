@@ -1,5 +1,5 @@
 #include "nmtools/array/column_stack.hpp"
-#include "nmtools/evaluator/sycl.hpp"
+#include "nmtools/context/sycl.hpp"
 #include "nmtools/array/random.hpp"
 #include "nmtools/testing/data/array/column_stack.hpp"
 #include "nmtools/testing/doctest.hpp"

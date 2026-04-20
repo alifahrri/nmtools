@@ -1,6 +1,8 @@
 #include "nmtools/array/column_stack.hpp"
 #include "nmtools/testing/data/array/column_stack.hpp"
 #include "nmtools/testing/doctest.hpp"
+#include "nmtools/context/default.hpp"
+#include "nmtools/context/default.hpp"
 
 #define COLUMN_STACK_SUBCASE( case_name, ... ) \
 SUBCASE(#case_name) \

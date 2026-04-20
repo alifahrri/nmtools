@@ -227,71 +227,151 @@ namespace nmtools
     {
         struct subtract
         {
-            // TODO: create specific traits for context and output to differentiate eval args and view args
-            template <typename output_t=none_t, typename context_t=none_t, typename resolver_t=eval_result_t<>,
+            template <typename output_t=none_t, typename context_t=default_context_t<>,
                 typename left_t, typename right_t>
             inline constexpr auto operator()(const left_t& a, const right_t& b,
-                context_t&& context=context_t{}, output_t&& output=output_t{},meta::as_value<resolver_t> resolver=meta::as_value_v<resolver_t>) const
+                context_t&& context=context_t{}, output_t&& output=output_t{}) const
             {
                 auto subtract = view::subtract(a,b);
                 return eval(subtract
                     ,nmtools::forward<context_t>(context)
                     ,nmtools::forward<output_t>(output)
-                    ,resolver
                 );
             } // operator()
 
-            template <typename output_t=none_t, typename context_t=none_t, typename resolver_t=eval_result_t<>,
+            template <typename output_t=none_t, typename context_t=default_context_t<>,
                 typename left_t, typename right_t>
             inline constexpr auto operator()(const left_t& a, const right_t& b, casting::same_kind_t,
-                context_t&& context=context_t{}, output_t&& output=output_t{},meta::as_value<resolver_t> resolver=meta::as_value_v<resolver_t>) const
+                context_t&& context=context_t{}, output_t&& output=output_t{}) const
             {
                 auto subtract = view::subtract(a,b,casting::same_kind_t{});
                 return eval(subtract
                     ,nmtools::forward<context_t>(context)
                     ,nmtools::forward<output_t>(output)
-                    ,resolver
                 );
             } // operator()
 
-            template <typename output_t=none_t, typename context_t=none_t, typename resolver_t=eval_result_t<>,
-                typename dtype_t=none_t, typename initial_t=none_t,
-                typename keepdims_t=meta::false_type, typename left_t, typename axis_t>
-            static constexpr auto reduce(const left_t& a, const axis_t& axis, dtype_t dtype=dtype_t{},
-                initial_t initial=initial_t{}, keepdims_t keepdims=keepdims_t{},
-                context_t&& context=context_t{}, output_t&& output=output_t{},meta::as_value<resolver_t> resolver=meta::as_value_v<resolver_t>)
+            template <typename output_t=none_t
+                , typename context_t=default_context_t<>
+                , typename dtype_t=none_t
+                , typename initial_t=none_t
+                , typename keepdims_t=meta::false_type
+                , typename left_t
+                , typename axis_t
+                , enable_if_t<is_none_v<dtype_t> || is_dtype_v<dtype_t>,int> = 0
+                , enable_if_t<is_none_v<initial_t> || is_num_v<initial_t>,int> = 0
+                , enable_if_t<is_none_v<keepdims_t> || is_num_v<keepdims_t>,int> = 0>
+            static constexpr auto reduce(const left_t& a, const axis_t& axis, dtype_t dtype=dtype_t{}
+                , initial_t initial=initial_t{}, keepdims_t keepdims=keepdims_t{}
+                , context_t&& context=context_t{}, output_t&& output=output_t{})
             {
                 auto subtract = view::reduce_subtract(a,axis,dtype,initial,keepdims);
                 return eval(subtract
-                    ,nmtools::forward<context_t>(context)
-                    ,nmtools::forward<output_t>(output)
-                    ,resolver
+                    , nmtools::forward<context_t>(context)
+                    , nmtools::forward<output_t>(output)
                 );
             } // reduce
 
-            template <typename output_t=none_t, typename context_t=none_t, typename resolver_t=eval_result_t<>,
-                typename dtype_t=none_t, typename left_t, typename axis_t>
-            static constexpr auto accumulate(const left_t& a, const axis_t& axis, dtype_t dtype=dtype_t{},
-                context_t&& context=context_t{}, output_t&& output=output_t{},meta::as_value<resolver_t> resolver=meta::as_value_v<resolver_t>)
+            template <typename context_t
+                , typename left_t
+                , typename axis_t
+                , typename dtype_t
+                , typename initial_t
+                , enable_if_t<is_none_v<dtype_t> || is_dtype_v<dtype_t>,int> = 0
+                , enable_if_t<is_none_v<initial_t> || is_num_v<initial_t>,int> = 0
+                , enable_if_t<is_context_v<context_t>,int> = 0>
+            static constexpr auto reduce(const left_t& a, const axis_t& axis, dtype_t dtype, initial_t initial
+                , context_t&& context)
+            {
+                auto subtract = view::reduce_subtract(a,axis,dtype,initial);
+                return eval(subtract
+                    , nmtools::forward<context_t>(context)
+                );
+            } // reduce
+
+            template <typename context_t
+                , typename left_t
+                , typename axis_t
+                , typename dtype_t
+                , enable_if_t<is_none_v<dtype_t> || is_dtype_v<dtype_t>,int> = 0
+                , enable_if_t<is_context_v<context_t>,int> = 0>
+            static constexpr auto reduce(const left_t& a, const axis_t& axis, dtype_t dtype
+                , context_t&& context)
+            {
+                auto subtract = view::reduce_subtract(a,axis,dtype);
+                return eval(subtract
+                    , nmtools::forward<context_t>(context)
+                );
+            } // reduce
+
+            template <typename context_t
+                , typename left_t
+                , typename axis_t
+                , enable_if_t<is_context_v<context_t>,int> = 0>
+            static constexpr auto reduce(const left_t& a, const axis_t& axis
+                , context_t&& context)
+            {
+                auto subtract = view::reduce_subtract(a,axis);
+                return eval(subtract
+                    , nmtools::forward<context_t>(context)
+                );
+            } // reduce
+
+            template <typename output_t=none_t
+                , typename context_t=default_context_t<>
+                , typename dtype_t=none_t
+                , typename left_t
+                , typename axis_t
+                , enable_if_t<is_none_v<dtype_t> || is_dtype_v<dtype_t>,int> = 0>
+            static constexpr auto accumulate(const left_t& a, const axis_t& axis, dtype_t dtype=dtype_t{}
+                , context_t&& context=context_t{}, output_t&& output=output_t{})
             {
                 auto subtract = view::accumulate_subtract(a,axis,dtype);
                 return eval(subtract
                     ,nmtools::forward<context_t>(context)
                     ,nmtools::forward<output_t>(output)
-                    ,resolver
                 );
             } // accumulate
 
-            template <typename output_t=none_t, typename context_t=none_t, typename resolver_t=eval_result_t<>,
-                typename dtype_t=none_t, typename left_t, typename right_t>
+            template <typename context_t
+                , typename left_t
+                , typename axis_t
+                , enable_if_t<is_context_v<context_t>,int> = 0>
+            static constexpr auto accumulate(const left_t& a, const axis_t& axis
+                , context_t&& context)
+            {
+                auto subtract = view::accumulate_subtract(a,axis);
+                return eval(subtract
+                    , nmtools::forward<context_t>(context)
+                );
+            } // accumulate
+
+            template <typename output_t=none_t
+                , typename context_t=default_context_t<>
+                , typename dtype_t=none_t
+                , typename left_t
+                , typename right_t
+                , enable_if_t<is_none_v<dtype_t> || is_dtype_v<dtype_t>,int> = 0>
             static constexpr auto outer(const left_t& a, const right_t& b, dtype_t dtype=dtype_t{},
-                context_t&& context=context_t{}, output_t&& output=output_t{},meta::as_value<resolver_t> resolver=meta::as_value_v<resolver_t>)
+                context_t&& context=context_t{}, output_t&& output=output_t{})
             {
                 auto subtract = view::outer_subtract(a,b,dtype);
                 return eval(subtract
                     ,nmtools::forward<context_t>(context)
                     ,nmtools::forward<output_t>(output)
-                    ,resolver
+                );
+            } // outer
+
+            template <typename context_t
+                , typename left_t
+                , typename right_t
+                , enable_if_t<is_context_v<context_t>,int> = 0>
+            static constexpr auto outer(const left_t& a, const right_t& b
+                , context_t&& context)
+            {
+                auto subtract = view::outer_subtract(a,b);
+                return eval(subtract
+                    , nmtools::forward<context_t>(context)
                 );
             } // outer
         }; // subtract

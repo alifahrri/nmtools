@@ -1,3 +1,4 @@
+#include "nmtools/context/default.hpp"
 #include "nmtools/array/vector_norm.hpp"
 #include "nmtools/testing/data/array/vector_norm.hpp"
 #include "nmtools/testing/doctest.hpp"

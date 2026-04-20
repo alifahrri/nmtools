@@ -8,20 +8,20 @@ namespace nmtools::index
 {
     struct range_t {};
 
-    template <typename start_t, typename stop_t, typename step_t=meta::ct<1>>
+    template <typename start_t, typename stop_t, typename step_t=ct<1>>
     constexpr auto range([[maybe_unused]] start_t start
         , [[maybe_unused]] stop_t stop
         , [[maybe_unused]] step_t step=step_t{}
     ) {
-        using result_t = meta::resolve_optype_t<range_t,start_t,stop_t,step_t>;
+        using result_t = resolve_optype_t<range_t,start_t,stop_t,step_t>;
 
         auto result = result_t {};
 
-        if constexpr (!meta::is_fail_v<result_t>
-            && !meta::is_constant_index_array_v<result_t>
+        if constexpr (!is_fail_v<result_t>
+            && !is_constant_index_array_v<result_t>
         ) {
             auto n = (stop - start) / step;
-            if constexpr (meta::is_resizable_v<result_t>) {
+            if constexpr (is_resizable_v<result_t>) {
                 result.resize(n);
             }
 
@@ -36,7 +36,7 @@ namespace nmtools::index
     template <typename stop_t>
     constexpr auto range(stop_t stop)
     {
-        return range(meta::ct_v<0>,stop,meta::ct_v<1>);
+        return range(ct_v<0>,stop,ct_v<1>);
     }
 } // nmtools::index
 
