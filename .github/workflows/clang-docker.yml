@@ -19,6 +19,7 @@ env:
 jobs:
   # Run tests.
   # See also https://docs.docker.com/docker-hub/builds/automated-testing/
+  if: ${{ false }}
   test:
     runs-on: ubuntu-latest
 

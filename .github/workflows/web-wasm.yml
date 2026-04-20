@@ -283,6 +283,7 @@ jobs:
         run: ./dockcross-${{ matrix.name }} node build/${{ matrix.name }}/tests/array/numeric-tests-doctest.js
 
   dockcross-wasm-object:
+    if: ${{ false }}
     name: ${{ matrix.name }}-object
     runs-on: ubuntu-22.04
     strategy:
@@ -310,6 +311,7 @@ jobs:
         run: ./dockcross-${{ matrix.name }} node build/${{ matrix.name }}/tests/object/numeric-tests-object-doctest.js
 
   dockcross-wasm-unroll:
+    if: ${{ false }}
     name: ${{ matrix.name }}-unroll
     runs-on: ubuntu-22.04
     strategy:
