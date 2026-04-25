@@ -63,8 +63,6 @@ endfunction()
 
 
 set(NMTOOLS_TESTS_TILEKIT_SRCS
-    src/tilekit.cpp
-    src/vector.cpp
 
     src/add_v128_st.cpp
     src/multiply_v128_st.cpp
@@ -121,9 +119,11 @@ set(NMTOOLS_TESTS_TILEKIT_SRCS
     src/log10_scalar_mt.cpp
 
     src/sum_scalar_st.cpp
+    src/sum_v128_st.cpp
 )
 if (NMTOOLS_TESTS_TILEKIT_ENABLE_TRACY)
-    add_executable(${PROJECT_NAME}-doctest tests.cpp 
+    add_executable(${PROJECT_NAME}-doctest
+        tests.cpp tilekit.cpp vector.cpp
         ${NMTOOLS_TESTS_TILEKIT_SRCS}
         /opt/tracy/public/TracyClient.cpp
     )
@@ -132,7 +132,8 @@ if (NMTOOLS_TESTS_TILEKIT_ENABLE_TRACY)
     target_include_directories(${PROJECT_NAME}-doctest PRIVATE /opt/tracy/public/)
     remove_target_compile_option(${PROJECT_NAME}-doctest "-Werror")
 else ()
-    add_executable(${PROJECT_NAME}-doctest tests.cpp 
+    add_executable(${PROJECT_NAME}-doctest
+        tests.cpp tilekit.cpp vector.cpp
         ${NMTOOLS_TESTS_TILEKIT_SRCS}
     )
 endif()
