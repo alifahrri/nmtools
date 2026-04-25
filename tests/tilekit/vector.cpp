@@ -6,7 +6,7 @@
 namespace nm = nmtools;
 namespace tk = nmtools::tilekit;
 
-using nmtools_tuple;
+using nmtools_tuple, nmtools_array;
 using namespace nmtools::literals;
 
 TEST_CASE("vector(case1)" * doctest::test_suite("tilekit"))
@@ -200,4 +200,101 @@ TEST_CASE("compute_src_indices(case2)" * doctest::test_suite("vector"))
     COMPUTE_SRC_INDICES_SUBCASE(case2, tile_indices_mx2, src_ndoffset_mx2, num_lane);
 
     COMPUTE_SRC_INDICES_SUBCASE(case2, tile_indices_ct, src_ndoffset_ct, num_lane);
+}
+
+TEST_CASE("nditer(case1d)" * doctest::test_suite("tilekit"))
+{
+    int buffer[2][8] = {
+        {0,1, 2, 3, 4, 5, 6, 7},
+        {8,9,10,11,12,13,14,15},
+    };
+    auto inp = nm::array(buffer);
+    auto out = nm::zeros(array{2}, nm::int32);
+
+    auto out_shape  = array{2};
+    auto inp_shape  = array{2,8};
+    auto tile_shape = tuple{2_ct,4_ct};
+
+    auto axis = nm::ct_v<-1>;
+
+    auto src_nditer = tk::nditer(inp_shape,tile_shape);
+    auto inp_nditer = tk::moveaxis(
+        src_nditer
+        , axis
+        , nm::ct_v<1>
+    );
+
+    auto axis_0_iter = tk::iter_shape(inp_nditer,0);
+    auto axis_1_iter = tk::iter_shape(inp_nditer,1);
+
+    NMTOOLS_ASSERT_EQUAL( src_nditer.shape(), (array{1,2,2}) );
+    NMTOOLS_ASSERT_EQUAL( inp_nditer.shape(), (array{1,2,2}) );
+    NMTOOLS_ASSERT_EQUAL( axis_0_iter, 1 );
+    NMTOOLS_ASSERT_EQUAL( axis_1_iter, 2 );
+
+    auto ctx = tk::vector::Context;
+
+    auto dtype = nm::int32;
+    auto accumulator = nm::Array::zeros(tile_shape,dtype,ctx);
+    {
+        auto i = 0;
+        auto j = 0;
+
+        auto tile_offset = tk::packed_at(inp_nditer,i,j);
+        NMTOOLS_ASSERT_EQUAL( tile_offset, (array{0,0}) );
+
+        auto block = tk::load(ctx,inp,tile_offset,tile_shape);
+        int expected[2][4] = {
+            {0,1, 2, 3},
+            {8,9,10,11},
+        };
+        NMTOOLS_ASSERT_EQUAL( block, expected );
+
+        accumulator = accumulator + block;
+        NMTOOLS_ASSERT_EQUAL( accumulator, expected );
+    }
+
+    {
+        auto i = 0;
+        auto j = 1;
+
+        auto tile_offset = tk::packed_at(inp_nditer,i,j);
+        NMTOOLS_ASSERT_EQUAL( tile_offset, (array{0,4}) );
+
+        auto block = tk::load(ctx,inp,tile_offset,tile_shape);
+        int expected[2][4] = {
+            { 4, 5, 6, 7},
+            {12,13,14,15},
+        };
+        NMTOOLS_ASSERT_EQUAL( block, expected );
+
+        accumulator = accumulator + block;
+
+        int expected2[2][4] = {
+            { 4, 6, 8,10},
+            {20,22,24,26},
+        };
+        NMTOOLS_ASSERT_EQUAL( accumulator, expected2 );
+    }
+
+    {
+        auto i = 0;
+
+        int expected[2] = {28,92};
+
+        auto result = accumulator.sum(axis);
+        NMTOOLS_ASSERT_EQUAL( result, expected );
+
+        auto out_tile_shape = nm::shape(result);
+        NMTOOLS_ASSERT_EQUAL( out_tile_shape, array{2} );
+
+        auto out_nditer = tk::nditer(out_shape,out_tile_shape);
+        NMTOOLS_ASSERT_EQUAL( out_nditer.shape(), (array{1,1}) );
+
+        auto res_offset = tk::packed_at(out_nditer,i);
+        NMTOOLS_ASSERT_EQUAL( res_offset, (array{0}) );
+
+        tk::store(ctx,out,res_offset,result);
+        NMTOOLS_ASSERT_EQUAL( out, expected );
+    }
 }

@@ -1,11 +1,14 @@
 #include "nmtools/tilekit/tilekit.hpp"
 #include "nmtools/tilekit/scalar.hpp"
+#include "nmtools/array/transpose.hpp"
 #include "nmtools/testing/doctest.hpp"
 
 namespace nm = nmtools;
+namespace view = nm::view;
 namespace tk = nmtools::tilekit;
 
 using nmtools_tuple;
+using nmtools_array;
 using namespace nmtools::literals;
 
 NMTOOLS_TESTING_DECLARE_CASE(tilekit, compute_block_shape)
@@ -197,6 +200,188 @@ TEST_CASE("ndoffset(case3)" * doctest::test_suite("tilekit"))
     NMTOOLS_ASSERT_EQUAL( ndoffset[0], (tuple{0,0}) );
     NMTOOLS_ASSERT_EQUAL( ndoffset[1], (tuple{0,4}) );
     NMTOOLS_ASSERT_EQUAL( ndoffset[2], (tuple{0,8}) );
+}
+
+TEST_CASE("nditer(case1)" * doctest::test_suite("tilekit"))
+{
+    auto a_shape = array{4,8};
+    auto t_shape = tuple{2_ct,4_ct};
+
+    auto nditer = tk::nditer(a_shape, t_shape);
+
+    NMTOOLS_ASSERT_EQUAL( nditer.iter_shape(), (array{2,2}) );
+    NMTOOLS_ASSERT_EQUAL( (nditer(0,0)), (array{0,0}));
+    NMTOOLS_ASSERT_EQUAL( (nditer(0,1)), (array{0,4}));
+    NMTOOLS_ASSERT_EQUAL( (nditer(1,0)), (array{2,0}));
+    NMTOOLS_ASSERT_EQUAL( (nditer(1,1)), (array{2,4}));
+
+    NMTOOLS_STATIC_CHECK_TRAIT( nmtools::meta::is_ndarray, decltype(nditer) );
+
+    NMTOOLS_ASSERT_EQUAL( nditer.shape(), (array{2,2,2}) );
+    int expected[2][2][2] = {
+        {
+            {0,0},
+            {0,4},
+        },
+        {
+            {2,0},
+            {2,4},
+        },
+    };
+    NMTOOLS_ASSERT_EQUAL( nditer, expected );
+}
+
+TEST_CASE("nditer(case1b)" * doctest::test_suite("tilekit"))
+{
+    auto a_shape = array{4,8};
+    auto t_shape = tuple{2_ct,4_ct};
+
+    auto nditer = tk::nditer(a_shape, t_shape);
+    auto result = view::transpose(nditer,array{1,0,2});
+
+    NMTOOLS_ASSERT_EQUAL( nditer.shape(), (array{2,2,2}) );
+    int expected[2][2][2] = {
+        {
+            {0,0},
+            {2,0},
+        },
+        {
+            {0,4},
+            {2,4},
+        },
+    };
+    NMTOOLS_ASSERT_EQUAL( result, expected );
+}
+
+TEST_CASE("nditer(case1b)" * doctest::test_suite("tilekit"))
+{
+    auto a_shape = array{4,8};
+    auto t_shape = tuple{2_ct,4_ct};
+
+    auto nditer = tk::nditer(a_shape, t_shape);
+    auto result = tk::moveaxis(nditer,nm::ct_v<0>,nm::ct_v<1>);
+
+
+    NMTOOLS_ASSERT_EQUAL( (tk::iter_shape(result,0)), 2 );
+    NMTOOLS_ASSERT_EQUAL( (tk::iter_shape(result,1)), 2 );
+    NMTOOLS_ASSERT_EQUAL( result.shape(), (array{2,2,2}) );
+
+    int expected[2][2][2] = {
+        {
+            {0,0},
+            {2,0},
+        },
+        {
+            {0,4},
+            {2,4},
+        },
+    };
+    NMTOOLS_ASSERT_EQUAL( result, expected );
+
+    static_assert( nm::fixed_dim_v<decltype(nditer)> == 3 );
+    static_assert( nm::fixed_dim_v<decltype(result)> == 3 );
+
+    NMTOOLS_ASSERT_EQUAL( (tk::packed_at(result,0,0)), (array{0,0}));
+    NMTOOLS_ASSERT_EQUAL( (tk::packed_at(result,0,1)), (array{2,0}));
+    NMTOOLS_ASSERT_EQUAL( (tk::packed_at(result,1,0)), (array{0,4}));
+    NMTOOLS_ASSERT_EQUAL( (tk::packed_at(result,1,1)), (array{2,4}));
+
+    auto out_tile_shape = tuple{8_ct};
+    auto out_shape  = array{8};
+    auto out_nditer = tk::nditer(out_shape,out_tile_shape);
+    NMTOOLS_ASSERT_EQUAL( out_nditer.shape(), (array{1,1}) );
+
+    NMTOOLS_ASSERT_EQUAL( (tk::packed_at(out_nditer,0)), (array{0}));
+}
+
+TEST_CASE("nditer(case1c)" * doctest::test_suite("tilekit"))
+{
+    int inp[2][8] = {
+        {0,1, 2, 3, 4, 5, 6, 7},
+        {8,9,10,11,12,13,14,15},
+    };
+    auto inp_shape  = array{2,8};
+    auto tile_shape = tuple{2_ct,4_ct};
+
+    auto axis = 0_ct;
+
+    auto src_nditer = tk::nditer(inp_shape,tile_shape);
+    auto inp_nditer = tk::moveaxis(
+        src_nditer
+        , axis
+        , nm::ct_v<1>
+    );
+
+    auto axis_0_iter = tk::iter_shape(inp_nditer,0);
+    auto axis_1_iter = tk::iter_shape(inp_nditer,1);
+
+    NMTOOLS_ASSERT_EQUAL( src_nditer.shape(), (array{1,2,2}) );
+    NMTOOLS_ASSERT_EQUAL( inp_nditer.shape(), (array{2,1,2}) );
+    NMTOOLS_ASSERT_EQUAL( axis_0_iter, 2 );
+    NMTOOLS_ASSERT_EQUAL( axis_1_iter, 1 );
+
+    auto ctx = tk::Scalar;
+
+    {
+        auto i = 0;
+        auto j = 0;
+
+        auto tile_offset = tk::packed_at(inp_nditer,i,j);
+        NMTOOLS_ASSERT_EQUAL( tile_offset, (array{0,0}) );
+
+        auto block = tk::load(ctx,inp,tile_offset,tile_shape);
+        int expected[2][4] = {
+            {0,1, 2, 3},
+            {8,9,10,11},
+        };
+        NMTOOLS_ASSERT_EQUAL( block, expected );
+    }
+
+    {
+        auto i = 1;
+        auto j = 0;
+
+        auto tile_offset = tk::packed_at(inp_nditer,i,j);
+        NMTOOLS_ASSERT_EQUAL( tile_offset, (array{0,4}) );
+
+        auto block = tk::load(ctx,inp,tile_offset,tile_shape);
+        int expected[2][4] = {
+            { 4, 5, 6, 7},
+            {12,13,14,15},
+        };
+        NMTOOLS_ASSERT_EQUAL( block, expected );
+    }
+}
+
+TEST_CASE("nditer(case2)" * doctest::test_suite("tilekit"))
+{
+    auto a_shape = array{4,12};
+    auto t_shape = tuple{2_ct,4_ct};
+
+    auto nditer = tk::nditer(a_shape, t_shape);
+
+    NMTOOLS_ASSERT_EQUAL( nditer.iter_shape(), (array{2,3}) );
+    NMTOOLS_ASSERT_EQUAL( nditer(0,0), (array{0,0}) );
+    NMTOOLS_ASSERT_EQUAL( nditer(0,1), (array{0,4}) );
+    NMTOOLS_ASSERT_EQUAL( nditer(0,2), (array{0,8}) );
+    NMTOOLS_ASSERT_EQUAL( nditer(1,0), (array{2,0}) );
+    NMTOOLS_ASSERT_EQUAL( nditer(1,1), (array{2,4}) );
+    NMTOOLS_ASSERT_EQUAL( nditer(1,2), (array{2,8}) );
+
+    NMTOOLS_ASSERT_EQUAL( nditer.shape(), (array{2,3,2}) );
+    int expected[2][3][2] = {
+        {
+            {0,0},
+            {0,4},
+            {0,8},
+        },
+        {
+            {2,0},
+            {2,4},
+            {2,8},
+        },
+    };
+    NMTOOLS_ASSERT_EQUAL( nditer, expected );
 }
 
 TEST_CASE("load(case1)" * doctest::test_suite("tilekit"))

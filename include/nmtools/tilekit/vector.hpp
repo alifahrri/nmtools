@@ -4,17 +4,21 @@
 #include "nmtools/meta.hpp"
 #include "nmtools/utility.hpp"
 #include "nmtools/core.hpp"
+#include "nmtools/core/eval.hpp"
+#include "nmtools/core/context.hpp"
+#include "nmtools/context/default.hpp"
 #include "nmtools/index/array.hpp"
 #include "nmtools/index/product.hpp"
 #include "nmtools/ndarray/array.hpp"
 #include "nmtools/tilekit/tilekit.hpp"
 #include "nmtools/tilekit/scalar.hpp"
 
+#ifndef NMTOOLS_TILEKIT_VECTOR_DEFAULT_BIT_WIDTH
+#define NMTOOLS_TILEKIT_VECTOR_DEFAULT_BIT_WIDTH (128)
+#endif // NMTOOLS_TILEKIT_VECTOR_DEFAULT_BIT_WIDTH
+
 namespace nmtools::tilekit::vector
 {
-    template <auto bit_width=128, LayoutKind BufferLayout=LayoutKind::RowMajor>
-    struct vector_eval_resolver_t {};
-
     template<typename T, int N>
     struct make_vector {
         using type __attribute__((vector_size(N), aligned(4))) = T;
@@ -25,29 +29,30 @@ namespace nmtools::tilekit::vector
     constexpr auto method(const args_t&...args) const \
     { \
         auto v = nmtools::view::method(*this,args...); \
-        auto result = nmtools::eval(v,Unroll,None,as_value_v<resolver_type>); \
+        auto result = nmtools::eval(v,Unroll,None); \
         return nmtools::unwrap(result); \
     }
+
+    template <auto bit_width=NMTOOLS_TILEKIT_VECTOR_DEFAULT_BIT_WIDTH>
+    struct context_t;
 
     template <
           typename buffer_t
         , typename shape_buffer_t
-        , auto bit_width
+        , auto bit_width=NMTOOLS_TILEKIT_VECTOR_DEFAULT_BIT_WIDTH
         , template <typename...>typename stride_buffer_t=resolve_stride_type_t
         , template <typename...>typename compute_offset_t=row_major_offset_t
-        , typename resolver_t=vector_eval_resolver_t<bit_width,LayoutKind::RowMajor>
         , typename=void>
     struct object_t
-        : nmtools::object_t<buffer_t,shape_buffer_t,resolve_stride_type_t,row_major_offset_t,resolver_t>
+        : nmtools::object_t<buffer_t,shape_buffer_t,resolve_stride_type_t,row_major_offset_t,context_t<bit_width>,false>
     {
         using shape_buffer_type = shape_buffer_t;
         static_assert( is_constant_index_array_v<shape_buffer_type>
             , "unsupported shape buffer type for vector::object_t; expected constant index array"
         );
         // TODO: assert shape buffer and shape is known at compile-time
-        using base_type     = nmtools::object_t<buffer_t,shape_buffer_t,resolve_stride_type_t,row_major_offset_t,resolver_t>;
+        using base_type     = nmtools::object_t<buffer_t,shape_buffer_t,resolve_stride_type_t,row_major_offset_t,context_t<bit_width>,false>;
         using value_type    = typename base_type::value_type;
-        using resolver_type = resolver_t;
         using element_type  = get_element_type_t<buffer_t>;
 
         static constexpr auto n_bytes = bit_width / 8;
@@ -335,6 +340,10 @@ namespace nmtools::tilekit::vector
         constexpr auto NUM_LANE = bit_width / (sizeof(element_t) * 8 /*bit*/);
         constexpr auto NUM_LOAD = SIZE / NUM_LANE;
 
+        // TODO: paraametrize this
+        constexpr auto allow_small_load = 1;
+        static_assert( (NUM_LOAD > 0) || allow_small_load );
+
         const auto output_shape   = nmtools::shape(output);
         const auto output_strides = index::compute_strides(output_shape);
 
@@ -349,16 +358,21 @@ namespace nmtools::tilekit::vector
         constexpr auto v_tile_shape = index::array(tile_shape_t{}) / v_lane;
         constexpr auto v_tile_strides = index::compute_strides(v_tile_shape);
 
-        auto vectorized_store = [&](){
-            template_for<NUM_LOAD>([&](auto i){
-                constexpr auto I = decltype(i)::value;
-                auto tile_indices = index::compute_indices(i,v_tile_shape,v_tile_strides);
-                auto src_indices  = vector::compute_src_indices(tile_indices,offset,ct_v<NUM_LANE>);
-                auto src_offset   = index::compute_offset(src_indices,output_strides);
-                *((vector_t*)&output.data()[src_offset]) = *((vector_t*)result.data()+I);
-            });
-        };
         using scalar_store_t = store_t<scalar_t,output_t,padding_t>;
+        auto vectorized_store = [&](){
+            if constexpr (NUM_LOAD > 0) {
+                template_for<NUM_LOAD>([&](auto i){
+                    constexpr auto I = decltype(i)::value;
+                    auto tile_indices = index::compute_indices(i,v_tile_shape,v_tile_strides);
+                    auto src_indices  = vector::compute_src_indices(tile_indices,offset,ct_v<NUM_LANE>);
+                    auto src_offset   = index::compute_offset(src_indices,output_strides);
+                    *((vector_t*)&output.data()[src_offset]) = *((vector_t*)result.data()+I);
+                });
+            } else {
+                // size < num_lane
+                scalar_store_t::store(scalar_t{},output,output_shape,offset,result,padding);
+            }
+        };
 
         if constexpr (!padding_t::value) {
             vectorized_store();
@@ -382,20 +396,211 @@ namespace nmtools::tilekit::vector
 
     // context
     // TODO: mark this as kernel_context (context for kernel, not lancher/host)
-    template <auto bit_width=128>
+    template <auto bit_width>
     struct context_t
+        : base_context_t<context_t<bit_width>>
     {
+        static constexpr auto object_enable = true;
+        static constexpr auto unroll_enable = true;
+        template <typename... args_t>
+        using layout_t = row_major_offset_t<args_t...>;
+
+        using base_type    = base_context_t<context_t>;
+
         static constexpr auto BIT_WIDTH = bit_width;
         nm_size_t worker_id = 0;
         nm_size_t worker_size = 1;
+
+        constexpr context_t() {}
+
+        constexpr context_t(const context_t& other)
+            : worker_id(other.worker_id)
+            , worker_size(other.worker_size)
+        {}
+
+        constexpr context_t(nm_size_t worker_id, nm_size_t worker_size)
+            : worker_id(worker_id)
+            , worker_size(worker_size)
+        {}
+
+        constexpr decltype(auto) operator=(const context_t& other)
+        {
+            this->worker_id = other.worker_id;
+            this->worker_size = other.worker_size;
+            return *this;
+        }
 
         static auto create_context(nm_size_t worker_id, nm_size_t worker_size)
         {
             return context_t{worker_id, worker_size};
         }
+
+        template <typename buffer_t, typename shape_t>
+        constexpr auto create(as_value<buffer_t>, as_value<shape_t>) const noexcept
+        {
+            static_assert( is_constant_index_array_v<shape_t> || !unroll_enable );
+
+            using result_t = object_t<buffer_t,shape_t,BIT_WIDTH,resolve_stride_type_t,layout_t>;
+
+            auto result = result_t {};
+            return result;
+        }
+
+        template <typename buffer_t, typename shape_t>
+        constexpr auto create(as_value<buffer_t>, const shape_t& shape) const
+        {
+            static_assert( is_constant_index_array_v<shape_t> || !unroll_enable );
+
+            using result_t = object_t<buffer_t,shape_t,BIT_WIDTH,resolve_stride_type_t,layout_t>;
+
+            auto result = result_t {};
+            if constexpr (!is_constant_index_array_v<shape_t>) {
+                result.resize(shape);
+            }
+            return result;
+        }
+
+        template <typename T, typename shape_t, typename m_size_t=none_t>
+        constexpr auto create(
+            [[maybe_unused]] dtype_t<T> dtype
+            , [[maybe_unused]] const shape_t& shape
+            , [[maybe_unused]] const m_size_t size=m_size_t{}) const
+        {
+            if constexpr (is_none_v<shape_t>) {
+                return T{0};
+            } else {
+                auto buffer_vtype = base_type::get_buffer_vtype(dtype,shape,size);
+                return this->create(buffer_vtype, shape);
+            }
+        }
+
+        template <typename T, typename shape_t>
+        constexpr auto full(const shape_t& shape, T t) const
+        {
+            auto buffer_vtype = base_type::get_buffer_vtype(as_value_v<T>, shape);
+            auto result = this->create(buffer_vtype,shape);
+            for (nm_size_t i=0; i<result.size(); i++) {
+                result.data_[i] = t;
+            }
+            return result;
+        }
+
+        template <typename shape_t, typename T=float>
+        constexpr auto zeros(const shape_t& shape, dtype_t<T> = dtype_t<T>{}) const
+        {
+            return this->full(shape, static_cast<T>(0));
+        }
+
+        template <typename shape_t, typename T=float>
+        constexpr auto ones(const shape_t& shape, dtype_t<T> = dtype_t<T>{}) const
+        {
+            return this->full(shape, static_cast<T>(1));
+        }
+
+        template <typename view_t>
+        constexpr auto eval(none_t, const view_t& view) const
+        {
+            return this->eval(view);
+        }
+
+        template <typename output_t, typename view_t>
+        constexpr auto eval(output_t& output, const view_t& view) const
+            -> enable_if_t<is_num_v<output_t> && is_num_v<view_t>>
+        {
+            output = static_cast<output_t>(view);
+        }
+
+        template <typename output_t, typename view_t>
+        constexpr auto eval(output_t& output, const view_t& view) const
+            -> enable_if_t<!is_none_v<output_t> && !is_num_v<output_t>>
+        {
+            auto out_shape = nmtools::shape(output);
+            auto inp_shape = nmtools::shape(unwrap(view));
+            auto is_equal  = utils::isequal(out_shape,inp_shape);
+            if (!is_equal) {
+                nmtools_assert( is_equal
+                    , "mismatched shape for eval"
+                );
+            }
+
+            auto out_index = index::ndindex(out_shape);
+            auto inp_index = index::ndindex(inp_shape);
+
+            if constexpr (!unroll_enable) {
+                auto n = inp_index.size();
+                for (size_t i=0; i<n; i++) {
+                    // while the shape is the same,
+                    // the underlying type of indexing may be not
+                    auto inp_idx = inp_index[i];
+                    auto out_idx = out_index[i];
+                    apply_at(output,out_idx) = apply_at(unwrap(view),inp_idx);
+                }
+            } else {
+                constexpr auto OUT_SIZE = len_v<decltype(out_index)>;
+                constexpr auto INP_SIZE = len_v<decltype(inp_index)>;
+                static_assert( (OUT_SIZE > 0) && (INP_SIZE > 0) );
+
+                const auto out_stride = index::compute_strides(out_shape);
+                // const auto inp_stride = index::compute_strides(inp_shape);
+                template_for<OUT_SIZE>([&](auto i){
+                    auto inp_idx = inp_index[i];
+                    auto out_idx = out_index[i];
+                    // auto flat_inp_idx = index::compute_offset(inp_idx,inp_stride);
+                    auto flat_out_idx = index::compute_offset(out_idx,out_stride);
+                    output.data()[flat_out_idx] = apply_at(view,inp_idx);
+                });
+            }
+        }
+
+        template <typename view_t>
+        constexpr auto eval(const view_t& view) const
+        {
+            if constexpr (meta::is_either_v<view_t>) {
+                using left_t   = meta::get_either_left_t<view_t>;
+                using right_t  = meta::get_either_right_t<view_t>;
+                // deduce return type for each type
+                using rleft_t  = decltype(this->eval(meta::declval<left_t>()));
+                using rright_t = decltype(this->eval(meta::declval<right_t>()));
+                constexpr auto vtype = [](){
+                    if constexpr (meta::is_same_v<rleft_t,rright_t>) {
+                        return meta::as_value_v<rleft_t>;
+                    } else {
+                        using either_t = meta::replace_either_t<view_t,rleft_t,rright_t>;
+                        return meta::as_value_v<either_t>;
+                    }
+                }();
+                using return_t = meta::type_t<decltype(vtype)>;
+                // match either type at runtime
+                if (auto view_ptr = nmtools::get_if<left_t>(&view)) {
+                    return return_t{this->eval(*view_ptr)};
+                } else /* if (auto view_ptr = get_if<right_t>(&view)) */ {
+                    auto view_rptr = nmtools::get_if<right_t>(&view);
+                    return return_t{this->eval(*view_rptr)};
+                }
+            } else if constexpr (meta::is_maybe_v<view_t> && !object_enable) {
+                using view_type   = meta::get_maybe_type_t<view_t>;
+                using result_type = decltype(this->eval(meta::declval<view_type>()));
+                static_assert(!meta::is_maybe_v<result_type>);
+                using return_type = nmtools_maybe<result_type>;
+                return (view
+                    ? return_type{this->eval(*view)}
+                    : return_type{meta::Nothing}
+                );
+            } else {
+                auto shape = nmtools::shape<true>(unwrap(view));
+                auto size  = nmtools::size<true>(unwrap(view));
+                using T = get_element_type_t<remove_cvref_t<decltype(unwrap(view))>>;
+                using element_t = conditional_t<is_same_v<T,bool>,nm_bool_t,T>;
+
+                auto result = this->create(dtype_t<element_t>{},shape,size);
+                this->eval(result,unwrap(view));
+
+                return result;
+            }
+        }
     };
 
-    constexpr inline auto Context = context_t {};
+    constexpr inline auto Context = context_t<> {};
 }
 
 namespace nmtools::tilekit
@@ -463,10 +668,9 @@ namespace nmtools
         , typename shape_buffer_t
         , auto bit_width
         , template <typename...>typename stride_buffer_t
-        , template <typename...>typename offset_compute_t
-        , typename resolver_t>
-    struct get_t<I,tilekit::vector::object_t<buffer_t,shape_buffer_t,bit_width,stride_buffer_t,offset_compute_t,resolver_t>>
-        : get_t<I,object_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t,resolver_t>> {};
+        , template <typename...>typename offset_compute_t>
+    struct get_t<I,tilekit::vector::object_t<buffer_t,shape_buffer_t,bit_width,stride_buffer_t,offset_compute_t>>
+        : get_t<I,object_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t>> {};
     
 }
 
@@ -561,64 +765,58 @@ namespace nmtools::meta
         , typename shape_buffer_t
         , auto bit_width
         , template <typename...>typename stride_buffer_t
-        , template <typename...>typename offset_compute_t
-        , typename resolver_t>
-    struct get_element_type<tilekit::vector::object_t<buffer_t,shape_buffer_t,bit_width,stride_buffer_t,offset_compute_t,resolver_t>>
-        : get_element_type<object_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t,resolver_t>> {};
+        , template <typename...>typename offset_compute_t>
+    struct get_element_type<tilekit::vector::object_t<buffer_t,shape_buffer_t,bit_width,stride_buffer_t,offset_compute_t>>
+        : get_element_type<object_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t>> {};
     
     template <
           typename buffer_t
         , typename shape_buffer_t
         , auto bit_width
         , template <typename...>typename stride_buffer_t
-        , template <typename...>typename offset_compute_t
-        , typename resolver_t>
+        , template <typename...>typename offset_compute_t>
     struct is_ndarray<
-        tilekit::vector::object_t<buffer_t,shape_buffer_t,bit_width,stride_buffer_t,offset_compute_t,resolver_t>
-    > : is_ndarray<object_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t,resolver_t>> {};
+        tilekit::vector::object_t<buffer_t,shape_buffer_t,bit_width,stride_buffer_t,offset_compute_t>
+    > : is_ndarray<object_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t>> {};
 
     template <
           typename buffer_t
         , typename shape_buffer_t
         , auto bit_width
         , template <typename...>typename stride_buffer_t
-        , template <typename...>typename offset_compute_t
-        , typename resolver_t>
+        , template <typename...>typename offset_compute_t>
     struct fixed_dim<
-        tilekit::vector::object_t<buffer_t,shape_buffer_t,bit_width,stride_buffer_t,offset_compute_t,resolver_t>
-    > : fixed_dim<object_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t,resolver_t>> {};
+        tilekit::vector::object_t<buffer_t,shape_buffer_t,bit_width,stride_buffer_t,offset_compute_t>
+    > : fixed_dim<object_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t>> {};
 
     template <
           typename buffer_t
         , typename shape_buffer_t
         , auto bit_width
         , template <typename...>typename stride_buffer_t
-        , template <typename...>typename offset_compute_t
-        , typename resolver_t>
+        , template <typename...>typename offset_compute_t>
     struct fixed_shape<
-        tilekit::vector::object_t<buffer_t,shape_buffer_t,bit_width,stride_buffer_t,offset_compute_t,resolver_t>
-    > : fixed_shape<object_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t,resolver_t>> {};
+        tilekit::vector::object_t<buffer_t,shape_buffer_t,bit_width,stride_buffer_t,offset_compute_t>
+    > : fixed_shape<object_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t>> {};
 
     template <
           typename buffer_t
         , typename shape_buffer_t
         , auto bit_width
         , template <typename...>typename stride_buffer_t
-        , template <typename...>typename offset_compute_t
-        , typename resolver_t>
+        , template <typename...>typename offset_compute_t>
     struct fixed_size<
-        tilekit::vector::object_t<buffer_t,shape_buffer_t,bit_width,stride_buffer_t,offset_compute_t,resolver_t>
-    > : fixed_size<object_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t,resolver_t>> {};
+        tilekit::vector::object_t<buffer_t,shape_buffer_t,bit_width,stride_buffer_t,offset_compute_t>
+    > : fixed_size<object_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t>> {};
 
         template <typename U
         , typename buffer_t
         , typename shape_buffer_t
         , auto bit_width
         , template <typename...>typename stride_buffer_t
-        , template <typename...>typename offset_compute_t
-        , typename resolver_t>
+        , template <typename...>typename offset_compute_t>
     struct replace_element_type<
-        tilekit::vector::object_t<buffer_t,shape_buffer_t,bit_width,stride_buffer_t,offset_compute_t,resolver_t>, U
+        tilekit::vector::object_t<buffer_t,shape_buffer_t,bit_width,stride_buffer_t,offset_compute_t>, U
     >
     {
         using buffer_type = replace_element_type_t<buffer_t,U>;

@@ -12,8 +12,8 @@ using nmtools_tuple;
 
 struct sum_kernel_t
 {
-    template <typename ctx_t, typename out_t, typename inp_t, typename tile_shape_t>
-    auto operator()(ctx_t& ctx, out_t& out, const inp_t& inp, const tile_shape_t tile_shape) const noexcept
+    template <typename ctx_t, typename out_t, typename inp_t, typename tile_shape_t, typename axis_t=nm::ct<-1>>
+    auto operator()(ctx_t& ctx, out_t& out, const inp_t& inp, const tile_shape_t tile_shape, axis_t axis=axis_t{}) const noexcept
     {
         // assume 2d
         // assume summing over -1 axis
@@ -21,43 +21,36 @@ struct sum_kernel_t
 
         nmtools_tracy_zone_scoped("sum kernel");
 
-        auto axis = nm::ct_v<-1>;
-
         [[maybe_unused]] auto [w_id]   = tk::worker_id(ctx);
         [[maybe_unused]] auto [w_size] = tk::worker_size(ctx);
 
         auto inp_shape = tk::shape(inp);
         auto out_shape = tk::shape(out);
 
-        auto axis_iter = inp_shape / tile_shape;
+        auto inp_nditer = tk::moveaxis(
+            tk::nditer(inp_shape,tile_shape)
+            , axis
+            , nm::ct_v<-1>
+        );
 
-        const auto [axis_0_iter,axis_1_iter] = axis_iter;
-
-        // TODO: slice
-        auto offset = tk::ndoffset(inp_shape,tile_shape);
+        auto axis_0_iter = tk::iter_shape(inp_nditer,0);
+        auto axis_1_iter = tk::iter_shape(inp_nditer,1);
 
         auto dtype = nm::type(out);
-        auto acc_shape = tile_shape.remove_dims(axis);
 
-        auto v = nm::view::zeros(acc_shape,dtype);
-        static_assert( nm::is_index_array_v<decltype(acc_shape)> );
-        static_assert( nm::is_view_v<decltype(v)> );
-
-        for (nm_size_t j=0; j<axis_0_iter; j++) {
+        for (nm_size_t i=0; i<axis_0_iter; i++) {
             auto accumulator = nm::Array::zeros(tile_shape,dtype,ctx);
             // TODO: handle composition of axes
-            for (nm_size_t i=0; i<axis_1_iter; i++) {
-                auto tile_offset = offset[(j*axis_1_iter)+i];
+            for (nm_size_t j=0; j<axis_1_iter; j++) {
+                auto tile_offset = tk::packed_at(inp_nditer,i,j);
                 auto block  = tk::load(ctx,inp,tile_offset,tile_shape);
                 accumulator = accumulator + block;
             }
 
-            // TODO: support runtime single axis
             auto result = accumulator.sum(axis);
-            static_assert( nm::is_ndarray_v<decltype(result)> );
             auto out_tile_shape = nm::shape(result);
-            auto out_offset = tk::ndoffset(out_shape,out_tile_shape);
-            auto res_offset = out_offset[j];
+            auto out_nditer = tk::nditer(out_shape,out_tile_shape);
+            auto res_offset = tk::packed_at(out_nditer,i);
             tk::store(ctx,out,res_offset,result);
         }
     }

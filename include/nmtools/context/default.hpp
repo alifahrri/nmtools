@@ -103,7 +103,7 @@ namespace nmtools
                 return T{0};
             } else {
                 auto buffer_vtype = base_type::get_buffer_vtype(dtype,shape,size);
-                return create(buffer_vtype, shape);
+                return this->create(buffer_vtype, shape);
             }
         }
 
@@ -111,7 +111,7 @@ namespace nmtools
         constexpr auto full(const shape_t& shape, T t) const
         {
             auto buffer_vtype = base_type::get_buffer_vtype(as_value_v<T>, shape);
-            auto result = create(buffer_vtype,shape);
+            auto result = this->create(buffer_vtype,shape);
             for (nm_size_t i=0; i<result.size(); i++) {
                 result.data_[i] = t;
             }
@@ -121,13 +121,13 @@ namespace nmtools
         template <typename shape_t, typename T=float>
         constexpr auto zeros(const shape_t& shape, dtype_t<T> = dtype_t<T>{}) const
         {
-            return full(shape, static_cast<T>(0));
+            return this->full(shape, static_cast<T>(0));
         }
 
         template <typename shape_t, typename T=float>
         constexpr auto ones(const shape_t& shape, dtype_t<T> = dtype_t<T>{}) const
         {
-            return full(shape, static_cast<T>(1));
+            return this->full(shape, static_cast<T>(1));
         }
 
         template <typename view_t>
@@ -147,8 +147,8 @@ namespace nmtools
         constexpr auto eval(output_t& output, const view_t& view) const
             -> enable_if_t<!is_none_v<output_t> && !is_num_v<output_t>>
         {
-            auto out_shape = shape(output);
-            auto inp_shape = shape(unwrap(view));
+            auto out_shape = nmtools::shape(output);
+            auto inp_shape = nmtools::shape(unwrap(view));
             auto is_equal  = utils::isequal(out_shape,inp_shape);
             if (!is_equal) {
                 nmtools_assert( is_equal
@@ -225,8 +225,8 @@ namespace nmtools
                 using T = get_element_type_t<remove_cvref_t<decltype(unwrap(view))>>;
                 using element_t = conditional_t<is_same_v<T,bool>,nm_bool_t,T>;
 
-                auto result = create(dtype_t<element_t>{},shape,size);
-                eval(result,unwrap(view));
+                auto result = this->create(dtype_t<element_t>{},shape,size);
+                this->eval(result,unwrap(view));
 
                 return result;
             }

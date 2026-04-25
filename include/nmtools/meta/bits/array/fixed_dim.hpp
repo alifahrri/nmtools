@@ -100,4 +100,9 @@ namespace nmtools::meta
     inline static constexpr auto fixed_dim_v = fixed_dim<T>::value;
 } // namespace nmtools::meta
 
+namespace nmtools
+{
+    using meta::fixed_dim_v;
+}
+
 #endif // NMTOOLS_META_BITS_ARRAY_FIXED_DIM_HPP
