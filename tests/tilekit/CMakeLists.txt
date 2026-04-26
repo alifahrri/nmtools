@@ -122,6 +122,9 @@ set(NMTOOLS_TESTS_TILEKIT_SRCS
     src/sum_v128_st.cpp
     src/sum_scalar_mt.cpp
     src/sum_v128_mt.cpp
+
+    src/maximum_scalar_st.cpp
+    src/maximum_v128_st.cpp
 )
 if (NMTOOLS_TESTS_TILEKIT_ENABLE_TRACY)
     add_executable(${PROJECT_NAME}-doctest
