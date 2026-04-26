@@ -152,7 +152,10 @@ namespace nmtools::view
         }
     } // unary_ufunc
 
-    template <typename op_t, typename lhs_t, typename rhs_t>
+    template <typename op_t, typename arrays_t>
+    constexpr auto binary_ufunc(op_t op, const arrays_t& arrays);
+
+    template <auto broadcast_enable=false, typename op_t, typename lhs_t, typename rhs_t>
     constexpr auto binary_ufunc(op_t op, const lhs_t& lhs, const rhs_t& rhs)
     {
         if constexpr (meta::is_maybe_v<lhs_t>) {
@@ -199,6 +202,9 @@ namespace nmtools::view
             // all rhs are numeric, use scalar_ufunc instead
             using view_t = decorator_t<scalar_ufunc_t,op_t,lhs_t,rhs_t>;
             return view_t{{op,lhs,rhs}};
+        } else if constexpr (broadcast_enable) {
+            auto broadcasted_arrays = view::broadcast_arrays(lhs, rhs);
+            return binary_ufunc(op,broadcasted_arrays);
         } else {
             using result_t = decorator_t<ufunc_t,op_t,lhs_t,rhs_t>;
             return result_t{{op,lhs,rhs}};
@@ -217,6 +223,7 @@ namespace nmtools::view
                 : return_type{meta::Nothing}
             );
         } else {
+            // TODO: assert arrays_t is tuple?
             static_assert( meta::len_v<arrays_t> == 2
                 , "invalid number of operands for binary_ufunc!"
             );
