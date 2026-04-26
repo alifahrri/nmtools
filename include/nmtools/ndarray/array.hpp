@@ -342,12 +342,20 @@ namespace nmtools::meta
 
 namespace nmtools
 {
-    // TODO: propagate evaluator context
     #define nmtools_ndarray_method(method) \
     template <typename...args_t> \
     constexpr auto method(const args_t&...args) const \
     { \
         auto v = view::method(*this,args...); \
+        auto result = nmtools::eval(v,context_,None); \
+        return nmtools::unwrap(result); \
+    }
+
+    #define nmtools_broadcastable_ndarray_method(method) \
+    template <typename...args_t> \
+    constexpr auto method(const args_t&...args) const \
+    { \
+        auto v = view::method<broadcast_enable>(*this,args...); \
         auto result = nmtools::eval(v,context_,None); \
         return nmtools::unwrap(result); \
     }
@@ -679,8 +687,8 @@ namespace nmtools
         /******************************************************************* */
         // numpy's ndarray doesn't have maximum/minimum member, but torch's Tensor does
         // also extend to reduce, accumulate, outer
-        nmtools_ndarray_method(maximum)
-        nmtools_ndarray_method(minimum)
+        nmtools_broadcastable_ndarray_method(maximum)
+        nmtools_broadcastable_ndarray_method(minimum)
 
         nmtools_ndarray_reduce(maximum)
         nmtools_ndarray_reduce(minimum)
@@ -795,6 +803,7 @@ namespace nmtools
     #undef nmtools_ndarray_reduce
     #undef nmtools_ndarray_accumulate
     #undef nmtools_ndarray_outer
+    #undef nmtools_broadcastable_ndarray_method
 } // nmtools
 
 // TODO: move to meta?

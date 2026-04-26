@@ -44,14 +44,14 @@ namespace nmtools::tilekit::vector
         , template <typename...>typename compute_offset_t=row_major_offset_t
         , typename=void>
     struct object_t
-        : nmtools::object_t<buffer_t,shape_buffer_t,resolve_stride_type_t,row_major_offset_t,context_t<bit_width>,false>
+        : nmtools::object_t<buffer_t,shape_buffer_t,resolve_stride_type_t,row_major_offset_t,context_t<bit_width>,/*broadcast_enable*/false>
     {
         using shape_buffer_type = shape_buffer_t;
         static_assert( is_constant_index_array_v<shape_buffer_type>
             , "unsupported shape buffer type for vector::object_t; expected constant index array"
         );
         // TODO: assert shape buffer and shape is known at compile-time
-        using base_type     = nmtools::object_t<buffer_t,shape_buffer_t,resolve_stride_type_t,row_major_offset_t,context_t<bit_width>,false>;
+        using base_type     = nmtools::object_t<buffer_t,shape_buffer_t,resolve_stride_type_t,row_major_offset_t,context_t<bit_width>,/*broadcast_enable*/false>;
         using value_type    = typename base_type::value_type;
         using element_type  = get_element_type_t<buffer_t>;
 
