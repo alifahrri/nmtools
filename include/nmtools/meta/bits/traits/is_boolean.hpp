@@ -30,4 +30,9 @@ namespace nmtools::meta
     struct is_boolean<T,enable_if_t<has_address_space_v<T>>> : is_boolean<remove_address_space_t<T>> {};
 } // namespace nmtools::meta
 
+namespace nmtools
+{
+    using meta::is_boolean_v;
+}
+
 #endif // NMTOOLS_META_BITS_TRAITS_IS_BOOLEAN_HPP

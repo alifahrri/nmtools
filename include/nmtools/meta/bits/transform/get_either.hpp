@@ -40,4 +40,10 @@ namespace nmtools::meta
     using get_either_right_t = typename get_either_right<T>::type;
 } // namespace nmtools::meta
 
+namespace nmtools
+{
+    using meta::get_either_left_t;
+    using meta::get_either_right_t;
+}
+
 #endif // NMTOOLS_META_BITS_TRANSFORM_GET_EITHER_HPP
