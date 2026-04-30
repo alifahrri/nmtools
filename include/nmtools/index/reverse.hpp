@@ -3,6 +3,8 @@
 
 #include "nmtools/utility/at.hpp"
 #include "nmtools/utility/shape.hpp"
+#include "nmtools/utility/has_value.hpp"
+#include "nmtools/utility/unwrap.hpp"
 #include "nmtools/meta.hpp"
 
 namespace nmtools::index
@@ -21,24 +23,28 @@ namespace nmtools::index
     constexpr auto reverse(const indices_t& indices)
     {
         using result_t = resolve_optype_t<reverse_t,indices_t>;
-        using size_type = size_t;
         auto ret = result_t{};
         // assume already reversed at meta::resolve if result_t is constant
         if constexpr (!is_constant_index_array_v<result_t>) {
-            [[maybe_unused]] auto n = (size_type)len(indices);
-            if constexpr (is_resizable_v<result_t>)
+            [[maybe_unused]] auto n = (nm_size_t)len(indices);
+            if constexpr (is_resizable_v<result_t>) {
                 ret.resize(n);
-            // some fn still allow tuple of runtime index, must be unrolled
-            // TODO: consider to drop tuple of runtime index
-            if constexpr (is_fixed_index_array_v<indices_t>) {
-                constexpr auto N = len_v<indices_t>;
-                template_for<N>([&](auto index){
-                    constexpr auto i = N-1-index;
-                    at(ret,index) = at<i>(indices);
+            }
+            constexpr auto DIM = len_v<result_t>;
+            if constexpr (DIM > 0) {
+                template_for<DIM>([&](auto index){
+                    if constexpr (!is_constant_index_v<decltype(at(ret,index))>) {
+                        constexpr auto I = decltype(index)::value;
+                        at(ret,index) = at<DIM-1-I>(indices);
+                    }
                 });
             } else {
-                for (size_type i=0; i<n; i++)
-                    at(ret,i) = at(indices,n-1-i);
+                for (nm_size_t i=0; i<n; i++) {
+                    auto idx = at(indices,n-1-i);
+                    if (has_value(idx)) {
+                        at(ret,i) = idx;
+                    }
+                }
             }
         }
         return ret;
@@ -50,6 +56,7 @@ namespace nmtools::meta
 
     namespace error
     {
+        template <typename...>
         struct INDEX_REVERSE_UNSUPPORTED : detail::fail_t {};
     }
 
@@ -59,24 +66,47 @@ namespace nmtools::meta
     >
     {
         static constexpr auto vtype = [](){
-            if constexpr (is_constant_index_array_v<indices_t>) {
-                constexpr auto indices = to_value_v<indices_t>;
-                constexpr auto reversed = index::reverse(indices);
-                using init_type = nmtools_tuple<ct<at(reversed,0)>>;
-                // convert back to type
-                return template_reduce<::nmtools::len(reversed)-1>([&](auto init, auto index){
-                    using init_t = type_t<decltype(init)>;
-                    using result_t = append_type_t<init_t,ct<at(reversed,index+1)>>;
-                    return as_value_v<result_t>;
-                }, as_value_v<init_type>);
-            } else if constexpr (is_index_array_v<indices_t>) {
-                // may be array or tuple of (runtime) index
-                // some fn allow tuple of runtime index
-                // TODO: consider to drop tuple of runtime index
-                using type = tuple_to_array_t<transform_bounded_array_t<indices_t>>;
+            if constexpr (!is_index_array_v<indices_t>) {
+                using type = error::INDEX_REVERSE_UNSUPPORTED<indices_t>;
                 return as_value_v<type>;
+            } else if constexpr (is_constant_index_array_v<indices_t>
+                || is_mixed_index_array_v<indices_t>
+            ) {
+                constexpr auto indices = to_value_v<indices_t>;
+                using element_t [[maybe_unused]] = get_element_type_t<decltype(indices)>;
+                constexpr auto reversed = index::reverse(indices);
+                // convert back to type
+                using nmtools::len, nmtools::has_value, nmtools::at, nmtools::unwrap;
+                return template_reduce<len(reversed)>([&](auto init, auto index){
+                    using init_t = type_t<decltype(init)>;
+                    constexpr auto I = decltype(index)::value;
+                    constexpr auto idx = at(reversed,I);
+                    if constexpr (has_value(idx)) {
+                        using index_t = ct<unwrap(idx)>;
+                        using result_t = append_type_t<init_t,index_t>;
+                        return as_value_v<result_t>;
+                    } else {
+                        using index_t = element_t;
+                        using result_t = append_type_t<init_t,index_t>;
+                        return as_value_v<result_t>;
+                    }
+                }, as_value_v<nmtools_tuple<>>);
             } else {
-                return as_value_v<error::INDEX_REVERSE_UNSUPPORTED>;
+                constexpr auto DIM = len_v<indices_t>;
+                [[maybe_unused]]
+                constexpr auto MAX_DIM = max_len_v<indices_t>;
+                using element_t = get_element_type_t<indices_t>;
+                if constexpr (DIM > 0) {
+                    using type = nmtools_array<element_t,DIM>;
+                    return as_value_v<type>;
+                } else if constexpr (MAX_DIM > 0) {
+                    using type = nmtools_static_vector<element_t,MAX_DIM>;
+                    return as_value_v<type>;
+                } else {
+                    // TODO: use small vector
+                    using type = nmtools_list<element_t>;
+                    return as_value_v<type>;
+                }
             }
         }();
         using type = type_t<decltype(vtype)>;

@@ -34,12 +34,14 @@ namespace nmtools
             , strides_{}
         {}
 
-        constexpr row_major_offset_t(const row_major_offset_t& other)
+        template <typename other_shape_t, typename other_strides_t>
+        constexpr row_major_offset_t(const row_major_offset_t<other_shape_t,other_strides_t>& other)
             : shape_(other.shape_)
             , strides_(other.strides_)
         {}
 
-        constexpr row_major_offset_t& operator=(const row_major_offset_t& other)
+        template <typename other_shape_t, typename other_strides_t>
+        constexpr row_major_offset_t& operator=(const row_major_offset_t<other_shape_t,other_strides_t>& other)
         {
             if constexpr (!meta::is_constant_index_array_v<shape_type>) {
                 [[maybe_unused]] auto dim = len(other.shape_);

@@ -632,16 +632,20 @@ namespace nmtools
         /******************************************************************* */
 
         template <
-            typename other_context_t
+            typename other_shape_buffer_t
+            , template <typename...>typename other_stride_buffer_t
+            , template <typename...>typename other_compute_offset_t
+            , typename other_context_t
             , auto other_broadcast>
         constexpr auto operator=(const object_t<
             buffer_t
-            , shape_buffer_t
-            , stride_buffer_t
-            , compute_offset_t
+            , other_shape_buffer_t
+            , other_stride_buffer_t
+            , other_compute_offset_t
             , other_context_t
             , other_broadcast>& other)
         {
+            // TODO: assert that the shape is the same?
             this->data_    = other.data_;
             this->shape_   = other.shape_;
             this->strides_ = other.strides_;

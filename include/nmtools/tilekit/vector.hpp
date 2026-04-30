@@ -189,6 +189,40 @@ namespace nmtools::tilekit::vector
             auto result = this->divide(other);
             return result;
         }
+
+        template <typename rhs_t>
+        constexpr auto maximum(const rhs_t& rhs) const
+        {
+            // assume same shape & type
+            // TODO: assert same shape & size
+            auto result = object_t{};
+
+            using vector_t = vector_type;
+            for (nm_size_t i=0; i<n_iter; i++) {
+                auto vlhs = *((vector_t*)this->data()+i);
+                auto vrhs = *((vector_t*)rhs.data()+i);
+                *((vector_t*)result.data()+i) = (vlhs > vrhs ? vlhs : vrhs);
+            }
+
+            return result;
+        }
+
+        template <typename rhs_t>
+        constexpr auto minimum(const rhs_t& rhs) const
+        {
+            // assume same shape & type
+            // TODO: assert same shape & size
+            auto result = object_t{};
+
+            using vector_t = vector_type;
+            for (nm_size_t i=0; i<n_iter; i++) {
+                auto vlhs = *((vector_t*)this->data()+i);
+                auto vrhs = *((vector_t*)rhs.data()+i);
+                *((vector_t*)result.data()+i) = (vlhs < vrhs ? vlhs : vrhs);
+            }
+
+            return result;
+        }
     };
 
     #undef nmtools_ndarray_method

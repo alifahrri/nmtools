@@ -355,6 +355,19 @@ namespace nmtools
     using nullable_uint16_t = nullable_num<uint16_t>;
     using nullable_uint32_t = nullable_num<uint32_t>;
     using nullable_uint64_t = nullable_num<uint64_t>;
+
+    using null_int      = nullable_num<int>;
+    using null_long     = nullable_num<long>;
+    using null_char     = nullable_num<char>;
+    using null_size_t   = nullable_num<size_t>;
+    using null_int8_t   = nullable_num<int8_t>;
+    using null_int16_t  = nullable_num<int16_t>;
+    using null_int32_t  = nullable_num<int32_t>;
+    using null_int64_t  = nullable_num<int64_t>;
+    using null_uint8_t  = nullable_num<uint8_t>;
+    using null_uint16_t = nullable_num<uint16_t>;
+    using null_uint32_t = nullable_num<uint32_t>;
+    using null_uint64_t = nullable_num<uint64_t>;
 }
 
 // NOTE: to make it consistent for separate host device compilation
