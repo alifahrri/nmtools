@@ -125,6 +125,16 @@ set(NMTOOLS_TESTS_TILEKIT_SRCS
 
     src/maximum_scalar_st.cpp
     src/maximum_v128_st.cpp
+    src/maximum_v128_mt.cpp
+
+    src/minimum_scalar_st.cpp
+    src/minimum_v128_st.cpp
+    src/minimum_v128_mt.cpp
+
+    src/max_scalar_st.cpp
+    src/max_v128_st.cpp
+    src/max_v256_st.cpp
+    src/max_v512_st.cpp
 )
 if (NMTOOLS_TESTS_TILEKIT_ENABLE_TRACY)
     add_executable(${PROJECT_NAME}-doctest
@@ -149,6 +159,7 @@ add_test(
 )
 set(NMTOOLS_TEST_TILEKIT_ARCH "native" CACHE STRING "manually set tilekit arch")
 option(NMTOOLS_TESTS_TILEKIT_ENABLE_TSAN "build tilekit tests with thread sanitizer enabled" OFF)
+option(NMTOOLS_TESTS_TILEKIT_ENABLE_ASAN "build tilekit tests with address sanitizer enabled" OFF)
 
 if (NMTOOLS_TESTS_TILEKIT_ENABLE_TSAN)
     set(NMTOOLS_TEST_TILEKIT_OPT -g -O3 -fsanitize=thread)
@@ -160,9 +171,18 @@ target_compile_options(${PROJECT_NAME}-doctest
     PRIVATE
     ${NMTOOLS_TEST_TILEKIT_OPT} -march=${NMTOOLS_TEST_TILEKIT_ARCH}
 )
+if (NMTOOLS_TESTS_TILEKIT_ENABLE_ASAN)
+    target_compile_options(${PROJECT_NAME}-doctest
+        PRIVATE
+        -fsanitize=address
+    )
+endif()
 target_link_libraries(${PROJECT_NAME}-doctest PRIVATE nanobench)
 if (NMTOOLS_TESTS_TILEKIT_ENABLE_TSAN)
     target_link_options(${PROJECT_NAME}-doctest PRIVATE -fsanitize=thread)
+endif ()
+if (NMTOOLS_TESTS_TILEKIT_ENABLE_ASAN)
+    target_link_options(${PROJECT_NAME}-doctest PRIVATE -fsanitize=address)
 endif ()
 
 target_compile_options(${PROJECT_NAME}-doctest PRIVATE -std=c++17)

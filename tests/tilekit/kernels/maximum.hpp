@@ -1,5 +1,5 @@
-#ifndef NMTOOLS_TESTS_KERNELS_ADD_HPP
-#define NMTOOLS_TESTS_KERNELS_ADD_HPP
+#ifndef NMTOOLS_TESTS_KERNELS_MINIMUM_HPP
+#define NMTOOLS_TESTS_KERNELS_MINIMUM_HPP
 
 #include "nmtools/tilekit/tilekit.hpp"
 #include "nmtools/profiling.hpp"
@@ -40,4 +40,4 @@ struct maximum_kernel_t
 inline auto maximum_kernel = maximum_kernel_t<0>{};
 inline auto maximum_padding_kernel = maximum_kernel_t<1>{};
 
-#endif // NMTOOLS_TESTS_KERNELS_ADD_HPP
+#endif // NMTOOLS_TESTS_KERNELS_MINIMUM_HPP
