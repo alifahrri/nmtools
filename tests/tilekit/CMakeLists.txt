@@ -131,6 +131,11 @@ set(NMTOOLS_TESTS_TILEKIT_SRCS
     src/minimum_v128_st.cpp
     src/minimum_v128_mt.cpp
 
+    src/min_scalar_st.cpp
+    src/min_v128_st.cpp
+    src/min_v256_st.cpp
+    src/min_v512_st.cpp
+
     src/max_scalar_st.cpp
     src/max_v128_st.cpp
     src/max_v256_st.cpp
