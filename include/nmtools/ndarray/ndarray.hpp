@@ -27,15 +27,15 @@ namespace nmtools
     struct ndarray_t : base_ndarray_t<ndarray_t<buffer_t, shape_buffer_t, stride_buffer_t, compute_offset_t>>
     {
         using buffer_type = buffer_t;
-        using value_type  = meta::get_element_type_t<buffer_type>;
+        using value_type  = get_element_type_t<buffer_type>;
         using shape_type  = shape_buffer_t;
-        using index_type  = meta::get_element_or_common_type_t<shape_type>;
+        using index_type  = get_element_or_common_type_t<shape_type>;
         using stride_type = stride_buffer_t<shape_type>;
         using base_type   = base_ndarray_t<ndarray_t>;
         using offset_type = compute_offset_t<shape_type,stride_type>;
 
-        static_assert( meta::is_index_array_v<shape_type>, "unsupported shape_type for ndarray" );
-        static_assert( meta::is_index_array_v<stride_type>, "unsupported stride_type for ndarray");
+        static_assert( is_index_array_v<shape_type>, "unsupported shape_type for ndarray" );
+        static_assert( is_index_array_v<stride_type>, "unsupported stride_type for ndarray");
 
         buffer_type data_;
         shape_type  shape_;
@@ -48,7 +48,7 @@ namespace nmtools
             , strides_  (base_type::template compute_strides<stride_type>(shape_))
             , offset_   (shape_,strides_)
         {
-            if constexpr (meta::is_resizable_v<buffer_type>) {
+            if constexpr (is_resizable_v<buffer_type>) {
                 auto numel = index::product(shape_);
                 // shape may be fixed while data is resizable
                 if ((nm_size_t)len(data_) != (nm_size_t)numel) {
@@ -59,20 +59,20 @@ namespace nmtools
 
         template <typename size_type, typename...size_types>
         constexpr auto resize([[maybe_unused]] const size_type& size, const size_types&...sizes)
-            -> meta::enable_if_t<
-                   (meta::is_index_v<size_type> || meta::is_index_array_v<size_type>)
-                && (meta::is_index_v<size_types> && ...)
-                && (!meta::is_constant_index_array_v<shape_type>)
+            -> enable_if_t<
+                   (is_index_v<size_type> || is_index_array_v<size_type>)
+                && (is_index_v<size_types> && ...)
+                && (!is_constant_index_array_v<shape_type>)
             , bool>
         {
             const auto sizes_  = index::pack_indices(size,sizes...);
             const auto numel   = index::product(sizes_);
             // since size may be packed, the proper way to read dim is using len instead of sizes..+1
             auto new_dim = len(sizes_);
-            if constexpr (meta::is_resizable_v<shape_type>) {
+            if constexpr (is_resizable_v<shape_type>) {
                 shape_.resize(new_dim);
             }
-            if constexpr (meta::is_resizable_v<buffer_type>) {
+            if constexpr (is_resizable_v<buffer_type>) {
                 data_.resize(numel);
             }
             auto same_dim   = (size_t)len(shape_) == (size_t)new_dim;
@@ -81,12 +81,12 @@ namespace nmtools
                 // , to use fixed dim dynamic size, use static_vector as buffer
                 #if 0
                 // NOTE: to allow fixed buffer, fixed dim, dynamic shape
-                if (meta::is_resizable_v<buffer_type>) {
+                if (is_resizable_v<buffer_type>) {
                     // buffer is resizable, can deduce numel from len(data_)
                     return (size_t)len(data_) == (size_t)numel;
                 } else if (same_dim) {
                     // same dim and can assign value to shape
-                    return !meta::is_constant_index_array_v<shape_type>;
+                    return !is_constant_index_array_v<shape_type>;
                 } else {
                     return false;
                 }
@@ -100,8 +100,8 @@ namespace nmtools
             if (!same_dim) {
                 return false;
             }
-            if constexpr (meta::is_clipped_index_array_v<shape_type>) {
-                constexpr auto max_sizes = meta::to_value_v<shape_type>;
+            if constexpr (is_clipped_index_array_v<shape_type>) {
+                constexpr auto max_sizes = to_value_v<shape_type>;
                 if ((size_t)len(sizes_) != (size_t)len(max_sizes)) {
                     return false;
                 }
@@ -114,10 +114,10 @@ namespace nmtools
                     }
                 }
             }
-            if constexpr (meta::is_tuple_v<shape_type>) {
+            if constexpr (is_tuple_v<shape_type>) {
                 // this may be the case for clipped_shape
-                constexpr auto N = meta::len_v<shape_type>;
-                meta::template_for<N>([&](auto index){
+                constexpr auto N = len_v<shape_type>;
+                template_for<N>([&](auto index){
                     at(shape_,index) = at(sizes_,index);
                 });
             } else {
@@ -129,13 +129,13 @@ namespace nmtools
             // NOTE: using operator= directly may cause unusable for constexpr, (e.g. std::tuple)
             // quick workaround just use assignment of the elements
             auto m_strides_ = base_type::template compute_strides<stride_type>(shape_);
-            if constexpr (meta::is_tuple_v<stride_type>) {
-                constexpr auto N = meta::len_v<stride_type>;
-                meta::template_for<N>([&](auto I){
+            if constexpr (is_tuple_v<stride_type>) {
+                constexpr auto N = len_v<stride_type>;
+                template_for<N>([&](auto I){
                     at(strides_,I) = at(m_strides_,I);
                 });
             } else {
-                if constexpr (meta::is_resizable_v<stride_type>) {
+                if constexpr (is_resizable_v<stride_type>) {
                     strides_.resize(len(m_strides_));
                 }
                 for (size_t i=0; i<(size_t)len(m_strides_); i++) {
@@ -177,21 +177,21 @@ namespace nmtools
         using array_type = ndarray_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t>;
 
         static constexpr auto vtype = [](){
-            constexpr auto dim = meta::len_v<shape_buffer_t>;
-            if constexpr (meta::is_constant_index_array_v<shape_buffer_t> && (dim==1)) {
-                using type = meta::get_element_type_t<buffer_t>;
-                return meta::as_value_v<type>;
+            constexpr auto dim = len_v<shape_buffer_t>;
+            if constexpr (is_constant_index_array_v<shape_buffer_t> && (dim==1)) {
+                using type = get_element_type_t<buffer_t>;
+                return as_value_v<type>;
             } else {
                 using type = meta::error::TEMPLATE_GET_UNSUPPORTED<array_type,meta::as_type<I>>;
-                return meta::as_value_v<type>;
+                return as_value_v<type>;
             }
         }();
 
-        using type = meta::type_t<decltype(vtype)>;
+        using type = type_t<decltype(vtype)>;
 
         constexpr decltype(auto) operator()([[maybe_unused]] const array_type& t) const noexcept
         {
-            if constexpr (meta::is_fail_v<type>) {
+            if constexpr (is_fail_v<type>) {
                 return type{};
             } else {
                 return t(I);
@@ -200,7 +200,7 @@ namespace nmtools
 
         constexpr decltype(auto) operator()([[maybe_unused]] array_type& t) const noexcept
         {
-            if constexpr (meta::is_fail_v<type>) {
+            if constexpr (is_fail_v<type>) {
                 return type{};
             } else {
                 return t(I);
@@ -395,7 +395,7 @@ namespace nmtools::meta
         , auto...new_shape>
     struct resize_shape<
         ndarray_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t>
-        , as_type<new_shape...>
+        , meta::as_type<new_shape...>
     >
     {
         using array_type  = ndarray_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t>;
@@ -630,9 +630,9 @@ namespace nmtools::kind
     constexpr inline auto ndarray_ds_hb = ndarray_kind_t< BufferKind::DYNAMIC,  BufferKind::HYBRID >{};
     constexpr inline auto ndarray_ds_db = ndarray_kind_t< BufferKind::DYNAMIC,  BufferKind::DYNAMIC >{};
     // clipped shape
-    constexpr inline auto ndarray_ls_fb = ndarray_kind_t< BufferKind::CLIPPED, BufferKind::FIXED, meta::ct<NMTOOLS_CAST_DEFAULT_CLIPPED_VALUE> >{};
-    constexpr inline auto ndarray_ls_hb = ndarray_kind_t< BufferKind::CLIPPED, BufferKind::HYBRID, meta::ct<NMTOOLS_CAST_DEFAULT_CLIPPED_VALUE> >{};
-    constexpr inline auto ndarray_ls_db = ndarray_kind_t< BufferKind::CLIPPED, BufferKind::DYNAMIC, meta::ct<NMTOOLS_CAST_DEFAULT_CLIPPED_VALUE> >{};
+    constexpr inline auto ndarray_ls_fb = ndarray_kind_t< BufferKind::CLIPPED, BufferKind::FIXED, ct<NMTOOLS_CAST_DEFAULT_CLIPPED_VALUE> >{};
+    constexpr inline auto ndarray_ls_hb = ndarray_kind_t< BufferKind::CLIPPED, BufferKind::HYBRID, ct<NMTOOLS_CAST_DEFAULT_CLIPPED_VALUE> >{};
+    constexpr inline auto ndarray_ls_db = ndarray_kind_t< BufferKind::CLIPPED, BufferKind::DYNAMIC, ct<NMTOOLS_CAST_DEFAULT_CLIPPED_VALUE> >{};
 }
 
 namespace nmtools::meta
