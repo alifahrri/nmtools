@@ -142,7 +142,7 @@ namespace nmtools
                     at(strides_,i) = at(m_strides_,i);
                 }
             }
-            offset_ = offset_type(shape_,strides_);
+            offset_.reset(shape_,strides_);
             return true;
         } // resize
     }; // ndarray_t
