@@ -16,8 +16,8 @@ struct min_kernel_t
     {
         nmtools_tracy_zone_scoped("min kernel");
 
-        [[maybe_unused]] auto [w_id]   = tk::worker_id(ctx);
-        [[maybe_unused]] auto [w_size] = tk::worker_size(ctx);
+        const auto [w_id]   = tk::worker_id(ctx);
+        const auto [w_size] = tk::worker_size(ctx);
 
         auto inp_shape = tk::shape(inp);
         auto out_shape = tk::shape(out);
@@ -33,7 +33,7 @@ struct min_kernel_t
 
         // auto dtype = nm::type(out);
 
-        for (nm_size_t i=0; i<axis_0_iter; i++) {
+        for (nm_size_t i=(w_id*w_size); i<(axis_0_iter/w_size); i++) {
             auto tile_offset = tk::packed_at(inp_nditer,i,0);
             auto accumulator = tk::load(ctx,inp,tile_offset,tile_shape);
             for (nm_size_t j=1; j<axis_1_iter; j++) {
