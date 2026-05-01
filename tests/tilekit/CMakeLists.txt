@@ -11,7 +11,7 @@ include(nmtools)
 
 # TODO: cleanup
 # handle emscripten
-if(CMAKE_CXX_COMPILER MATCHES "/em\\+\\+(-[a-zA-Z0-9.])?$")
+if(CMAKE_CXX_COMPILER MATCHES "/em\\+\\+(-[a-zA-Z0-9.]*)?$")
     set (EMSCRIPTEN)
 endif()
 if (${CMAKE_SYSTEM_PROCESSOR} MATCHES "arm")
@@ -40,7 +40,7 @@ enable_testing()
 ## since constexpr math not supported
 if ((CMAKE_CXX_COMPILER_ID STREQUAL "Clang") OR EMSCRIPTEN OR ANDROID OR MSYS)
     add_definitions(-DDEFER_STATIC_CHECK)
-endif ()
+endif()
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
@@ -60,7 +60,6 @@ function(remove_target_compile_option TARGET_NAME OPTION_TO_REMOVE)
         )
     endif()
 endfunction()
-
 
 set(NMTOOLS_TESTS_TILEKIT_SRCS
 
@@ -105,6 +104,9 @@ set(NMTOOLS_TESTS_TILEKIT_SRCS
 
     src/exp_scalar_st.cpp
     src/exp_scalar_mt.cpp
+    src/exp_v128_st.cpp
+    src/exp_v256_st.cpp
+    src/exp_v512_st.cpp
 
     src/exp2_scalar_st.cpp
     src/exp2_scalar_mt.cpp
@@ -126,20 +128,36 @@ set(NMTOOLS_TESTS_TILEKIT_SRCS
     src/maximum_scalar_st.cpp
     src/maximum_v128_st.cpp
     src/maximum_v128_mt.cpp
+    src/maximum_v256_st.cpp
+    src/maximum_v256_mt.cpp
+    src/maximum_v512_st.cpp
+    src/maximum_v512_mt.cpp
 
     src/minimum_scalar_st.cpp
     src/minimum_v128_st.cpp
     src/minimum_v128_mt.cpp
+    src/minimum_v256_st.cpp
+    src/minimum_v256_mt.cpp
+    src/minimum_v512_st.cpp
+    src/minimum_v512_mt.cpp
 
     src/min_scalar_st.cpp
     src/min_v128_st.cpp
     src/min_v256_st.cpp
     src/min_v512_st.cpp
 
+    src/min_v128_mt.cpp
+    src/min_v256_mt.cpp
+    src/min_v512_mt.cpp
+
     src/max_scalar_st.cpp
     src/max_v128_st.cpp
     src/max_v256_st.cpp
     src/max_v512_st.cpp
+
+    src/max_v128_mt.cpp
+    src/max_v256_mt.cpp
+    src/max_v512_mt.cpp
 )
 if (NMTOOLS_TESTS_TILEKIT_ENABLE_TRACY)
     add_executable(${PROJECT_NAME}-doctest
@@ -169,6 +187,8 @@ option(NMTOOLS_TESTS_TILEKIT_ENABLE_ASAN "build tilekit tests with address sanit
 if (NMTOOLS_TESTS_TILEKIT_ENABLE_TSAN)
     set(NMTOOLS_TEST_TILEKIT_OPT -g -O3 -fsanitize=thread)
 else ()
+    # set(NMTOOLS_TEST_TILEKIT_OPT -g -O0)
+    # set(NMTOOLS_TEST_TILEKIT_OPT -g -O1)
     # set(NMTOOLS_TEST_TILEKIT_OPT -g -O2)
     set(NMTOOLS_TEST_TILEKIT_OPT -g -O3)
 endif ()
@@ -179,7 +199,7 @@ target_compile_options(${PROJECT_NAME}-doctest
 if (NMTOOLS_TESTS_TILEKIT_ENABLE_ASAN)
     target_compile_options(${PROJECT_NAME}-doctest
         PRIVATE
-        -fsanitize=address
+            -fsanitize=address
     )
 endif()
 target_link_libraries(${PROJECT_NAME}-doctest PRIVATE nanobench)
