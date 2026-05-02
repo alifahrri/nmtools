@@ -31,13 +31,13 @@ TEST_CASE("reverse" * doctest::test_suite("index"))
     {
         using indices_t  = na::fixed_ndarray<int,2>;
         using result_t   = meta::resolve_optype_t<reverse_t, indices_t>;
-        using expected_t = na::fixed_ndarray<int,2>;
+        using expected_t = nmtools_array<int,2>;
         NMTOOLS_STATIC_CHECK_IS_SAME( result_t, expected_t );
     }
     {
         using indices_t  = na::hybrid_ndarray<int,2,1>;
         using result_t   = meta::resolve_optype_t<reverse_t, indices_t>;
-        using expected_t = na::hybrid_ndarray<int,2,1>;
+        using expected_t = nmtools_static_vector<int,2>;
         NMTOOLS_STATIC_CHECK_IS_SAME( result_t, expected_t );
     }
     {
