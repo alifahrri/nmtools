@@ -140,8 +140,10 @@ namespace nmtools
 
         // Reset shape/strides without assignment (constexpr-friendly)
         template <typename other_shape_t, typename other_strides_t>
-        constexpr void reset(const other_shape_t& shape, const other_strides_t& strides) noexcept
+        constexpr void reset(const other_shape_t& other_shape, const other_strides_t&) noexcept
         {
+            auto shape = index::reverse(other_shape);
+            auto strides = index::reverse(index::compute_strides(shape));
             if constexpr (!is_constant_index_array_v<other_shape_t>) {
                 [[maybe_unused]] auto dim = len(shape);
                 if constexpr (is_resizable_v<other_shape_t>) {

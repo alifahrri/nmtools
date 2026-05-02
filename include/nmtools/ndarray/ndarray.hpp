@@ -142,6 +142,8 @@ namespace nmtools
                     at(strides_,i) = at(m_strides_,i);
                 }
             }
+            // on column major offset this strides is unused
+            // calculated there from the shapes
             offset_.reset(shape_,strides_);
             return true;
         } // resize
