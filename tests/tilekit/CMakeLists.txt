@@ -158,6 +158,8 @@ set(NMTOOLS_TESTS_TILEKIT_SRCS
     src/max_v128_mt.cpp
     src/max_v256_mt.cpp
     src/max_v512_mt.cpp
+
+    src/softmax_scalar_st.cpp
 )
 if (NMTOOLS_TESTS_TILEKIT_ENABLE_TRACY)
     add_executable(${PROJECT_NAME}-doctest

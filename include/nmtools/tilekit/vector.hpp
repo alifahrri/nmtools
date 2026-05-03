@@ -71,7 +71,7 @@ namespace nmtools::tilekit::vector
             auto dst_size = index::product(dst_shape);
             constexpr auto DST_SIZE = decltype(dst_size)::value;
             using dst_buffer_t = nmtools_array<element_type,DST_SIZE>;
-            using result_t = object_t<dst_buffer_t,dst_shape_t,bit_width>;
+            using result_t = object_t<dst_buffer_t,dst_shape_t,bit_width,stride_buffer_t,compute_offset_t>;
 
             auto m_src_shape = index::array(src_shape);
             auto lane = [&](){
