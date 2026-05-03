@@ -62,6 +62,7 @@ namespace nmtools::tilekit
         using result_type   = object_t<buffer_type,tile_shape_type,resolve_stride_type_t,row_major_offset_t,unroll_context_t<false,true>,false>;
 
         template <typename ctx_t, typename result_t, typename src_shape_t, typename offset_t, typename tile_stride_t>
+        __attribute__((always_inline))
         static auto load(ctx_t
             , result_t& result
             , const array_type& array
@@ -89,6 +90,7 @@ namespace nmtools::tilekit
         }
 
         template <typename ctx_t, typename offset_t>
+        __attribute__((always_inline))
         static auto load(ctx_t
             , const array_type& array
             , const offset_t& offset
@@ -106,6 +108,7 @@ namespace nmtools::tilekit
         }
 
         template <typename ctx_t, typename offset_t>
+        __attribute__((always_inline))
         auto operator()(ctx_t, const array_type& array, const offset_t& offset, const tile_shape_type& tile_shape, padding_type padding) const
         {
             return load(ctx_t{},array,offset,tile_shape,padding);

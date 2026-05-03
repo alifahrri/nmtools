@@ -42,4 +42,9 @@ namespace nmtools::meta
     add_rvalue_reference_t<T> declval() noexcept;
 } // namespace nmtools::meta
 
+namespace nmtools
+{
+    using meta::declval;
+}
+
 #endif // NMTOOLS_META_BITS_TRANSFORM_ADD_REFERENCE_HPP

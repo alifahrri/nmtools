@@ -24,6 +24,7 @@ namespace nmtools::tilekit
     struct store_t;
 
     template <typename ctx_t, typename array_t, typename offset_t, typename tile_shape_t, typename padding_t=ct<0>>
+    __attribute__((always_inline))
     constexpr auto load(ctx_t&& ctx, const array_t& array, const offset_t& offset, const tile_shape_t& tile_shape, const padding_t& padding=padding_t{})
     {
         auto load = load_t<remove_cvref_t<ctx_t>,array_t,tile_shape_t,padding_t>{};
@@ -149,6 +150,7 @@ namespace nmtools::tilekit
 
     // TODO: generalize this "packed element type" support
     template <typename view_t, typename...size_types>
+    __attribute__((always_inline))
     constexpr auto packed_at(const view_t& view, size_types...indices)
     {
         // TODO: check if the underlying array is nditer_t
@@ -170,15 +172,30 @@ namespace nmtools::tilekit
     template <typename iter_t, typename source_t, typename destination_t>
     constexpr auto moveaxis(const iter_t& iter, source_t src, destination_t dst)
     {
-        // TODO: transform/normalize negative axis with DIM-1 length
-        constexpr auto DIM = fixed_dim_v<iter_t>;
-        auto normalized_src = unwrap(index::normalize_axis(src,ct_v<DIM-1>));
-        auto normalized_dst = unwrap(index::normalize_axis(dst,ct_v<DIM-1>));
-        auto view = view::moveaxis(iter,normalized_src,normalized_dst);
-        if constexpr (is_maybe_v<decltype(view)>) {
-            return *view;
+        constexpr auto SRC = to_value_v<source_t>;
+        constexpr auto DST = to_value_v<destination_t>;
+
+        auto moveaxis = [&](auto src, auto dst){
+            // TODO: transform/normalize negative axis with DIM-1 length
+            constexpr auto DIM = fixed_dim_v<iter_t>;
+            auto normalized_src = unwrap(index::normalize_axis(src,ct_v<DIM-1>));
+            auto normalized_dst = unwrap(index::normalize_axis(dst,ct_v<DIM-1>));
+            auto view = view::moveaxis(iter,normalized_src,normalized_dst);
+            if constexpr (is_maybe_v<decltype(view)>) {
+                return *view;
+            } else {
+                return view;
+            }
+        };
+
+        if constexpr (!is_fail_v<decltype(src)> && !is_fail_v<decltype(dst)>) {
+            if constexpr (SRC == DST) {
+                return iter;
+            } else {
+                return moveaxis(src,dst);
+            }
         } else {
-            return view;
+            return moveaxis(src,dst);
         }
     }
 

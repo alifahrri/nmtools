@@ -44,14 +44,14 @@ namespace nmtools::tilekit::vector
         , template <typename...>typename compute_offset_t=row_major_offset_t
         , typename=void>
     struct object_t
-        : nmtools::object_t<buffer_t,shape_buffer_t,resolve_stride_type_t,row_major_offset_t,context_t<bit_width>,false>
+        : nmtools::object_t<buffer_t,shape_buffer_t,resolve_stride_type_t,row_major_offset_t,context_t<bit_width>,/*broadcast_enable*/false>
     {
         using shape_buffer_type = shape_buffer_t;
         static_assert( is_constant_index_array_v<shape_buffer_type>
             , "unsupported shape buffer type for vector::object_t; expected constant index array"
         );
         // TODO: assert shape buffer and shape is known at compile-time
-        using base_type     = nmtools::object_t<buffer_t,shape_buffer_t,resolve_stride_type_t,row_major_offset_t,context_t<bit_width>,false>;
+        using base_type     = nmtools::object_t<buffer_t,shape_buffer_t,resolve_stride_type_t,row_major_offset_t,context_t<bit_width>,/*broadcast_enable*/false>;
         using value_type    = typename base_type::value_type;
         using element_type  = get_element_type_t<buffer_t>;
 
@@ -187,6 +187,40 @@ namespace nmtools::tilekit::vector
         constexpr auto operator/(const other_t& other) const
         {
             auto result = this->divide(other);
+            return result;
+        }
+
+        template <typename rhs_t>
+        constexpr auto maximum(const rhs_t& rhs) const
+        {
+            // assume same shape & type
+            // TODO: assert same shape & size
+            auto result = object_t{};
+
+            using vector_t = vector_type;
+            for (nm_size_t i=0; i<n_iter; i++) {
+                auto vlhs = *((vector_t*)this->data()+i);
+                auto vrhs = *((vector_t*)rhs.data()+i);
+                *((vector_t*)result.data()+i) = (vlhs > vrhs ? vlhs : vrhs);
+            }
+
+            return result;
+        }
+
+        template <typename rhs_t>
+        constexpr auto minimum(const rhs_t& rhs) const
+        {
+            // assume same shape & type
+            // TODO: assert same shape & size
+            auto result = object_t{};
+
+            using vector_t = vector_type;
+            for (nm_size_t i=0; i<n_iter; i++) {
+                auto vlhs = *((vector_t*)this->data()+i);
+                auto vrhs = *((vector_t*)rhs.data()+i);
+                *((vector_t*)result.data()+i) = (vlhs < vrhs ? vlhs : vrhs);
+            }
+
             return result;
         }
     };

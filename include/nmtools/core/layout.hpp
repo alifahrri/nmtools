@@ -34,46 +34,76 @@ namespace nmtools
             , strides_{}
         {}
 
-        constexpr row_major_offset_t(const row_major_offset_t& other)
+        // Copy constructor (constexpr-friendly, avoids std::tuple copy issues)
+        constexpr row_major_offset_t(const row_major_offset_t& other) noexcept
             : shape_(other.shape_)
             , strides_(other.strides_)
         {}
 
-        constexpr row_major_offset_t& operator=(const row_major_offset_t& other)
+        // Reset shape/strides without assignment (constexpr-friendly)
+        template <typename other_shape_t, typename other_strides_t>
+        constexpr void reset(const other_shape_t& shape, const other_strides_t& strides) noexcept
         {
-            if constexpr (!meta::is_constant_index_array_v<shape_type>) {
-                [[maybe_unused]] auto dim = len(other.shape_);
-                if constexpr (meta::is_resizable_v<shape_type>) {
+            if constexpr (!is_constant_index_array_v<other_shape_t>) {
+                [[maybe_unused]] auto dim = len(shape);
+                if constexpr (is_resizable_v<other_shape_t>) {
                     shape_.resize(dim);
                 }
-                constexpr auto N = meta::len_v<shape_type>;
+                constexpr auto N = len_v<other_shape_t>;
                 if constexpr (N>0) {
-                    meta::template_for<N>([&](auto i){
-                        at(shape_,i) = at(other.shape_,i);
+                    template_for<N>([&](auto i){
+                        at(shape_,i) = at(shape,i);
                     });
                 } else {
-                    for (size_t i=0; i<dim; i++) {
-                        at(shape_,i) = at(other.shape_,i);
+                    for (nm_size_t i=0; i<(nm_size_t)dim; i++) {
+                        at(shape_,i) = at(shape,i);
                     }
                 }
             }
-            if constexpr (!meta::is_constant_index_array_v<strides_type>) {
-                [[maybe_unused]] auto dim = len(other.strides_);
-                if constexpr (meta::is_resizable_v<strides_type>) {
+            if constexpr (!is_constant_index_array_v<other_strides_t>) {
+                [[maybe_unused]] auto dim = len(strides);
+                if constexpr (is_resizable_v<other_strides_t>) {
                     strides_.resize(dim);
                 }
-                constexpr auto N = meta::len_v<strides_type>;
+                constexpr auto N = len_v<other_strides_t>;
                 if constexpr (N>0) {
-                    meta::template_for<N>([&](auto i){
-                        at(strides_,i) = at(other.strides_,i);
+                    template_for<N>([&](auto i){
+                        at(strides_,i) = at(strides,i);
                     });
                 } else {
-                    for (size_t i=0; i<dim; i++) {
-                        at(strides_,i) = at(other.strides_,i);
+                    for (nm_size_t i=0; i<(nm_size_t)dim; i++) {
+                        at(strides_,i) = at(strides,i);
                     }
                 }
             }
+        }
+
+        template <typename other_shape_t, typename other_strides_t>
+        constexpr row_major_offset_t(const row_major_offset_t<other_shape_t,other_strides_t>& other) noexcept
+            : shape_{}
+            , strides_{}
+        {
+            this->reset(other.shape_,other.strides_);
+        }
+
+        template <typename other_shape_t, typename other_strides_t>
+        constexpr row_major_offset_t& operator=(const row_major_offset_t<other_shape_t,other_strides_t>& other) noexcept
+        {
+            this->reset(other.shape_,other.strides_);
             return *this;
+        }
+
+        // Copy assignment for same type (constexpr-friendly, avoids std::tuple assignment)
+        constexpr row_major_offset_t& operator=(const row_major_offset_t& other) noexcept
+        {
+            this->reset(other.shape_,other.strides_);
+            return *this;
+        }
+
+        // Move assignment (delegates to copy assignment to avoid non-constexpr std::tuple move)
+        constexpr row_major_offset_t& operator=(row_major_offset_t&& other) noexcept
+        {
+            return *this = static_cast<const row_major_offset_t&>(other);
         }
 
         template <typename indices_t>
@@ -86,8 +116,8 @@ namespace nmtools
     template <typename shape_t, typename strides_t>
     struct column_major_offset_t
     {
-        using shape_type = meta::remove_cvref_t<decltype(index::reverse(meta::declval<shape_t>()))>;
-        using strides_type = meta::remove_cvref_t<decltype(index::reverse(index::compute_strides(meta::declval<shape_type>())))>;
+        using shape_type = remove_cvref_t<decltype(index::reverse(declval<shape_t>()))>;
+        using strides_type = remove_cvref_t<decltype(index::reverse(index::compute_strides(declval<shape_type>())))>;
 
         shape_type shape_;
         strides_type strides_;
@@ -98,50 +128,81 @@ namespace nmtools
             , strides_(index::reverse(index::compute_strides(shape_)))
         {}
 
-        constexpr column_major_offset_t(const column_major_offset_t& other)
-            : shape_(other.shape_)
-            , strides_(other.strides_)
-        {}
-
         constexpr column_major_offset_t()
             : shape_{}
             , strides_{}
         {}
 
-        constexpr column_major_offset_t& operator=(const column_major_offset_t& other)
+        constexpr column_major_offset_t(const column_major_offset_t& other)
+            : shape_(other.shape_)
+            , strides_(other.strides_)
+        {}
+
+        // Reset shape/strides without assignment (constexpr-friendly)
+        template <typename other_shape_t, typename other_strides_t>
+        constexpr void reset(const other_shape_t& other_shape, const other_strides_t&) noexcept
         {
-            if constexpr (!meta::is_constant_index_array_v<shape_type>) {
-                [[maybe_unused]] auto dim = len(other.shape_);
-                if constexpr (meta::is_resizable_v<shape_type>) {
+            auto shape = index::reverse(other_shape);
+            auto strides = index::reverse(index::compute_strides(shape));
+            if constexpr (!is_constant_index_array_v<other_shape_t>) {
+                [[maybe_unused]] auto dim = len(shape);
+                if constexpr (is_resizable_v<other_shape_t>) {
                     shape_.resize(dim);
                 }
-                constexpr auto N = meta::len_v<shape_type>;
+                constexpr auto N = len_v<other_shape_t>;
                 if constexpr (N>0) {
-                    meta::template_for<N>([&](auto i){
-                        at(shape_,i) = at(other.shape_,i);
+                    template_for<N>([&](auto i){
+                        at(shape_,i) = at(shape,i);
                     });
                 } else {
-                    for (size_t i=0; i<dim; i++) {
-                        at(shape_,i) = at(other.shape_,i);
+                    for (nm_size_t i=0; i<(nm_size_t)dim; i++) {
+                        at(shape_,i) = at(shape,i);
                     }
                 }
             }
-            if constexpr (!meta::is_constant_index_array_v<strides_type>) {
-                [[maybe_unused]] auto dim = len(other.strides_);
-                if constexpr (meta::is_resizable_v<strides_type>) {
+            if constexpr (!is_constant_index_array_v<other_strides_t>) {
+                [[maybe_unused]] auto dim = len(strides);
+                if constexpr (is_resizable_v<other_strides_t>) {
                     strides_.resize(dim);
                 }
-                constexpr auto N = meta::len_v<strides_type>;
+                constexpr auto N = len_v<other_strides_t>;
                 if constexpr (N>0) {
-                    meta::template_for<N>([&](auto i){
-                        at(strides_,i) = at(other.strides_,i);
+                    template_for<N>([&](auto i){
+                        at(strides_,i) = at(strides,i);
                     });
                 } else {
-                    for (size_t i=0; i<dim; i++) {
-                        at(strides_,i) = at(other.strides_,i);
+                    for (nm_size_t i=0; i<(nm_size_t)dim; i++) {
+                        at(strides_,i) = at(strides,i);
                     }
                 }
             }
+        }
+
+        template <typename other_shape_t, typename other_strides_t>
+        constexpr column_major_offset_t(const column_major_offset_t<other_shape_t,other_strides_t>& other)
+            : shape_{}
+            , strides_{}
+        {
+            this->reset(other.shape_,other.strides_);
+        }
+
+        // Copy assignment for same type (constexpr-friendly)
+        constexpr column_major_offset_t& operator=(const column_major_offset_t& other) noexcept
+        {
+            this->reset(other.shape_,other.strides_);
+            return *this;
+        }
+
+        // Move assignment (delegates to copy assignment)
+        constexpr column_major_offset_t& operator=(column_major_offset_t&& other) noexcept
+        {
+            return *this = static_cast<const column_major_offset_t&>(other);
+        }
+
+        template <typename other_shape_t, typename other_strides_t>
+        constexpr column_major_offset_t& operator=(const column_major_offset_t<other_shape_t,other_strides_t>& other) noexcept
+        {
+            this->reset(other.shape_,other.strides_);
             return *this;
         }
 

@@ -45,4 +45,9 @@ namespace nmtools::meta
     using get_maybe_type_t = typename get_maybe_type<T>::type;
 } // namespace nmtools::meta
 
+namespace nmtools
+{
+    using meta::get_maybe_type_t;
+}
+
 #endif // NMTOOLS_META_BITS_TRANSFORM_GET_MAYBE_TYPE_HPP

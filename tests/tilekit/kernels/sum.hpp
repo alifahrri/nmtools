@@ -16,7 +16,6 @@ struct sum_kernel_t
     auto operator()(ctx_t& ctx, out_t& out, const inp_t& inp, const tile_shape_t tile_shape, axis_t axis=axis_t{}) const noexcept
     {
         // assume 2d
-        // assume summing over -1 axis
         // assume out is properly shaped
 
         nmtools_tracy_zone_scoped("sum kernel");

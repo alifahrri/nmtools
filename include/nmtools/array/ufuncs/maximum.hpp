@@ -37,10 +37,10 @@ namespace nmtools::view
         } // operator()
     }; // maximum_t
 
-    template <typename left_t, typename right_t>
+    template <auto broadcast_enable=true, typename left_t, typename right_t>
     constexpr auto maximum(const left_t& a, const right_t& b)
     {
-        return broadcast_binary_ufunc(maximum_t<>{},a,b);
+        return binary_ufunc<broadcast_enable>(maximum_t<>{},a,b);
     } // maximum
 
     template <typename left_t, typename axis_t=none_t, typename dtype_t=none_t, typename initial_t=none_t, typename keepdims_t=meta::false_type>

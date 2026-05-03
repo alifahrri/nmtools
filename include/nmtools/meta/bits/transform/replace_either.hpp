@@ -29,5 +29,9 @@ namespace nmtools::meta
     using replace_either_t = typename replace_either<either_t,Left,Right>::type;
 } // namespace nmtools::meta
 
+namespace nmtools
+{
+    using meta::replace_either_t;
+}
 
 #endif // NMTOOLS_META_BITS_TRANSFORM_REPLACE_EITHER_HPP
