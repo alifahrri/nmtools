@@ -35,7 +35,10 @@ namespace nmtools::index
                 template_for<DIM>([&](auto index){
                     if constexpr (!is_constant_index_v<decltype(at(ret,index))>) {
                         constexpr auto I = decltype(index)::value;
-                        at(ret,index) = at<DIM-1-I>(indices);
+                        auto idx = at(indices,ct_v<DIM-1-I>);
+                        if (has_value(idx)) {
+                            at(ret,index) = idx;
+                        }
                     }
                 });
             } else {
@@ -73,7 +76,8 @@ namespace nmtools::meta
                 || is_mixed_index_array_v<indices_t>
             ) {
                 constexpr auto indices = to_value_v<indices_t>;
-                using element_t [[maybe_unused]] = get_element_type_t<decltype(indices)>;
+                // using element_t [[maybe_unused]] = get_index_element_type_t<decltype(indices)>;
+                using element_t = nm_index_t;
                 constexpr auto reversed = index::reverse(indices);
                 // convert back to type
                 using nmtools::len, nmtools::has_value, nmtools::at, nmtools::unwrap;
@@ -95,7 +99,7 @@ namespace nmtools::meta
                 constexpr auto DIM = len_v<indices_t>;
                 [[maybe_unused]]
                 constexpr auto MAX_DIM = max_len_v<indices_t>;
-                using element_t = get_element_type_t<indices_t>;
+                using element_t = conditional_t<is_nullable_index_array_v<indices_t>,null_int,nm_index_t>;
                 if constexpr (DIM > 0) {
                     using type = nmtools_array<element_t,DIM>;
                     return as_value_v<type>;

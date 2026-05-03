@@ -47,6 +47,7 @@ namespace nmtools::index
                 ret.resize(len(vec)); // assuming indices has size
 
             auto scatter_impl = [&](auto& ret, const auto& vec, const auto& indices, auto i){
+                [[maybe_unused]]
                 auto value  = at(vec,i);
                 auto idx    = at(indices,i);
                 if constexpr (!is_constant_index_v<decltype(at(ret,unwrap(idx)))>) {
@@ -97,7 +98,8 @@ namespace nmtools::meta
             ) {
                 constexpr auto vec = to_value_v<vector_t>;
                 constexpr auto ind = to_value_v<indices_t>;
-                using element_t [[maybe_unused]] = get_element_type_t<decltype(vec)>;
+                // using element_t [[maybe_unused]] = get_element_type_t<decltype(vec)>;
+                using element_t = nm_index_t;
                 constexpr auto res = index::scatter(vec, ind);
                 // convert back to type
                 using nmtools::len, nmtools::at, nmtools::unwrap, nmtools::has_value;
@@ -116,7 +118,7 @@ namespace nmtools::meta
                 constexpr auto DIM = len_v<vector_t>;
                 [[maybe_unused]]
                 constexpr auto MAX_DIM = max_len_v<vector_t>;
-                using index_t = get_index_element_type_t<vector_t>;
+                using index_t = conditional_t<is_nullable_index_array_v<vector_t>,null_int,nm_index_t>;
                 if constexpr (DIM > 0) {
                     using type = nmtools_array<index_t,DIM>;
                     return as_value_v<type>;
