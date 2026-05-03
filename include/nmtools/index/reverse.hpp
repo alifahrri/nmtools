@@ -77,7 +77,7 @@ namespace nmtools::meta
             ) {
                 constexpr auto indices = to_value_v<indices_t>;
                 // using element_t [[maybe_unused]] = get_index_element_type_t<decltype(indices)>;
-                using element_t = nm_index_t;
+                using element_t [[maybe_unused]] = nm_index_t;
                 constexpr auto reversed = index::reverse(indices);
                 // convert back to type
                 using nmtools::len, nmtools::has_value, nmtools::at, nmtools::unwrap;

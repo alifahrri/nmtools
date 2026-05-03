@@ -99,7 +99,7 @@ namespace nmtools::meta
                 constexpr auto vec = to_value_v<vector_t>;
                 constexpr auto ind = to_value_v<indices_t>;
                 // using element_t [[maybe_unused]] = get_element_type_t<decltype(vec)>;
-                using element_t = nm_index_t;
+                using element_t [[maybe_unused]] = nm_index_t;
                 constexpr auto res = index::scatter(vec, ind);
                 // convert back to type
                 using nmtools::len, nmtools::at, nmtools::unwrap, nmtools::has_value;
