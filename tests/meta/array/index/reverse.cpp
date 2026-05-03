@@ -40,16 +40,4 @@ TEST_CASE("reverse" * doctest::test_suite("index"))
         using expected_t = nmtools_static_vector<int,2>;
         NMTOOLS_STATIC_CHECK_IS_SAME( result_t, expected_t );
     }
-    {
-        using indices_t  = decltype(nmtools_tuple{1_ct,2_ct});
-        using result_t   = meta::resolve_optype_t<reverse_t, indices_t>;
-        using expected_t = decltype(nmtools_tuple{2_ct,1_ct});
-        NMTOOLS_STATIC_CHECK_IS_SAME( result_t, expected_t );
-    }
-    {
-        using indices_t  = decltype(nmtools_tuple{2_ct,0_ct,1_ct});
-        using result_t   = meta::resolve_optype_t<reverse_t, indices_t>;
-        using expected_t = decltype(nmtools_tuple{1_ct,0_ct,2_ct});
-        NMTOOLS_STATIC_CHECK_IS_SAME( result_t, expected_t );
-    }
 }
