@@ -1,4 +1,8 @@
-## Tilekit Example
+# Tilekit Example
+
+## Basic addition and using perf
+
+Base directory: `perf`
 
 Vector add kernel:
 ```C++
@@ -81,3 +85,52 @@ sudo perf report
 This is useful to show the actual instruction that's running.  
 ![perf-report.png](perf-report.png)  
 As you can see, the add is vectorized using simd instruction.
+
+## Softmax
+
+Base directory: `softmax`
+
+### Build
+
+```sh
+mkdir -p build
+cd build
+cmake ..
+make
+```
+
+### Run
+
+```sh
+./tilekit-softmax
+```
+
+To build with verbose output:
+```sh
+make VERBOSE=1
+```
+
+To build with multiple jobs:
+```sh
+make -j24 VERBOSE=1
+```
+
+### Example Output
+
+```
+Warning, results might be unstable:
+* CPU frequency scaling enabled: CPU 0 between 2,982.0 and 5,756.0 MHz
+* Turbo is enabled, CPU frequency will fluctuate
+
+Recommendations
+* Use 'pyperf system tune' before benchmarking. See https://github.com/psf/pyperf
+
+|               ns/op |                op/s |    err% |     total | benchmark
+|--------------------:|--------------------:|--------:|----------:|:----------
+|           27,112.14 |           36,883.84 |    0.1% |      0.61 | `softmax.4x1024.2x4`
+|           25,757.48 |           38,823.67 |    0.1% |      0.61 | `softmax.4x1024.2x8`
+|           54,233.71 |           18,438.72 |    0.1% |      0.60 | `softmax.4x1024.2x16`
+|           26,854.20 |           37,238.12 |    0.2% |      0.61 | `softmax.4x1024.1x8`
+|           31,650.93 |           31,594.64 |    0.1% |      0.61 | `softmax.4x1024.1x16`
+|           54,167.49 |           18,461.26 |    0.2% |      0.61 | `softmax.4x1024.1x32`
+```
