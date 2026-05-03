@@ -51,6 +51,7 @@
 #include "nmtools/array/cumprod.hpp"
 #include "nmtools/array/cumsum.hpp"
 #include "nmtools/array/diagonal.hpp"
+#include "nmtools/array/expand_dims.hpp"
 #include "nmtools/array/flatten.hpp"
 #include "nmtools/array/repeat.hpp"
 #include "nmtools/array/stddev.hpp"
@@ -719,6 +720,10 @@ namespace nmtools
         /******************************************************************* */
         // numpy's ndarray doesn't have sqrt member, but torch's Tensor does
         nmtools_ndarray_method(sqrt)
+
+        /******************************************************************* */
+        // numpy's ndarray doesn't have expand_dims member, but torch's Tensor does have unsqueeze
+        nmtools_ndarray_method(expand_dims)
 
         template <typename other_t>
         constexpr auto operator+(const other_t& other) const
