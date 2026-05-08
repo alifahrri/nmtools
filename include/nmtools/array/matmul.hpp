@@ -4,7 +4,6 @@
 #include "nmtools/meta.hpp"
 #include "nmtools/utility.hpp"
 #include "nmtools/index/broadcast_shape.hpp"
-#include "nmtools/index/broadcast_to.hpp"
 #include "nmtools/index/product.hpp"
 #include "nmtools/index/split.hpp"
 #include "nmtools/utility/at.hpp"

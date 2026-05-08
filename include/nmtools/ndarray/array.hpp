@@ -392,16 +392,20 @@ namespace nmtools
         , typename=void>
     struct object_t : base_ndarray_t<object_t<buffer_t,shape_buffer_t,stride_buffer_t,compute_offset_t,context_t>>
     {
-        using base_type   = base_ndarray_t<object_t>;
-        using buffer_type = buffer_t;
-        using value_type  = meta::get_element_type_t<buffer_type>;
-        using shape_type  = shape_buffer_t;
-        using index_type  = meta::get_element_or_common_type_t<shape_type>;
-        using stride_type = stride_buffer_t<shape_type>;
-        using offset_type = compute_offset_t<shape_type,stride_type>;
-        using context_type  = context_t;
-
+        static constexpr auto unroll = false;
         static constexpr auto broadcasting = broadcast_enable;
+
+        using base_type    = base_ndarray_t<object_t>;
+        using buffer_type  = buffer_t;
+        using value_type   = meta::get_element_type_t<buffer_type>;
+        using shape_type   = shape_buffer_t;
+        using index_type   = meta::get_element_or_common_type_t<shape_type>;
+        using stride_type  = stride_buffer_t<shape_type>;
+        using offset_type  = compute_offset_t<shape_type,stride_type>;
+        using context_type = conditional_t<
+            is_none_v<context_t>
+            , default_context_t<broadcasting,/*object=*/true,unroll,compute_offset_t>
+            , context_t>;
 
         static_assert( meta::is_index_array_v<shape_type>, "unsupported shape_type for ndarray" );
         static_assert( meta::is_index_array_v<stride_type>, "unsupported stride_type for ndarray");
@@ -654,7 +658,16 @@ namespace nmtools
             return *this;
         }
 
+        /******************************************************************* */
         nmtools_ndarray_method(broadcast_to)
+        nmtools_ndarray_method(flatten)
+        nmtools_ndarray_method(reshape)
+        nmtools_ndarray_method(repeat)
+        nmtools_ndarray_method(squeeze)
+        nmtools_ndarray_method(swapaxes)
+        nmtools_ndarray_method(transpose)
+        // numpy's ndarray doesn't have expand_dims member, but torch's Tensor does have unsqueeze
+        nmtools_ndarray_method(expand_dims)
 
         /******************************************************************* */
         nmtools_ndarray_method(less)
@@ -665,13 +678,7 @@ namespace nmtools
         /******************************************************************* */
         nmtools_ndarray_method(clip)
         nmtools_ndarray_method(diagonal)
-        nmtools_ndarray_method(flatten)
-        nmtools_ndarray_method(reshape)
-        nmtools_ndarray_method(repeat)
-        nmtools_ndarray_method(squeeze)
-        nmtools_ndarray_method(swapaxes)
         nmtools_ndarray_method(trace)
-        nmtools_ndarray_method(transpose)
 
         /******************************************************************* */
         nmtools_ndarray_method(cos)
@@ -722,9 +729,6 @@ namespace nmtools
         nmtools_ndarray_method(sqrt)
 
         /******************************************************************* */
-        // numpy's ndarray doesn't have expand_dims member, but torch's Tensor does have unsqueeze
-        nmtools_ndarray_method(expand_dims)
-
         template <typename other_t>
         constexpr auto operator+(const other_t& other) const
         {
