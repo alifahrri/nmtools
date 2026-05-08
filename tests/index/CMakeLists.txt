@@ -47,7 +47,7 @@ if (NMTOOLS_INDEX_TEST_ALL)
         src/argsort.cpp
         src/array_slice.cpp
         src/broadcast_shape.cpp
-        src/broadcast_to.cpp
+        src/broadcast_to_v2.cpp
         src/choose.cpp
         src/compress.cpp
         src/compute_indices.cpp
