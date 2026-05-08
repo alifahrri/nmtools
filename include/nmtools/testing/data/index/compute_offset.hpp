@@ -20,12 +20,19 @@ NMTOOLS_TESTING_DECLARE_CASE(index, compute_offset)
         inline auto indices_cl = nmtools_tuple{"0:[1]"_ct,"0:[1]"_ct};
         NMTOOLS_CAST_INDEX_ARRAYS(indices);
 
+        inline auto strides_nl1 = nmtools_array{null_size_t(),null_size_t(1)};
+        inline auto indices_nl1 = nmtools_array{null_size_t(),null_size_t(0)};
+
+        inline auto strides_mx1 = nmtools_tuple{2,1_ct};
+        inline auto indices_mx1 = nmtools_tuple{0,0_ct};
+
         NMTOOLS_MAYBE_CAST_INDEX_ARRAYS(strides);
         NMTOOLS_MAYBE_CAST_INDEX_ARRAYS(indices);
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case1a)
     {
         inline int result = 0;
+        inline auto result_nl1 = null_size_t();
     }
 
     NMTOOLS_TESTING_DECLARE_ARGS(case1b)
@@ -140,12 +147,19 @@ NMTOOLS_TESTING_DECLARE_CASE(index, compute_offset)
         inline auto indices_cl = nmtools_tuple{"0:[1]"_ct,"0:[1]"_ct,"0:[1]"_ct};
         NMTOOLS_CAST_INDEX_ARRAYS(indices);
 
+        inline auto strides_nl1 = nmtools_array{null_size_t(),null_size_t(3),null_size_t(1)};
+        inline auto indices_nl1 = nmtools_array{null_size_t(),null_size_t(),null_size_t()};
+
+        inline auto strides_mx1 = nmtools_tuple{6,3_ct,1_ct};
+        inline auto indices_mx1 = nmtools_tuple{0,0_ct,0_ct};
+
         NMTOOLS_MAYBE_CAST_INDEX_ARRAYS(strides);
         NMTOOLS_MAYBE_CAST_INDEX_ARRAYS(indices);
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case2a)
     {
         inline int result = 0;
+        inline auto result_nl1 = null_size_t();
     }
 
     NMTOOLS_TESTING_DECLARE_ARGS(case2b)

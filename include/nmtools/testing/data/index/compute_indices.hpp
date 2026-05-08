@@ -19,10 +19,18 @@ NMTOOLS_TESTING_DECLARE_CASE(compute_indices)
 
         inline auto shape_ct  = nmtools_tuple{3_ct,2_ct};
         inline auto offset_ct = 0_ct;
+
+        inline auto shape_nl1 = nmtools_array{null_size_t(),null_size_t(2)};
+        inline auto shape_nl2 = nmtools_array{null_size_t(3),null_size_t()};
+
+        inline auto shape_mx1 = nmtools_tuple{3,2_ct};
+        inline auto shape_mx2 = nmtools_tuple{3_ct,2};
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case1_2d)
     {
         inline auto indices = nmtools_array{0,0};
+        inline auto result_nl1 = nmtools_array{null_size_t(),null_size_t(0)};
+        inline auto result_nl2 = nmtools_array{null_size_t(),null_size_t()};
     }
 
     NMTOOLS_TESTING_DECLARE_ARGS(case2_2d)
@@ -31,10 +39,18 @@ NMTOOLS_TESTING_DECLARE_CASE(compute_indices)
         inline int32_t offset   = 1;
         NMTOOLS_CAST_INDEX_ARRAYS(shape)
         NMTOOLS_MAYBE_CAST_INDEX_ARRAYS(shape)
+
+        inline auto shape_nl1 = nmtools_array{null_size_t(),null_size_t(2)};
+        inline auto shape_nl2 = nmtools_array{null_size_t(3),null_size_t()};
+
+        inline auto shape_mx1 = nmtools_tuple{3,2_ct};
+        inline auto shape_mx2 = nmtools_tuple{3_ct,2};
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case2_2d)
     {
         inline auto indices = nmtools_array{0,1};
+        inline auto result_nl1 = nmtools_array{null_size_t(),null_size_t(1)};
+        inline auto result_nl2 = nmtools_array{null_size_t(),null_size_t()};
     }
 
     NMTOOLS_TESTING_DECLARE_ARGS(case3_2d)
@@ -43,10 +59,18 @@ NMTOOLS_TESTING_DECLARE_CASE(compute_indices)
         inline int32_t offset   = 2;
         NMTOOLS_CAST_INDEX_ARRAYS(shape)
         NMTOOLS_MAYBE_CAST_INDEX_ARRAYS(shape)
+
+        inline auto shape_nl1 = nmtools_array{null_size_t(),null_size_t(2)};
+        inline auto shape_nl2 = nmtools_array{null_size_t(3),null_size_t()};
+
+        inline auto shape_mx1 = nmtools_tuple{3,2_ct};
+        inline auto shape_mx2 = nmtools_tuple{3_ct,2};
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case3_2d)
     {
         inline auto indices = nmtools_array{1,0};
+        inline auto result_nl1 = nmtools_array{null_size_t(),null_size_t(0)};
+        inline auto result_nl2 = nmtools_array{null_size_t(),null_size_t()};
     }
 
     NMTOOLS_TESTING_DECLARE_ARGS(case4_2d)
@@ -55,10 +79,18 @@ NMTOOLS_TESTING_DECLARE_CASE(compute_indices)
         inline int32_t offset   = 3;
         NMTOOLS_CAST_INDEX_ARRAYS(shape)
         NMTOOLS_MAYBE_CAST_INDEX_ARRAYS(shape)
+
+        inline auto shape_nl1 = nmtools_array{null_size_t(),null_size_t(2)};
+        inline auto shape_nl2 = nmtools_array{null_size_t(3),null_size_t()};
+
+        inline auto shape_mx1 = nmtools_tuple{3,2_ct};
+        inline auto shape_mx2 = nmtools_tuple{3_ct,2};
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case4_2d)
     {
         inline auto indices = nmtools_array{1,1};
+        inline auto result_nl1 = nmtools_array{null_size_t(),null_size_t(1)};
+        inline auto result_nl2 = nmtools_array{null_size_t(),null_size_t()};
     }
 
     NMTOOLS_TESTING_DECLARE_ARGS(case5_2d)
@@ -67,10 +99,18 @@ NMTOOLS_TESTING_DECLARE_CASE(compute_indices)
         inline int32_t offset   = 4;
         NMTOOLS_CAST_INDEX_ARRAYS(shape)
         NMTOOLS_MAYBE_CAST_INDEX_ARRAYS(shape)
+
+        inline auto shape_nl1 = nmtools_array{null_size_t(),null_size_t(2)};
+        inline auto shape_nl2 = nmtools_array{null_size_t(3),null_size_t()};
+
+        inline auto shape_mx1 = nmtools_tuple{3,2_ct};
+        inline auto shape_mx2 = nmtools_tuple{3_ct,2};
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case5_2d)
     {
         inline auto indices = nmtools_array{2,0};
+        inline auto result_nl1 = nmtools_array{null_size_t(),null_size_t(0)};
+        inline auto result_nl2 = nmtools_array{null_size_t(),null_size_t()};
     }
 
     NMTOOLS_TESTING_DECLARE_ARGS(case6_2d)
@@ -79,10 +119,18 @@ NMTOOLS_TESTING_DECLARE_CASE(compute_indices)
         inline int32_t offset   = 5;
         NMTOOLS_CAST_INDEX_ARRAYS(shape)
         NMTOOLS_MAYBE_CAST_INDEX_ARRAYS(shape)
+
+        inline auto shape_nl1 = nmtools_array{null_size_t(),null_size_t(2)};
+        inline auto shape_nl2 = nmtools_array{null_size_t(3),null_size_t()};
+
+        inline auto shape_mx1 = nmtools_tuple{3,2_ct};
+        inline auto shape_mx2 = nmtools_tuple{3_ct,2};
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case6_2d)
     {
         inline auto indices = nmtools_array{2,1};
+        inline auto result_nl1 = nmtools_array{null_size_t(),null_size_t(1)};
+        inline auto result_nl2 = nmtools_array{null_size_t(),null_size_t()};
     }
 
     NMTOOLS_TESTING_DECLARE_ARGS(case1_3d)
@@ -91,10 +139,23 @@ NMTOOLS_TESTING_DECLARE_CASE(compute_indices)
         inline int32_t offset   = 0;
         NMTOOLS_CAST_INDEX_ARRAYS(shape)
         NMTOOLS_MAYBE_CAST_INDEX_ARRAYS(shape)
+
+        inline auto shape_ct  = nmtools_tuple{3_ct,2_ct,3_ct};
+
+        inline auto shape_nl1 = nmtools_array{null_size_t(),null_size_t(2),null_size_t(3)};
+        inline auto shape_nl2 = nmtools_array{null_size_t(3),null_size_t(),null_size_t(3)};
+        inline auto shape_nl3 = nmtools_array{null_size_t(3),null_size_t(2),null_size_t()};
+
+        inline auto shape_mx1 = nmtools_tuple{3,2_ct,3_ct};
+        inline auto shape_mx2 = nmtools_tuple{3_ct,2,3_ct};
+        inline auto shape_mx3 = nmtools_tuple{3_ct,2_ct,3};
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case1_3d)
     {
         inline auto indices = nmtools_array{0,0,0};
+        inline auto result_nl1 = nmtools_array{null_size_t(),null_size_t(0),null_size_t(0)};
+        inline auto result_nl2 = nmtools_array{null_size_t(),null_size_t(),null_size_t(0)};
+        inline auto result_nl3 = nmtools_array{null_size_t(),null_size_t(),null_size_t()};
     }
 
     NMTOOLS_TESTING_DECLARE_ARGS(case2_3d)
@@ -103,10 +164,21 @@ NMTOOLS_TESTING_DECLARE_CASE(compute_indices)
         inline int32_t offset   = 1;
         NMTOOLS_CAST_INDEX_ARRAYS(shape)
         NMTOOLS_MAYBE_CAST_INDEX_ARRAYS(shape)
+
+        inline auto shape_nl1 = nmtools_array{null_size_t(),null_size_t(2),null_size_t(3)};
+        inline auto shape_nl2 = nmtools_array{null_size_t(3),null_size_t(),null_size_t(3)};
+        inline auto shape_nl3 = nmtools_array{null_size_t(3),null_size_t(2),null_size_t()};
+
+        inline auto shape_mx1 = nmtools_tuple{3,2_ct,3_ct};
+        inline auto shape_mx2 = nmtools_tuple{3_ct,2,3_ct};
+        inline auto shape_mx3 = nmtools_tuple{3_ct,2_ct,3};
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case2_3d)
     {
         inline auto indices = nmtools_array{0,0,1};
+        inline auto result_nl1 = nmtools_array{null_size_t(),null_size_t(0),null_size_t(1)};
+        inline auto result_nl2 = nmtools_array{null_size_t(),null_size_t(),null_size_t(1)};
+        inline auto result_nl3 = nmtools_array{null_size_t(),null_size_t(),null_size_t()};
     }
 
     NMTOOLS_TESTING_DECLARE_ARGS(case3_3d)
@@ -115,10 +187,21 @@ NMTOOLS_TESTING_DECLARE_CASE(compute_indices)
         inline int32_t offset   = 2;
         NMTOOLS_CAST_INDEX_ARRAYS(shape)
         NMTOOLS_MAYBE_CAST_INDEX_ARRAYS(shape)
+
+        inline auto shape_nl1 = nmtools_array{null_size_t(),null_size_t(2),null_size_t(3)};
+        inline auto shape_nl2 = nmtools_array{null_size_t(3),null_size_t(),null_size_t(3)};
+        inline auto shape_nl3 = nmtools_array{null_size_t(3),null_size_t(2),null_size_t()};
+
+        inline auto shape_mx1 = nmtools_tuple{3,2_ct,3_ct};
+        inline auto shape_mx2 = nmtools_tuple{3_ct,2,3_ct};
+        inline auto shape_mx3 = nmtools_tuple{3_ct,2_ct,3};
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case3_3d)
     {
         inline auto indices = nmtools_array{0,0,2};
+        inline auto result_nl1 = nmtools_array{null_size_t(),null_size_t(0),null_size_t(2)};
+        inline auto result_nl2 = nmtools_array{null_size_t(),null_size_t(),null_size_t(2)};
+        inline auto result_nl3 = nmtools_array{null_size_t(),null_size_t(),null_size_t()};
     }
 
     NMTOOLS_TESTING_DECLARE_ARGS(case4_3d)
@@ -127,10 +210,21 @@ NMTOOLS_TESTING_DECLARE_CASE(compute_indices)
         inline int32_t offset   = 3;
         NMTOOLS_CAST_INDEX_ARRAYS(shape)
         NMTOOLS_MAYBE_CAST_INDEX_ARRAYS(shape)
+
+        inline auto shape_nl1 = nmtools_array{null_size_t(),null_size_t(2),null_size_t(3)};
+        inline auto shape_nl2 = nmtools_array{null_size_t(3),null_size_t(),null_size_t(3)};
+        inline auto shape_nl3 = nmtools_array{null_size_t(3),null_size_t(2),null_size_t()};
+
+        inline auto shape_mx1 = nmtools_tuple{3,2_ct,3_ct};
+        inline auto shape_mx2 = nmtools_tuple{3_ct,2,3_ct};
+        inline auto shape_mx3 = nmtools_tuple{3_ct,2_ct,3};
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case4_3d)
     {
         inline auto indices = nmtools_array{0,1,0};
+        inline auto result_nl1 = nmtools_array{null_size_t(),null_size_t(1),null_size_t(0)};
+        inline auto result_nl2 = nmtools_array{null_size_t(),null_size_t(),null_size_t(0)};
+        inline auto result_nl3 = nmtools_array{null_size_t(),null_size_t(),null_size_t()};
     }
 
     NMTOOLS_TESTING_DECLARE_ARGS(case5_3d)
@@ -139,10 +233,21 @@ NMTOOLS_TESTING_DECLARE_CASE(compute_indices)
         inline int32_t offset   = 4;
         NMTOOLS_CAST_INDEX_ARRAYS(shape)
         NMTOOLS_MAYBE_CAST_INDEX_ARRAYS(shape)
+
+        inline auto shape_nl1 = nmtools_array{null_size_t(),null_size_t(2),null_size_t(3)};
+        inline auto shape_nl2 = nmtools_array{null_size_t(3),null_size_t(),null_size_t(3)};
+        inline auto shape_nl3 = nmtools_array{null_size_t(3),null_size_t(2),null_size_t()};
+
+        inline auto shape_mx1 = nmtools_tuple{3,2_ct,3_ct};
+        inline auto shape_mx2 = nmtools_tuple{3_ct,2,3_ct};
+        inline auto shape_mx3 = nmtools_tuple{3_ct,2_ct,3};
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case5_3d)
     {
         inline auto indices = nmtools_array{0,1,1};
+        inline auto result_nl1 = nmtools_array{null_size_t(),null_size_t(1),null_size_t(1)};
+        inline auto result_nl2 = nmtools_array{null_size_t(),null_size_t(),null_size_t(1)};
+        inline auto result_nl3 = nmtools_array{null_size_t(),null_size_t(),null_size_t()};
     }
 
     NMTOOLS_TESTING_DECLARE_ARGS(case6_3d)
@@ -151,10 +256,21 @@ NMTOOLS_TESTING_DECLARE_CASE(compute_indices)
         inline int32_t offset   = 5;
         NMTOOLS_CAST_INDEX_ARRAYS(shape)
         NMTOOLS_MAYBE_CAST_INDEX_ARRAYS(shape)
+
+        inline auto shape_nl1 = nmtools_array{null_size_t(),null_size_t(2),null_size_t(3)};
+        inline auto shape_nl2 = nmtools_array{null_size_t(3),null_size_t(),null_size_t(3)};
+        inline auto shape_nl3 = nmtools_array{null_size_t(3),null_size_t(2),null_size_t()};
+
+        inline auto shape_mx1 = nmtools_tuple{3,2_ct,3_ct};
+        inline auto shape_mx2 = nmtools_tuple{3_ct,2,3_ct};
+        inline auto shape_mx3 = nmtools_tuple{3_ct,2_ct,3};
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case6_3d)
     {
         inline auto indices = nmtools_array{0,1,2};
+        inline auto result_nl1 = nmtools_array{null_size_t(),null_size_t(1),null_size_t(2)};
+        inline auto result_nl2 = nmtools_array{null_size_t(),null_size_t(),null_size_t(2)};
+        inline auto result_nl3 = nmtools_array{null_size_t(),null_size_t(),null_size_t()};
     }
 
     NMTOOLS_TESTING_DECLARE_ARGS(case7_3d)
@@ -163,10 +279,21 @@ NMTOOLS_TESTING_DECLARE_CASE(compute_indices)
         inline int32_t offset   = 6;
         NMTOOLS_CAST_INDEX_ARRAYS(shape)
         NMTOOLS_MAYBE_CAST_INDEX_ARRAYS(shape)
+
+        inline auto shape_nl1 = nmtools_array{null_size_t(),null_size_t(2),null_size_t(3)};
+        inline auto shape_nl2 = nmtools_array{null_size_t(3),null_size_t(),null_size_t(3)};
+        inline auto shape_nl3 = nmtools_array{null_size_t(3),null_size_t(2),null_size_t()};
+
+        inline auto shape_mx1 = nmtools_tuple{3,2_ct,3_ct};
+        inline auto shape_mx2 = nmtools_tuple{3_ct,2,3_ct};
+        inline auto shape_mx3 = nmtools_tuple{3_ct,2_ct,3};
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case7_3d)
     {
         inline auto indices = nmtools_array{1,0,0};
+        inline auto result_nl1 = nmtools_array{null_size_t(),null_size_t(0),null_size_t(0)};
+        inline auto result_nl2 = nmtools_array{null_size_t(),null_size_t(),null_size_t(0)};
+        inline auto result_nl3 = nmtools_array{null_size_t(),null_size_t(),null_size_t()};
     }
 
     NMTOOLS_TESTING_DECLARE_ARGS(case8_3d)
@@ -175,10 +302,21 @@ NMTOOLS_TESTING_DECLARE_CASE(compute_indices)
         inline int32_t offset   = 7;
         NMTOOLS_CAST_INDEX_ARRAYS(shape)
         NMTOOLS_MAYBE_CAST_INDEX_ARRAYS(shape)
+
+        inline auto shape_nl1 = nmtools_array{null_size_t(),null_size_t(2),null_size_t(3)};
+        inline auto shape_nl2 = nmtools_array{null_size_t(3),null_size_t(),null_size_t(3)};
+        inline auto shape_nl3 = nmtools_array{null_size_t(3),null_size_t(2),null_size_t()};
+
+        inline auto shape_mx1 = nmtools_tuple{3,2_ct,3_ct};
+        inline auto shape_mx2 = nmtools_tuple{3_ct,2,3_ct};
+        inline auto shape_mx3 = nmtools_tuple{3_ct,2_ct,3};
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case8_3d)
     {
         inline auto indices = nmtools_array{1,0,1};
+        inline auto result_nl1 = nmtools_array{null_size_t(),null_size_t(0),null_size_t(1)};
+        inline auto result_nl2 = nmtools_array{null_size_t(),null_size_t(),null_size_t(1)};
+        inline auto result_nl3 = nmtools_array{null_size_t(),null_size_t(),null_size_t()};
     }
 
     NMTOOLS_TESTING_DECLARE_ARGS(case9_3d)
@@ -187,10 +325,21 @@ NMTOOLS_TESTING_DECLARE_CASE(compute_indices)
         inline int32_t offset   = 8;
         NMTOOLS_CAST_INDEX_ARRAYS(shape)
         NMTOOLS_MAYBE_CAST_INDEX_ARRAYS(shape)
+
+        inline auto shape_nl1 = nmtools_array{null_size_t(),null_size_t(2),null_size_t(3)};
+        inline auto shape_nl2 = nmtools_array{null_size_t(3),null_size_t(),null_size_t(3)};
+        inline auto shape_nl3 = nmtools_array{null_size_t(3),null_size_t(2),null_size_t()};
+
+        inline auto shape_mx1 = nmtools_tuple{3,2_ct,3_ct};
+        inline auto shape_mx2 = nmtools_tuple{3_ct,2,3_ct};
+        inline auto shape_mx3 = nmtools_tuple{3_ct,2_ct,3};
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case9_3d)
     {
         inline auto indices = nmtools_array{1,0,2};
+        inline auto result_nl1 = nmtools_array{null_size_t(),null_size_t(0),null_size_t(2)};
+        inline auto result_nl2 = nmtools_array{null_size_t(),null_size_t(),null_size_t(2)};
+        inline auto result_nl3 = nmtools_array{null_size_t(),null_size_t(),null_size_t()};
     }
 
     NMTOOLS_TESTING_DECLARE_ARGS(case10_3d)
@@ -199,10 +348,21 @@ NMTOOLS_TESTING_DECLARE_CASE(compute_indices)
         inline int32_t offset   = 9;
         NMTOOLS_CAST_INDEX_ARRAYS(shape)
         NMTOOLS_MAYBE_CAST_INDEX_ARRAYS(shape)
+
+        inline auto shape_nl1 = nmtools_array{null_size_t(),null_size_t(2),null_size_t(3)};
+        inline auto shape_nl2 = nmtools_array{null_size_t(3),null_size_t(),null_size_t(3)};
+        inline auto shape_nl3 = nmtools_array{null_size_t(3),null_size_t(2),null_size_t()};
+
+        inline auto shape_mx1 = nmtools_tuple{3,2_ct,3_ct};
+        inline auto shape_mx2 = nmtools_tuple{3_ct,2,3_ct};
+        inline auto shape_mx3 = nmtools_tuple{3_ct,2_ct,3};
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case10_3d)
     {
         inline auto indices = nmtools_array{1,1,0};
+        inline auto result_nl1 = nmtools_array{null_size_t(),null_size_t(1),null_size_t(0)};
+        inline auto result_nl2 = nmtools_array{null_size_t(),null_size_t(),null_size_t(0)};
+        inline auto result_nl3 = nmtools_array{null_size_t(),null_size_t(),null_size_t()};
     }
 
     NMTOOLS_TESTING_DECLARE_ARGS(case11_3d)
@@ -211,10 +371,21 @@ NMTOOLS_TESTING_DECLARE_CASE(compute_indices)
         inline int32_t offset   = 10;
         NMTOOLS_CAST_INDEX_ARRAYS(shape)
         NMTOOLS_MAYBE_CAST_INDEX_ARRAYS(shape)
+
+        inline auto shape_nl1 = nmtools_array{null_size_t(),null_size_t(2),null_size_t(3)};
+        inline auto shape_nl2 = nmtools_array{null_size_t(3),null_size_t(),null_size_t(3)};
+        inline auto shape_nl3 = nmtools_array{null_size_t(3),null_size_t(2),null_size_t()};
+
+        inline auto shape_mx1 = nmtools_tuple{3,2_ct,3_ct};
+        inline auto shape_mx2 = nmtools_tuple{3_ct,2,3_ct};
+        inline auto shape_mx3 = nmtools_tuple{3_ct,2_ct,3};
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case11_3d)
     {
         inline auto indices = nmtools_array{1,1,1};
+        inline auto result_nl1 = nmtools_array{null_size_t(),null_size_t(1),null_size_t(1)};
+        inline auto result_nl2 = nmtools_array{null_size_t(),null_size_t(),null_size_t(1)};
+        inline auto result_nl3 = nmtools_array{null_size_t(),null_size_t(),null_size_t()};
     }
 
     NMTOOLS_TESTING_DECLARE_ARGS(case12_3d)
@@ -223,10 +394,21 @@ NMTOOLS_TESTING_DECLARE_CASE(compute_indices)
         inline int32_t offset   = 11;
         NMTOOLS_CAST_INDEX_ARRAYS(shape)
         NMTOOLS_MAYBE_CAST_INDEX_ARRAYS(shape)
+
+        inline auto shape_nl1 = nmtools_array{null_size_t(),null_size_t(2),null_size_t(3)};
+        inline auto shape_nl2 = nmtools_array{null_size_t(3),null_size_t(),null_size_t(3)};
+        inline auto shape_nl3 = nmtools_array{null_size_t(3),null_size_t(2),null_size_t()};
+
+        inline auto shape_mx1 = nmtools_tuple{3,2_ct,3_ct};
+        inline auto shape_mx2 = nmtools_tuple{3_ct,2,3_ct};
+        inline auto shape_mx3 = nmtools_tuple{3_ct,2_ct,3};
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case12_3d)
     {
         inline auto indices = nmtools_array{1,1,2};
+        inline auto result_nl1 = nmtools_array{null_size_t(),null_size_t(1),null_size_t(2)};
+        inline auto result_nl2 = nmtools_array{null_size_t(),null_size_t(),null_size_t(2)};
+        inline auto result_nl3 = nmtools_array{null_size_t(),null_size_t(),null_size_t()};
     }
 
     NMTOOLS_TESTING_DECLARE_ARGS(case13_3d)
@@ -235,10 +417,21 @@ NMTOOLS_TESTING_DECLARE_CASE(compute_indices)
         inline int32_t offset   = 12;
         NMTOOLS_CAST_INDEX_ARRAYS(shape)
         NMTOOLS_MAYBE_CAST_INDEX_ARRAYS(shape)
+
+        inline auto shape_nl1 = nmtools_array{null_size_t(),null_size_t(2),null_size_t(3)};
+        inline auto shape_nl2 = nmtools_array{null_size_t(3),null_size_t(),null_size_t(3)};
+        inline auto shape_nl3 = nmtools_array{null_size_t(3),null_size_t(2),null_size_t()};
+
+        inline auto shape_mx1 = nmtools_tuple{3,2_ct,3_ct};
+        inline auto shape_mx2 = nmtools_tuple{3_ct,2,3_ct};
+        inline auto shape_mx3 = nmtools_tuple{3_ct,2_ct,3};
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case13_3d)
     {
         inline auto indices = nmtools_array{2,0,0};
+        inline auto result_nl1 = nmtools_array{null_size_t(),null_size_t(0),null_size_t(0)};
+        inline auto result_nl2 = nmtools_array{null_size_t(),null_size_t(),null_size_t(0)};
+        inline auto result_nl3 = nmtools_array{null_size_t(),null_size_t(),null_size_t()};
     }
 
     NMTOOLS_TESTING_DECLARE_ARGS(case14_3d)
@@ -247,10 +440,21 @@ NMTOOLS_TESTING_DECLARE_CASE(compute_indices)
         inline int32_t offset   = 13;
         NMTOOLS_CAST_INDEX_ARRAYS(shape)
         NMTOOLS_MAYBE_CAST_INDEX_ARRAYS(shape)
+
+        inline auto shape_nl1 = nmtools_array{null_size_t(),null_size_t(2),null_size_t(3)};
+        inline auto shape_nl2 = nmtools_array{null_size_t(3),null_size_t(),null_size_t(3)};
+        inline auto shape_nl3 = nmtools_array{null_size_t(3),null_size_t(2),null_size_t()};
+
+        inline auto shape_mx1 = nmtools_tuple{3,2_ct,3_ct};
+        inline auto shape_mx2 = nmtools_tuple{3_ct,2,3_ct};
+        inline auto shape_mx3 = nmtools_tuple{3_ct,2_ct,3};
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case14_3d)
     {
         inline auto indices = nmtools_array{2,0,1};
+        inline auto result_nl1 = nmtools_array{null_size_t(),null_size_t(0),null_size_t(1)};
+        inline auto result_nl2 = nmtools_array{null_size_t(),null_size_t(),null_size_t(1)};
+        inline auto result_nl3 = nmtools_array{null_size_t(),null_size_t(),null_size_t()};
     }
 
     NMTOOLS_TESTING_DECLARE_ARGS(case15_3d)
@@ -259,10 +463,21 @@ NMTOOLS_TESTING_DECLARE_CASE(compute_indices)
         inline int32_t offset   = 14;
         NMTOOLS_CAST_INDEX_ARRAYS(shape)
         NMTOOLS_MAYBE_CAST_INDEX_ARRAYS(shape)
+
+        inline auto shape_nl1 = nmtools_array{null_size_t(),null_size_t(2),null_size_t(3)};
+        inline auto shape_nl2 = nmtools_array{null_size_t(3),null_size_t(),null_size_t(3)};
+        inline auto shape_nl3 = nmtools_array{null_size_t(3),null_size_t(2),null_size_t()};
+
+        inline auto shape_mx1 = nmtools_tuple{3,2_ct,3_ct};
+        inline auto shape_mx2 = nmtools_tuple{3_ct,2,3_ct};
+        inline auto shape_mx3 = nmtools_tuple{3_ct,2_ct,3};
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case15_3d)
     {
         inline auto indices = nmtools_array{2,0,2};
+        inline auto result_nl1 = nmtools_array{null_size_t(),null_size_t(0),null_size_t(2)};
+        inline auto result_nl2 = nmtools_array{null_size_t(),null_size_t(),null_size_t(2)};
+        inline auto result_nl3 = nmtools_array{null_size_t(),null_size_t(),null_size_t()};
     }
 
     NMTOOLS_TESTING_DECLARE_ARGS(case16_3d)
@@ -271,10 +486,21 @@ NMTOOLS_TESTING_DECLARE_CASE(compute_indices)
         inline int32_t offset   = 15;
         NMTOOLS_CAST_INDEX_ARRAYS(shape)
         NMTOOLS_MAYBE_CAST_INDEX_ARRAYS(shape)
+
+        inline auto shape_nl1 = nmtools_array{null_size_t(),null_size_t(2),null_size_t(3)};
+        inline auto shape_nl2 = nmtools_array{null_size_t(3),null_size_t(),null_size_t(3)};
+        inline auto shape_nl3 = nmtools_array{null_size_t(3),null_size_t(2),null_size_t()};
+
+        inline auto shape_mx1 = nmtools_tuple{3,2_ct,3_ct};
+        inline auto shape_mx2 = nmtools_tuple{3_ct,2,3_ct};
+        inline auto shape_mx3 = nmtools_tuple{3_ct,2_ct,3};
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case16_3d)
     {
         inline auto indices = nmtools_array{2,1,0};
+        inline auto result_nl1 = nmtools_array{null_size_t(),null_size_t(1),null_size_t(0)};
+        inline auto result_nl2 = nmtools_array{null_size_t(),null_size_t(),null_size_t(0)};
+        inline auto result_nl3 = nmtools_array{null_size_t(),null_size_t(),null_size_t()};
     }
 
     NMTOOLS_TESTING_DECLARE_ARGS(case17_3d)
@@ -283,10 +509,21 @@ NMTOOLS_TESTING_DECLARE_CASE(compute_indices)
         inline int32_t offset   = 16;
         NMTOOLS_CAST_INDEX_ARRAYS(shape)
         NMTOOLS_MAYBE_CAST_INDEX_ARRAYS(shape)
+
+        inline auto shape_nl1 = nmtools_array{null_size_t(),null_size_t(2),null_size_t(3)};
+        inline auto shape_nl2 = nmtools_array{null_size_t(3),null_size_t(),null_size_t(3)};
+        inline auto shape_nl3 = nmtools_array{null_size_t(3),null_size_t(2),null_size_t()};
+
+        inline auto shape_mx1 = nmtools_tuple{3,2_ct,3_ct};
+        inline auto shape_mx2 = nmtools_tuple{3_ct,2,3_ct};
+        inline auto shape_mx3 = nmtools_tuple{3_ct,2_ct,3};
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case17_3d)
     {
         inline auto indices = nmtools_array{2,1,1};
+        inline auto result_nl1 = nmtools_array{null_size_t(),null_size_t(1),null_size_t(1)};
+        inline auto result_nl2 = nmtools_array{null_size_t(),null_size_t(),null_size_t(1)};
+        inline auto result_nl3 = nmtools_array{null_size_t(),null_size_t(),null_size_t()};
     }
 
     NMTOOLS_TESTING_DECLARE_ARGS(case18_3d)
@@ -295,10 +532,21 @@ NMTOOLS_TESTING_DECLARE_CASE(compute_indices)
         inline int32_t offset   = 17;
         NMTOOLS_CAST_INDEX_ARRAYS(shape)
         NMTOOLS_MAYBE_CAST_INDEX_ARRAYS(shape)
+
+        inline auto shape_nl1 = nmtools_array{null_size_t(),null_size_t(2),null_size_t(3)};
+        inline auto shape_nl2 = nmtools_array{null_size_t(3),null_size_t(),null_size_t(3)};
+        inline auto shape_nl3 = nmtools_array{null_size_t(3),null_size_t(2),null_size_t()};
+
+        inline auto shape_mx1 = nmtools_tuple{3,2_ct,3_ct};
+        inline auto shape_mx2 = nmtools_tuple{3_ct,2,3_ct};
+        inline auto shape_mx3 = nmtools_tuple{3_ct,2_ct,3};
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case18_3d)
     {
         inline auto indices = nmtools_array{2,1,2};
+        inline auto result_nl1 = nmtools_array{null_size_t(),null_size_t(1),null_size_t(2)};
+        inline auto result_nl2 = nmtools_array{null_size_t(),null_size_t(),null_size_t(2)};
+        inline auto result_nl3 = nmtools_array{null_size_t(),null_size_t(),null_size_t()};
     }
 }
 

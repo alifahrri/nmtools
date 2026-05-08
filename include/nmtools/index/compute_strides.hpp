@@ -5,6 +5,7 @@
 #include "nmtools/utility/at.hpp"
 #include "nmtools/utility/shape.hpp"
 #include "nmtools/utility/has_value.hpp"
+#include "nmtools/utility/unwrap.hpp"
 
 namespace nmtools::index
 {
@@ -18,21 +19,23 @@ namespace nmtools::index
      * @param k k-th stride to compute
      * @return constexpr auto
      */
-    template <typename array_t, typename m_size_type>
+    template <typename array_t, typename size_type>
     nmtools_index_attribute
-    constexpr auto stride(const array_t& shape, m_size_type k)
+    constexpr auto stride(const array_t& shape, size_type k)
     {
-        using result_t = resolve_optype_t<stride_t,array_t,m_size_type>;
-        using size_type = size_t;
+        using result_t = resolve_optype_t<stride_t,array_t,size_type>;
         auto p = result_t {};
-        if constexpr (!is_constant_index_v<result_t>) {
-            constexpr auto n = len_v<array_t>;
+        if constexpr (!is_fail_v<result_t>
+            && !is_constant_index_v<result_t>
+        ) {
+            constexpr auto N = len_v<array_t>;
+
             p = 1;
-            if constexpr (n > 0) {
+            if constexpr (N > 0) {
                 // note that k may be runtime value
-                template_for<n>([&](auto index){
+                template_for<N>([&](auto index){
                     constexpr auto i = decltype(index)::value;
-                    if ((size_type)i>=(size_type)(k+1)) {
+                    if ((nm_size_t)i>=(nm_size_t)(k+1)) {
                         if constexpr (is_nullable_num_v<result_t>) {
                             auto shape_j = at(shape,index);
                             if (has_value(shape_j) && has_value(p)) {
@@ -47,7 +50,7 @@ namespace nmtools::index
                     }
                 });
             } else {
-                for (size_type j=k+1; (j<(size_type)len(shape)) && has_value(p); j++) {
+                for (nm_size_t j=k+1; (j<(nm_size_t)len(shape)) && has_value(p); j++) {
                     if constexpr (is_nullable_num_v<result_t>) {
                         auto shape_j = at(shape,j);
                         if (has_value(shape_j) && has_value(p)) {
@@ -84,35 +87,42 @@ namespace nmtools::index
     nmtools_index_attribute
     constexpr auto compute_strides(const array_t& shape)
     {
-        using return_t  = resolve_optype_t<compute_strides_t,array_t>;
         // assume when return_t is maybe then shape_t is also maybe
-        if constexpr (is_maybe_v<return_t>) {
-            if (static_cast<bool>(shape)) {
-                auto result = compute_strides(*shape);
-                return return_t{result};
-            } else {
-                return return_t{Nothing};
-            }
+        if constexpr (is_maybe_v<array_t>) {
+            using result_t = decltype(compute_strides(unwrap(shape)));
+            using return_t = conditional_t<is_maybe_v<result_t>,result_t,nmtools_maybe<result_t>>;
+            return (has_value(shape)
+                ? return_t{compute_strides(unwrap(shape))}
+                : return_t{Nothing}
+            );
         } else {
-            using size_type = size_t;
-            auto result = return_t{};
-            if constexpr (!is_constant_index_array_v<return_t> && is_index_array_v<return_t>) {
-                [[maybe_unused]] auto n = (size_type)len(shape);
-                if constexpr (is_resizable_v<return_t>) {
+            using result_t = resolve_optype_t<compute_strides_t,array_t>;
+
+            auto result = result_t{};
+            if constexpr (!is_fail_v<result_t>
+                && !is_constant_index_array_v<result_t>
+            ) {
+                [[maybe_unused]] auto n = (nm_size_t)len(shape);
+                if constexpr (is_resizable_v<result_t>) {
                     result.resize(n);
                 }
-                constexpr auto N = len_v<return_t>;
+                constexpr auto N = len_v<result_t>;
                 if constexpr (N>0) {
                     // this may be clipped shape
                     template_for<N>([&](auto i){
-                        constexpr auto I = decltype(i)::value;
-                        if constexpr (!is_constant_index_v<type_at_t<return_t,I>>) {
-                            at(result,i) = stride(shape,i);
+                        if constexpr (!is_constant_index_v<decltype(at(result,i))>) {
+                            auto stride_i = stride(shape,i);
+                            if (has_value(stride_i)) {
+                                at(result,i) = stride_i;
+                            }
                         }
                     });
                 } else {
-                    for (size_type i=0; i<n; i++) {
-                        at(result,i) = stride(shape,i);
+                    for (nm_size_t i=0; i<n; i++) {
+                        auto stride_i = stride(shape,i);
+                        if (has_value(stride_i)) {
+                            at(result,i) = stride_i;
+                        }
                     }
                 }
             }
@@ -136,16 +146,13 @@ namespace nmtools::meta
     >
     {
         static constexpr auto vtype = [](){
-            [[maybe_unused]] constexpr auto DIM = len_v<shape_t>;
-            using index_type [[maybe_unused]] = get_index_element_type_t<shape_t>;
-            if constexpr (is_maybe_v<shape_t>) {
-                using shape_type = remove_cvref_t<get_maybe_type_t<shape_t>>;
-                using type = nmtools_maybe<resolve_optype_t<index::compute_strides_t,shape_type>>;
+            if constexpr (!is_index_array_v<shape_t>) {
+                using type = error::INDEX_COMPUTE_STRIDE_UNSUPPORTED<shape_t>;
                 return as_value_v<type>;
             } else if constexpr (
-                (DIM > 0)
-                && (is_constant_index_array_v<shape_t>
-                    || is_clipped_index_array_v<shape_t>)
+                is_constant_index_array_v<shape_t>
+                || is_clipped_index_array_v<shape_t>
+                // || is_mixed_index_array_v<shape_t>
             ) {
                 constexpr auto shape = to_value_v<shape_t>;
                 constexpr auto strides = index::compute_strides(shape);
@@ -163,9 +170,6 @@ namespace nmtools::meta
                         return as_value_v<result_t>;
                     }
                 }, as_value_v<nmtools_tuple<>>);
-            } else if constexpr (is_clipped_index_array_v<shape_t>) {
-                using type = nmtools_list<index_type>;
-                return as_value_v<type>;
             } else if constexpr (is_mixed_index_array_v<shape_t>) {
                 constexpr auto shape = to_value_v<shape_t>;
                 constexpr auto result = index::compute_strides(shape);
@@ -182,27 +186,21 @@ namespace nmtools::meta
                         return as_value_v<type>;
                     }
                 }, as_value_v<nmtools_tuple<>>);
-            } else if constexpr (is_nullable_index_array_v<shape_t>) {
-                // return as it is
-                using type = shape_t;
-                return as_value_v<type>;
-            } else if constexpr (is_index_array_v<shape_t>) {
+            } else {
+                constexpr auto DIM = len_v<shape_t>;
                 [[maybe_unused]]
-                constexpr auto B_DIM = bounded_size_v<shape_t>;
+                constexpr auto B_DIM = max_len_v<shape_t>;
+                using index_type = get_index_element_type_t<shape_t>;
                 if constexpr (DIM > 0) {
                     using type = nmtools_array<index_type,DIM>;
                     return as_value_v<type>;
-                } else if constexpr (!is_fail_v<decltype(B_DIM)>) {
-                    // TODO: provide macro nmtools_static_vector
-                    using type = utl::static_vector<index_type,B_DIM>;
+                } else if constexpr (B_DIM > 0) {
+                    using type = nmtools_static_vector<index_type,B_DIM>;
                     return as_value_v<type>;
                 } else {
                     using type = nmtools_list<index_type>;
                     return as_value_v<type>;
                 }
-            } else {
-                // forwarding params may be helpful for testing/debugging
-                return as_value_v<error::INDEX_COMPUTE_STRIDE_UNSUPPORTED<shape_t>>;
             }
         }();
         using type = type_t<decltype(vtype)>;
@@ -210,6 +208,7 @@ namespace nmtools::meta
 
     namespace error
     {
+        template <typename...>
         struct INDEX_STRIDE_UNSUPPORTED : detail::fail_t {};
     } // namespace error
 
@@ -219,24 +218,28 @@ namespace nmtools::meta
     >
     {
         static constexpr auto vtype = [](){
-            using element_t = get_element_or_common_type_t<array_t>;
-            if constexpr (is_constant_index_array_v<array_t> && is_constant_index_v<size_type>) {
-                constexpr auto array = to_value_v<array_t>;
-                constexpr auto k = to_value_v<size_type>;
-                constexpr auto stride = index::stride(array,k);
-                // convert back to type
-                return as_value_v<ct<stride>>;
-            } else if constexpr (is_nullable_num_v<element_t>) {
-                using type = element_t;
+            if constexpr (!is_num_v<size_type>
+                || !is_index_array_v<array_t>
+            ) {
+                using type = error::INDEX_STRIDE_UNSUPPORTED<array_t,size_type>;
                 return as_value_v<type>;
-            } else if constexpr (is_constant_index_v<element_t>) {
-                return as_value_v<typename element_t::value_type>;
-            } else if constexpr (is_clipped_integer_v<element_t>) {
-                return as_value_v<typename element_t::value_type>;
-            } else if constexpr (is_index_v<element_t>) {
-                return as_value_v<element_t>;
+            } else if constexpr (
+                is_constant_index_v<size_type>
+                && is_constant_index_array_v<array_t>
+            ) {
+                constexpr auto array  = to_value_v<array_t>;
+                constexpr auto stride = index::stride(array,size_type{});
+                if constexpr (has_value(stride)) {
+                    using type = ct<(nm_size_t)stride>;
+                    return as_value_v<type>;
+                } else {
+                    using type = nm_size_t;
+                    return as_value_v<type>;
+                }
             } else {
-                return as_value_v<error::INDEX_STRIDE_UNSUPPORTED>;
+                using index_t = get_index_element_type_t<array_t>;
+                using type = index_t;
+                return as_value_v<type>;
             }
         }();
         using type = type_t<decltype(vtype)>;
