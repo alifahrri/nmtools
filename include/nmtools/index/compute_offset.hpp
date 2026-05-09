@@ -4,6 +4,8 @@
 #include "nmtools/def.hpp"
 #include "nmtools/meta.hpp"
 #include "nmtools/utility/at.hpp"
+#include "nmtools/utility/unwrap.hpp"
+#include "nmtools/utility/has_value.hpp"
 #include "nmtools/index/tuple_at.hpp"
 #include "nmtools/assert.hpp"
 
@@ -25,46 +27,49 @@ namespace nmtools::index
     nmtools_index_attribute
     constexpr auto compute_offset(const indices_t& indices, const strides_t& strides)
     {
-        using return_t = resolve_optype_t<compute_offset_t,indices_t,strides_t>;
-
-        if constexpr (is_maybe_v<indices_t>) {
-            if (static_cast<bool>(indices)) {
-                auto result = compute_offset(*indices,strides);
-                if constexpr (is_maybe_v<decltype(result)>) {
-                    return (result ? return_t{*result} : return_t{Nothing});
-                } else {
-                    return return_t{result};
-                }
-            } else {
-                return return_t{Nothing};
-            }
-        } else if constexpr (is_maybe_v<strides_t>) {
-            if (static_cast<bool>(strides)) {
-                auto result = compute_offset(indices,*strides);
-                return return_t{result};
-            } else {
-                return return_t{Nothing};
-            }
-        } else if constexpr (
-            is_constant_index_v<return_t>
-            || is_fail_v<return_t>
-        ) {
-            auto result = return_t{};
-            return result;
+        if constexpr (is_maybe_v<indices_t> || is_maybe_v<strides_t>) {
+            using result_t = decltype(compute_offset(unwrap(indices),unwrap(strides)));
+            using return_t = conditional_t<is_maybe_v<result_t>,result_t,nmtools_maybe<result_t>>;
+            return (has_value(indices) && has_value(strides)
+                ? return_t{compute_offset(unwrap(indices),unwrap(strides))}
+                : return_t{Nothing}
+            );
         } else {
-            using size_type = nm_size_t;
-            size_type offset = 0;
-            [[maybe_unused]] auto m = (size_type)len(indices);
-            [[maybe_unused]] auto n = (size_type)len(strides);
-            constexpr auto N = len_v<indices_t>;
-            constexpr auto M = len_v<strides_t>;
-            if constexpr ((N > 0) && (M > 0)) {
-                template_for<N>([&](auto index){
-                    offset += static_cast<size_type>(at(strides,index)) * static_cast<size_type>(at(indices,index));
-                });
-            } else {
-                for (size_type i=0; i<m; i++) {
-                    offset += static_cast<size_type>(at(strides,i)) * static_cast<size_type>(at(indices,i));
+            using result_t = resolve_optype_t<compute_offset_t,indices_t,strides_t>;
+
+            auto offset = result_t{};
+
+            if constexpr (!is_fail_v<result_t>
+                && !is_constant_index_v<result_t>
+            ) {
+                [[maybe_unused]] auto m = (nm_size_t)len(indices);
+                [[maybe_unused]] auto n = (nm_size_t)len(strides);
+
+                constexpr auto N = len_v<indices_t>;
+                constexpr auto M = len_v<strides_t>;
+
+                if constexpr ((N > 0) && (M > 0)) {
+                    offset = 0;
+                    template_for<N>([&](auto i){
+                        auto stride_i = at(strides,i);
+                        auto index_i  = at(indices,i);
+                        if (has_value(offset) && has_value(stride_i) && has_value(index_i)) {
+                            offset += (nm_size_t)stride_i * (nm_size_t)index_i;
+                        } else {
+                            offset = result_t{};
+                        }
+                    });
+                } else {
+                    offset = 0;
+                    for (nm_size_t i=0; i<m; i++) {
+                        auto stride_i = at(strides,i);
+                        auto index_i  = at(indices,i);
+                        if (has_value(offset) && has_value(stride_i) && has_value(index_i)) {
+                            offset += (nm_size_t)stride_i * (nm_size_t)index_i;
+                        } else {
+                            offset = result_t{};
+                        }
+                    }
                 }
             }
             return offset;
@@ -85,38 +90,33 @@ namespace nmtools::meta
         void, index::compute_offset_t, indices_t, strides_t
     > {
         static constexpr auto vtype = [](){
-            if constexpr (is_maybe_v<indices_t>) {
-                using indices_type = get_maybe_type_t<indices_t>;
-                using result_type = resolve_optype_t<index::compute_offset_t,indices_type,strides_t>;
-                if constexpr (is_maybe_v<result_type>) {
-                    using type = result_type;
-                    return as_value_v<type>;
-                } else {
-                    using type = nmtools_maybe<result_type>;
-                    return as_value_v<type>;
-                }
-            } else if constexpr (is_maybe_v<strides_t>) {
-                using strides_type = get_maybe_type_t<strides_t>;
-                using result_type = resolve_optype_t<index::compute_offset_t,indices_t,strides_type>;
-                using type = nmtools_maybe<result_type>;
+            if constexpr (!is_index_array_v<indices_t>
+                || !is_index_array_v<strides_t>
+            ) {
+                using type = error::COMPUTE_OFFSET_UNSUPPORTED<indices_t,strides_t>;
                 return as_value_v<type>;
             } else if constexpr (
                 is_constant_index_array_v<indices_t>
                 && is_constant_index_array_v<strides_t>
             ) {
+                // TODO: also handle clipped index array
                 constexpr auto indices = to_value_v<indices_t>;
                 constexpr auto strides = to_value_v<strides_t>;
                 constexpr auto result  = index::compute_offset(indices,strides);
                 using type = ct<result>;
                 return as_value_v<type>;
             } else if constexpr (
-                is_index_array_v<indices_t>
-                && is_index_array_v<strides_t>
+                is_mixed_index_array_v<indices_t>
+                && is_mixed_index_array_v<strides_t>
             ) {
                 using type = nm_size_t;
                 return as_value_v<type>;
             } else {
-                using type = error::COMPUTE_OFFSET_UNSUPPORTED<indices_t,strides_t>;
+                using index_t  = get_index_element_type_t<indices_t>;
+                using stride_t = get_index_element_type_t<strides_t>;
+                using type = conditional_t<
+                    is_nullable_num_v<index_t> || is_nullable_num_v<stride_t>
+                    , null_size_t, nm_size_t>;
                 return as_value_v<type>;
             }
         }();

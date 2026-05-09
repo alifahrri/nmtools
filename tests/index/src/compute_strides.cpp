@@ -76,6 +76,12 @@ TEST_CASE("compute_strides(case3)" * doctest::test_suite("index::compute_strides
     COMPUTE_STRIDES_SUBCASE(case3, m_shape_h);
 
     COMPUTE_STRIDES_SUBCASE(case3, shape_ct);
+
+    COMPUTE_STRIDES_SUBCASE_RESULT(case3, result_nl1, shape_nl1);
+    COMPUTE_STRIDES_SUBCASE_RESULT(case3, result_nl2, shape_nl2);
+
+    COMPUTE_STRIDES_SUBCASE(case3, shape_mx1);
+    COMPUTE_STRIDES_SUBCASE(case3, shape_mx2);
 }
 
 TEST_CASE("compute_strides(case4)" * doctest::test_suite("index::compute_strides"))
@@ -92,4 +98,10 @@ TEST_CASE("compute_strides(case4)" * doctest::test_suite("index::compute_strides
     COMPUTE_STRIDES_SUBCASE(case4, m_shape_h);
 
     COMPUTE_STRIDES_SUBCASE(case4, shape_ct);
+
+    COMPUTE_STRIDES_SUBCASE_RESULT(case4, result_nl1, shape_nl1);
+    COMPUTE_STRIDES_SUBCASE_RESULT(case4, result_nl2, shape_nl2);
+
+    COMPUTE_STRIDES_SUBCASE(case4, shape_mx1);
+    COMPUTE_STRIDES_SUBCASE(case4, shape_mx2);
 }

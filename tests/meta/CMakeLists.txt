@@ -25,7 +25,6 @@ set( META_VIEW_TEST_SOURCES
 set( META_INDEX_TEST_SOURCES
     array/index/arange.cpp
     array/index/broadcast_shape.cpp
-    array/index/broadcast_to.cpp
     array/index/argsort.cpp
     array/index/choose.cpp
     array/index/compute_indices.cpp

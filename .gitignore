@@ -34,3 +34,4 @@ amdgpu-*
 *.old
 *.perf
 *.json
+*.md

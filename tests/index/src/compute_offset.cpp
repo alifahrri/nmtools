@@ -11,6 +11,15 @@ SUBCASE(#case_name) \
     NMTOOLS_ASSERT_EQUAL_MSG_ATTRIBUTES( offset, expect::result, __VA_ARGS__ ); \
 }
 
+#define COMPUTE_OFFSET_RESULT_SUBCASE(case_name, result, ...) \
+SUBCASE(#case_name) \
+{ \
+    NMTOOLS_TESTING_USE_CASE(index, compute_offset, case_name); \
+    using namespace args; \
+    auto offset = nmtools::index::compute_offset(__VA_ARGS__); \
+    NMTOOLS_ASSERT_EQUAL_MSG_ATTRIBUTES( offset, expect::result, __VA_ARGS__ ); \
+}
+
 TEST_CASE("compute_offset(case1a)" * doctest::test_suite("index::compute_offset"))
 {
     COMPUTE_OFFSET_SUBCASE(case1a,   strides,    indices);
@@ -77,6 +86,10 @@ TEST_CASE("compute_offset(case1a)" * doctest::test_suite("index::compute_offset"
     COMPUTE_OFFSET_SUBCASE(case1a, m_strides_f, indices_f);
     COMPUTE_OFFSET_SUBCASE(case1a, m_strides_h, indices_h);
     COMPUTE_OFFSET_SUBCASE(case1a, m_strides_v, indices_v);
+
+    COMPUTE_OFFSET_RESULT_SUBCASE(case1a, result_nl1, strides_nl1, indices_nl1);
+    
+    COMPUTE_OFFSET_SUBCASE(case1a, strides_mx1, indices_mx1);
 }
 
 TEST_CASE("compute_offset(case1b)" * doctest::test_suite("index::compute_offset"))
@@ -395,6 +408,25 @@ TEST_CASE("compute_offset(case2a)" * doctest::test_suite("index::compute_offset"
     COMPUTE_OFFSET_SUBCASE(case2a, strides_cl, indices_h);
     COMPUTE_OFFSET_SUBCASE(case2a, strides_cl, indices_v);
     COMPUTE_OFFSET_SUBCASE(case2a, strides_cl, indices_ct);
+
+    COMPUTE_OFFSET_SUBCASE(case2a, m_strides_a, m_indices_a);
+    COMPUTE_OFFSET_SUBCASE(case2a, m_strides_f, m_indices_f);
+    COMPUTE_OFFSET_SUBCASE(case2a, m_strides_h, m_indices_h);
+    COMPUTE_OFFSET_SUBCASE(case2a, m_strides_v, m_indices_v);
+
+    COMPUTE_OFFSET_SUBCASE(case2a, strides_a, m_indices_a);
+    COMPUTE_OFFSET_SUBCASE(case2a, strides_f, m_indices_f);
+    COMPUTE_OFFSET_SUBCASE(case2a, strides_h, m_indices_h);
+    COMPUTE_OFFSET_SUBCASE(case2a, strides_v, m_indices_v);
+
+    COMPUTE_OFFSET_SUBCASE(case2a, m_strides_a, indices_a);
+    COMPUTE_OFFSET_SUBCASE(case2a, m_strides_f, indices_f);
+    COMPUTE_OFFSET_SUBCASE(case2a, m_strides_h, indices_h);
+    COMPUTE_OFFSET_SUBCASE(case2a, m_strides_v, indices_v);
+
+    COMPUTE_OFFSET_RESULT_SUBCASE(case2a, result_nl1, strides_nl1, indices_nl1);
+
+    COMPUTE_OFFSET_SUBCASE(case2a, strides_mx1, indices_mx1);
 }
 
 TEST_CASE("compute_offset(case2b)" * doctest::test_suite("index::compute_offset"))

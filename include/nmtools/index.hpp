@@ -15,7 +15,6 @@
 #include "nmtools/index/concatenate.hpp"
 #include "nmtools/index/ndenumerate.hpp"
 #include "nmtools/index/split.hpp"
-#include "nmtools/index/broadcast_to.hpp"
 #include "nmtools/index/logical_not.hpp"
 #include "nmtools/index/tuple_at.hpp"
 #include "nmtools/index/expand_dims.hpp"
