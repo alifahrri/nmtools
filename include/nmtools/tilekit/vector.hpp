@@ -65,42 +65,7 @@ namespace nmtools::tilekit::vector
         static constexpr auto NUM_LANE = bit_width / (sizeof(element_type) * 8 /*bit*/);
         static constexpr auto SRC_SIZE = index::product(src_shape);
 
-        template <typename dst_shape_t>
-        constexpr auto broadcast_to(const dst_shape_t& dst_shape) const
-        {
-            auto dst_size = index::product(dst_shape);
-            constexpr auto DST_SIZE = decltype(dst_size)::value;
-            using dst_buffer_t = nmtools_array<element_type,DST_SIZE>;
-            using result_t = object_t<dst_buffer_t,dst_shape_t,bit_width,stride_buffer_t,compute_offset_t>;
-
-            auto m_src_shape = index::array(src_shape);
-            auto lane = [&](){
-                if constexpr (DIM == 1) {
-                    return nmtools_tuple{ct_v<NUM_LANE>};
-                } else {
-                    return index::ones(ct_v<DIM-1>).append(ct_v<NUM_LANE>);
-                }
-            }();
-            auto bcast_src_shape = m_src_shape / lane;
-            auto src_index = index::ndindex(bcast_src_shape);
-
-            constexpr auto NUM_LOAD   = len_v<decltype(src_index)>;
-            constexpr auto NUM_REPEAT = DST_SIZE / SRC_SIZE;
-
-            auto result = result_t {};
-
-            using vector_t = vector_type;
-            template_for<NUM_LOAD>([&](auto i){
-                constexpr auto I = decltype(i)::value;
-                auto v = *((vector_t*)this->data()+I);
-                template_for<NUM_REPEAT>([&](auto j){
-                    constexpr auto J = decltype(j)::value;
-                    *((vector_t*)result.data()+((J*NUM_LOAD)+I)) = v;
-                });
-            });
-
-            return result;
-        }
+        // TODO: vectorized broadcast for specific case & context
 
         template <typename rhs_t>
         constexpr auto add(const rhs_t& rhs) const
