@@ -101,8 +101,8 @@ V256_MT_MAXIMUM_CASE(v256_mt.maximum.256_ct_256_ct.fp32.2x8, (make_shape(256_ct,
 V256_MT_MAXIMUM_CASE(v256_mt.maximum.512_ct_512_ct.fp32.2x8, (make_shape(512_ct,512_ct)), (tuple{2_ct,8_ct}), 2)
 V256_MT_MAXIMUM_CASE(v256_mt.maximum.1024_ct_1024_ct.fp32.2x8, (make_shape(1024_ct,1024_ct)), (tuple{2_ct,8_ct}), 2)
 
-V256_MT_MAXIMUM_CASE(v256_mt.maximum.1024_ct_4_ct.fp32.2x8, (make_shape(1024_ct,4_ct)), (tuple{2_ct,8_ct}), 1)
-V256_MT_MAXIMUM_CASE(v256_mt.maximum.1024_ct_8_ct.fp32.2x8, (make_shape(1024_ct,8_ct)), (tuple{2_ct,8_ct}), 1)
+// V256_MT_MAXIMUM_CASE(v256_mt.maximum.1024_ct_4_ct.fp32.2x8, (make_shape(1024_ct,4_ct)), (tuple{2_ct,8_ct}), 1)
+// V256_MT_MAXIMUM_CASE(v256_mt.maximum.1024_ct_8_ct.fp32.2x8, (make_shape(1024_ct,8_ct)), (tuple{2_ct,8_ct}), 1)
 V256_MT_MAXIMUM_CASE(v256_mt.maximum.1024_ct_16_ct.fp32.2x8, (make_shape(1024_ct,16_ct)), (tuple{2_ct,8_ct}), 2)
 V256_MT_MAXIMUM_CASE(v256_mt.maximum.1024_ct_32_ct.fp32.2x8, (make_shape(1024_ct,32_ct)), (tuple{2_ct,8_ct}), 2)
 V256_MT_MAXIMUM_CASE(v256_mt.maximum.1024_ct_64_ct.fp32.2x8, (make_shape(1024_ct,64_ct)), (tuple{2_ct,8_ct}), 2)

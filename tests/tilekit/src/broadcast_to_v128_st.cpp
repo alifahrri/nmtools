@@ -78,5 +78,7 @@ V128_ST_BROADCAST_TO_CASE(v128_st.broadcast_to.4_8.2_4_8.4.4x4,             (mak
 V128_ST_BROADCAST_TO_CASE(v128_st.broadcast_to.4_8_ct.2_4_8_ct.4.4x4,       (make_shape(4,8_ct)),    (make_shape(2,4,8_ct)),    (tuple{2_ct,4_ct}), (tuple{2_ct,2_ct,4_ct}) );
 V128_ST_BROADCAST_TO_CASE(v128_st.broadcast_to.4_ct_8_ct.2_4_ct_8_ct.4.4x4, (make_shape(4_ct,8_ct)), (make_shape(2,4_ct,8_ct)), (tuple{2_ct,4_ct}), (tuple{2_ct,2_ct,4_ct}) );
 
+// V128_ST_BROADCAST_TO_CASE(v128_st.broadcast_to.4_1.4_8.4x1.4x8, (make_shape(4,1)), (make_shape(4,8)), (tuple{4_ct,1_ct}), (tuple{4_ct,8_ct}) );
+
 // TODO: fix
 // V128_ST_BROADCAST_TO_CASE(v128_st.broadcast_to.4_1_8.4_4_8.4.4x4x4, (make_shape(4,1,8)), (make_shape(4,4,8)), (tuple{4_ct,1_ct,8_ct}), (tuple{4_ct,4_ct,8_ct}) );

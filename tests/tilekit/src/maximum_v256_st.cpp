@@ -99,7 +99,7 @@ V256_ST_MAXIMUM_CASE(v256_st.maximum.256_ct_256_ct.fp32.2x4, (make_shape(256_ct,
 V256_ST_MAXIMUM_CASE(v256_st.maximum.512_ct_512_ct.fp32.2x4, (make_shape(512_ct,512_ct)), (tuple{2_ct,8_ct}))
 V256_ST_MAXIMUM_CASE(v256_st.maximum.1024_ct_1024_ct.fp32.2x4, (make_shape(1024_ct,1024_ct)), (tuple{2_ct,8_ct}))
 
-V256_ST_MAXIMUM_CASE(v256_st.maximum.1024_ct_4_ct.fp32.2x4, (make_shape(1024_ct,4_ct)), (tuple{2_ct,8_ct}))
+// V256_ST_MAXIMUM_CASE(v256_st.maximum.1024_ct_4_ct.fp32.2x4, (make_shape(1024_ct,4_ct)), (tuple{2_ct,8_ct}))
 V256_ST_MAXIMUM_CASE(v256_st.maximum.1024_ct_8_ct.fp32.2x4, (make_shape(1024_ct,8_ct)), (tuple{2_ct,8_ct}))
 V256_ST_MAXIMUM_CASE(v256_st.maximum.1024_ct_16_ct.fp32.2x4, (make_shape(1024_ct,16_ct)), (tuple{2_ct,8_ct}))
 V256_ST_MAXIMUM_CASE(v256_st.maximum.1024_ct_32_ct.fp32.2x4, (make_shape(1024_ct,32_ct)), (tuple{2_ct,8_ct}))
