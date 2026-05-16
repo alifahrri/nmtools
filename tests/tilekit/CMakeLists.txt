@@ -83,11 +83,25 @@ set(NMTOOLS_TESTS_TILEKIT_SRCS
     src/subtract_padding_v128_mt.cpp
     src/divide_padding_v128_mt.cpp
 
+    src/add_v256_st.cpp
     src/add_v256_mt.cpp
-    src/multiply_v256_mt.cpp
-
+    src/add_v512_st.cpp
     src/add_v512_mt.cpp
+
+    src/multiply_v256_st.cpp
+    src/multiply_v256_mt.cpp
+    src/multiply_v512_st.cpp
     src/multiply_v512_mt.cpp
+
+    src/subtract_v256_st.cpp
+    src/subtract_v256_mt.cpp
+    src/subtract_v512_st.cpp
+    src/subtract_v512_mt.cpp
+
+    src/divide_v256_st.cpp
+    src/divide_v256_mt.cpp
+    src/divide_v512_st.cpp
+    src/divide_v512_mt.cpp
 
     src/load_store_v128_st.cpp
 
@@ -99,31 +113,76 @@ set(NMTOOLS_TESTS_TILEKIT_SRCS
     src/broadcast_to_v128_st.cpp
 
     src/cos_scalar_st.cpp
+    src/cos_scalar_mt.cpp
+    src/cos_v128_st.cpp
+    src/cos_v128_mt.cpp
+    src/cos_v256_st.cpp
+    src/cos_v256_mt.cpp
+    src/cos_v512_st.cpp
+    src/cos_v512_mt.cpp
 
     src/sin_scalar_st.cpp
+    src/sin_scalar_mt.cpp
+    src/sin_v128_st.cpp
+    src/sin_v128_mt.cpp
+    src/sin_v256_st.cpp
+    src/sin_v256_mt.cpp
+    src/sin_v512_st.cpp
+    src/sin_v512_mt.cpp
 
     src/exp_scalar_st.cpp
     src/exp_scalar_mt.cpp
     src/exp_v128_st.cpp
+    src/exp_v128_mt.cpp
     src/exp_v256_st.cpp
+    src/exp_v256_mt.cpp
     src/exp_v512_st.cpp
+    src/exp_v512_mt.cpp
 
     src/exp2_scalar_st.cpp
     src/exp2_scalar_mt.cpp
+    src/exp2_v128_st.cpp
+    src/exp2_v128_mt.cpp
+    src/exp2_v256_st.cpp
+    src/exp2_v256_mt.cpp
+    src/exp2_v512_st.cpp
+    src/exp2_v512_mt.cpp
 
     src/log_scalar_st.cpp
     src/log_scalar_mt.cpp
+    src/log_v128_st.cpp
+    src/log_v128_mt.cpp
+    src/log_v256_st.cpp
+    src/log_v256_mt.cpp
+    src/log_v512_st.cpp
+    src/log_v512_mt.cpp
 
     src/log2_scalar_st.cpp
     src/log2_scalar_mt.cpp
+    src/log2_v128_st.cpp
+    src/log2_v128_mt.cpp
+    src/log2_v256_st.cpp
+    src/log2_v256_mt.cpp
+    src/log2_v512_st.cpp
+    src/log2_v512_mt.cpp
 
     src/log10_scalar_st.cpp
     src/log10_scalar_mt.cpp
+    src/log10_v128_st.cpp
+    src/log10_v128_mt.cpp
+    src/log10_v256_st.cpp
+    src/log10_v256_mt.cpp
+    src/log10_v512_st.cpp
+    src/log10_v512_mt.cpp
 
     src/sum_scalar_st.cpp
     src/sum_v128_st.cpp
+    src/sum_v256_st.cpp
+    src/sum_v512_st.cpp
     src/sum_scalar_mt.cpp
     src/sum_v128_mt.cpp
+    src/sum_v256_mt.cpp
+    src/sum_v512_mt.cpp
 
     src/maximum_scalar_st.cpp
     src/maximum_v128_st.cpp
@@ -160,6 +219,36 @@ set(NMTOOLS_TESTS_TILEKIT_SRCS
     src/max_v512_mt.cpp
 
     src/softmax_scalar_st.cpp
+    src/softmax_v128_st.cpp
+    src/softmax_v256_st.cpp
+    src/softmax_v512_st.cpp
+
+    src/sqrt_scalar_st.cpp
+    src/sqrt_scalar_mt.cpp
+    src/sqrt_v128_st.cpp
+    src/sqrt_v128_mt.cpp
+    src/sqrt_v256_st.cpp
+    src/sqrt_v256_mt.cpp
+    src/sqrt_v512_st.cpp
+    src/sqrt_v512_mt.cpp
+
+    src/var_scalar_st.cpp
+    src/var_scalar_mt.cpp
+    src/var_v128_st.cpp
+    src/var_v128_mt.cpp
+    src/var_v256_st.cpp
+    src/var_v256_mt.cpp
+    src/var_v512_st.cpp
+    src/var_v512_mt.cpp
+
+    src/std_scalar_st.cpp
+    src/std_scalar_mt.cpp
+    src/std_v128_st.cpp
+    src/std_v128_mt.cpp
+    src/std_v256_st.cpp
+    src/std_v256_mt.cpp
+    src/std_v512_st.cpp
+    src/std_v512_mt.cpp
 )
 if (NMTOOLS_TESTS_TILEKIT_ENABLE_TRACY)
     add_executable(${PROJECT_NAME}-doctest

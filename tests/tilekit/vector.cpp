@@ -298,3 +298,95 @@ TEST_CASE("nditer(case1d)" * doctest::test_suite("tilekit"))
         NMTOOLS_ASSERT_EQUAL( out, expected );
     }
 }
+
+TEST_CASE("add(case1)" * doctest::test_suite("tilekit::vector"))
+{
+    using buffer_t  = nmtools_array<float,4>;
+    using shape_t   = nmtools_tuple<nm::ct<4>,nm::ct<1>>;
+    using f32x4x1_t = tk::vector::object_t<buffer_t,shape_t>;
+    
+    auto f32x4x1 = f32x4x1_t{};
+    
+    NMTOOLS_ASSERT_EQUAL( f32x4x1.n_bytes, 16 );
+    NMTOOLS_ASSERT_EQUAL( f32x4x1.n_iter, 1 );
+    {
+        float expected[4][1] = {
+            {0.f},
+            {0.f},
+            {0.f},
+            {0.f},
+        };
+        NMTOOLS_ASSERT_CLOSE( f32x4x1, expected );
+    }
+    {
+        auto result = f32x4x1 + nmtools_array{1.f,2.f,3.f,4.f};
+        float expected[4][1] = {
+            {1.f},
+            {2.f},
+            {3.f},
+            {4.f},
+        };
+        NMTOOLS_ASSERT_CLOSE( result, expected );
+    }
+    {
+        auto f32x4x1 = f32x4x1_t{};
+        f32x4x1.data()[0] = 1.f;
+        f32x4x1.data()[1] = 2.f;
+        f32x4x1.data()[2] = 3.f;
+        f32x4x1.data()[3] = 4.f;
+        float expected[4][1] = {
+            {1.f},
+            {2.f},
+            {3.f},
+            {4.f},
+        };
+        NMTOOLS_ASSERT_CLOSE( f32x4x1, expected );
+    }
+}
+
+TEST_CASE("broadcast_to(case0)" * doctest::test_suite("tilekit::vector"))
+{
+    using buffer_t  = nmtools_array<float,4>;
+    using shape_t   = nmtools_tuple<nm::ct<4>,nm::ct<1>>;
+    using f32x4x1_t = nm::object_t<buffer_t,shape_t>;
+
+    auto f32x4x1 = f32x4x1_t{};
+    f32x4x1.data()[0] = 1.f;
+    f32x4x1.data()[1] = 2.f;
+    f32x4x1.data()[2] = 3.f;
+    f32x4x1.data()[3] = 4.f;
+    {
+        auto dst_shape = nmtools_tuple{4_ct,4_ct};
+        auto f32x4x4 = f32x4x1.broadcast_to(dst_shape);
+        float expected[4][4] = {
+            {1.f,1.f,1.f,1.f},
+            {2.f,2.f,2.f,2.f},
+            {3.f,3.f,3.f,3.f},
+            {4.f,4.f,4.f,4.f},
+        };
+        NMTOOLS_ASSERT_CLOSE( f32x4x4, expected );
+    }
+}
+
+TEST_CASE("broadcast_to(case1)" * doctest::test_suite("tilekit::vector"))
+{
+    using buffer_t  = nmtools_array<float,4>;
+    using shape_t   = nmtools_tuple<nm::ct<4>,nm::ct<1>>;
+    using f32x4x1_t = tk::vector::object_t<buffer_t,shape_t>;
+
+    auto f32x4x1 = f32x4x1_t{};
+    f32x4x1.data()[0] = 1.f;
+    f32x4x1.data()[1] = 2.f;
+    f32x4x1.data()[2] = 3.f;
+    f32x4x1.data()[3] = 4.f;
+    {
+        auto f32x4x4 = f32x4x1.broadcast_to(nmtools_tuple{4_ct,4_ct});
+        auto expected = nmtools_array<nmtools_array<float,4>,4>{{
+            {1.f,1.f,1.f,1.f},
+            {2.f,2.f,2.f,2.f},
+            {3.f,3.f,3.f,3.f},
+            {4.f,4.f,4.f,4.f},
+        }};
+        NMTOOLS_ASSERT_CLOSE( f32x4x4, expected );
+    }
+}
