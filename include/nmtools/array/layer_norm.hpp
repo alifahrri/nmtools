@@ -19,15 +19,15 @@ namespace nmtools::index
     template <typename wb_shape_t>
     constexpr auto layer_norm_axis(const wb_shape_t& wb_shape)
     {
-        using result_t = meta::resolve_optype_t<layer_norm_axis_t,wb_shape_t>;
+        using result_t = resolve_optype_t<layer_norm_axis_t,wb_shape_t>;
 
         auto result = result_t {};
 
-        if constexpr (!meta::is_constant_index_array_v<result_t>
-            && !meta::is_fail_v<result_t>
+        if constexpr (!is_constant_index_array_v<result_t>
+            && !is_fail_v<result_t>
         ) {
             auto dst_dim = len(wb_shape);
-            if constexpr (meta::is_resizable_v<result_t>) {
+            if constexpr (is_resizable_v<result_t>) {
                 result.resize(dst_dim);
             }
 
@@ -86,8 +86,8 @@ namespace nmtools::meta
 
 namespace nmtools::view
 {
-    template <typename input_t, typename weight_t, typename bias_t, typename epsilon_t=float>
-    constexpr auto layer_norm(const input_t& input, const weight_t& weight, const bias_t& bias, epsilon_t epsilon=epsilon_t{1e-5})
+    template <typename input_t, typename weight_t, typename bias_t, typename axis_t, typename epsilon_t>
+    constexpr auto layer_norm(const input_t& input, const weight_t& weight, const bias_t& bias, const axis_t& axis, epsilon_t epsilon)
     {
         auto aliased  = view::aliased(input,weight,bias,epsilon);
         auto a_input  = nmtools::get<0>(aliased);
@@ -95,11 +95,6 @@ namespace nmtools::view
         auto a_bias   = nmtools::get<2>(aliased);
         auto a_epsilon = nmtools::get<3>(aliased);
 
-        // assume weight & bias has the same shape
-        // TODO: error handling
-        auto wb_shape = shape<true>(weight);
-
-        auto axis  = index::layer_norm_axis(wb_shape);
         auto dtype = None;
         auto ddof  = 0;
         auto keepdims = True;
@@ -111,6 +106,17 @@ namespace nmtools::view
         auto std  = view::sqrt(view::add(var,a_epsilon));
         auto norm = view::divide(shift,std);
         return view::add(view::multiply(norm,a_weight),a_bias);
+    }
+
+    template <typename input_t, typename weight_t, typename bias_t, typename epsilon_t=float>
+    constexpr auto layer_norm(const input_t& input, const weight_t& weight, const bias_t& bias, epsilon_t epsilon=epsilon_t{1e-5})
+    {
+        // assume weight & bias has the same shape
+        // TODO: error handling
+        auto wb_shape = shape<true>(weight);
+
+        auto axis = index::layer_norm_axis(wb_shape);
+        return view::layer_norm(input,weight,bias,axis,epsilon);
     }
 } // namespace nmtools::view
 
@@ -124,8 +130,36 @@ namespace nmtools::view
 
 namespace nmtools
 {
-    template <typename output_t=none_t, typename context_t=default_context_t<>
-        , typename input_t, typename weight_t, typename bias_t, typename epsilon_t=float>
+    template <
+        typename output_t=none_t
+        , typename context_t=default_context_t<>
+        , typename input_t
+        , typename weight_t
+        , typename bias_t
+        , typename axis_t
+        , typename epsilon_t=float
+        , enable_if_t<is_index_v<axis_t> || is_index_array_v<axis_t>,int> = 0
+        , enable_if_t<is_num_v<epsilon_t>,int> = 0
+        , enable_if_t<is_context_v<context_t>,int> = 0>
+    constexpr auto layer_norm(const input_t& input, const weight_t& weight, const bias_t& bias, const axis_t& axis, epsilon_t epsilon=epsilon_t{1e-5}
+        , context_t&& context=context_t{}, output_t&& output=output_t{})
+    {
+        auto layer_norm = view::layer_norm(input,weight,bias,axis,epsilon);
+        return eval(layer_norm
+            , nmtools::forward<context_t>(context)
+            , nmtools::forward<output_t>(output)
+        );
+    } // layer_norm
+
+    template <
+        typename output_t=none_t
+        , typename context_t=default_context_t<>
+        , typename input_t
+        , typename weight_t
+        , typename bias_t
+        , typename epsilon_t=float
+        , enable_if_t<is_num_v<epsilon_t>,int> = 0
+        , enable_if_t<is_context_v<context_t>,int> = 0>
     constexpr auto layer_norm(const input_t& input, const weight_t& weight, const bias_t& bias, epsilon_t epsilon=epsilon_t{1e-5}
         , context_t&& context=context_t{}, output_t&& output=output_t{})
     {
