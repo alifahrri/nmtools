@@ -51,3 +51,21 @@ TEST_CASE("layer_norm(case3)" * doctest::test_suite("array::layer_norm"))
     LAYER_NORM_SUBCASE( case3, input_h, weight_h, bias_h );
     LAYER_NORM_SUBCASE( case3, input_d, weight_d, bias_d );
 }
+
+TEST_CASE("layer_norm(case4)" * doctest::test_suite("array::layer_norm"))
+{
+    LAYER_NORM_SUBCASE( case4, input,   weight,   bias );
+    LAYER_NORM_SUBCASE( case4, input_a, weight_a, bias_a );
+    LAYER_NORM_SUBCASE( case4, input_f, weight_f, bias_f );
+    LAYER_NORM_SUBCASE( case4, input_h, weight_h, bias_h );
+    LAYER_NORM_SUBCASE( case4, input_d, weight_d, bias_d );
+}
+
+TEST_CASE("layer_norm(case5)" * doctest::test_suite("array::layer_norm"))
+{
+    LAYER_NORM_SUBCASE( case5, input,   weight,   bias );
+    LAYER_NORM_SUBCASE( case5, input_a, weight_a, bias_a );
+    LAYER_NORM_SUBCASE( case5, input_f, weight_f, bias_f );
+    LAYER_NORM_SUBCASE( case5, input_h, weight_h, bias_h );
+    LAYER_NORM_SUBCASE( case5, input_d, weight_d, bias_d );
+}
