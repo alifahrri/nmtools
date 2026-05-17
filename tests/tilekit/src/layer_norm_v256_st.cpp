@@ -1,0 +1,97 @@
+#include "nmtools/tilekit/vector.hpp"
+#include "nmtools/tilekit/thread_pool.hpp"
+#include "nmtools/tilekit/tilekit.hpp"
+#include "nmtools/testing/doctest.hpp"
+#include "nmtools/ndarray.hpp"
+#include "nmtools/array/layer_norm.hpp"
+
+#include "kernels/layer_norm.hpp"
+
+#include <nanobench.h>
+
+#undef NMTOOLS_TESTING_PRECISION
+#define NMTOOLS_TESTING_PRECISION (1e-2)
+
+namespace nm = nmtools;
+namespace view = nmtools::view;
+using namespace nmtools::literals;
+using nmtools_tuple;
+
+using ctx_t = tk::vector::context_t<256>;
+
+template <typename shape_0_t, typename...shape_n_t>
+constexpr auto make_shape(shape_0_t shape_0, shape_n_t...shape_n)
+{
+    if constexpr (nm::is_constant_index_v<shape_0_t>
+        || (nm::is_constant_index_v<shape_n_t> || ...)
+    ) {
+        return nmtools_tuple{shape_0,shape_n...};
+    } else {
+        return nmtools_array{shape_0,shape_n...};
+    }
+}
+
+template <typename input_t, typename weight_t, typename bias_t, typename axis_t, typename epsilon_t>
+constexpr auto layer_norm(const input_t& input, const weight_t& weight, const bias_t& bias, const axis_t& axis, epsilon_t epsilon)
+{
+    using nmtools::None, nmtools::True;
+    auto aliased  = view::aliased(input,weight,bias,epsilon);
+    auto a_input  = nmtools::get<0>(aliased);
+    auto a_weight = nmtools::get<1>(aliased);
+    auto a_bias   = nmtools::get<2>(aliased);
+    auto a_epsilon = nmtools::get<3>(aliased);
+
+    auto dtype = None;
+    auto ddof  = 0;
+    auto keepdims = True;
+
+    auto mean  = nmtools::mean(a_input,axis,dtype,keepdims);
+    auto shift = view::subtract(a_input,mean);
+
+    auto var  = nmtools::var(a_input,axis,dtype,ddof,keepdims);
+    auto std  = view::sqrt(view::add(var,a_epsilon));
+    auto norm = view::divide(shift,std);
+    return nmtools::add(view::multiply(norm,a_weight),a_bias);
+}
+
+#define V256_ST_LAYER_NORM_CASE( case_name, shape, weight_shape, bias_shape, tile_shape, weight_tile, bias_tile, axis ) \
+TEST_CASE(#case_name * doctest::test_suite("tilekit")) \
+{ \
+    auto gen   = nm::random_engine(); \
+    auto dtype = nm::float32; \
+    auto out_shape = shape; \
+\
+    auto weight = nm::random(weight_shape,dtype,gen); \
+    auto bias   = nm::random(bias_shape,dtype,gen); \
+    auto inp = nm::random(shape,dtype,gen); \
+    auto out = nm::Array::zeros(out_shape,dtype); \
+\
+    auto ctx = ctx_t(); \
+\
+    auto min_time = std::chrono::nanoseconds(50'000'000); \
+    ankerl::nanobench::Bench() \
+        .minEpochTime(min_time) \
+        .run(#case_name,[&](){ \
+            layer_norm_kernel(ctx,out,inp,weight,bias,tk::index(tile_shape),tk::index(weight_tile),tk::index(bias_tile),axis); \
+        }); \
+    auto expected = ::layer_norm(inp,weight,bias,axis,1e-5); \
+    NMTOOLS_ASSERT_CLOSE( out, expected ); \
+}
+
+V256_ST_LAYER_NORM_CASE(v256_st.layer_norm.8_16.fp32.8x8,   (make_shape(8,16)),   make_shape(16), make_shape(16), (tuple{8_ct,8_ct}), (tuple{8_ct}), (tuple{8_ct}), nm::ct_v<-1> );
+V256_ST_LAYER_NORM_CASE(v256_st.layer_norm.8_32.fp32.8x8,   (make_shape(8,32)),   make_shape(32), make_shape(32), (tuple{8_ct,8_ct}), (tuple{8_ct}), (tuple{8_ct}), nm::ct_v<-1> );
+V256_ST_LAYER_NORM_CASE(v256_st.layer_norm.8_64.fp32.8x8,   (make_shape(8,64)),   make_shape(64), make_shape(64), (tuple{8_ct,8_ct}), (tuple{8_ct}), (tuple{8_ct}), nm::ct_v<-1> );
+V256_ST_LAYER_NORM_CASE(v256_st.layer_norm.8_128.fp32.8x8,  (make_shape(8,128)),  make_shape(128), make_shape(128), (tuple{8_ct,8_ct}), (tuple{8_ct}), (tuple{8_ct}), nm::ct_v<-1> );
+V256_ST_LAYER_NORM_CASE(v256_st.layer_norm.8_256.fp32.8x8,  (make_shape(8,256)),  make_shape(256), make_shape(256), (tuple{8_ct,8_ct}), (tuple{8_ct}), (tuple{8_ct}), nm::ct_v<-1> );
+V256_ST_LAYER_NORM_CASE(v256_st.layer_norm.8_512.fp32.8x8,  (make_shape(8,512)),  make_shape(512), make_shape(512), (tuple{8_ct,8_ct}), (tuple{8_ct}), (tuple{8_ct}), nm::ct_v<-1> );
+V256_ST_LAYER_NORM_CASE(v256_st.layer_norm.8_1024.fp32.8x8, (make_shape(8,1024)), make_shape(1024), make_shape(1024), (tuple{8_ct,8_ct}), (tuple{8_ct}), (tuple{8_ct}), nm::ct_v<-1> );
+V256_ST_LAYER_NORM_CASE(v256_st.layer_norm.8_2048.fp32.8x8, (make_shape(8,2048)), make_shape(2048), make_shape(2048), (tuple{8_ct,8_ct}), (tuple{8_ct}), (tuple{8_ct}), nm::ct_v<-1> );
+
+V256_ST_LAYER_NORM_CASE(v256_st.layer_norm.8_ct_16_ct.fp32.8x8,   (make_shape(8_ct,16_ct)),   make_shape(16_ct), make_shape(16_ct), (tuple{8_ct,8_ct}), (tuple{8_ct}), (tuple{8_ct}), nm::ct_v<-1> );
+V256_ST_LAYER_NORM_CASE(v256_st.layer_norm.8_ct_32_ct.fp32.8x8,   (make_shape(8_ct,32_ct)),   make_shape(32_ct), make_shape(32_ct), (tuple{8_ct,8_ct}), (tuple{8_ct}), (tuple{8_ct}), nm::ct_v<-1> );
+V256_ST_LAYER_NORM_CASE(v256_st.layer_norm.8_ct_64_ct.fp32.8x8,   (make_shape(8_ct,64_ct)),   make_shape(64_ct), make_shape(64_ct), (tuple{8_ct,8_ct}), (tuple{8_ct}), (tuple{8_ct}), nm::ct_v<-1> );
+V256_ST_LAYER_NORM_CASE(v256_st.layer_norm.8_ct_128_ct.fp32.8x8,  (make_shape(8_ct,128_ct)),  make_shape(128_ct), make_shape(128_ct), (tuple{8_ct,8_ct}), (tuple{8_ct}), (tuple{8_ct}), nm::ct_v<-1> );
+V256_ST_LAYER_NORM_CASE(v256_st.layer_norm.8_ct_256_ct.fp32.8x8,  (make_shape(8_ct,256_ct)),  make_shape(256_ct), make_shape(256_ct), (tuple{8_ct,8_ct}), (tuple{8_ct}), (tuple{8_ct}), nm::ct_v<-1> );
+V256_ST_LAYER_NORM_CASE(v256_st.layer_norm.8_ct_512_ct.fp32.8x8,  (make_shape(8_ct,512_ct)),  make_shape(512_ct), make_shape(512_ct), (tuple{8_ct,8_ct}), (tuple{8_ct}), (tuple{8_ct}), nm::ct_v<-1> );
+V256_ST_LAYER_NORM_CASE(v256_st.layer_norm.8_ct_1024_ct.fp32.8x8, (make_shape(8_ct,1024_ct)), make_shape(1024_ct), make_shape(1024_ct), (tuple{8_ct,8_ct}), (tuple{8_ct}), (tuple{8_ct}), nm::ct_v<-1> );
+V256_ST_LAYER_NORM_CASE(v256_st.layer_norm.8_ct_2048_ct.fp32.8x8, (make_shape(8_ct,2048_ct)), make_shape(2048_ct), make_shape(2048_ct), (tuple{8_ct,8_ct}), (tuple{8_ct}), (tuple{8_ct}), nm::ct_v<-1> );
