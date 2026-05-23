@@ -62,35 +62,31 @@ struct layer_norm_kernel_t
 
         for (nm_size_t i=(w_id); i<(axis_0_iter); i+=w_size) {
             // mean
-            auto tile_offset = tk::packed_at(inp_nditer,i,0);
-            auto accumulator = tk::load(ctx,inp,tile_offset,tile_shape);
-            for (nm_size_t j=1; j<axis_1_iter; j++) {
-                tile_offset = tk::packed_at(inp_nditer,i,j);
-                auto block  = tk::load(ctx,inp,tile_offset,tile_shape);
-                accumulator = accumulator + block;
+            auto mean_acc = nm::Array::zeros(tile_shape,out_dtype,ctx);
+            for (nm_size_t j=0; j<axis_1_iter; j++) {
+                auto tile_offset = tk::packed_at(inp_nditer,i,j);
+                auto input = tk::load(ctx,inp,tile_offset,tile_shape);
+                mean_acc = mean_acc + input;
             }
-
-            auto tmp0 = accumulator.sum(axis,dtype,initial,keepdims);
-            auto mean = (tmp0 / num_elements.broadcast_to(tmp0.shape())).broadcast_to(tile_shape);
+            auto sum0 = mean_acc.sum(axis,dtype,initial,keepdims);
+            auto mean = (sum0 / num_elements.broadcast_to(sum0.shape())).broadcast_to(tile_shape);
 
             // var
-            tile_offset = tk::packed_at(inp_nditer,i,0);
-            auto tmp1   = tk::load(ctx,inp,tile_offset,tile_shape);
-            auto tmp2   = (tmp1 - mean) * (tmp1 - mean);
-            for (nm_size_t j=1; j<axis_1_iter; j++) {
-                tile_offset = tk::packed_at(inp_nditer,i,j);
-                auto tmp1   = tk::load(ctx,inp,tile_offset,tile_shape);
-                tmp2 = tmp2 + ((tmp1-mean) * (tmp1-mean));
+            auto var_acc = nm::Array::zeros(tile_shape,out_dtype,ctx);
+            for (nm_size_t j=0; j<axis_1_iter; j++) {
+                auto tile_offset = tk::packed_at(inp_nditer,i,j);
+                auto input = tk::load(ctx,inp,tile_offset,tile_shape);
+                var_acc = var_acc + (input - mean).square();
             }
             // std
-            auto sum_sq = tmp2.sum(axis,dtype,initial,keepdims);
-            auto var = sum_sq / num_elements.broadcast_to(nm::shape(sum_sq));
-            auto std = (var + epsilon.broadcast_to(var.shape())).sqrt().broadcast_to(tile_shape);
+            auto sum1 = var_acc.sum(axis,dtype,initial,keepdims);
+            auto var  = sum1 / num_elements.broadcast_to(sum1.shape());
+            auto std  = (var + epsilon.broadcast_to(var.shape())).sqrt().broadcast_to(tile_shape);
 
             // shift + norm + multiply + add
             for (nm_size_t j=0; j<axis_1_iter; j++) {
-                tile_offset = tk::packed_at(inp_nditer,i,j);
-                auto input  = tk::load(ctx,inp,tile_offset,tile_shape);
+                auto tile_offset = tk::packed_at(inp_nditer,i,j);
+                auto input = tk::load(ctx,inp,tile_offset,tile_shape);
                 // shift, norm
                 auto shift = input - mean;
                 auto norm  = shift / std;

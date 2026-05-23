@@ -258,6 +258,15 @@ set(NMTOOLS_TESTS_TILEKIT_SRCS
     src/layer_norm_v256_mt.cpp
     src/layer_norm_v512_st.cpp
     src/layer_norm_v512_mt.cpp
+
+    src/dot_scalar_st.cpp
+    src/dot_scalar_mt.cpp
+    src/dot_v128_st.cpp
+    src/dot_v128_mt.cpp
+    src/dot_v256_st.cpp
+    src/dot_v256_mt.cpp
+    src/dot_v512_st.cpp
+    src/dot_v512_mt.cpp
 )
 if (NMTOOLS_TESTS_TILEKIT_ENABLE_TRACY)
     add_executable(${PROJECT_NAME}-doctest
