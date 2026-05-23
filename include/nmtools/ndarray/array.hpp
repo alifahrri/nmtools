@@ -41,6 +41,9 @@
 #include "nmtools/array/ufuncs/subtract.hpp"
 #include "nmtools/array/ufuncs/divide.hpp"
 #include "nmtools/array/ufuncs/power.hpp"
+#include "nmtools/array/ufuncs/sqrt.hpp"
+#include "nmtools/array/ufuncs/square.hpp"
+
 #include "nmtools/array/mean.hpp"
 #include "nmtools/array/prod.hpp"
 #include "nmtools/array/reshape.hpp"
@@ -59,6 +62,7 @@
 #include "nmtools/array/swapaxes.hpp"
 #include "nmtools/array/trace.hpp"
 #include "nmtools/array/transpose.hpp"
+#include "nmtools/array/atleast_nd.hpp"
 
 namespace nmtools::tag
 {
@@ -727,6 +731,7 @@ namespace nmtools
         /******************************************************************* */
         // numpy's ndarray doesn't have sqrt member, but torch's Tensor does
         nmtools_ndarray_method(sqrt)
+        nmtools_ndarray_method(square)
 
         /******************************************************************* */
         template <typename other_t>
