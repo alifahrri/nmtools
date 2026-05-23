@@ -35,3 +35,4 @@ amdgpu-*
 *.perf
 *.json
 *.md
+*.tracy
