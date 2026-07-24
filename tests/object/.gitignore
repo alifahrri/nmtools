@@ -34,3 +34,5 @@ src/*
 !src/stddev.cpp
 
 !src/reshape.cpp
+!src/unsqueeze.cpp
+!src/repeat.cpp

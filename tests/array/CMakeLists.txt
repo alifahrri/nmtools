@@ -138,6 +138,7 @@ set(ARRAY_EVAL_TEST_SOURCES
     array/tril.cpp
     array/triu.cpp
     array/transpose.cpp
+    array/unsqueeze.cpp
     array/var.cpp
     array/vecdot.cpp
     array/vector_norm.cpp

@@ -97,6 +97,8 @@ NMTOOLS_TESTING_DECLARE_CASE(tilekit, compute_block_shape)
     }
 }
 
+/*************************************************************************** */
+
 #define COMPUTE_BLOCK_SHAPE_EXPECTED_SUBCASE(case_name, expected, ...) \
 SUBCASE(#case_name) \
 { \
@@ -161,6 +163,8 @@ TEST_CASE("compute_block_shape(case3)" * doctest::test_suite("tilekit"))
     COMPUTE_BLOCK_SHAPE_EXPECTED_SUBCASE(case3, expected_nl2, array_shape_nl2, tile_shape_nl2, padding);
 }
 
+/*************************************************************************** */
+
 TEST_CASE("ndoffset(case1)" * doctest::test_suite("tilekit"))
 {
     auto array_shape = tuple{4_ct,12_ct};
@@ -201,6 +205,8 @@ TEST_CASE("ndoffset(case3)" * doctest::test_suite("tilekit"))
     NMTOOLS_ASSERT_EQUAL( ndoffset[1], (tuple{0,4}) );
     NMTOOLS_ASSERT_EQUAL( ndoffset[2], (tuple{0,8}) );
 }
+
+/*************************************************************************** */
 
 TEST_CASE("nditer(case1)" * doctest::test_suite("tilekit"))
 {
@@ -306,17 +312,17 @@ TEST_CASE("nditer(case1c)" * doctest::test_suite("tilekit"))
     auto axis = 0_ct;
 
     auto src_nditer = tk::nditer(inp_shape,tile_shape);
-    auto inp_nditer = tk::moveaxis(
+    auto dst_nditer = tk::moveaxis(
         src_nditer
         , axis
         , nm::ct_v<1>
     );
 
-    auto axis_0_iter = tk::iter_shape(inp_nditer,0);
-    auto axis_1_iter = tk::iter_shape(inp_nditer,1);
+    auto axis_0_iter = tk::iter_shape(dst_nditer,0);
+    auto axis_1_iter = tk::iter_shape(dst_nditer,1);
 
     NMTOOLS_ASSERT_EQUAL( src_nditer.shape(), (array{1,2,2}) );
-    NMTOOLS_ASSERT_EQUAL( inp_nditer.shape(), (array{2,1,2}) );
+    NMTOOLS_ASSERT_EQUAL( dst_nditer.shape(), (array{2,1,2}) );
     NMTOOLS_ASSERT_EQUAL( axis_0_iter, 2 );
     NMTOOLS_ASSERT_EQUAL( axis_1_iter, 1 );
 
@@ -326,7 +332,7 @@ TEST_CASE("nditer(case1c)" * doctest::test_suite("tilekit"))
         auto i = 0;
         auto j = 0;
 
-        auto tile_offset = tk::packed_at(inp_nditer,i,j);
+        auto tile_offset = tk::packed_at(dst_nditer,i,j);
         NMTOOLS_ASSERT_EQUAL( tile_offset, (array{0,0}) );
 
         auto block = tk::load(ctx,inp,tile_offset,tile_shape);
@@ -341,7 +347,7 @@ TEST_CASE("nditer(case1c)" * doctest::test_suite("tilekit"))
         auto i = 1;
         auto j = 0;
 
-        auto tile_offset = tk::packed_at(inp_nditer,i,j);
+        auto tile_offset = tk::packed_at(dst_nditer,i,j);
         NMTOOLS_ASSERT_EQUAL( tile_offset, (array{0,4}) );
 
         auto block = tk::load(ctx,inp,tile_offset,tile_shape);
@@ -383,6 +389,95 @@ TEST_CASE("nditer(case2)" * doctest::test_suite("tilekit"))
     };
     NMTOOLS_ASSERT_EQUAL( nditer, expected );
 }
+
+/*************************************************************************** */
+
+TEST_CASE("tile(case1)" * doctest::test_suite("tilekit"))
+{
+    auto a_shape = array{3,4};
+    auto t_shape = tuple{1_ct,4_ct};
+
+    auto reps = tuple{1_ct,3_ct};
+
+    auto src_nditer = tk::nditer(a_shape, t_shape);
+    auto dst_nditer = tk::tile(src_nditer,reps);
+
+    NMTOOLS_ASSERT_EQUAL( src_nditer.iter_shape(), (array{3,1}) );
+    NMTOOLS_ASSERT_EQUAL( src_nditer(0,0), (array{0,0}) );
+    NMTOOLS_ASSERT_EQUAL( src_nditer(1,0), (array{1,0}) );
+    NMTOOLS_ASSERT_EQUAL( src_nditer(2,0), (array{2,0}) );
+
+    NMTOOLS_ASSERT_EQUAL( dst_nditer.shape(), (array{3,3,2}) );
+    NMTOOLS_ASSERT_EQUAL( tk::iter_shape(dst_nditer), (array{3,3}) );
+    NMTOOLS_ASSERT_EQUAL( (tk::packed_at(dst_nditer,0,0)), (array{0,0}) );
+    NMTOOLS_ASSERT_EQUAL( (tk::packed_at(dst_nditer,0,1)), (array{0,0}) );
+    NMTOOLS_ASSERT_EQUAL( (tk::packed_at(dst_nditer,0,2)), (array{0,0}) );
+    NMTOOLS_ASSERT_EQUAL( (tk::packed_at(dst_nditer,1,0)), (array{1,0}) );
+    NMTOOLS_ASSERT_EQUAL( (tk::packed_at(dst_nditer,1,1)), (array{1,0}) );
+    NMTOOLS_ASSERT_EQUAL( (tk::packed_at(dst_nditer,1,2)), (array{1,0}) );
+    NMTOOLS_ASSERT_EQUAL( (tk::packed_at(dst_nditer,2,0)), (array{2,0}) );
+    NMTOOLS_ASSERT_EQUAL( (tk::packed_at(dst_nditer,2,1)), (array{2,0}) );
+    NMTOOLS_ASSERT_EQUAL( (tk::packed_at(dst_nditer,2,2)), (array{2,0}) );
+}
+
+/*************************************************************************** */
+
+TEST_CASE("repeat(case1)" * doctest::test_suite("tilekit"))
+{
+    auto a_shape = array{1,8,4};
+    auto t_shape = tuple{1_ct,4_ct,2_ct};
+
+    auto repeats = 2_ct;
+    auto axis = 0_ct;
+
+    auto src_nditer = tk::nditer(a_shape,t_shape);
+    auto dst_nditer = tk::repeat(src_nditer,repeats,axis);
+
+    NMTOOLS_ASSERT_EQUAL( tk::iter_shape(src_nditer), (array{1,2,2}) );
+    NMTOOLS_ASSERT_EQUAL( tk::iter_shape(dst_nditer), (array{2,2,2}) );
+
+    NMTOOLS_ASSERT_EQUAL( src_nditer(0,0,0), (array{0,0,0}) );
+    NMTOOLS_ASSERT_EQUAL( src_nditer(0,0,1), (array{0,0,2}) );
+    NMTOOLS_ASSERT_EQUAL( src_nditer(0,1,0), (array{0,4,0}) );
+    NMTOOLS_ASSERT_EQUAL( src_nditer(0,1,1), (array{0,4,2}) );
+
+    NMTOOLS_ASSERT_EQUAL( (tk::packed_at(dst_nditer,0,0,0)), (array{0,0,0}) );
+    NMTOOLS_ASSERT_EQUAL( (tk::packed_at(dst_nditer,0,0,1)), (array{0,0,2}) );
+    NMTOOLS_ASSERT_EQUAL( (tk::packed_at(dst_nditer,0,1,0)), (array{0,4,0}) );
+    NMTOOLS_ASSERT_EQUAL( (tk::packed_at(dst_nditer,0,1,1)), (array{0,4,2}) );
+    NMTOOLS_ASSERT_EQUAL( (tk::packed_at(dst_nditer,1,0,0)), (array{0,0,0}) );
+    NMTOOLS_ASSERT_EQUAL( (tk::packed_at(dst_nditer,1,0,1)), (array{0,0,2}) );
+    NMTOOLS_ASSERT_EQUAL( (tk::packed_at(dst_nditer,1,1,0)), (array{0,4,0}) );
+    NMTOOLS_ASSERT_EQUAL( (tk::packed_at(dst_nditer,1,1,1)), (array{0,4,2}) );
+}
+
+/*************************************************************************** */
+
+TEST_CASE("transpose(case1)" * doctest::test_suite("tilekit"))
+{
+    auto rhs_shape  = tuple{8_ct,2_ct};
+    auto rhs_tshape = tuple{4_ct,2_ct};
+
+    auto src_rhs_nditer = tk::nditer(rhs_shape,rhs_tshape);
+    auto dst_rhs_nditer = tk::transpose(src_rhs_nditer);
+
+    {
+        NMTOOLS_ASSERT_EQUAL( tk::iter_shape(src_rhs_nditer), (array{2,1}) );
+        NMTOOLS_ASSERT_EQUAL( tk::iter_shape(dst_rhs_nditer), (array{1,2}) );
+    }
+    {
+        NMTOOLS_ASSERT_EQUAL( (tk::packed_at(src_rhs_nditer,0,0)), (array{0,0}) )
+        NMTOOLS_ASSERT_EQUAL( (tk::packed_at(src_rhs_nditer,1,0)), (array{4,0}) )
+    }
+    {
+        NMTOOLS_ASSERT_EQUAL( (tk::packed_at(dst_rhs_nditer,0,0)), (array{0,0}) )
+        NMTOOLS_ASSERT_EQUAL( (tk::packed_at(dst_rhs_nditer,0,1)), (array{4,0}) )
+    }
+}
+
+/*************************************************************************** */
+
+// TODO: add broadcast_to
 
 TEST_CASE("load(case1)" * doctest::test_suite("tilekit"))
 {

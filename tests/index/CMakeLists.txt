@@ -95,6 +95,7 @@ if (NMTOOLS_INDEX_TEST_ALL)
         src/tile.cpp
         src/tiling_window.cpp
         src/tril.cpp
+        src/unsqueeze.cpp
 
         src/array.cpp
     )

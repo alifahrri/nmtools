@@ -30,7 +30,7 @@ TEST_CASE("linearize(matmul)" * doctest::test_suite("transform"))
     auto lhs = na::random(lhs_shape,dtype,gen);
     auto rhs = na::random(rhs_shape,dtype,gen);
 
-    auto res = view::matmulv2(lhs,rhs);
+    auto res = view::matmulv3(lhs,rhs);
 
     auto graph = fn::get_compute_graph(unwrap(res));
 

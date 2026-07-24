@@ -5,6 +5,337 @@
 #include "nmtools/testing/doctest.hpp"
 #include "nmtools/utility/apply_isequal.hpp"
 
+#define MATMUL_LHS_RESHAPE(case_name, ...) \
+SUBCASE(#case_name) \
+{ \
+    NMTOOLS_TESTING_USE_CASE(index, matmul_lhs_reshape, case_name); \
+    using namespace args; \
+    auto result = nmtools::index::matmul_lhs_reshape(__VA_ARGS__); \
+    NMTOOLS_ASSERT_EQUAL( result, expect::result ); \
+}
+
+#define MATMUL_RHS_RESHAPE(case_name, ...) \
+SUBCASE(#case_name) \
+{ \
+    NMTOOLS_TESTING_USE_CASE(index, matmul_rhs_reshape, case_name); \
+    using namespace args; \
+    auto result = nmtools::index::matmul_rhs_reshape(__VA_ARGS__); \
+    NMTOOLS_ASSERT_EQUAL( result, expect::result ); \
+}
+
+#define MATMUL_LHS_RESHAPE_RESULT(case_name, result, ...) \
+SUBCASE(#case_name) \
+{ \
+    NMTOOLS_TESTING_USE_CASE(index, matmul_lhs_reshape, case_name); \
+    using namespace args; \
+    auto result = nmtools::index::matmul_lhs_reshape(__VA_ARGS__); \
+    NMTOOLS_ASSERT_EQUAL( result, expect::result ); \
+}
+
+#define MATMUL_RHS_RESHAPE_RESULT(case_name, result, ...) \
+SUBCASE(#case_name) \
+{ \
+    NMTOOLS_TESTING_USE_CASE(index, matmul_rhs_reshape, case_name); \
+    using namespace args; \
+    auto result = nmtools::index::matmul_rhs_reshape(__VA_ARGS__); \
+    NMTOOLS_ASSERT_EQUAL( result, expect::result ); \
+}
+
+#define MATMUL_RES_RESHAPE(case_name, ...) \
+SUBCASE(#case_name) \
+{ \
+    NMTOOLS_TESTING_USE_CASE(index, matmul_res_reshape, case_name); \
+    using namespace args; \
+    auto result = nmtools::index::matmul_res_reshape(__VA_ARGS__); \
+    NMTOOLS_ASSERT_EQUAL( result, expect::result ); \
+}
+
+#define MATMUL_RES_RESHAPE_RESULT(case_name, result, ...) \
+SUBCASE(#case_name) \
+{ \
+    NMTOOLS_TESTING_USE_CASE(index, matmul_res_reshape, case_name); \
+    using namespace args; \
+    auto result = nmtools::index::matmul_res_reshape(__VA_ARGS__); \
+    NMTOOLS_ASSERT_EQUAL( result, expect::result ); \
+}
+
+TEST_CASE("matmul_lhs_reshape(case1)" * doctest::test_suite("index::matmul_lhs_reshape"))
+{
+    MATMUL_LHS_RESHAPE( case1, shape );
+    MATMUL_LHS_RESHAPE( case1, shape_a );
+    MATMUL_LHS_RESHAPE( case1, shape_f );
+    MATMUL_LHS_RESHAPE( case1, shape_h );
+    MATMUL_LHS_RESHAPE( case1, shape_v );
+
+    MATMUL_LHS_RESHAPE( case1, shape_ct );
+
+    MATMUL_LHS_RESHAPE_RESULT( case1, result_nl1, shape_nl1 );
+
+    MATMUL_LHS_RESHAPE( case1, shape_mx1 );
+}
+
+TEST_CASE("matmul_lhs_reshape(case2)" * doctest::test_suite("index::matmul_lhs_reshape"))
+{
+    MATMUL_LHS_RESHAPE( case2, shape );
+    MATMUL_LHS_RESHAPE( case2, shape_a );
+    MATMUL_LHS_RESHAPE( case2, shape_f );
+    MATMUL_LHS_RESHAPE( case2, shape_h );
+    MATMUL_LHS_RESHAPE( case2, shape_v );
+
+    MATMUL_LHS_RESHAPE( case2, shape_ct );
+
+    MATMUL_LHS_RESHAPE_RESULT( case2, result_nl1, shape_nl1 );
+    MATMUL_LHS_RESHAPE_RESULT( case2, result_nl2, shape_nl2 );
+
+    MATMUL_LHS_RESHAPE( case2, shape_mx1 );
+    MATMUL_LHS_RESHAPE( case2, shape_mx2 );
+}
+
+TEST_CASE("matmul_lhs_reshape(case3)" * doctest::test_suite("index::matmul_lhs_reshape"))
+{
+    MATMUL_LHS_RESHAPE( case3, shape );
+    MATMUL_LHS_RESHAPE( case3, shape_a );
+    MATMUL_LHS_RESHAPE( case3, shape_f );
+    MATMUL_LHS_RESHAPE( case3, shape_h );
+    MATMUL_LHS_RESHAPE( case3, shape_v );
+
+    MATMUL_LHS_RESHAPE( case3, shape_ct );
+
+    MATMUL_LHS_RESHAPE_RESULT( case3, result_nl1, shape_nl1 );
+    MATMUL_LHS_RESHAPE_RESULT( case3, result_nl2, shape_nl2 );
+    MATMUL_LHS_RESHAPE_RESULT( case3, result_nl3, shape_nl3 );
+
+    MATMUL_LHS_RESHAPE( case3, shape_mx1 );
+    MATMUL_LHS_RESHAPE( case3, shape_mx2 );
+    MATMUL_LHS_RESHAPE( case3, shape_mx3 );
+}
+
+TEST_CASE("matmul_rhs_reshape(case1)" * doctest::test_suite("index::matmul_rhs_reshape"))
+{
+    MATMUL_RHS_RESHAPE( case1, shape );
+    MATMUL_RHS_RESHAPE( case1, shape_a );
+    MATMUL_RHS_RESHAPE( case1, shape_f );
+    MATMUL_RHS_RESHAPE( case1, shape_h );
+    MATMUL_RHS_RESHAPE( case1, shape_v );
+
+    MATMUL_RHS_RESHAPE( case1, shape_ct );
+
+    MATMUL_RHS_RESHAPE_RESULT( case1, result_nl1, shape_nl1 );
+
+    MATMUL_RHS_RESHAPE( case1, shape_mx1 );
+}
+
+TEST_CASE("matmul_rhs_reshape(case2)" * doctest::test_suite("index::matmul_rhs_reshape"))
+{
+    MATMUL_RHS_RESHAPE( case2, shape );
+    MATMUL_RHS_RESHAPE( case2, shape_a );
+    MATMUL_RHS_RESHAPE( case2, shape_f );
+    MATMUL_RHS_RESHAPE( case2, shape_h );
+    MATMUL_RHS_RESHAPE( case2, shape_v );
+
+    MATMUL_RHS_RESHAPE( case2, shape_ct );
+
+    MATMUL_RHS_RESHAPE_RESULT( case2, result_nl1, shape_nl1 );
+    MATMUL_RHS_RESHAPE_RESULT( case2, result_nl2, shape_nl2 );
+
+    MATMUL_RHS_RESHAPE( case2, shape_mx1 );
+    MATMUL_RHS_RESHAPE( case2, shape_mx2 );
+}
+
+TEST_CASE("matmul_rhs_reshape(case3)" * doctest::test_suite("index::matmul_rhs_reshape"))
+{
+    MATMUL_RHS_RESHAPE( case3, shape );
+    MATMUL_RHS_RESHAPE( case3, shape_a );
+    MATMUL_RHS_RESHAPE( case3, shape_f );
+    MATMUL_RHS_RESHAPE( case3, shape_h );
+    MATMUL_RHS_RESHAPE( case3, shape_v );
+
+    MATMUL_RHS_RESHAPE( case3, shape_ct );
+
+    MATMUL_RHS_RESHAPE_RESULT( case3, result_nl1, shape_nl1 );
+    MATMUL_RHS_RESHAPE_RESULT( case3, result_nl2, shape_nl2 );
+    MATMUL_RHS_RESHAPE_RESULT( case3, result_nl3, shape_nl3 );
+
+    MATMUL_RHS_RESHAPE( case3, shape_mx1 );
+    MATMUL_RHS_RESHAPE( case3, shape_mx2 );
+    MATMUL_RHS_RESHAPE( case3, shape_mx3 );
+}
+
+TEST_CASE("matmul_rhs_reshape(case4)" * doctest::test_suite("index::matmul_rhs_reshape"))
+{
+    MATMUL_RHS_RESHAPE( case4, shape );
+    MATMUL_RHS_RESHAPE( case4, shape_a );
+    MATMUL_RHS_RESHAPE( case4, shape_f );
+    MATMUL_RHS_RESHAPE( case4, shape_h );
+    MATMUL_RHS_RESHAPE( case4, shape_v );
+
+    MATMUL_RHS_RESHAPE( case4, shape_ct );
+
+    MATMUL_RHS_RESHAPE_RESULT( case4, result_nl1, shape_nl1 );
+    MATMUL_RHS_RESHAPE_RESULT( case4, result_nl2, shape_nl2 );
+    MATMUL_RHS_RESHAPE_RESULT( case4, result_nl3, shape_nl3 );
+    MATMUL_RHS_RESHAPE_RESULT( case4, result_nl4, shape_nl4 );
+
+    MATMUL_RHS_RESHAPE( case4, shape_mx1 );
+    MATMUL_RHS_RESHAPE( case4, shape_mx2 );
+    MATMUL_RHS_RESHAPE( case4, shape_mx3 );
+    MATMUL_RHS_RESHAPE( case4, shape_mx4 );
+}
+
+TEST_CASE("matmul_res_reshape(case1)" * doctest::test_suite("index::matmul_res_reshape"))
+{
+    MATMUL_RES_RESHAPE( case1, shape, lhs_dim, rhs_dim );
+    MATMUL_RES_RESHAPE( case1, shape_a, lhs_dim, rhs_dim );
+    MATMUL_RES_RESHAPE( case1, shape_f, lhs_dim, rhs_dim );
+    MATMUL_RES_RESHAPE( case1, shape_h, lhs_dim, rhs_dim );
+    MATMUL_RES_RESHAPE( case1, shape_v, lhs_dim, rhs_dim );
+
+    MATMUL_RES_RESHAPE( case1, shape_ct, lhs_dim_ct, rhs_dim_ct );
+    MATMUL_RES_RESHAPE( case1, shape_ct, lhs_dim, rhs_dim );
+
+    MATMUL_RES_RESHAPE_RESULT( case1, result_nl1, shape_nl1, lhs_dim, rhs_dim );
+    MATMUL_RES_RESHAPE_RESULT( case1, result_nl2, shape_nl2, lhs_dim, rhs_dim );
+
+    MATMUL_RES_RESHAPE( case1, shape_mx1, lhs_dim_ct, rhs_dim_ct );
+    MATMUL_RES_RESHAPE( case1, shape_mx2, lhs_dim_ct, rhs_dim_ct );
+}
+
+TEST_CASE("matmul_res_reshape(case2)" * doctest::test_suite("index::matmul_res_reshape"))
+{
+    MATMUL_RES_RESHAPE( case2, shape, lhs_dim, rhs_dim );
+    MATMUL_RES_RESHAPE( case2, shape_a, lhs_dim, rhs_dim );
+    MATMUL_RES_RESHAPE( case2, shape_f, lhs_dim, rhs_dim );
+    MATMUL_RES_RESHAPE( case2, shape_h, lhs_dim, rhs_dim );
+    MATMUL_RES_RESHAPE( case2, shape_v, lhs_dim, rhs_dim );
+
+    MATMUL_RES_RESHAPE( case2, shape_ct, lhs_dim_ct, rhs_dim_ct );
+    MATMUL_RES_RESHAPE( case2, shape_ct, lhs_dim, rhs_dim );
+
+    MATMUL_RES_RESHAPE_RESULT( case2, result_nl1, shape_nl1, lhs_dim, rhs_dim );
+    MATMUL_RES_RESHAPE_RESULT( case2, result_nl2, shape_nl2, lhs_dim, rhs_dim );
+    MATMUL_RES_RESHAPE_RESULT( case2, result_nl3, shape_nl3, lhs_dim, rhs_dim );
+
+    MATMUL_RES_RESHAPE( case2, shape_mx1, lhs_dim_ct, rhs_dim_ct );
+    MATMUL_RES_RESHAPE( case2, shape_mx2, lhs_dim_ct, rhs_dim_ct );
+    MATMUL_RES_RESHAPE( case2, shape_mx3, lhs_dim_ct, rhs_dim_ct );
+}
+
+TEST_CASE("matmul_res_reshape(case3)" * doctest::test_suite("index::matmul_res_reshape"))
+{
+    MATMUL_RES_RESHAPE( case3, shape, lhs_dim, rhs_dim );
+    MATMUL_RES_RESHAPE( case3, shape_a, lhs_dim, rhs_dim );
+    MATMUL_RES_RESHAPE( case3, shape_f, lhs_dim, rhs_dim );
+    MATMUL_RES_RESHAPE( case3, shape_h, lhs_dim, rhs_dim );
+    MATMUL_RES_RESHAPE( case3, shape_v, lhs_dim, rhs_dim );
+
+    MATMUL_RES_RESHAPE( case3, shape_ct, lhs_dim_ct, rhs_dim_ct );
+    MATMUL_RES_RESHAPE( case3, shape_ct, lhs_dim, rhs_dim );
+
+    MATMUL_RES_RESHAPE_RESULT( case3, result_nl1, shape_nl1, lhs_dim, rhs_dim );
+    MATMUL_RES_RESHAPE_RESULT( case3, result_nl2, shape_nl2, lhs_dim, rhs_dim );
+    MATMUL_RES_RESHAPE_RESULT( case3, result_nl3, shape_nl3, lhs_dim, rhs_dim );
+    MATMUL_RES_RESHAPE_RESULT( case3, result_nl4, shape_nl4, lhs_dim, rhs_dim );
+
+    MATMUL_RES_RESHAPE( case3, shape_mx1, lhs_dim_ct, rhs_dim_ct );
+    MATMUL_RES_RESHAPE( case3, shape_mx2, lhs_dim_ct, rhs_dim_ct );
+    MATMUL_RES_RESHAPE( case3, shape_mx3, lhs_dim_ct, rhs_dim_ct );
+    MATMUL_RES_RESHAPE( case3, shape_mx4, lhs_dim_ct, rhs_dim_ct );
+}
+
+TEST_CASE("matmul_res_reshape(case4)" * doctest::test_suite("index::matmul_res_reshape"))
+{
+    MATMUL_RES_RESHAPE( case4, shape, lhs_dim, rhs_dim );
+    MATMUL_RES_RESHAPE( case4, shape_a, lhs_dim, rhs_dim );
+    MATMUL_RES_RESHAPE( case4, shape_f, lhs_dim, rhs_dim );
+    MATMUL_RES_RESHAPE( case4, shape_h, lhs_dim, rhs_dim );
+    MATMUL_RES_RESHAPE( case4, shape_v, lhs_dim, rhs_dim );
+
+    MATMUL_RES_RESHAPE( case4, shape_ct, lhs_dim_ct, rhs_dim_ct );
+    MATMUL_RES_RESHAPE( case4, shape_ct, lhs_dim, rhs_dim );
+
+    MATMUL_RES_RESHAPE_RESULT( case4, result_nl1, shape_nl1, lhs_dim, rhs_dim );
+
+    MATMUL_RES_RESHAPE( case4, shape_mx1, lhs_dim_ct, rhs_dim_ct );
+    MATMUL_RES_RESHAPE( case4, shape_mx2, lhs_dim_ct, rhs_dim_ct );
+}
+
+TEST_CASE("matmul_res_reshape(case5)" * doctest::test_suite("index::matmul_res_reshape"))
+{
+    MATMUL_RES_RESHAPE( case5, shape, lhs_dim, rhs_dim );
+    MATMUL_RES_RESHAPE( case5, shape_a, lhs_dim, rhs_dim );
+    MATMUL_RES_RESHAPE( case5, shape_f, lhs_dim, rhs_dim );
+    MATMUL_RES_RESHAPE( case5, shape_h, lhs_dim, rhs_dim );
+    MATMUL_RES_RESHAPE( case5, shape_v, lhs_dim, rhs_dim );
+
+    MATMUL_RES_RESHAPE( case5, shape_ct, lhs_dim_ct, rhs_dim_ct );
+    MATMUL_RES_RESHAPE( case5, shape_ct, lhs_dim, rhs_dim );
+
+    MATMUL_RES_RESHAPE_RESULT( case5, result_nl1, shape_nl1, lhs_dim, rhs_dim );
+    MATMUL_RES_RESHAPE_RESULT( case5, result_nl2, shape_nl2, lhs_dim, rhs_dim );
+
+    MATMUL_RES_RESHAPE( case5, shape_mx1, lhs_dim_ct, rhs_dim_ct );
+    MATMUL_RES_RESHAPE( case5, shape_mx2, lhs_dim_ct, rhs_dim_ct );
+    MATMUL_RES_RESHAPE( case5, shape_mx3, lhs_dim_ct, rhs_dim_ct );
+}
+
+TEST_CASE("matmul_res_reshape(case6)" * doctest::test_suite("index::matmul_res_reshape"))
+{
+    MATMUL_RES_RESHAPE( case6, shape, lhs_dim, rhs_dim );
+    MATMUL_RES_RESHAPE( case6, shape_a, lhs_dim, rhs_dim );
+    MATMUL_RES_RESHAPE( case6, shape_f, lhs_dim, rhs_dim );
+    MATMUL_RES_RESHAPE( case6, shape_h, lhs_dim, rhs_dim );
+    MATMUL_RES_RESHAPE( case6, shape_v, lhs_dim, rhs_dim );
+
+    MATMUL_RES_RESHAPE( case6, shape_ct, lhs_dim_ct, rhs_dim_ct );
+    MATMUL_RES_RESHAPE( case6, shape_ct, lhs_dim, rhs_dim );
+
+    MATMUL_RES_RESHAPE_RESULT( case6, result_nl1, shape_nl1, lhs_dim, rhs_dim );
+    MATMUL_RES_RESHAPE_RESULT( case6, result_nl2, shape_nl2, lhs_dim, rhs_dim );
+    MATMUL_RES_RESHAPE_RESULT( case6, result_nl3, shape_nl3, lhs_dim, rhs_dim );
+
+    MATMUL_RES_RESHAPE( case6, shape_mx1, lhs_dim_ct, rhs_dim_ct );
+    MATMUL_RES_RESHAPE( case6, shape_mx2, lhs_dim_ct, rhs_dim_ct );
+    MATMUL_RES_RESHAPE( case6, shape_mx3, lhs_dim_ct, rhs_dim_ct );
+    MATMUL_RES_RESHAPE( case6, shape_mx4, lhs_dim_ct, rhs_dim_ct );
+}
+
+TEST_CASE("matmul_res_reshape(case7)" * doctest::test_suite("index::matmul_res_reshape"))
+{
+    MATMUL_RES_RESHAPE( case7, shape, lhs_dim, rhs_dim );
+    MATMUL_RES_RESHAPE( case7, shape_a, lhs_dim, rhs_dim );
+    MATMUL_RES_RESHAPE( case7, shape_f, lhs_dim, rhs_dim );
+    MATMUL_RES_RESHAPE( case7, shape_h, lhs_dim, rhs_dim );
+    MATMUL_RES_RESHAPE( case7, shape_v, lhs_dim, rhs_dim );
+
+    MATMUL_RES_RESHAPE( case7, shape_ct, lhs_dim_ct, rhs_dim_ct );
+    MATMUL_RES_RESHAPE( case7, shape_ct, lhs_dim, rhs_dim );
+
+    MATMUL_RES_RESHAPE_RESULT( case7, result_nl1, shape_nl1, lhs_dim, rhs_dim );
+
+    MATMUL_RES_RESHAPE( case7, shape_mx1, lhs_dim_ct, rhs_dim_ct );
+    MATMUL_RES_RESHAPE( case7, shape_mx2, lhs_dim_ct, rhs_dim_ct );
+}
+
+TEST_CASE("matmul_res_reshape(case8)" * doctest::test_suite("index::matmul_res_reshape"))
+{
+    MATMUL_RES_RESHAPE( case8, shape, lhs_dim, rhs_dim );
+    MATMUL_RES_RESHAPE( case8, shape_a, lhs_dim, rhs_dim );
+    MATMUL_RES_RESHAPE( case8, shape_f, lhs_dim, rhs_dim );
+    MATMUL_RES_RESHAPE( case8, shape_h, lhs_dim, rhs_dim );
+    MATMUL_RES_RESHAPE( case8, shape_v, lhs_dim, rhs_dim );
+
+    MATMUL_RES_RESHAPE( case8, shape_ct, lhs_dim_ct, rhs_dim_ct );
+    MATMUL_RES_RESHAPE( case8, shape_ct, lhs_dim, rhs_dim );
+
+    MATMUL_RES_RESHAPE_RESULT( case8, result_nl1, shape_nl1, lhs_dim, rhs_dim );
+    MATMUL_RES_RESHAPE_RESULT( case8, result_nl2, shape_nl2, lhs_dim, rhs_dim );
+    MATMUL_RES_RESHAPE_RESULT( case8, result_nl3, shape_nl3, lhs_dim, rhs_dim );
+
+    MATMUL_RES_RESHAPE( case8, shape_mx1, lhs_dim_ct, rhs_dim_ct );
+    MATMUL_RES_RESHAPE( case8, shape_mx2, lhs_dim_ct, rhs_dim_ct );
+    MATMUL_RES_RESHAPE( case8, shape_mx3, lhs_dim_ct, rhs_dim_ct );
+}
+
 #define SHAPE_MATMUL_SUBCASE(case_name, ...) \
 SUBCASE(#case_name) \
 { \

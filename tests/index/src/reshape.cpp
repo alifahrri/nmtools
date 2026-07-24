@@ -1,4 +1,4 @@
-#include "nmtools/index/reshape.hpp"
+#include "nmtools/array/reshape.hpp"
 #include "nmtools/testing/data/index/reshape.hpp"
 #include "nmtools/testing/doctest.hpp"
 
