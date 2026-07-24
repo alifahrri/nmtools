@@ -14,6 +14,8 @@
 // useful for work partitioning
 #include "nmtools/array/transpose.hpp"
 #include "nmtools/array/moveaxis.hpp"
+#include "nmtools/array/tile.hpp"
+#include "nmtools/array/unsqueeze.hpp"
 
 namespace nmtools::tilekit
 {
@@ -128,7 +130,7 @@ namespace nmtools::tilekit
         }
     }; // nditer_t
 
-    using view::transpose;
+    using view::reshape;
 
     template <typename view_t, typename idx_t=none_t>
     constexpr auto iter_shape(const view_t& view, idx_t idx={})
@@ -136,7 +138,8 @@ namespace nmtools::tilekit
         // TODO: check if the underlying array is nditer_t
         auto src_shape = nmtools::shape(view);
         if constexpr (is_none_v<idx_t>) {
-            constexpr auto DIM = len_v<view_t>;
+            constexpr auto DIM = fixed_dim_v<view_t>;
+            static_assert( DIM > 0 );
             using result_t = nmtools_array<nm_size_t,DIM-1>;
             auto result = result_t{};
             for (nm_size_t i=0; i<(nm_size_t)DIM-1; i++) {
@@ -181,6 +184,7 @@ namespace nmtools::tilekit
             auto normalized_src = unwrap(index::normalize_axis(src,ct_v<DIM-1>));
             auto normalized_dst = unwrap(index::normalize_axis(dst,ct_v<DIM-1>));
             auto view = view::moveaxis(iter,normalized_src,normalized_dst);
+            // currently unwrap logic can't handle nditer_t
             if constexpr (is_maybe_v<decltype(view)>) {
                 return *view;
             } else {
@@ -197,6 +201,68 @@ namespace nmtools::tilekit
         } else {
             return moveaxis(src,dst);
         }
+    }
+
+    template <typename iter_t, typename reps_t>
+    constexpr auto tile(const iter_t& iter, const reps_t& reps)
+    {
+        // assume fixed dim
+        // append 1 to the end
+        auto m_reps = [&](){
+            if constexpr (is_constant_index_array_v<reps_t>) {
+                return utility::tuple_append(reps,ct_v<1>);
+            } else {
+                constexpr auto DIM = len_v<reps_t>;
+                using m_reps_t = nmtools_array<nm_size_t,DIM+1>;
+                auto m_reps = m_reps_t{};
+                template_for<DIM>([&](auto i){
+                    at(m_reps,i) = at(reps,i);
+                });
+                at(m_reps,ct_v<DIM>) = 1;
+                return m_reps;
+            }
+        }();
+        auto view = view::tile(iter,m_reps);
+        return unwrap(view);
+    } // tile
+
+    template <typename iter_t, typename repeats_t, typename axis_t>
+    constexpr auto repeat(const iter_t& iter, const repeats_t& repeats, const axis_t axis)
+    {
+        // TODO: enforce repeats to be constant index array and axis to be constant index
+
+        // No need to adjust since repeats only apply on selected axis
+        // TODO: normalize axis
+        auto view = view::repeat(iter,repeats,axis);
+        return unwrap(view);
+    }
+
+    template <typename iter_t, typename axes_t=none_t>
+    constexpr auto transpose(const iter_t& iter, [[maybe_unused]] const axes_t axes=none_t{})
+    {
+        // TODO: enforce iter_t to be fixed dim, and axes_t to be none or constant index array
+        auto m_axes = [&](){
+            if constexpr (is_none_v<axes_t>) {
+                constexpr auto DIM = fixed_dim_v<iter_t> - 1;
+                auto m_axes = template_reduce<DIM>([](auto init, auto index){
+                    constexpr auto I = decltype(index)::value;
+                    return utility::tuple_append(init,ct_v<DIM-1-I>);
+                }, nmtools_tuple{});
+                return utility::tuple_append(m_axes,ct_v<DIM>);
+            } else {
+                return axes;
+            }
+            // TODO: implement for axes is not none
+        }();
+        auto view = view::transpose(iter,m_axes);
+        return unwrap(view);
+    }
+
+    template <typename iter_t, typename axis_t>
+    constexpr auto unsqueeze(const iter_t& iter, const axis_t axis)
+    {
+        auto view = view::unsqueeze(iter,axis);
+        return unwrap(view);
     }
 
     struct compute_block_shape_t {};
