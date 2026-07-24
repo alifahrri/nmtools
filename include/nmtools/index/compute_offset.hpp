@@ -36,6 +36,14 @@ namespace nmtools::index
             );
         } else {
             using result_t = resolve_optype_t<compute_offset_t,indices_t,strides_t>;
+            // TODO: enable this
+            #if 0
+            using return_t = conditional_t<
+                !is_fail_v<result_t> && !is_constant_index_array_v<result_t>
+                , nmtools_maybe<result_t> // need extra check that m == n
+                , result_t
+            >;
+            #endif
 
             auto offset = result_t{};
 
@@ -44,6 +52,13 @@ namespace nmtools::index
             ) {
                 [[maybe_unused]] auto m = (nm_size_t)len(indices);
                 [[maybe_unused]] auto n = (nm_size_t)len(strides);
+
+                // TODO: enable this
+                #if 0
+                if (m != n) {
+                    return return_t{Nothing};
+                }
+                #endif
 
                 constexpr auto N = len_v<indices_t>;
                 constexpr auto M = len_v<strides_t>;
@@ -72,7 +87,13 @@ namespace nmtools::index
                     }
                 }
             }
+
+            // TODO: enable this
+            #if 0
+            return return_t{offset};
+            #else
             return offset;
+            #endif
         }
     } // compute_offset
 } // namespace nmtools::index
@@ -83,6 +104,8 @@ namespace nmtools::meta
     {
         template <typename...>
         struct COMPUTE_OFFSET_UNSUPPORTED : detail::fail_t {};
+        template <typename...>
+        struct COMPUTE_OFFSET_INVALID : detail::fail_t {};
     }
 
     template <typename indices_t, typename strides_t>
@@ -103,8 +126,14 @@ namespace nmtools::meta
                 constexpr auto indices = to_value_v<indices_t>;
                 constexpr auto strides = to_value_v<strides_t>;
                 constexpr auto result  = index::compute_offset(indices,strides);
-                using type = ct<result>;
-                return as_value_v<type>;
+                if constexpr (has_value(result)) {
+                    constexpr auto value = unwrap(result);
+                    using type = ct<value>;
+                    return as_value_v<type>;
+                } else {
+                    using type = error::COMPUTE_OFFSET_INVALID<indices_t,strides_t>;
+                    return as_value_v<type>;
+                }
             } else if constexpr (
                 is_mixed_index_array_v<indices_t>
                 && is_mixed_index_array_v<strides_t>

@@ -17,17 +17,26 @@ namespace nmtools::index
     template <typename size_type, typename...size_types>
     constexpr auto pack_indices(size_type index_, size_types...indices)
     {
-        // error: pack expansion used as argument for non-pack parameter of alias template :|
-        // using common_t = promote_index_t<size_types...>;
-        using common_t = type_t<meta::promote_index<size_type,size_types...>>;
-        if constexpr (is_integral_v<common_t>) {
-            using array_t = nmtools_array<common_t,1+sizeof...(indices)>;
-            return array_t{static_cast<common_t>(index_),static_cast<common_t>(indices)...};
-        } else /* if constexpr (is_index_array_v<size_type>) */ {
-            static_assert (sizeof...(indices)==0
-                , "unsupported indices for pack"
+        if constexpr (is_maybe_v<size_type> || (is_maybe_v<size_types> || ...)) {
+            using result_t = decltype(pack_indices(unwrap(index_),unwrap(indices)...));
+            using return_t = conditional_t<is_maybe_v<result_t>,result_t,nmtools_maybe<result_t>>;
+            return (has_value(index_) && (has_value(indices) && ...)
+                ? return_t{pack_indices(unwrap(index_),unwrap(indices)...)}
+                : return_t{Nothing}
             );
-            return index_;
+        } else {
+            // error: pack expansion used as argument for non-pack parameter of alias template :|
+            // using common_t = promote_index_t<size_types...>;
+            using common_t = type_t<meta::promote_index<size_type,size_types...>>;
+            if constexpr (is_integral_v<common_t>) {
+                using array_t = nmtools_array<common_t,1+sizeof...(indices)>;
+                return array_t{static_cast<common_t>(index_),static_cast<common_t>(indices)...};
+            } else /* if constexpr (is_index_array_v<size_type>) */ {
+                static_assert (sizeof...(indices)==0
+                    , "unsupported indices for pack"
+                );
+                return index_;
+            }
         }
     } // pack_indices
 } // namespace nmtools::index

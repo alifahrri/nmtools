@@ -491,6 +491,25 @@ namespace nmtools::meta
     }; // fixed_shape
 
     template <typename array_t, typename indexer_t>
+    struct fixed_dim<
+        view::decorator_t<view::indexing_t,array_t,indexer_t>
+    >{
+        using view_type = view::decorator_t<view::indexing_t,array_t,indexer_t>;
+        using indexing_type  = view::indexing_t<array_t,indexer_t>;
+        using dst_shape_type = typename indexing_type::dst_shape_type;
+
+        static constexpr auto DIM = len_v<dst_shape_type>;
+
+        static constexpr auto value = [](){
+            if constexpr (DIM > 0) {
+                return DIM;
+            } else {
+                return error::FIXED_DIM_UNSUPPORTED<view_type>{};
+            }
+        }();
+    };
+
+    template <typename array_t, typename indexer_t>
     struct fixed_size<
         view::decorator_t<view::indexing_t,array_t,indexer_t>
     >{

@@ -17,6 +17,12 @@ namespace nmtools::meta
     template <typename T>
     using type_t = typename T::type;
 
+    template <typename T, typename=void>
+    struct make_signed;
+
+    template <typename T>
+    using make_signed_t = type_t<make_signed<T>>;
+
     /**
      * @brief 
      * 
@@ -24,28 +30,6 @@ namespace nmtools::meta
      */
     template <typename T>
     static inline constexpr auto value_v = T::value;
-
-    template <typename T, T v>
-    struct integral_constant
-    {
-        using value_type = T;
-        nmtools_meta_variable_attribute
-        static constexpr value_type value = v;
-        constexpr operator value_type() const noexcept
-        {
-            return value;
-        }
-        constexpr value_type operator()() const noexcept { return value; }
-
-        template <typename U, U val>
-        constexpr auto operator+(integral_constant<U,val>) const noexcept
-        {
-            return integral_constant<T,v+val>{};
-        }
-    };
-
-    struct true_type : integral_constant<bool,true> {};
-    struct false_type : integral_constant<bool,false> {};
 
     /**
      * @brief To provide enable_if without depends to stl
@@ -64,6 +48,59 @@ namespace nmtools::meta
 
     template <bool condition, typename T=void>
     using enable_if_t = type_t<enable_if<condition,T>>;
+
+    template <typename T, T v>
+    struct integral_constant
+    {
+        using value_type = T;
+        nmtools_meta_variable_attribute
+        static constexpr value_type value = v;
+        constexpr operator value_type() const noexcept
+        {
+            return value;
+        }
+        constexpr value_type operator()() const noexcept { return value; }
+
+        template <typename U, U val>
+        constexpr auto operator+(integral_constant<U,val>) const noexcept
+        {
+            return integral_constant<T,v+val>{};
+        }
+
+        template <typename U, U val>
+        constexpr auto operator-(integral_constant<U,val>) const noexcept
+        {
+            using R = make_signed_t<T>;
+            return integral_constant<R,(R)v-val>{};
+        }
+
+        template <typename U, U val>
+        constexpr auto operator*(integral_constant<U,val>) const noexcept
+        {
+            return integral_constant<T,v*val>{};
+        }
+
+        template <typename U, U val>
+        constexpr auto operator/(integral_constant<U,val>) const noexcept
+        {
+            return integral_constant<T,v/val>{};
+        }
+
+        constexpr auto operator-() const noexcept
+        {
+            using U = make_signed_t<T>;
+            return integral_constant<U,-(U)v>{};
+        }
+
+        template <typename U, U val, enable_if_t<val == v,int> =0>
+        constexpr auto operator=(const integral_constant<U,val>) noexcept
+        {
+            return *this;
+        }
+    };
+
+    struct true_type : integral_constant<bool,true> {};
+    struct false_type : integral_constant<bool,false> {};
 
     template <typename T, typename U>
     struct is_same : false_type {};
@@ -92,6 +129,33 @@ namespace nmtools::meta
      */
     template <typename T>
     constexpr inline auto as_value_v = as_value<T>{};
+
+    template <typename T, typename>
+    struct make_signed
+    {
+        static constexpr auto vtype = [](){
+            if constexpr (is_same_v<T,unsigned int>) {
+                return as_value_v<int>;
+            } else if constexpr (is_same_v<T,unsigned long>) {
+                return as_value_v<long>;
+            } else if constexpr (is_same_v<T,unsigned long long>) {
+                return as_value_v<long long>;
+            } else if constexpr (is_same_v<T,unsigned char>) {
+                return as_value_v<char>;
+            } else if constexpr (is_same_v<T,::nmtools::uint8_t>) {
+                return as_value_v<::nmtools::int8_t>;
+            } else if constexpr (is_same_v<T,::nmtools::uint16_t>) {
+                return as_value_v<::nmtools::int16_t>;
+            } else if constexpr (is_same_v<T,::nmtools::uint32_t>) {
+                return as_value_v<::nmtools::int32_t>;
+            } else if constexpr (is_same_v<T,::nmtools::uint64_t>) {
+                return as_value_v<::nmtools::int64_t>;
+            } else {
+                return as_value_v<T>;
+            }
+        }();
+        using type = type_t<decltype(vtype)>;
+    };
 
     template <typename T>
     struct is_vtype : false_type {};

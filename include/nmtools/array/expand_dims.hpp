@@ -19,9 +19,18 @@ namespace nmtools::view
     template <typename array_t, typename axis_t>
     constexpr auto expand_dims(const array_t& array, const axis_t& axis)
     {
-        auto src_shape = shape<true>(array);
-        auto dst_shape = index::shape_expand_dims(src_shape,axis);
-        return view::reshape(array,dst_shape);
+        if constexpr (is_maybe_v<array_t> || is_maybe_v<axis_t>) {
+            using result_t = decltype(view::expand_dims(unwrap(array),unwrap(axis)));
+            using return_t = conditional_t<is_maybe_v<result_t>,result_t,nmtools_maybe<result_t>>;
+            return (has_value(array) && has_value(axis)
+                ? return_t{view::expand_dims(unwrap(array),unwrap(axis))}
+                : return_t{Nothing}
+            );
+        } else {
+            auto src_shape = shape<true>(array);
+            auto dst_shape = index::shape_expand_dims(src_shape,axis);
+            return view::reshape(array,dst_shape);
+        }
     } // expand_dims
 
 } // namespace nmtools::view

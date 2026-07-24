@@ -41,4 +41,9 @@ namespace nmtools::meta
 
 } // namespace nmtools::meta
 
+namespace nmtools
+{
+    using meta::make_unsigned_t;
+}
+
 #endif // NMTOOLS_META_BITS_TRANSFORM_MAKE_UNSIGNED_HPP

@@ -439,6 +439,33 @@ namespace nmtools::utils::impl
     // graphviz stuff
     /**********************************************************************************************************************/
 
+    template <typename T>
+    struct to_string_t<
+        T, graphviz_t, enable_if_t<is_maybe_v<T> || is_either_v<T>>
+    > {
+        using formatter_type = graphviz_t;
+        using result_type    = nmtools_string;
+
+        inline auto operator()(const T& t) const noexcept
+        {
+            auto str = nmtools_string("");
+            if constexpr (is_maybe_v<T>) {
+                if (has_value(t)) {
+                    str += to_string(unwrap(t),formatter_type{});
+                } else {
+                    str += "Nothing";
+                }
+            } else if constexpr (is_either_v<T>) {
+                if (auto l_ptr = get_left(&t)) {
+                    str += to_string(*l_ptr,formatter_type{});
+                } else {
+                    str += to_string(*get_right(&t),formatter_type{});
+                }
+            }
+            return str;
+        }
+    };
+
     template <typename F, typename operands_t, typename attributes_t>
     struct to_string_t<functional::functor_t<F,operands_t,attributes_t>, graphviz_t>
     {

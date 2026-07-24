@@ -25,19 +25,19 @@ namespace nmtools::index
         using result_t = resolve_optype_t<product_t, shape_t>;
         auto ret = result_t {};
 
-        if constexpr (! is_constant_index_v<result_t>) {
-            using element_t = get_index_element_type_t<shape_t>;
-            ret = element_t{1};
+        if constexpr (!is_fail_v<result_t>
+            && !is_constant_index_v<result_t>
+        ) {
+            ret = result_t{1};
             if constexpr (is_fixed_index_array_v<shape_t>) {
                 constexpr auto n = len_v<shape_t>;
-                template_for<n>([&](auto index){
-                    constexpr auto i = decltype(index)::value;
-                    auto p = ret * at<i>(shape);
+                template_for<n>([&](auto i){
+                    result_t p = ret * at(shape,i);
                     ret = p;
                 });
             } else {
-                for (size_t i=0; i<(size_t)len(shape); i++) {
-                    auto p = ret * at(shape,i);
+                for (nm_size_t i=0; i<(nm_size_t)len(shape); i++) {
+                    result_t p = ret * at(shape,i);
                     ret = p;
                 }
             }
@@ -60,7 +60,10 @@ namespace nmtools::meta
     >
     {
         static constexpr auto vtype = [](){
-            if constexpr (is_constant_index_array_v<shape_t>) {
+            if constexpr (!is_index_array_v<shape_t>) {
+                using type = error::INDEX_PRODUCT_UNSUPPORTED<shape_t>;
+                return as_value_v<type>;
+            } else if constexpr (is_constant_index_array_v<shape_t>) {
                 constexpr auto shape = to_value_v<shape_t>;
                 constexpr auto N = index::product(shape);
                 return as_value_v<ct<N>>;
@@ -68,11 +71,12 @@ namespace nmtools::meta
                 constexpr auto shape = to_value_v<shape_t>;
                 constexpr auto N = index::product(shape);
                 return as_value_v<clipped_size_t<N>>;
-            } else if constexpr (is_index_array_v<shape_t>) {
-                using type = get_index_element_type_t<shape_t>;
-                return as_value_v<type>;
             } else {
-                using type = error::INDEX_PRODUCT_UNSUPPORTED<shape_t>;
+                using type = conditional_t<
+                    is_nullable_index_array_v<shape_t>
+                    , null_size_t
+                    , get_index_element_type_t<shape_t>
+                >;
                 return as_value_v<type>;
             }
         }();

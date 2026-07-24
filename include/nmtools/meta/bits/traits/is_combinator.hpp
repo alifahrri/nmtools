@@ -18,4 +18,9 @@ namespace nmtools::meta
     struct is_combinator<T&> : is_combinator<T> {};
 }
 
+namespace nmtools
+{
+    using meta::is_combinator_v;
+}
+
 #endif // NMTOOLS_META_BITS_TRAITS_IS_COMBINATOR_HPP

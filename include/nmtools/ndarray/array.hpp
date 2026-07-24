@@ -44,25 +44,31 @@
 #include "nmtools/array/ufuncs/sqrt.hpp"
 #include "nmtools/array/ufuncs/square.hpp"
 
-#include "nmtools/array/mean.hpp"
-#include "nmtools/array/prod.hpp"
-#include "nmtools/array/reshape.hpp"
-#include "nmtools/array/sum.hpp"
-#include "nmtools/array/var.hpp"
-
-#include "nmtools/array/copy.hpp"
 #include "nmtools/array/cumprod.hpp"
 #include "nmtools/array/cumsum.hpp"
+#include "nmtools/array/prod.hpp"
+#include "nmtools/array/sum.hpp"
+
+#include "nmtools/array/mean.hpp"
+#include "nmtools/array/var.hpp"
+#include "nmtools/array/stddev.hpp"
+
+#include "nmtools/array/copy.hpp"
 #include "nmtools/array/diagonal.hpp"
 #include "nmtools/array/expand_dims.hpp"
 #include "nmtools/array/flatten.hpp"
 #include "nmtools/array/repeat.hpp"
-#include "nmtools/array/stddev.hpp"
+#include "nmtools/array/reshape.hpp"
 #include "nmtools/array/squeeze.hpp"
+#include "nmtools/array/unsqueeze.hpp"
 #include "nmtools/array/swapaxes.hpp"
+#include "nmtools/array/tile.hpp"
 #include "nmtools/array/trace.hpp"
 #include "nmtools/array/transpose.hpp"
 #include "nmtools/array/atleast_nd.hpp"
+
+#include "nmtools/array/dot.hpp"
+#include "nmtools/array/matmul.hpp"
 
 namespace nmtools::tag
 {
@@ -177,6 +183,7 @@ namespace nmtools::view
         nmtools_ndarray_method(reshape)
         nmtools_ndarray_method(repeat)
         nmtools_ndarray_method(squeeze)
+        nmtools_ndarray_method(unsqueeze)
         nmtools_ndarray_method(swapaxes)
         nmtools_ndarray_method(trace)
         nmtools_ndarray_method(transpose)
@@ -672,6 +679,8 @@ namespace nmtools
         nmtools_ndarray_method(transpose)
         // numpy's ndarray doesn't have expand_dims member, but torch's Tensor does have unsqueeze
         nmtools_ndarray_method(expand_dims)
+        nmtools_ndarray_method(unsqueeze)
+        nmtools_ndarray_method(tile)
 
         /******************************************************************* */
         nmtools_ndarray_method(less)
@@ -714,12 +723,11 @@ namespace nmtools
         
         nmtools_ndarray_accumulate(maximum)
         nmtools_ndarray_accumulate(minimum)
-        /******************************************************************* */
 
         nmtools_ndarray_method(max)
         nmtools_ndarray_method(min)
-        nmtools_ndarray_method(prod)
-        nmtools_ndarray_method(sum)
+        /******************************************************************* */
+
         nmtools_ndarray_method(mean)
         nmtools_ndarray_method(var)
         nmtools_ndarray_method(std)
@@ -727,11 +735,17 @@ namespace nmtools
         /******************************************************************* */
         nmtools_ndarray_method(cumprod)
         nmtools_ndarray_method(cumsum)
+        nmtools_ndarray_method(prod)
+        nmtools_ndarray_method(sum)
 
         /******************************************************************* */
         // numpy's ndarray doesn't have sqrt member, but torch's Tensor does
         nmtools_ndarray_method(sqrt)
         nmtools_ndarray_method(square)
+
+        /******************************************************************* */
+        nmtools_ndarray_method(dot)
+        nmtools_ndarray_method(matmul)
 
         /******************************************************************* */
         template <typename other_t>

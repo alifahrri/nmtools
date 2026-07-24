@@ -28,5 +28,10 @@ namespace nmtools::meta
     using append_type_t = type_t<append_type<T,new_type>>;
 } // namespace nmtools::meta
 
+namespace nmtools
+{
+    using meta::append_type_t;
+}
+
 
 #endif // NMTOOLS_META_BITS_TRANSFORM_APPEND_TYPE_HPP

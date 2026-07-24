@@ -14,51 +14,60 @@ namespace nmtools::network
     template <typename adjacency_list_t>
     constexpr auto is_directed_acyclic_graph(const adjacency_list_t& adj_list)
     {
-        if constexpr (meta::is_maybe_v<adjacency_list_t>) {
+        if constexpr (is_maybe_v<adjacency_list_t>) {
             using result_t = decltype(is_directed_acyclic_graph(unwrap(adj_list)));
-            using return_t = meta::conditional_t<meta::is_maybe_v<result_t>,result_t,nmtools_maybe<result_t>>;
+            using return_t = conditional_t<is_maybe_v<result_t>,result_t,nmtools_maybe<result_t>>;
             return (has_value(adj_list)
                 ? return_t{is_directed_acyclic_graph(unwrap(adj_list))}
-                : return_t{meta::Nothing}
+                : return_t{Nothing}
             );
+        } else if constexpr (is_either_v<adjacency_list_t>) {
+            using left_t   = decltype(is_directed_acyclic_graph(*get_left(&adj_list)));
+            using right_t  = decltype(is_directed_acyclic_graph(*get_right(&adj_list)));
+            using return_t = conditional_t<is_same_v<left_t,right_t>,left_t,nmtools_either<left_t,right_t>>;
+            if (auto l_ptr = get_left(&adj_list)) {
+                return return_t{is_directed_acyclic_graph(*l_ptr)};
+            } else {
+                return return_t{is_directed_acyclic_graph(*get_right(&adj_list))};
+            }
         } else {
-            using result_t = meta::resolve_optype_t<tag::is_directed_acyclic_graph_t,adjacency_list_t>;
+            using result_t = resolve_optype_t<tag::is_directed_acyclic_graph_t,adjacency_list_t>;
 
             auto result = result_t {};
 
-            if constexpr (!meta::is_fail_v<result_t>
-                && !meta::is_constant_index_v<result_t>
+            if constexpr (!is_fail_v<result_t>
+                && !is_constant_index_v<result_t>
             ) {
                 result = true;
 
                 auto visited_vtype = [](){
-                    constexpr auto B_NUM_NODES = meta::max_len_v<adjacency_list_t>;
+                    constexpr auto B_NUM_NODES = max_len_v<adjacency_list_t>;
                     using index_t = nm_size_t;
                     if constexpr (B_NUM_NODES >= 0) {
                         using type = nmtools_static_vector<index_t,B_NUM_NODES>;
-                        return meta::as_value_v<type>;
+                        return as_value_v<type>;
                     } else {
                         // TODO: use small vector?
                         using type = nmtools_list<index_t>;
-                        return meta::as_value_v<type>;
+                        return as_value_v<type>;
                     }
                 }();
-                using visited_t = meta::type_t<decltype(visited_vtype)>;
+                using visited_t = type_t<decltype(visited_vtype)>;
 
                 auto stack_vtype = [](){
-                    constexpr auto B_NUM_NODES = meta::max_len_v<adjacency_list_t>;
+                    constexpr auto B_NUM_NODES = max_len_v<adjacency_list_t>;
                     using index_t = nm_size_t;
                     if constexpr (B_NUM_NODES >= 0) {
                         // TODO: should be only B_NUM_NODES max?
                         using type = nmtools_static_stack<index_t,B_NUM_NODES*B_NUM_NODES>;
-                        return meta::as_value_v<type>;
+                        return as_value_v<type>;
                     } else {
                         // TODO: use small vector?
                         using type = nmtools_stack<index_t>;
-                        return meta::as_value_v<type>;
+                        return as_value_v<type>;
                     }
                 }();
-                using stack_t = meta::type_t<decltype(stack_vtype)>;
+                using stack_t = type_t<decltype(stack_vtype)>;
 
                 constexpr auto WHITE = 0;
                 constexpr auto GRAY  = 1;

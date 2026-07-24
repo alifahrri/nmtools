@@ -234,7 +234,7 @@ namespace nmtools
                 static_cast<common_size_t>(n), static_cast<common_size_t>(ns)...
             };
             assert (dim()==indices.size());
-            auto offset = ::nmtools::index::compute_offset(strides_, indices);
+            auto offset = unwrap(::nmtools::index::compute_offset(strides_, indices));
             return data_[offset];
         } // operator()
 
@@ -255,7 +255,7 @@ namespace nmtools
                 static_cast<common_size_t>(n), static_cast<common_size_t>(ns)...
             };
             assert (dim()==indices.size());
-            auto offset = ::nmtools::index::compute_offset(strides_, indices);
+            auto offset = unwrap(::nmtools::index::compute_offset(strides_, indices));
             return data_[offset];
         } // operator()
 
@@ -267,13 +267,13 @@ namespace nmtools
          */
         decltype(auto) at(shape_type i) const
         {
-            auto offset = ::nmtools::index::compute_offset(strides_, i);
+            auto offset = unwrap(::nmtools::index::compute_offset(strides_, i));
             return data_[offset];
         } // at
 
         decltype(auto) at(shape_type i)
         {
-            auto offset = ::nmtools::index::compute_offset(strides_, i);
+            auto offset = unwrap(::nmtools::index::compute_offset(strides_, i));
             return data_[offset];
         } // at
 
@@ -285,7 +285,7 @@ namespace nmtools
             // somehow storage_type is deduced as std::vector while
             // provided index array (std::vector defined outside) deduced
             // as std::__ndk1::vector
-            auto offset = ::nmtools::index::compute_offset(strides_, i);
+            auto offset = unwrap(::nmtools::index::compute_offset(strides_, i));
             return data_[offset];
         } // at
 
@@ -297,7 +297,7 @@ namespace nmtools
             // somehow storage_type is deduced std::vector while
             // provided index array (std::vector defined outside) deduced
             // as std::__ndk1::vector
-            auto offset = ::nmtools::index::compute_offset(strides_, i);
+            auto offset = unwrap(::nmtools::index::compute_offset(strides_, i));
             return data_[offset];
         } // at
 

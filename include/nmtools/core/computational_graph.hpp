@@ -1,5 +1,5 @@
-#ifndef NMTOOLS_CORE_EXPRESSION_TREE_HPP
-#define NMTOOLS_CORE_EXPRESSION_TREE_HPP
+#ifndef NMTOOLS_CORE_COPUTATIONAL_GRAPH_HPP
+#define NMTOOLS_CORE_COPUTATIONAL_GRAPH_HPP
 
 #include "nmtools/meta.hpp"
 #include "nmtools/utility.hpp"
@@ -19,14 +19,24 @@ namespace nmtools::functional
     template <typename view_t>
     constexpr auto get_computational_graph(const view_t& view)
     {
-        if constexpr (meta::is_maybe_v<view_t>) {
+        if constexpr (is_maybe_v<view_t>) {
             using result_t = decltype(get_computational_graph(unwrap(view)));
-            using return_t = meta::conditional_t<meta::is_maybe_v<result_t>,result_t,nmtools_maybe<result_t>>;
+            using return_t = conditional_t<is_maybe_v<result_t>,result_t,nmtools_maybe<result_t>>;
             return (has_value(view)
                 ? return_t{get_computational_graph(unwrap(view))}
-                : return_t{meta::Nothing}
+                : return_t{Nothing}
             );
-        } else if constexpr (meta::is_view_v<view_t>) {
+        } else if constexpr (is_either_v<view_t>) {
+            using left_t   = decltype(get_computational_graph(*get_left(&view)));
+            using right_t  = decltype(get_computational_graph(*get_right(&view)));
+            using return_t = conditional_t<is_same_v<left_t,right_t>,left_t,nmtools_either<left_t,right_t>>;
+            if (auto l_ptr = get_left(&view)) {
+                return return_t{get_computational_graph(*l_ptr)};
+            } else {
+                auto r_ptr = get_right(&view);
+                return return_t{get_computational_graph(*r_ptr)};
+            }
+        } else if constexpr (is_view_v<view_t>) {
             using view_type = view_t;
             auto getter = get_computational_graph_t<view_type>();
             return getter(view);
@@ -59,11 +69,11 @@ namespace nmtools::functional
             auto operands = get_operands(view);
             constexpr auto operands_ids = view_type::operands_ids;
 
-            constexpr auto N = meta::len_v<decltype(operands)>;
-            auto m_digraph = meta::template_reduce<N>([&](auto init, auto I){
+            constexpr auto N = len_v<decltype(operands)>;
+            auto m_digraph = template_reduce<N>([&](auto init, auto I){
                 const auto& operand = at(operands,I);
                 const auto& operand_node = [&](){
-                    if constexpr (meta::is_pointer_v<meta::remove_cvref_t<decltype(operand)>>) {
+                    if constexpr (is_pointer_v<remove_cvref_t<decltype(operand)>>) {
                         return node(*operand);
                     } else {
                         return node(operand);
@@ -83,10 +93,10 @@ namespace nmtools::functional
             std::cout << m_digraph_viz << std::endl;
             #endif
 
-            auto merged_graph = meta::template_reduce<N>([&](auto init, auto I){
+            auto merged_graph = template_reduce<N>([&](auto init, auto I){
                 const auto& operand = at(operands,I);
-                using operand_t = meta::remove_cvref_t<decltype(operand)>;
-                if constexpr (meta::is_view_v<operand_t>
+                using operand_t = remove_cvref_t<decltype(operand)>;
+                if constexpr (is_view_v<operand_t>
                     && !meta::is_same_view_v<view::alias_t,operand_t>
                 ) {
                     auto subgraph = get_computational_graph(operand);
@@ -164,4 +174,4 @@ namespace nmtools::meta
     };
 }
 
-#endif // NMTOOLS_CORE_EXPRESSION_TREE_HPP
+#endif // NMTOOLS_CORE_COPUTATIONAL_GRAPH_HPP

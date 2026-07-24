@@ -19,8 +19,8 @@ namespace nmtools::view
         : base_indexer_t<transpose_t<src_shape_t,axes_t,src_size_t>>
     {
         using src_shape_type = meta::fwd_attribute_t<src_shape_t>;
-        using axes_type = meta::fwd_attribute_t<axes_t>;
-        using src_size_type = meta::fwd_attribute_t<src_size_t>;
+        using axes_type      = meta::fwd_attribute_t<axes_t>;
+        using src_size_type  = meta::fwd_attribute_t<src_size_t>;
         using dst_shape_type = meta::resolve_optype_t<index::shape_transpose_t,src_shape_type,axes_type>;
         // for transpose view, the resulting shape is the same as src
         using dst_size_type = src_size_type;
