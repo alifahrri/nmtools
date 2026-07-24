@@ -380,4 +380,372 @@ NMTOOLS_TESTING_DECLARE_CASE(index, matmul)
     }
 }
 
+NMTOOLS_TESTING_DECLARE_CASE(index, matmul_lhs_reshape)
+{
+    using namespace literals;
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case1)
+    {
+        inline int shape[1] = {6};
+
+        inline auto shape_ct = nmtools_tuple{6_ct};
+
+        inline auto shape_nl1 = to_nullable(shape,0);
+        inline auto shape_mx1 = to_mixed(shape_ct,0_ct);
+
+        NMTOOLS_CAST_INDEX_ARRAYS(shape)
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case1)
+    {
+        inline int result[3] = {1,6,1};
+        inline auto result_nl1 = nmtools_array{nullable_int(1),nullable_int(),nullable_int(1)};
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case2)
+    {
+        inline int shape[2] = {3,4};
+
+        inline auto shape_ct = nmtools_tuple{3_ct,4_ct};
+
+        inline auto shape_nl1 = to_nullable(shape,0);
+        inline auto shape_nl2 = to_nullable(shape,1);
+        inline auto shape_mx1 = to_mixed(shape_ct,0_ct);
+        inline auto shape_mx2 = to_mixed(shape_ct,1_ct);
+
+        NMTOOLS_CAST_INDEX_ARRAYS(shape)
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case2)
+    {
+        inline int result[3] = {3,4,1};
+        inline auto result_nl1 = to_nullable(result,0);
+        inline auto result_nl2 = to_nullable(result,1);
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case3)
+    {
+        inline int shape[3] = {2,3,4};
+
+        inline auto shape_ct = nmtools_tuple{2_ct,3_ct,4_ct};
+
+        inline auto shape_nl1 = to_nullable(shape,0);
+        inline auto shape_nl2 = to_nullable(shape,1);
+        inline auto shape_nl3 = to_nullable(shape,2);
+        inline auto shape_mx1 = to_mixed(shape_ct,0_ct);
+        inline auto shape_mx2 = to_mixed(shape_ct,1_ct);
+        inline auto shape_mx3 = to_mixed(shape_ct,2_ct);
+
+        NMTOOLS_CAST_INDEX_ARRAYS(shape)
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case3)
+    {
+        inline int result[4] = {2,3,4,1};
+        inline auto result_nl1 = to_nullable(result,0);
+        inline auto result_nl2 = to_nullable(result,1);
+        inline auto result_nl3 = to_nullable(result,2);
+    }
+}
+
+NMTOOLS_TESTING_DECLARE_CASE(index, matmul_rhs_reshape)
+{
+    using namespace literals;
+    NMTOOLS_TESTING_DECLARE_ARGS(case1)
+    {
+        inline int shape[1] = {6};
+
+        inline auto shape_ct = nmtools_tuple{6_ct};
+
+        inline auto shape_nl1 = to_nullable(shape,0);
+        inline auto shape_mx1 = to_mixed(shape_ct,0_ct);
+
+        NMTOOLS_CAST_INDEX_ARRAYS(shape)
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case1)
+    {
+        inline int result[3] = {1,6,1};
+        inline auto result_nl1 = to_nullable(result,1);
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case2)
+    {
+        inline int shape[2] = {6,2};
+
+        inline auto shape_ct = nmtools_tuple{6_ct,2_ct};
+
+        inline auto shape_nl1 = to_nullable(shape,0);
+        inline auto shape_nl2 = to_nullable(shape,1);
+        inline auto shape_mx1 = to_mixed(shape_ct,0_ct);
+        inline auto shape_mx2 = to_mixed(shape_ct,1_ct);
+
+        NMTOOLS_CAST_INDEX_ARRAYS(shape)
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case2)
+    {
+        inline int result[3] = {1,6,2};
+        inline auto result_nl1 = to_nullable(result,1);
+        inline auto result_nl2 = to_nullable(result,2);
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case3)
+    {
+        inline int shape[3] = {3,2,4};
+
+        inline auto shape_ct = nmtools_tuple{3_ct,2_ct,4_ct};
+
+        inline auto shape_nl1 = to_nullable(shape,0);
+        inline auto shape_nl2 = to_nullable(shape,1);
+        inline auto shape_nl3 = to_nullable(shape,2);
+        inline auto shape_mx1 = to_mixed(shape_ct,0_ct);
+        inline auto shape_mx2 = to_mixed(shape_ct,1_ct);
+        inline auto shape_mx3 = to_mixed(shape_ct,2_ct);
+
+        NMTOOLS_CAST_INDEX_ARRAYS(shape)
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case3)
+    {
+        inline int result[4] = {3,1,2,4};
+        inline auto result_nl1 = to_nullable(result,0);
+        inline auto result_nl2 = to_nullable(result,2);
+        inline auto result_nl3 = to_nullable(result,3);
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case4)
+    {
+        inline int shape[4] = {2,3,2,4};
+
+        inline auto shape_ct = nmtools_tuple{2_ct,3_ct,2_ct,4_ct};
+
+        inline auto shape_nl1 = to_nullable(shape,0);
+        inline auto shape_nl2 = to_nullable(shape,1);
+        inline auto shape_nl3 = to_nullable(shape,2);
+        inline auto shape_nl4 = to_nullable(shape,3);
+        inline auto shape_mx1 = to_mixed(shape_ct,0_ct);
+        inline auto shape_mx2 = to_mixed(shape_ct,1_ct);
+        inline auto shape_mx3 = to_mixed(shape_ct,2_ct);
+        inline auto shape_mx4 = to_mixed(shape_ct,3_ct);
+
+        NMTOOLS_CAST_INDEX_ARRAYS(shape)
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case4)
+    {
+        inline int result[5] = {2,3,1,2,4};
+        inline auto result_nl1 = to_nullable(result,0);
+        inline auto result_nl2 = to_nullable(result,1);
+        inline auto result_nl3 = to_nullable(result,3);
+        inline auto result_nl4 = to_nullable(result,4);        
+    }
+}
+
+NMTOOLS_TESTING_DECLARE_CASE(index, matmul_res_reshape)
+{
+    using namespace literals;
+    NMTOOLS_TESTING_DECLARE_ARGS(case1)
+    {
+        inline int shape[2] = {3,4};
+        inline int lhs_dim = 2;
+        inline int rhs_dim = 2;
+
+        inline auto shape_ct = nmtools_tuple{3_ct,4_ct};
+        inline auto lhs_dim_ct = 2_ct;
+        inline auto rhs_dim_ct = 2_ct;
+
+        inline auto shape_nl1 = to_nullable(shape,0);
+        inline auto shape_nl2 = to_nullable(shape,1);
+        inline auto shape_mx1 = to_mixed(shape_ct,0_ct);
+        inline auto shape_mx2 = to_mixed(shape_ct,1_ct);
+
+        NMTOOLS_CAST_INDEX_ARRAYS(shape)
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case1)
+    {
+        inline int result[2] = {3,4};
+        inline auto result_nl1 = to_nullable(result,0);
+        inline auto result_nl2 = to_nullable(result,1);
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case2)
+    {
+        inline int shape[3] = {1,3,4};
+        inline int lhs_dim = 3;
+        inline int rhs_dim = 2;
+
+        inline auto shape_ct = nmtools_tuple{1_ct,3_ct,4_ct};
+        inline auto lhs_dim_ct = 3_ct;
+        inline auto rhs_dim_ct = 2_ct;
+
+        inline auto shape_nl1 = to_nullable(shape,0);
+        inline auto shape_nl2 = to_nullable(shape,1);
+        inline auto shape_nl3 = to_nullable(shape,2);
+        inline auto shape_mx1 = to_mixed(shape_ct,0_ct);
+        inline auto shape_mx2 = to_mixed(shape_ct,1_ct);
+        inline auto shape_mx3 = to_mixed(shape_ct,2_ct);
+
+        NMTOOLS_CAST_INDEX_ARRAYS(shape)
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case2)
+    {
+        inline int result[3] = {1,3,4};
+        inline auto result_nl1 = to_nullable(result,0);
+        inline auto result_nl2 = to_nullable(result,1);
+        inline auto result_nl3 = to_nullable(result,2);
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case3)
+    {
+        inline int shape[4] = {1,2,3,3};
+        inline int lhs_dim = 3;
+        inline int rhs_dim = 4;
+
+        inline auto shape_ct = nmtools_tuple{1_ct,2_ct,3_ct,3_ct};
+        inline auto lhs_dim_ct = 3_ct;
+        inline auto rhs_dim_ct = 4_ct;
+
+        inline auto shape_nl1 = to_nullable(shape,0);
+        inline auto shape_nl2 = to_nullable(shape,1);
+        inline auto shape_nl3 = to_nullable(shape,2);
+        inline auto shape_nl4 = to_nullable(shape,3);
+        inline auto shape_mx1 = to_mixed(shape_ct,0_ct);
+        inline auto shape_mx2 = to_mixed(shape_ct,1_ct);
+        inline auto shape_mx3 = to_mixed(shape_ct,2_ct);
+        inline auto shape_mx4 = to_mixed(shape_ct,3_ct);
+
+        NMTOOLS_CAST_INDEX_ARRAYS(shape)
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case3)
+    {
+        inline int result[4] = {1,2,3,3};
+        inline auto result_nl1 = to_nullable(result,0);
+        inline auto result_nl2 = to_nullable(result,1);
+        inline auto result_nl3 = to_nullable(result,2);
+        inline auto result_nl4 = to_nullable(result,3);
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case4)
+    {
+        inline int shape[2] = {1,2};
+        inline int lhs_dim = 1;
+        inline int rhs_dim = 2;
+
+        inline auto shape_ct = nmtools_tuple{1_ct,2_ct};
+        inline auto lhs_dim_ct = 1_ct;
+        inline auto rhs_dim_ct = 2_ct;
+
+        inline auto shape_nl1 = to_nullable(shape,0);
+        inline auto shape_nl2 = to_nullable(shape,1);
+        inline auto shape_mx1 = to_mixed(shape_ct,0_ct);
+        inline auto shape_mx2 = to_mixed(shape_ct,1_ct);
+
+        NMTOOLS_CAST_INDEX_ARRAYS(shape)
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case4)
+    {
+        inline int result[1] = {2};
+        inline auto result_nl1 = nmtools_array{nullable_int(2)};
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case5)
+    {
+        inline int shape[3] = {1,1,2};
+        inline int lhs_dim = 1;
+        inline int rhs_dim = 3;
+
+        inline auto shape_ct = nmtools_tuple{1_ct,1_ct,2_ct};
+        inline auto lhs_dim_ct = 1_ct;
+        inline auto rhs_dim_ct = 3_ct;
+
+        inline auto shape_nl1 = to_nullable(shape,0);
+        inline auto shape_nl2 = to_nullable(shape,1);
+        inline auto shape_nl3 = to_nullable(shape,2);
+        inline auto shape_mx1 = to_mixed(shape_ct,0_ct);
+        inline auto shape_mx2 = to_mixed(shape_ct,1_ct);
+        inline auto shape_mx3 = to_mixed(shape_ct,2_ct);
+
+        NMTOOLS_CAST_INDEX_ARRAYS(shape)
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case5)
+    {
+        inline int result[2] = {1,2};
+        inline auto result_nl1 = nmtools_array{nullable_int(), nullable_int(2)};
+        inline auto result_nl2 = nmtools_array{nullable_int(1), nullable_int(2)};
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case6)
+    {
+        inline int shape[4] = {2,1,1,2};
+        inline int lhs_dim = 1;
+        inline int rhs_dim = 4;
+
+        inline auto shape_ct = nmtools_tuple{2_ct,1_ct,1_ct,2_ct};
+        inline auto lhs_dim_ct = 1_ct;
+        inline auto rhs_dim_ct = 4_ct;
+
+        inline auto shape_nl1 = to_nullable(shape,0);
+        inline auto shape_nl2 = to_nullable(shape,1);
+        inline auto shape_nl3 = to_nullable(shape,2);
+        inline auto shape_nl4 = to_nullable(shape,3);
+        inline auto shape_mx1 = to_mixed(shape_ct,0_ct);
+        inline auto shape_mx2 = to_mixed(shape_ct,1_ct);
+        inline auto shape_mx3 = to_mixed(shape_ct,2_ct);
+        inline auto shape_mx4 = to_mixed(shape_ct,3_ct);
+
+        NMTOOLS_CAST_INDEX_ARRAYS(shape)
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case6)
+    {
+        inline int result[3] = {2,1,2};
+        inline auto result_nl1 = nmtools_array{nullable_int(), nullable_int(1), nullable_int(2)};
+        inline auto result_nl2 = nmtools_array{nullable_int(2), nullable_int(), nullable_int(2)};
+        inline auto result_nl3 = nmtools_array{nullable_int(2), nullable_int(1), nullable_int(2)};
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case7)
+    {
+        inline int shape[2] = {3,1};
+        inline int lhs_dim = 2;
+        inline int rhs_dim = 1;
+
+        inline auto shape_ct = nmtools_tuple{3_ct,1_ct};
+        inline auto lhs_dim_ct = 2_ct;
+        inline auto rhs_dim_ct = 1_ct;
+
+        inline auto shape_nl1 = to_nullable(shape,0);
+        inline auto shape_nl2 = to_nullable(shape,1);
+        inline auto shape_mx1 = to_mixed(shape_ct,0_ct);
+        inline auto shape_mx2 = to_mixed(shape_ct,1_ct);
+
+        NMTOOLS_CAST_INDEX_ARRAYS(shape)
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case7)
+    {
+        inline int result[1] = {3};
+        inline auto result_nl1 = to_nullable(result,0);
+    }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case8)
+    {
+        inline int shape[3] = {2,3,2};
+        inline int lhs_dim = 2;
+        inline int rhs_dim = 3;
+
+        inline auto shape_ct = nmtools_tuple{2_ct,3_ct,2_ct};
+        inline auto lhs_dim_ct = 2_ct;
+        inline auto rhs_dim_ct = 3_ct;
+
+        inline auto shape_nl1 = to_nullable(shape,0);
+        inline auto shape_nl2 = to_nullable(shape,1);
+        inline auto shape_nl3 = to_nullable(shape,2);
+        inline auto shape_mx1 = to_mixed(shape_ct,0_ct);
+        inline auto shape_mx2 = to_mixed(shape_ct,1_ct);
+        inline auto shape_mx3 = to_mixed(shape_ct,2_ct);
+
+        NMTOOLS_CAST_INDEX_ARRAYS(shape)
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case8)
+    {
+        inline int result[3] = {2,3,2};
+        inline auto result_nl1 = to_nullable(result,0);
+        inline auto result_nl2 = to_nullable(result,1);
+        inline auto result_nl3 = to_nullable(result,2);
+    }
+}
+
 #endif // NMTOOLS_TESTING_DATA_INDEX_MATMUL_HPP

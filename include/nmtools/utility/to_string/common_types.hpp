@@ -57,11 +57,11 @@ namespace nmtools::utils
 namespace nmtools::utils::impl
 {
     template <typename T, char tab, char space, char comma, char open_bracket, char close_bracket, bool show_types>
-    struct to_string_t<T,fmt_string_t<tab,space,comma,open_bracket,close_bracket,show_types>,meta::enable_if_t<
-        is_ellipsis_v<T> || is_none_v<T> || meta::is_either_v<T> || meta::is_nothing_v<T> || meta::is_maybe_v<T>
-        || meta::is_num_v<T> || meta::is_integral_constant_v<T> || meta::is_ndarray_v<T> || meta::is_list_v<T>
-        || meta::is_pointer_v<T> || meta::is_index_array_v<T> || meta::is_tuple_v<T> || meta::is_slice_index_v<T> || meta::is_slice_index_array_v<T>
-        || meta::is_combinator_v<T> || meta::is_adjacency_list_v<T>
+    struct to_string_t<T,fmt_string_t<tab,space,comma,open_bracket,close_bracket,show_types>,enable_if_t<
+        is_ellipsis_v<T> || is_none_v<T> || is_either_v<T> || is_nothing_v<T> || is_maybe_v<T>
+        || is_num_v<T> || is_integral_constant_v<T> || is_ndarray_v<T> || is_list_v<T>
+        || is_pointer_v<T> || is_index_array_v<T> || is_tuple_v<T> || is_slice_index_v<T> || is_slice_index_array_v<T>
+        || is_combinator_v<T> || is_adjacency_list_v<T>
     >>{
         using formatter_t = fmt_string_t<tab,space,comma,open_bracket,close_bracket,show_types>;
         using result_type = nmtools_string;
@@ -79,7 +79,7 @@ namespace nmtools::utils::impl
                 str += "...";
             else if constexpr (is_none_v<T>)
                 str += "None";
-            else if constexpr (meta::is_either_v<T>) {
+            else if constexpr (is_either_v<T>) {
                 using lhs_t = meta::get_either_left_t<T>;
                 using rhs_t = meta::get_either_right_t<T>;
                 // assume get_if<type>(&array) is available for either type
@@ -91,10 +91,10 @@ namespace nmtools::utils::impl
                     str += to_string(*r_ptr,formatter_t{});
                 }
             }
-            else if constexpr (meta::is_nothing_v<T>) {
+            else if constexpr (is_nothing_v<T>) {
                 str += "Nothing";
             }
-            else if constexpr (meta::is_maybe_v<T>) {
+            else if constexpr (is_maybe_v<T>) {
                 // for maybe type,
                 // assume casting to bool checks if the objects contains a value
                 // which is supported by std::optional
@@ -102,7 +102,7 @@ namespace nmtools::utils::impl
                     str += to_string(*array,formatter_t{});
                 else str += "Nothing";
             }
-            else if constexpr (meta::is_num_v<T> || meta::is_nullable_num_v<T>) {
+            else if constexpr (is_num_v<T> || is_nullable_num_v<T>) {
                 // allow view type
                 using type_t = meta::get_element_type_t<T>;
                 if (has_value(array)) {
@@ -111,10 +111,10 @@ namespace nmtools::utils::impl
                     str += "?";
                 }
             }
-            else if constexpr (meta::is_integral_constant_v<T>) {
+            else if constexpr (is_integral_constant_v<T>) {
                 str += nmtools_to_string(T::value);
-            } else if constexpr (meta::is_adjacency_list_v<T>) {
-                if constexpr (meta::is_tuple_v<T>) {
+            } else if constexpr (is_adjacency_list_v<T>) {
+                if constexpr (is_tuple_v<T>) {
                     constexpr auto NUM_NODES = meta::len_v<T>;
                     meta::template_for<NUM_NODES>([&](auto i){
                         str += to_string(i);
@@ -132,7 +132,7 @@ namespace nmtools::utils::impl
                     }
                 }
             }
-            else if constexpr (meta::is_ndarray_v<T>) {
+            else if constexpr (is_ndarray_v<T>) {
                 // TODO: do not use as array
                 /**
                 * @brief helper lambda to make sure to return array (instead of tuple)
@@ -144,7 +144,7 @@ namespace nmtools::utils::impl
                     using index_t = meta::get_element_or_common_type_t<shape_t>;
                     if constexpr (meta::is_constant_index_array_v<shape_t>) {
                         return meta::to_value_v<shape_t>;
-                    } else if constexpr (meta::is_tuple_v<shape_t>) {
+                    } else if constexpr (is_tuple_v<shape_t>) {
                         constexpr auto N = meta::len_v<shape_t>;
                         using array_t = nmtools_array<index_t,N>;
                         auto array = array_t{};
@@ -238,7 +238,7 @@ namespace nmtools::utils::impl
                             str += "\n";
                     }
                 }
-            } // meta::is_ndarray_v<T>
+            } // is_ndarray_v<T>
             // TODO: remove tuple_size metafunctions
             // handle packed type (e.g. tuple), recursively call to_string for each elements
             else if constexpr (meta::has_tuple_size_v<T>) {
@@ -254,7 +254,7 @@ namespace nmtools::utils::impl
                 });
                 str += ")";
             }
-            else if constexpr (meta::is_list_v<T>) {
+            else if constexpr (is_list_v<T>) {
                 auto dim = len(array);
                 for (size_t i=0; i<(size_t)dim; i++) {
                     if (i==0) {
@@ -268,7 +268,7 @@ namespace nmtools::utils::impl
                 }
             }
             #if NMTOOLS_HAS_SSTREAM
-            else if constexpr (meta::is_pointer_v<T>) {
+            else if constexpr (is_pointer_v<T>) {
                 nmtools_sstream ss;
                 if (show_types) {
                     auto type_name = NMTOOLS_TYPENAME_TO_STRING(T);
@@ -280,10 +280,10 @@ namespace nmtools::utils::impl
                 str += ss.str();
             }
             #endif
-            else if constexpr (meta::is_slice_index_v<T> || meta::is_slice_index_array_v<T>) {
+            else if constexpr (is_slice_index_v<T> || is_slice_index_array_v<T>) {
                 // TODO: implement
                 str += NMTOOLS_TYPENAME_TO_STRING(T);
-            } else if constexpr (meta::is_combinator_v<T>) {
+            } else if constexpr (is_combinator_v<T>) {
                 str += utils::to_string(array.fn);
             }
             return str;
@@ -298,21 +298,21 @@ namespace nmtools::utils::impl
                 using mapper_type = to_string_t<T,fmt_string_t<>>;
                 if constexpr (meta::has_result_type_v<mapper_type>) {
                     using result_type = typename mapper_type::result_type;
-                    return meta::as_value_v<result_type>;
+                    return as_value_v<result_type>;
                 } else {
-                    using result_type = error::TO_STRING_UNSUPPORTED<T,formatter_t>;
-                    return meta::as_value_v<result_type>;
+                    using result_type = error::TO_STRING_UNSUPPORTED_NO_MAPPING<T,formatter_t>;
+                    return as_value_v<result_type>;
                 }
             } else {
                 using result_type = error::TO_STRING_UNSUPPORTED<T,formatter_t>;
-                return meta::as_value_v<result_type>;
+                return as_value_v<result_type>;
             }
         }();
-        using result_type = meta::type_t<decltype(result_vtype)>;
+        using result_type = type_t<decltype(result_vtype)>;
 
         auto operator()([[maybe_unused]] const T& t) const noexcept
         {
-            if constexpr (meta::is_fail_v<result_type>) {
+            if constexpr (is_fail_v<result_type>) {
                 return result_type{};
             } else {
                 return to_string(t,fmt_string_t<>{});
