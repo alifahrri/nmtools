@@ -8,6 +8,10 @@
 #include "nmtools/index/split.hpp"
 #include "nmtools/utility/at.hpp"
 #include "nmtools/utility/unwrap.hpp"
+#include "nmtools/array/atleast_2d.hpp"
+#include "nmtools/array/expand_dims.hpp"
+#include "nmtools/array/sum.hpp"
+#include "nmtools/array/item.hpp"
 
 namespace nmtools::index
 {
@@ -730,6 +734,232 @@ namespace nmtools::index
             return result;
         }
     } // matmul_rhs_reshape
+
+    template <typename shape_t>
+    constexpr auto matmul_lhs_reshape([[maybe_unused]] const shape_t& shape)
+    {
+        using result_t = resolve_optype_t<matmul_lhs_reshape_t,shape_t>;
+
+        auto result = result_t {};
+
+        if constexpr (!is_fail_v<result_t>
+            && !is_constant_index_array_v<result_t>
+        ) {
+            [[maybe_unused]]
+            auto dim = len(shape);
+
+            if constexpr (is_resizable_v<result_t>) {
+                result.resize(dim == 1 ? dim+2 : dim+1);
+            }
+
+            constexpr auto DIM = len_v<shape_t>;
+
+            if constexpr (DIM > 0) {
+                if constexpr (DIM == 1) {
+                    auto shape_0 = at(shape,ct_v<0>);
+                    at(result,ct_v<0>) = ct_v<1>;
+                    if (has_value(shape_0)) {
+                        at(result,ct_v<1>) = shape_0;
+                    }
+                    at(result,ct_v<2>) = ct_v<1>;
+                } else {
+                    template_for<DIM>([&](auto i){
+                        auto shape_i = at(shape,i);
+                        if constexpr (!is_constant_index_v<decltype(at(result,i))>) {
+                            if (has_value(shape_i)) {
+                                at(result,i) = shape_i;
+                            }
+                        }
+                    });
+                    if constexpr (!is_constant_index_v<decltype(at(result,ct_v<DIM>))>) {
+                        at(result,dim) = 1;
+                    }
+                }
+            } else {
+                if (dim == 1) {
+                    auto shape_0 = at(shape,ct_v<0>);
+                    at(result,ct_v<0>) = ct_v<1>;
+                    if (has_value(shape_0)) {
+                        at(result,ct_v<1>) = shape_0;
+                    }
+                    at(result,ct_v<2>) = ct_v<1>;
+                } else {
+                    for (nm_size_t i=0; i<(nm_size_t)dim; i++) {
+                        auto shape_i = at(shape,i);
+                        if (has_value(shape_i)) {
+                            at(result,i) = shape_i;
+                        }
+                    }
+                    at(result,dim) = 1;
+                }
+            }
+        }
+
+        return result;
+    } // matmul_lhs_reshape
+
+    template <typename shape_t>
+    constexpr auto matmul_rhs_reshape(const shape_t& shape)
+    {
+        using result_t = resolve_optype_t<matmul_rhs_reshape_t,shape_t>;
+
+        auto result = result_t {};
+
+        if constexpr (!is_fail_v<result_t>
+            && !is_constant_index_array_v<result_t>
+        ) {
+            [[maybe_unused]]
+            auto dim = len(shape);
+
+            if constexpr (is_resizable_v<result_t>) {
+                result.resize(dim == 1 ? dim+2 : dim+1);
+            }
+
+            using namespace literals;
+
+            constexpr auto DIM = len_v<shape_t>;
+            if constexpr (DIM > 0) {
+                if constexpr (DIM == 1) {
+                    auto shape_0 = at(shape,0_ct);
+                    at(result,0_ct) = 1_ct;
+                    if (has_value(shape_0)) {
+                        at(result,1_ct) = shape_0;
+                    }
+                    at(result,2_ct) = 1_ct;
+                } else {
+                    template_for<DIM-2>([&](auto i){
+                        if constexpr (!is_constant_index_v<decltype(at(result,i))>) {
+                            auto shape_i = at(shape,i);
+                            if (has_value(shape_i)) {
+                                at(result,i) = shape_i;
+                            }
+                        }
+                    });
+                    if constexpr (!is_constant_index_v<decltype(at(result,-1_ct))>) {
+                        at(result,-3_ct) = 1_ct;
+                    }
+                    template_for<2>([&](auto m_i){
+                        auto i = (m_i+1_ct);
+                        if constexpr (!is_constant_index_v<decltype(at(result,-i))>) {
+                            auto shape_i = at(shape,-i);
+                            if (has_value(shape_i)) {
+                                at(result,-i) = shape_i;
+                            }
+                        }
+                    });
+                }
+            } else {
+                if (dim == 1) {
+                    auto shape_0 = at(shape,0_ct);
+                    at(result,0_ct) = 1_ct;
+                    if (has_value(shape_0)) {
+                        at(result,1_ct) = shape_0;
+                    }
+                    at(result,2_ct) = 1_ct;
+                } else {
+                    for (nm_size_t i=0; i<(nm_size_t)(dim-2); i++) {
+                        auto shape_i = at(shape,i);
+                        if (has_value(shape_i)) {
+                            at(result,i) = shape_i;
+                        }
+                    }
+                    at(result,-3) = 1;
+                    for (nm_index_t i=1; i<=(nm_index_t)2; i++) {
+                        auto shape_i = at(shape,-i);
+                        if (has_value(shape_i)) {
+                            at(result,-i) = shape_i;
+                        }
+                    }
+                }
+            }
+        }
+
+        return result;
+    } // matmul_rhs_reshape
+
+    struct matmul_res_reshape_t {};
+
+    template <typename shape_t, typename lhs_dim_t, typename rhs_dim_t>
+    constexpr auto matmul_res_reshape(const shape_t& shape
+        , [[maybe_unused]] const lhs_dim_t lhs_dim
+        , [[maybe_unused]] const rhs_dim_t rhs_dim)
+    {
+        if constexpr (is_maybe_v<shape_t>
+            || is_maybe_v<lhs_dim_t>
+            || is_maybe_v<rhs_dim_t>
+        ) {
+            using result_t = decltype(matmul_res_reshape(unwrap(shape),unwrap(lhs_dim),unwrap(rhs_dim)));
+            using return_t = conditional_t<is_maybe_v<result_t>,result_t,nmtools_maybe<result_t>>;
+            return (has_value(shape) && has_value(lhs_dim) && has_value(rhs_dim)
+                ? return_t{matmul_res_reshape(unwrap(shape),unwrap(lhs_dim),unwrap(rhs_dim))}
+                : return_t{Nothing}
+            );
+        } else {
+            using result_t = resolve_optype_t<matmul_res_reshape_t,shape_t,lhs_dim_t, rhs_dim_t>;
+
+            auto result = result_t {};
+
+            [[maybe_unused]]
+            auto dim = len(shape);
+            
+            if constexpr (is_resizable_v<result_t>) {
+                result.resize((lhs_dim == 1) || (rhs_dim == 1) ? (dim - 1) : dim);
+            }
+
+            if constexpr (!is_fail_v<result_t>
+                && !is_constant_index_array_v<result_t>
+            ) {
+                constexpr auto DIM = len_v<shape_t>;
+
+                using namespace literals;
+
+                if constexpr ((DIM > 0)
+                    && is_constant_index_v<lhs_dim_t>
+                    && is_constant_index_v<rhs_dim_t>
+                ) {
+                    // if lhs_dim == 1 || rhs_dim == 1
+                    auto skip_idx = [&](){
+                        if constexpr (lhs_dim_t::value == 1) {
+                            return 2_ct;
+                        } else if constexpr (rhs_dim_t::value == 1) {
+                            return 1_ct;
+                        } else {
+                            return 0_ct;
+                        }
+                    }();
+                    template_reduce<DIM>([&](auto r_idx, auto I){
+                        auto i = I+1_ct;
+                        if constexpr (decltype(i)::value == decltype(skip_idx)::value) {
+                            return r_idx;
+                        } else if constexpr (!is_constant_index_v<decltype(at(result,-r_idx))>) {
+                            auto shape_i = at(shape,-i);
+                            if (has_value(shape_i)) {
+                                at(result,-r_idx) = shape_i;
+                            }
+                            return r_idx + 1_ct;
+                        } else {
+                            return r_idx + 1_ct;
+                        }
+                    },1_ct);
+                } else {
+                    nm_index_t r_idx = 1;
+                    auto skip_idx = (lhs_dim == 1? 2 : (rhs_dim == 1? 1 : 0));
+                    for (nm_index_t i=1; i<=(nm_index_t)dim; i++) {
+                        if (i == skip_idx) {
+                            continue;
+                        }
+                        auto shape_i = at(shape,-i);
+                        if (has_value(shape_i)) {
+                            at(result,-r_idx) = shape_i;
+                        }
+                        r_idx++;
+                    }
+                }
+            }
+
+            return result;
+        }
+    }
 } // nmtools::index
 
 namespace nmtools::meta
@@ -747,6 +977,9 @@ namespace nmtools::meta
 
         template <typename...>
         struct MATMUL_RHS_RESHAPE_UNSUPPORTED : detail::fail_t {};
+
+        template <typename...>
+        struct MATMUL_RES_RESHAPE_UNSUPPORTED : detail::fail_t {};
     }
 
     template <typename rhs_dim_t>
@@ -820,6 +1053,177 @@ namespace nmtools::meta
         }();
         using type = type_t<decltype(vtype)>;
     }; // index::matmul_lhs_tile_t
+
+    template <typename shape_t>
+    struct resolve_optype<
+        void, index::matmul_lhs_reshape_t, shape_t
+    > {
+        static constexpr auto vtype = [](){
+            if constexpr (!is_index_array_v<shape_t>) {
+                using type = error::MATMUL_LHS_RESHAPE_UNSUPPORTED<shape_t>;
+                return as_value_v<type>;
+            } else if constexpr (
+                is_constant_index_array_v<shape_t>
+                || is_mixed_index_array_v<shape_t>
+            ) {
+                constexpr auto shape = to_value_v<shape_t>;
+                constexpr auto result = index::matmul_lhs_reshape(shape);
+                using nmtools::at, nmtools::len;
+                return template_reduce<len(result)>([&](auto init, auto index){
+                    using init_t = type_t<decltype(init)>;
+                    using index_t = nm_size_t;
+                    constexpr auto I = decltype(index)::value;
+                    constexpr auto result_i = at(result,I);
+                    if constexpr (has_value(result_i)) {
+                        using type = append_type_t<init_t,ct<(nm_size_t)result_i>>;
+                        return as_value_v<type>;
+                    } else {
+                        using type = append_type_t<init_t,index_t>;
+                        return as_value_v<type>;
+                    }
+                }, as_value_v<nmtools_tuple<>>);
+            } else {
+                constexpr auto DIM = len_v<shape_t>;
+                [[maybe_unused]]
+                constexpr auto MAX_DIM = max_len_v<shape_t>;
+                using index_t = conditional_t<
+                    is_nullable_index_array_v<shape_t>
+                    , nullable_size_t
+                    , nm_size_t
+                >;
+                if constexpr (DIM > 0) {
+                    // TODO: use mixed index array
+                    using type = nmtools_array<index_t,(DIM == 1? DIM+2 : DIM+1)>;
+                    return as_value_v<type>;
+                } else if constexpr (MAX_DIM > 0) {
+                    using type = nmtools_static_vector<index_t,(MAX_DIM == 1? MAX_DIM+2 : MAX_DIM+1)>;
+                    return as_value_v<type>;
+                } else {
+                    // TODO: use small vector
+                    using type = nmtools_list<index_t>;
+                    return as_value_v<type>;
+                }
+            }
+        }();
+        using type = type_t<decltype(vtype)>;
+    }; // matmul_lhs_reshape_t
+
+    template <typename shape_t>
+    struct resolve_optype<
+        void, index::matmul_rhs_reshape_t, shape_t
+    > {
+        static constexpr auto vtype = [](){
+            if constexpr (!is_index_array_v<shape_t>) {
+                using type = error::MATMUL_RHS_RESHAPE_UNSUPPORTED<shape_t>;
+                return as_value_v<type>;
+            } else if constexpr (
+                is_constant_index_array_v<shape_t>
+                || is_mixed_index_array_v<shape_t>
+            ) {
+                constexpr auto shape = to_value_v<shape_t>;
+                constexpr auto result = index::matmul_rhs_reshape(shape);
+                using nmtools::at, nmtools::len;
+                return template_reduce<len(result)>([&](auto init, auto index){
+                    using init_t = type_t<decltype(init)>;
+                    using index_t = nm_size_t;
+                    constexpr auto I = decltype(index)::value;
+                    constexpr auto result_i = at(result,I);
+                    if constexpr (has_value(result_i)) {
+                        using type = append_type_t<init_t,ct<(nm_size_t)result_i>>;
+                        return as_value_v<type>;
+                    } else {
+                        using type = append_type_t<init_t,index_t>;
+                        return as_value_v<type>;
+                    }
+                }, as_value_v<nmtools_tuple<>>);
+            } else {
+                constexpr auto DIM = len_v<shape_t>;
+                [[maybe_unused]]
+                constexpr auto MAX_DIM = max_len_v<shape_t>;
+                using index_t = conditional_t<
+                    is_nullable_index_array_v<shape_t>
+                    , nullable_size_t
+                    , nm_size_t
+                >;
+                if constexpr (DIM > 0) {
+                    // TODO: use mixed index array
+                    using type = nmtools_array<index_t,(DIM == 1? DIM+2 : DIM+1)>;
+                    return as_value_v<type>;
+                } else if constexpr (MAX_DIM > 0) {
+                    using type = nmtools_static_vector<index_t,(MAX_DIM == 1? MAX_DIM+2 : MAX_DIM+1)>;
+                    return as_value_v<type>;
+                } else {
+                    // TODO: use small vector
+                    using type = nmtools_list<index_t>;
+                    return as_value_v<type>;
+                }
+            }
+        }();
+        using type = type_t<decltype(vtype)>;
+    }; // matmul_rhs_reshape_t
+
+    template <typename shape_t, typename lhs_dim_t, typename rhs_dim_t>
+    struct resolve_optype<
+        void, index::matmul_res_reshape_t, shape_t, lhs_dim_t, rhs_dim_t
+    > {
+        static constexpr auto vtype = [](){
+            if constexpr (!is_index_v<lhs_dim_t>
+                || !is_index_v<rhs_dim_t>
+                || !is_index_array_v<shape_t>
+            ) {
+                using type = error::MATMUL_RES_RESHAPE_UNSUPPORTED<shape_t,lhs_dim_t,rhs_dim_t>;
+                return as_value_v<type>;
+            } else if constexpr (is_constant_index_v<lhs_dim_t>
+                && is_constant_index_v<rhs_dim_t>
+                && (is_constant_index_array_v<shape_t> || is_mixed_index_array_v<shape_t>)
+            ) {
+                constexpr auto shape = to_value_v<shape_t>;
+                constexpr auto lhs_dim = lhs_dim_t{};
+                constexpr auto rhs_dim = rhs_dim_t{};
+                constexpr auto result = index::matmul_res_reshape(shape,lhs_dim,rhs_dim);
+                using nmtools::at, nmtools::len;
+                return template_reduce<len(result)>([&](auto init, auto index){
+                    using init_t = type_t<decltype(init)>;
+                    constexpr auto I = decltype(index)::value;
+                    constexpr auto shape_i = at(result,I);
+                    if constexpr (has_value(shape_i)) {
+                        using type = append_type_t<init_t,ct<(nm_size_t)shape_i>>;
+                        return as_value_v<type>;
+                    } else {
+                        using type = append_type_t<init_t,nm_size_t>;
+                        return as_value_v<type>;
+                    }
+                }, as_value_v<nmtools_tuple<>>);
+            } else {
+                constexpr auto DIM = len_v<shape_t>;
+                [[maybe_unused]]
+                constexpr auto MAX_DIM = max_len_v<shape_t>;
+                using index_t = conditional_t<
+                    is_nullable_index_array_v<shape_t>
+                    , nullable_size_t
+                    , nm_size_t
+                >;
+                constexpr auto LHS_DIM = conditional_t<is_constant_index_v<lhs_dim_t>,lhs_dim_t,ct<-1>>::value;
+                constexpr auto RHS_DIM = conditional_t<is_constant_index_v<rhs_dim_t>,rhs_dim_t,ct<-1>>::value;
+
+                if constexpr ((DIM > 0) && ((LHS_DIM == 1) || (RHS_DIM == 1))) {
+                    using type = nmtools_array<index_t,DIM-1>;
+                    return as_value_v<type>;
+                } else if constexpr ((DIM > 0) && ((LHS_DIM > 1) && (RHS_DIM > 1))) {
+                    using type = nmtools_array<index_t,DIM>;
+                    return as_value_v<type>;
+                } else if constexpr (MAX_DIM > 0) {
+                    using type = nmtools_static_vector<index_t,MAX_DIM>;
+                    return as_value_v<type>;
+                } else {
+                    // TODO: use small vector
+                    using type = nmtools_list<index_t>;
+                    return as_value_v<type>;
+                }
+            }
+        }();
+        using type = type_t<decltype(vtype)>;
+    }; // matmul_lhs_reshape_t
 
     template <typename lhs_shape_t, typename rhs_shape_t>
     struct resolve_optype<
@@ -983,6 +1387,57 @@ namespace nmtools::view
             );
         }
     } // matmulv2
+
+    template <typename lhs_t, typename rhs_t>
+    constexpr auto matmulv3(const lhs_t& lhs, const rhs_t& rhs)
+    {
+        if constexpr (is_maybe_v<lhs_t> || is_maybe_v<rhs_t>) {
+            using result_t = decltype(matmulv3(unwrap(lhs),unwrap(rhs)));
+            using return_t = conditional_t<is_maybe_v<result_t>,result_t,nmtools_maybe<result_t>>;
+            return (has_value(lhs) && has_value(rhs)
+                ? return_t{matmulv3(unwrap(lhs),unwrap(rhs))}
+                : return_t{Nothing}
+            );
+        } else {
+            auto aliased = view::aliased(lhs,rhs);
+
+            auto a_lhs = nmtools::get<0>(aliased);
+            auto a_rhs = nmtools::get<1>(aliased);
+
+            auto lhs_shape = shape<true>(lhs);
+            auto rhs_shape = shape<true>(rhs);
+
+            auto m_lhs = view::reshape(a_lhs,index::matmul_lhs_reshape(lhs_shape));
+            auto m_rhs = view::reshape(a_rhs,index::matmul_rhs_reshape(rhs_shape));
+
+            auto summed = view::sum(view::multiply(m_lhs,m_rhs),ct_v<-2>);
+
+            auto src_result_shape = shape<true>(summed);
+            auto dst_result_shape = index::matmul_res_reshape(src_result_shape,len(lhs_shape),len(rhs_shape));
+
+            auto result = view::reshape(summed,dst_result_shape);
+
+            auto size = nmtools::size<true>(result);
+
+            if constexpr (is_constant_index_v<decltype(size)>) {
+                constexpr auto SIZE = decltype(size)::value;
+                if constexpr (SIZE == 1) {
+                    return view::item(result);
+                } else {
+                    return result;
+                }
+            } else {
+                using result_t = nmtools_either<decltype(unwrap(result)),decltype(view::item(unwrap(result)))>;
+                using return_t = nmtools_maybe<result_t>;
+                return (has_value(result)
+                    ? (unwrap(size) == 1
+                        ? return_t{view::item(unwrap(result))}
+                        : return_t{unwrap(result)}
+                    ) : return_t{Nothing}
+                );
+            }
+        }
+    }
 } // nmtools::view
 
 #endif // NMTOOLS_ARRAY_VIEW_MATMUL_HPP
@@ -1002,7 +1457,7 @@ namespace nmtools::functional
             template <typename...args_t>
             constexpr auto operator()(const args_t&...args) const
             {
-                return view::matmulv2(args...);
+                return view::matmulv3(args...);
             }
         };
     }
@@ -1060,7 +1515,7 @@ namespace nmtools
     constexpr auto matmul(const lhs_t& lhs, const rhs_t& rhs,
         context_t&& context=context_t{}, output_t&& output=output_t{})
     {
-        auto a = view::matmulv2(lhs,rhs);
+        auto a = view::matmulv3(lhs,rhs);
         return eval(a
             ,nmtools::forward<context_t>(context)
             ,nmtools::forward<output_t>(output)
