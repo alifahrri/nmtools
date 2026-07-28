@@ -52,6 +52,7 @@
 #include "nmtools/meta/bits/traits/is_constant_adjacency_list.hpp"
 #include "nmtools/meta/bits/traits/is_constant_index.hpp"
 #include "nmtools/meta/bits/traits/is_constant_index_array.hpp"
+#include "nmtools/meta/bits/traits/is_constant_slice_index.hpp"
 #include "nmtools/meta/bits/traits/is_destructible.hpp"
 #include "nmtools/meta/bits/traits/is_dynamic_index_array.hpp"
 #include "nmtools/meta/bits/traits/is_dynamic_ndarray.hpp"

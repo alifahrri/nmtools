@@ -28,4 +28,9 @@ namespace nmtools::meta
 
 } // namespace nmtools::meta
 
+namespace nmtools
+{
+    using meta::is_fixed_size_v;
+}
+
 #endif // NMTOOLS_META_BITS_TRAITS_IS_FIXED_SIZE_HPP

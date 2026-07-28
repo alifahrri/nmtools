@@ -841,7 +841,7 @@ namespace nmtools
 // TODO: move to meta?
 namespace nmtools::meta
 {
-    template <typename T>
+    template <typename T, typename=void>
     struct is_object_ndarray : false_type {};
 
     template <typename T>
@@ -862,6 +862,12 @@ namespace nmtools::meta
 namespace nmtools
 {
     using meta::is_object_ndarray_v;
+
+    template <typename T, enable_if_t<is_object_ndarray_v<T>,int> =0>
+    constexpr auto get_context(const T& t)
+    {
+        return t.context_;
+    }
 }
 
 namespace nmtools

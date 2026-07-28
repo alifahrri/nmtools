@@ -34,7 +34,7 @@ namespace nmtools::meta
             constexpr auto num_args = sizeof...(args_t);
             auto result = (num_args == 2) || (num_args == 3);
             if (result) {
-                meta::template_for<num_args>([&](auto index){
+                template_for<num_args>([&](auto index){
                     constexpr auto I = decltype(index)::value;
                     using type_i = at_t<tuple_t,I>;
                     result = result && (is_none_v<type_i> || is_index_v<type_i>);
