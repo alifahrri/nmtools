@@ -22,6 +22,7 @@ struct matmul_kernel_t
         [[maybe_unused]] auto [w_size] = tk::worker_size(ctx);
 
         const auto [m_block,k_block,n_block] = mkn_shape;
+        static_assert( nm::is_constant_index_array_v<mkn_shape_t> );
 
         auto lhs_tile = tuple{m_block,k_block};
         auto rhs_tile = tuple{k_block,n_block};
@@ -42,6 +43,8 @@ struct matmul_kernel_t
         auto K = nm::at(a_shape,-1_ct) / k_block;
         auto N = nm::at(c_shape,-1_ct) / n_block;
 
+        using unroll_ctx_t = nm::unroll_context_t<false,true>;
+
         for (nm_size_t m=0; m<M; m++) {
             for (nm_size_t n=0; n<N; n++) {
                 auto accumulator = nm::Array::zeros(acc_tile,dtype,ctx);
@@ -51,16 +54,42 @@ struct matmul_kernel_t
                     
                     auto block_a = tk::load(ctx,lhs,lhs_ndoffset,lhs_tile);
                     auto block_b = tk::load(ctx,rhs,rhs_ndoffset,rhs_tile);
+                    
+                    static_assert( nm::is_fixed_shape_v<decltype(block_a)> );
+                    static_assert( nm::is_fixed_shape_v<decltype(block_b)> );
+                    {
+                        auto mctx = nm::get_context(block_a);
+                        static_assert( nm::is_same_v<decltype(mctx),unroll_ctx_t> );
+                    }
 
                     auto tmp1a = block_a.reshape(tuple{m_block,k_block,1_ct});
                     auto tmp1b = block_b.reshape(tuple{1_ct,k_block,n_block});
 
+                    static_assert( nm::is_fixed_shape_v<decltype(tmp1a)> );
+                    static_assert( nm::is_fixed_shape_v<decltype(tmp1b)> );
+                    {
+                        auto mctx = nm::get_context(tmp1a);
+                        static_assert( nm::is_same_v<decltype(mctx),unroll_ctx_t> );
+                    }
+
                     auto tmp2a = tmp1a.broadcast_to(tuple{m_block,k_block,n_block});
                     auto tmp2b = tmp1b.broadcast_to(tuple{m_block,k_block,n_block});
 
+                    static_assert( nm::is_fixed_shape_v<decltype(tmp2a)> );
+                    static_assert( nm::is_fixed_shape_v<decltype(tmp2b)> );
+                    {
+                        auto mctx = nm::get_context(tmp2a);
+                        static_assert( nm::is_same_v<decltype(mctx),unroll_ctx_t> );
+                    }
+
                     auto result = tmp2a * tmp2b;
+                    static_assert( nm::is_fixed_shape_v<decltype(result)> );
+
                     accumulator = accumulator + result;
                 }
+                auto mctx = nm::get_context(accumulator);
+                static_assert( nm::is_same_v<decltype(mctx),unroll_ctx_t> );
+
                 auto out_offset = tk::packed_at(c_nditer,m,n);
                 auto result = accumulator.sum(-2_ct);
                 tk::store(ctx,out,out_offset,result);

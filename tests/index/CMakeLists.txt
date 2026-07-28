@@ -51,7 +51,10 @@ if (NMTOOLS_INDEX_TEST_ALL)
         src/choose.cpp
         src/compress.cpp
         src/compute_indices.cpp
+        src/compute_index.cpp
         src/compute_offset.cpp
+        src/compute_range.cpp
+        src/compute_step.cpp
         src/compute_strides.cpp
         src/concatenate.cpp
         src/convnd.cpp
@@ -77,8 +80,10 @@ if (NMTOOLS_INDEX_TEST_ALL)
         src/pooling.cpp
         src/remove_dims.cpp
         src/remove_single_dims.cpp
+        src/reduction_slices.cpp
         src/repeat.cpp
         src/reshape.cpp
+        src/reshaper.cpp
         src/resize.cpp
         src/reverse.cpp
         src/roll.cpp

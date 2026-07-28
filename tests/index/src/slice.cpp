@@ -26,6 +26,16 @@ SUBCASE(#case_name) \
     NMTOOLS_ASSERT_EQUAL_MSG_ATTRIBUTES_DOCTEST( result, expect::result, __VA_ARGS__ ); \
 }
 
+#define SHAPE_SLICE_RESULT_SUBCASE(case_name, result, ...) \
+SUBCASE(#case_name) \
+{ \
+    NMTOOLS_TESTING_USE_CASE(index, shape_slice, case_name); \
+    using namespace args; \
+    auto result = nmtools::index::shape_slice(__VA_ARGS__); \
+    NMTOOLS_ASSERT_EQUAL_MSG_ATTRIBUTES_DOCTEST( result, expect::result, __VA_ARGS__ ); \
+}
+
+
 TEST_CASE("shape_slice(case1)" * doctest::test_suite("index::shape_slice") * doctest::may_fail())
 {
     SHAPE_SLICE_SUBCASE(case1,   shape, slice0, slice1, slice2);
@@ -37,37 +47,13 @@ TEST_CASE("shape_slice(case1)" * doctest::test_suite("index::shape_slice") * doc
     SHAPE_SLICE_SUBCASE(case1, shape_ct, slice0, slice1, slice2);
     SHAPE_SLICE_SUBCASE(case1, shape_cl, slice0, slice1, slice2);
 
-    #if 0
-    NMTOOLS_TESTING_USE_CASE( index, shape_slice, case1 );
-    auto slices_pack = nmtools_tuple{slice0,slice1,slice2};
-    auto slice = nm::at(slices_pack, nm::ct_v<0>);
-    auto init = nmtools_tuple{nm::ct_v<0ul>,nm::ct_v<0ul>};
-    // auto r_i = nm::get<0>(init);
-    auto s_i = nm::get<1>(init);
-    [[maybe_unused]] auto si = nm::at(shape,s_i);
-    using slice_t = meta::remove_cvref_t<decltype(slice)>;
-
-    static_assert( nm::len_v<decltype(shape_mx)> == 3 );
-    static_assert( nm::is_mixed_index_array_v<decltype(shape_mx)> );
-    static_assert( !nm::is_index_v<slice_t> );
-    static_assert( nm::is_slice_all_v<slice_t> );
-    static_assert( nm::is_tuple_v<slice_t> );
-    static_assert( !nm::is_ellipsis_v<slice_t> );
-    static_assert( !nm::is_ellipsis_v<nm::remove_cvref_t<slice_t>> );
-    constexpr nm_index_t DIM = nm::len_v<decltype(shape_mx)>;
-    static_assert( !(nm::is_ellipsis_v<slice_t>) && (DIM > 0) );
-    #endif
-
     SHAPE_SLICE_SUBCASE(case1, shape_mx, slice0, slice1, slice2);
 
-    {
-        using nmtools::nullable_num;
-        auto shape_na = nmtools_array{nullable_num(2),nullable_num(3),nullable_num(3)};
-        static_assert( nm::meta::is_nullable_index_array_v<decltype(shape_na)> );
-        static_assert( nm::meta::is_index_array_v<decltype(shape_na)> );
-        // TODO: fix
-        SHAPE_SLICE_SUBCASE(case1, shape_na, slice0, slice1, slice2);
-    }
+    SHAPE_SLICE_RESULT_SUBCASE(case1, result_nl1, shape_nl1, slice0, slice1, slice2);
+    SHAPE_SLICE_RESULT_SUBCASE(case1, result_nl2, shape_nl2, slice0, slice1, slice2);
+    SHAPE_SLICE_RESULT_SUBCASE(case1, result_nl3, shape_nl3, slice0, slice1, slice2);
+
+    SHAPE_SLICE_SUBCASE(case1, shape_ct, slice0, slice1_ct, slice2);
 }
 
 TEST_CASE("shape_slice(case2)" * doctest::test_suite("index::shape_slice"))
@@ -368,8 +354,8 @@ TEST_CASE("shape_slice(case24)" * doctest::test_suite("index::shape_slice"))
     SHAPE_SLICE_SUBCASE(case24, shape_cl, slice0, slice1);
     SHAPE_SLICE_SUBCASE(case24, shape_mx, slice0, slice1);
 
-    static_assert( nm::meta::is_index_v<decltype(nm::Last)> );
-    static_assert( nm::meta::is_integral_constant_v<decltype(nm::Last)> );
+    static_assert( nm::is_index_v<decltype(nm::Last)> );
+    static_assert( nm::is_integral_constant_v<decltype(nm::Last)> );
 }
 
 TEST_CASE("shape_slice(case25)" * doctest::test_suite("index::shape_slice"))
@@ -770,7 +756,7 @@ SUBCASE(#case_name) \
     NMTOOLS_TESTING_USE_CASE(index, slice, case_name); \
     using namespace args; \
     auto result = nmtools::index::slice(__VA_ARGS__); \
-    NMTOOLS_ASSERT_EQUAL( result, expect::result ); \
+    NMTOOLS_ASSERT_EQUAL_MSG_ATTRIBUTES_DOCTEST( result, expect::result, __VA_ARGS__ ); \
 }
 
 TEST_CASE("slice(case1)" * doctest::test_suite("index::slice"))
@@ -780,6 +766,10 @@ TEST_CASE("slice(case1)" * doctest::test_suite("index::slice"))
     SLICE_SUBCASE(case1, indices_v, shape_v, slice0, slice1, slice2);
     SLICE_SUBCASE(case1, indices_f, shape_f, slice0, slice1, slice2);
     SLICE_SUBCASE(case1, indices_h, shape_h, slice0, slice1, slice2);
+
+    SLICE_SUBCASE(case1, indices_ct, shape_ct, slice0, slice1, slice2);
+
+    SLICE_SUBCASE(case1, indices_ct, shape_ct, slice0, slice1_ct, slice2);
 }
 
 TEST_CASE("slice(case2)" * doctest::test_suite("index::slice"))

@@ -9,7 +9,7 @@ SUBCASE(#case_name) \
 { \
     NMTOOLS_TESTING_USE_CASE(index,broadcast_to_strides,case_name); \
     auto result = nmtools::index::broadcast_to_strides(__VA_ARGS__); \
-    NMTOOLS_ASSERT_EQUAL( result, expect::result ); \
+    NMTOOLS_ASSERT_EQUAL_MSG_ATTRIBUTES( result, expect::result, __VA_ARGS__ ); \
 }
 
 #define BROADCAST_TO_STRIDES_EXPECTED_SUBCASE(case_name, result, ...) \
@@ -17,7 +17,7 @@ SUBCASE(#case_name) \
 { \
     NMTOOLS_TESTING_USE_CASE(index,broadcast_to_strides,case_name); \
     auto result = nmtools::index::broadcast_to_strides(__VA_ARGS__); \
-    NMTOOLS_ASSERT_EQUAL( result, expect::result ); \
+    NMTOOLS_ASSERT_EQUAL_MSG_ATTRIBUTES( result, expect::result, __VA_ARGS__ ); \
 }
 
 TEST_CASE("broadcast_to_strides(case1)" * doctest::test_suite("index::broadcast_to_strides"))
@@ -85,7 +85,7 @@ SUBCASE(#case_name) \
 { \
     NMTOOLS_TESTING_USE_CASE(index,broadcast_to_v2,case_name); \
     auto result = nmtools::index::broadcast_to_v2(__VA_ARGS__); \
-    NMTOOLS_ASSERT_EQUAL( result, expect::result ); \
+    NMTOOLS_ASSERT_EQUAL_MSG_ATTRIBUTES( result, expect::result, __VA_ARGS__ ); \
 }
 
 #define BROADCAST_TO_V2_RESULT_SUBCASE(case_name, result, ...) \
@@ -93,7 +93,7 @@ SUBCASE(#case_name) \
 { \
     NMTOOLS_TESTING_USE_CASE(index,broadcast_to_v2,case_name); \
     auto result = nmtools::index::broadcast_to_v2(__VA_ARGS__); \
-    NMTOOLS_ASSERT_EQUAL( result, expect::result ); \
+    NMTOOLS_ASSERT_EQUAL_MSG_ATTRIBUTES( result, expect::result, __VA_ARGS__ ); \
 }
 
 TEST_CASE("broadcast_to_v2(case1a)" * doctest::test_suite("index::broadcast_to_v2"))

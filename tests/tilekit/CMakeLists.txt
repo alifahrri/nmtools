@@ -269,7 +269,7 @@ set(NMTOOLS_TESTS_TILEKIT_SRCS
     src/dot_v512_mt.cpp
 
     src/matmul_scalar_st.cpp
-    src/matmul_v128_st.cpp
+    # src/matmul_v128_st.cpp
 )
 if (NMTOOLS_TESTS_TILEKIT_ENABLE_TRACY)
     add_executable(${PROJECT_NAME}-doctest

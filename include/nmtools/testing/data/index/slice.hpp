@@ -18,17 +18,29 @@ NMTOOLS_TESTING_DECLARE_CASE(index, shape_slice)
     NMTOOLS_TESTING_DECLARE_ARGS(case1)
     {
         inline int shape[3] = {2,3,2};
+
         inline auto slice0 = nmtools_tuple{None,None};
         inline auto slice1 = nmtools_tuple{0,1};
         inline auto slice2 = nmtools_tuple{None,None};
+
+        inline auto slice1_ct = nmtools_tuple{0_ct,1_ct};
+
         inline auto shape_ct = nmtools_tuple{2_ct,3_ct,2_ct};
         inline auto shape_cl = nmtools_tuple{"2:[2]"_ct,"3:[3]"_ct,"2:[2]"_ct};
         inline auto shape_mx = nmtools_tuple{2_ct,3,2};
+
+        inline auto shape_nl1 = to_nullable(shape,0);
+        inline auto shape_nl2 = to_nullable(shape,1);
+        inline auto shape_nl3 = to_nullable(shape,2);
+
         NMTOOLS_CAST_INDEX_ARRAYS(shape)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case1)
     {
         inline int result[3] = {2,1,2};
+        inline auto result_nl1 = to_nullable(result,0);
+        inline auto result_nl2 = to_nullable(result,1);
+        inline auto result_nl3 = to_nullable(result,2);
     }
 
     NMTOOLS_TESTING_DECLARE_ARGS(case2)
@@ -998,13 +1010,22 @@ NMTOOLS_TESTING_DECLARE_CASE(index, shape_dynamic_slice)
 
 NMTOOLS_TESTING_DECLARE_CASE(index, slice)
 {
+    using namespace literals;
+
     NMTOOLS_TESTING_DECLARE_ARGS(case1)
     {
         inline int indices[3] = {0,0,1};
         inline int shape[3] = {2,3,2};
+
         inline auto slice0 = nmtools_tuple{None,None};
         inline auto slice1 = nmtools_tuple{0,1};
         inline auto slice2 = nmtools_tuple{None,None};
+
+        inline auto indices_ct = nmtools_tuple{0_ct,0_ct,1_ct};
+        inline auto shape_ct = nmtools_tuple{2_ct,3_ct,2_ct};
+
+        inline auto slice1_ct = nmtools_tuple{0_ct,1_ct};
+
         NMTOOLS_CAST_INDEX_ARRAYS(indices)
         NMTOOLS_CAST_INDEX_ARRAYS(shape)
     }

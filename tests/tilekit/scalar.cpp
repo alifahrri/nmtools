@@ -1298,6 +1298,9 @@ TEST_CASE("matmul(case3)" * doctest::test_suite("tilekit::scalar"))
                 auto tmp2a = tmp1a.broadcast_to(tuple{m_block,k_block,n_block});
                 auto tmp2b = tmp1b.broadcast_to(tuple{m_block,k_block,n_block});
 
+                static_assert( nm::is_fixed_shape_v<decltype(tmp2a)> );
+                static_assert( nm::is_fixed_shape_v<decltype(tmp2b)> );
+
                 auto result = tmp2a * tmp2b;
                 accumulator = accumulator + result;
             }
