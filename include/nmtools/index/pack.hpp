@@ -24,6 +24,9 @@ namespace nmtools::index
                 ? return_t{pack_indices(unwrap(index_),unwrap(indices)...)}
                 : return_t{Nothing}
             );
+        } else if constexpr (is_constant_index_v<size_type> || (is_constant_index_v<size_types> || ...)) {
+            using result_t = nmtools_tuple<remove_cvref_t<size_type>,remove_cvref_t<size_types>...>;
+            return result_t{index_,indices...};
         } else {
             // error: pack expansion used as argument for non-pack parameter of alias template :|
             // using common_t = promote_index_t<size_types...>;
