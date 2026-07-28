@@ -371,7 +371,7 @@ namespace nmtools
         constexpr auto DIM = len_v<array_t>;
         if constexpr (DIM > 0) {
             template_for<DIM>([&](auto i){
-                if (i != index) {
+                if ((nm_size_t)i != (nm_size_t)index) {
                     at(result,i) = at(array,i);
                 }
             });
