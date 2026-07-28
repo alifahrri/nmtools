@@ -43,7 +43,7 @@ namespace nmtools::args
         {
             using other_type = accumulate<args_t...>;
             return utils::isequal(axis,other.axis)
-                && meta::is_same_v<op_type,typename other_type::op_type>
+                && is_same_v<op_type,typename other_type::op_type>
                 // TODO: check for dtype
             ;
         }
@@ -124,6 +124,101 @@ namespace nmtools::utils::impl
 
 #endif // NMTOOLS_HAS_STRING
 
+/*************************************************************************** */
+namespace nmtools::index
+{
+    struct accumulate_slices_t {};
+
+    template <typename shape_t, typename indices_t, typename axis_t>
+    constexpr auto accumulate_slices([[maybe_unused]] const shape_t& shape
+        , [[maybe_unused]] const indices_t& indices
+        , [[maybe_unused]] const axis_t axis)
+    {
+        using result_t = resolve_optype_t<accumulate_slices_t,shape_t,indices_t,axis_t>;
+        
+        auto result = result_t {};
+
+        // assume if tuple then constant slice index array
+        // TODO: add constant slice index array trait concept
+        if constexpr (!is_fail_v<result_t>
+            && !is_tuple_v<result_t>
+        ) {
+            [[maybe_unused]] auto dim = len(shape);
+            if constexpr (is_resizable_v<result_t>) {
+                result.resize(dim);
+            }
+            for (nm_size_t i=0; i<dim; i++) {
+                // index at axis i
+                auto s = at(indices,i);
+                auto start = (i==(nm_size_t)axis ? 0 : s);
+                auto stop  = s + 1;
+                at(result,i) = {(nm_size_t)start,(nm_size_t)stop};
+            }
+        }
+
+        return result;
+    } // accumulate_slices
+}
+
+namespace nmtools::meta
+{
+    namespace error
+    {
+        template <typename...>
+        struct ACCUMULATE_SLICES_UNSUPPORTED : detail::fail_t {};
+    }
+
+    template <typename shape_t, typename indices_t, typename axis_t>
+    struct resolve_optype<
+        void, index::accumulate_slices_t, shape_t, indices_t, axis_t
+    > {
+        static constexpr auto vtype = [](){
+            if constexpr (!is_index_array_v<shape_t>
+                || !is_index_array_v<indices_t>
+                || !is_index_v<axis_t>
+            ) {
+                using type = error::ACCUMULATE_SLICES_UNSUPPORTED<shape_t,indices_t,axis_t>;
+                return as_value_v<type>;
+            } else if constexpr (is_constant_index_array_v<shape_t>
+                && is_constant_index_array_v<indices_t>
+                && is_constant_index_v<axis_t>
+            ) {
+                constexpr auto shape   = to_value_v<shape_t>;
+                constexpr auto indices = to_value_v<indices_t>;
+                constexpr auto result  = index::accumulate_slices(shape,indices,axis_t{});
+                using nmtools::at, nmtools::len;
+                return template_reduce<len(result)>([&](auto init, auto index){
+                    using init_t = type_t<decltype(init)>;
+                    constexpr auto I = decltype(index)::value;
+                    using start_t = ct<(nm_size_t)at(at(result,I),0)>;
+                    using stop_t  = ct<(nm_size_t)at(at(result,I),1)>;
+                    using slice_t = nmtools_tuple<start_t,stop_t>;
+                    using type = append_type_t<init_t,slice_t>;
+                    return as_value_v<type>;
+                }, as_value_v<nmtools_tuple<>>);
+            } else {
+                constexpr auto DIM = len_v<shape_t>;
+                constexpr auto MAX_DIM = max_len_v<indices_t>;
+                using inner_t = nmtools_array<nm_size_t,2>;
+                if constexpr (DIM > 0) {
+                    using outer_t = nmtools_array<inner_t,DIM>;
+                    return as_value_v<outer_t>;
+                } else if constexpr (MAX_DIM > 0) {
+                    using outer_t = nmtools_static_vector<inner_t,MAX_DIM>;
+                    return as_value_v<outer_t>;
+                } else {
+                    // TODO: use small vector
+                    using outer_t = nmtools_list<inner_t>;
+                    return as_value_v<outer_t>;
+                }
+            }
+        }();
+        using type = type_t<decltype(vtype)>;
+    };
+}
+
+/*************************************************************************** */
+
 namespace nmtools::view
 {
     /**
@@ -142,15 +237,15 @@ namespace nmtools::view
         using axis_type     = resolve_attribute_type_t<axis_t>;
         using op_type       = op_t;
         using reducer_type  = reducer_t<op_t>;
-        using element_type  = meta::get_element_type_t<array_t>;
+        using element_type  = get_element_type_t<array_t>;
         using dtype_type    = dtype_t;
 
-        using result_type = meta::type_t<detail::get_result_type<element_type,op_type>>;
+        using result_type = type_t<detail::get_result_type<element_type,op_type>>;
 
         using attributes_type = args::accumulate<axis_type,dtype_type,op_type>;
 
-        using shape_type = decltype(nmtools::shape<true>(meta::declval<array_t>()));
-        using size_type  = decltype(nmtools::size<true>(meta::declval<array_t>()));
+        using shape_type = decltype(nmtools::shape<true>(declval<array_t>()));
+        using size_type  = decltype(nmtools::size<true>(declval<array_t>()));
 
         op_type      op;
         array_type   array;
@@ -210,41 +305,9 @@ namespace nmtools::view
             // here we directly provide operator() to actually performing operations,
             // instead of returning (transformed) index only
             auto indices_ = pack_indices(indices...);
-            // for now, assume axis is int and array is fixed_dim
-            [[maybe_unused]] constexpr auto DIM = meta::fixed_dim_v<array_t>;
-            [[maybe_unused]] constexpr auto B_DIM = meta::bounded_dim_v<array_t>;
-            // type for slicing is DIMx2 where 2 represent start and stop
-            constexpr auto slices_vtype = [&](){
-                using slice_type = nmtools_array<nm_size_t,2>;
-                if constexpr (!meta::is_fail_v<decltype(DIM)>) {
-                    using slices_type = nmtools_array<slice_type,(nm_size_t)DIM>;
-                    return meta::as_value_v<slices_type>;
-                } else if constexpr (!meta::is_fail_v<decltype(B_DIM)>) {
-                    using slices_type = static_vector<slice_type,(nm_size_t)B_DIM>;
-                    return meta::as_value_v<slices_type>;
-                } else {
-                    using slices_type = nmtools_list<slice_type>;
-                    return meta::as_value_v<slices_type>;
-                }
-            }();
-            using slices_type = meta::type_t<decltype(slices_vtype)>;
-            auto slices = slices_type {};
-            // TODO: consider to unroll when dim is fixed
-            // here, len(slices) already matched the dimension of source array
-            auto dim = detail::dim(array);
-            if constexpr (meta::is_resizable_v<slices_type>) {
-                slices.resize(dim);
-            }
-            for (nm_size_t i=0; i<dim; i++) {
-                // index at axis i
-                auto s = at(indices_,i);
-                using common_t = meta::promote_index_t<decltype(axis),nm_size_t>;
-                auto start = (common_t)i==(common_t)axis ? 0 : s;
-                auto stop  = s + 1;
-                at(slices,i) = {(nm_size_t)start,(nm_size_t)stop};
-            }
+            auto slices = index::accumulate_slices(shape_,indices_,axis);
             auto sliced = [&](){
-                if constexpr (meta::is_pointer_v<array_type>) {
+                if constexpr (is_pointer_v<array_type>) {
                     return apply_slice(*array, slices);
                 } else {
                     return apply_slice(array, slices);
