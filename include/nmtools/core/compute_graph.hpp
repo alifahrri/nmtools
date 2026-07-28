@@ -3,6 +3,7 @@
 
 #include "nmtools/core/functor.hpp"
 #include "nmtools/core/ufunc/ufunc.hpp"
+#include "nmtools/utility.hpp"
 
 namespace nmtools::functional
 {
@@ -12,14 +13,24 @@ namespace nmtools::functional
     template <typename view_t>
     constexpr auto get_compute_graph(const view_t& view)
     {
-        if constexpr (meta::is_maybe_v<view_t>) {
-            using view_type = meta::get_maybe_type_t<view_t>;
-            using result_type = decltype(get_compute_graph(meta::declval<view_type>()));
+        if constexpr (is_maybe_v<view_t>) {
+            using view_type = get_maybe_type_t<view_t>;
+            using result_type = decltype(get_compute_graph(declval<view_type>()));
             using return_type = nmtools_maybe<result_type>;
             if (static_cast<bool>(view)) {
                 return return_type{get_compute_graph(*view)};
             } else {
-                return return_type{meta::Nothing};
+                return return_type{Nothing};
+            }
+        } else if constexpr (is_either_v<view_t>) {
+            using left_t   = decltype(get_compute_graph(*get_left(&view)));
+            using right_t  = decltype(get_compute_graph(*get_right(&view)));
+            using return_t = conditional_t<!is_same_v<left_t,right_t>,nmtools_either<left_t,right_t>,left_t>;
+            if (auto l_ptr = get_left(&view)) {
+                return return_t{get_compute_graph(*l_ptr)};
+            } else {
+                auto r_ptr = get_right(&view);
+                return return_t{get_compute_graph(*r_ptr)};
             }
         } else {
             using view_type = view_t;
@@ -50,8 +61,8 @@ namespace nmtools::functional
             auto composition = functor * other.functor;
             // constexpr auto n_outs = other_functor_t::n_outputs;
             constexpr auto arity = decltype(composition)::arity;
-            constexpr auto N = arity - meta::len_v<decltype(other.operands)>;
-            auto dst_operands = meta::template_reduce<N>([&](auto init, auto I){
+            constexpr auto N = arity - len_v<decltype(other.operands)>;
+            auto dst_operands = template_reduce<N>([&](auto init, auto I){
                 auto operand = at(operands,I);
                 return utility::tuple_append(init,operand) ;
             }, other.operands);
@@ -77,7 +88,7 @@ namespace nmtools::functional
         {
             auto new_operands = utility::tuple_filter(operands,[](auto elem){
                 constexpr auto to_remove = decltype(elem)::value == operand_t::value;
-                return meta::ct_v<!to_remove>;
+                return ct_v<!to_remove>;
             });
             using result_t = node_t<functor_t,decltype(new_operands),output_shape_t,output_element_t>;
             return result_t{functor,new_operands,output_shape,output_element};
@@ -118,41 +129,41 @@ namespace nmtools::functional
             auto operands = get_operands(view);
             constexpr auto operand_ids = view_type::operands_ids;
 
-            constexpr auto N = meta::len_v<decltype(operands)>;
-            auto sub_graph = meta::template_reduce<N>([&](auto graph, auto index){
+            constexpr auto N = len_v<decltype(operands)>;
+            auto sub_graph = template_reduce<N>([&](auto graph, auto index){
 
                 constexpr auto I = decltype(index)::value;
                 const auto& operand = nmtools::get<I>(operands);
-                using operand_t = meta::remove_cvref_pointer_t<decltype(operand)>;
+                using operand_t = remove_cvref_pointer_t<decltype(operand)>;
                 static_assert(
-                    meta::is_pointer_v<operand_t>
-                    || meta::is_num_v<operand_t>
-                    || meta::is_view_v<operand_t>
+                    is_pointer_v<operand_t>
+                    || is_num_v<operand_t>
+                    || is_view_v<operand_t>
                     , "expect operand to be pointer, number or view for get_compute_graph"
                 );
-                if constexpr (meta::is_same_view_v<view::alias_t,operand_t>) {
+                if constexpr (is_same_view_v<view::alias_t,operand_t>) {
                     constexpr auto NODE_ID = typename operand_t::id_type{};
-                    // static_assert( meta::is_pointer_v<decltype(operand)> );
+                    // static_assert( is_pointer_v<decltype(operand)> );
                     return graph.add_node(NODE_ID,operand.array);
-                } else if constexpr (meta::is_view_v<operand_t>) {
+                } else if constexpr (is_view_v<operand_t>) {
                     auto sub_graph = get_compute_graph(operand);
                     auto sub_keys = sub_graph.digraph.keys();
-                    constexpr auto N_SUB = meta::len_v<decltype(sub_keys)>;
+                    constexpr auto N_SUB = len_v<decltype(sub_keys)>;
                     // MERGE Graph
-                    auto result_graph = meta::template_reduce<N_SUB>([&](auto g, auto index){
+                    auto result_graph = template_reduce<N_SUB>([&](auto g, auto index){
                         auto node_id = nmtools::get<decltype(index)::value>(sub_keys);
                         auto node = sub_graph.nodes(node_id);
                         auto out_edges = sub_graph.out_edges(node_id);
-                        constexpr auto N_OUT = meta::len_v<decltype(out_edges)>;
-                        return meta::template_reduce<N_OUT>([&](auto g, auto out_idx){
+                        constexpr auto N_OUT = len_v<decltype(out_edges)>;
+                        return template_reduce<N_OUT>([&](auto g, auto out_idx){
                             auto out_edge = nmtools::get<decltype(out_idx)::value>(out_edges);
                             return g.add_edge(node_id,out_edge);
                         }, g.add_node(node_id,node));
                     }, graph);
                     return result_graph;
-                } else /* if constexpr (meta::is_ndarray_v<operand_t>) */ {
+                } else /* if constexpr (is_ndarray_v<operand_t>) */ {
                     constexpr auto N_NODES = decltype(graph.size())::value;
-                    constexpr auto NODE_ID = meta::ct_v<N_NODES>;
+                    constexpr auto NODE_ID = ct_v<N_NODES>;
                     return graph.add_node(NODE_ID,operand);
                 }
             }, compute_graph_t<>());
@@ -162,13 +173,13 @@ namespace nmtools::functional
             auto functor = get_function(view);
 
             auto output_shape = nmtools::shape<true>(view);
-            using element_t    = meta::get_element_type_t<decltype(view)>;
-            auto element_vtype = meta::as_value_v<element_t>;
+            using element_t    = get_element_type_t<decltype(view)>;
+            auto element_vtype = as_value_v<element_t>;
 
             auto graph = sub_graph
                 .add_node(node_id,node_t{functor,operand_ids,output_shape,element_vtype})
             ;
-            return meta::template_reduce<N>([&](auto graph, auto index){
+            return template_reduce<N>([&](auto graph, auto index){
                 auto operand_id = nmtools::get<decltype(index)::value>(operand_ids);
                 return graph.add_edge(operand_id,node_id);
             }, graph);
@@ -190,38 +201,38 @@ namespace nmtools::functional
         {
             auto operands = get_operands(view);
 
-            constexpr auto N = meta::len_v<decltype(operands)>;
-            auto sub_graph_and_ids = meta::template_reduce<N>([&](auto graph_and_ids, auto index){
+            constexpr auto N = len_v<decltype(operands)>;
+            auto sub_graph_and_ids = template_reduce<N>([&](auto graph_and_ids, auto index){
                 auto graph = nmtools::get<0>(graph_and_ids);
                 auto operand_ids = nmtools::get<1>(graph_and_ids);
 
                 constexpr auto I = decltype(index)::value;
                 const auto& operand = nmtools::get<I>(operands);
-                using operand_t = meta::remove_cvref_pointer_t<decltype(operand)>;
+                using operand_t = remove_cvref_pointer_t<decltype(operand)>;
                 static_assert(
-                    meta::is_pointer_v<operand_t>
-                    || meta::is_num_v<operand_t>
-                    || meta::is_view_v<operand_t>
+                    is_pointer_v<operand_t>
+                    || is_num_v<operand_t>
+                    || is_view_v<operand_t>
                     , "expect operand to be pointer, number or view for get_compute_graph"
                 );
                 #if 1
-                if constexpr (meta::is_broadcast_view_v<operand_t>) {
+                if constexpr (is_broadcast_view_v<operand_t>) {
                     // broadccast_to has exactly 1 operand
                     // effectively skip broadcast
                     // TODO: refactor functional ufuncs
-                    auto sub_operand = at(get_operands(operand),meta::ct_v<0>);
-                    using sub_operand_type = meta::remove_cvref_pointer_t<decltype(sub_operand)>;
-                    if constexpr ((meta::is_ndarray_v<sub_operand_type> || meta::is_num_v<sub_operand_type>)
-                        && !meta::is_view_v<sub_operand_type>
+                    auto sub_operand = at(get_operands(operand),ct_v<0>);
+                    using sub_operand_type = remove_cvref_pointer_t<decltype(sub_operand)>;
+                    if constexpr ((is_ndarray_v<sub_operand_type> || is_num_v<sub_operand_type>)
+                        && !is_view_v<sub_operand_type>
                     ) {
                         // TODO: read nodeid from view's operands_ids static member variable
                         constexpr auto N_NODES = decltype(graph.size())::value;
-                        constexpr auto NODE_ID = meta::ct_v<N_NODES>;
+                        constexpr auto NODE_ID = ct_v<N_NODES>;
                         return nmtools_tuple{
                             graph.add_node(NODE_ID,sub_operand)
                             , utility::tuple_append(operand_ids,NODE_ID)
                         };
-                    } else if constexpr (meta::is_same_view_v<view::alias_t,sub_operand_type>) {
+                    } else if constexpr (is_same_view_v<view::alias_t,sub_operand_type>) {
                         constexpr auto NODE_ID = typename sub_operand_type::id_type{};
                         return nmtools_tuple{
                             graph.add_node(NODE_ID,sub_operand.array)
@@ -230,7 +241,7 @@ namespace nmtools::functional
                     } else {
                         auto sub_id = typename sub_operand_type::id_type{};
                         auto node_i = graph.nodes(sub_id);
-                        constexpr auto has_node = !meta::is_fail_v<decltype(node_i)>;
+                        constexpr auto has_node = !is_fail_v<decltype(node_i)>;
                         // skip adding nodes if has already exists, but still add edge
                         if constexpr (has_node) {
                             return nmtools_tuple{
@@ -241,13 +252,13 @@ namespace nmtools::functional
                             // MERGE Graph
                             auto sub_graph = get_compute_graph(sub_operand);
                             auto sub_keys = sub_graph.digraph.keys();
-                            constexpr auto N_SUB = meta::len_v<decltype(sub_keys)>;
-                            auto result_graph = meta::template_reduce<N_SUB>([&](auto g, auto index){
+                            constexpr auto N_SUB = len_v<decltype(sub_keys)>;
+                            auto result_graph = template_reduce<N_SUB>([&](auto g, auto index){
                                 auto node_id = nmtools::get<decltype(index)::value>(sub_keys);
                                 auto node = sub_graph.nodes(node_id);
                                 auto out_edges = sub_graph.out_edges(node_id);
-                                constexpr auto N_OUT = meta::len_v<decltype(out_edges)>;
-                                return meta::template_reduce<N_OUT>([&](auto g, auto out_idx){
+                                constexpr auto N_OUT = len_v<decltype(out_edges)>;
+                                return template_reduce<N_OUT>([&](auto g, auto out_idx){
                                     auto out_edge = nmtools::get<decltype(out_idx)::value>(out_edges);
                                     return g.add_edge(node_id,out_edge);
                                 }, g.add_node(node_id,node));
@@ -260,24 +271,24 @@ namespace nmtools::functional
                     }
                 } else
                 #endif
-                if constexpr (meta::is_same_view_v<view::alias_t,operand_t>) {
+                if constexpr (is_same_view_v<view::alias_t,operand_t>) {
                     constexpr auto NODE_ID = typename operand_t::id_type{};
-                    // static_assert( meta::is_pointer_v<decltype(operand)> );
+                    // static_assert( is_pointer_v<decltype(operand)> );
                     return nmtools_tuple{
                         graph.add_node(NODE_ID,operand.array)
                         , utility::tuple_append(operand_ids,NODE_ID)
                     };
-                } else if constexpr (meta::is_view_v<operand_t>) {
+                } else if constexpr (is_view_v<operand_t>) {
                     auto sub_graph = get_compute_graph(operand);
                     auto sub_keys = sub_graph.digraph.keys();
-                    constexpr auto N_SUB = meta::len_v<decltype(sub_keys)>;
+                    constexpr auto N_SUB = len_v<decltype(sub_keys)>;
                     // MERGE Graph
-                    auto result_graph = meta::template_reduce<N_SUB>([&](auto g, auto index){
+                    auto result_graph = template_reduce<N_SUB>([&](auto g, auto index){
                         auto node_id = nmtools::get<decltype(index)::value>(sub_keys);
                         auto node = sub_graph.nodes(node_id);
                         auto out_edges = sub_graph.out_edges(node_id);
-                        constexpr auto N_OUT = meta::len_v<decltype(out_edges)>;
-                        return meta::template_reduce<N_OUT>([&](auto g, auto out_idx){
+                        constexpr auto N_OUT = len_v<decltype(out_edges)>;
+                        return template_reduce<N_OUT>([&](auto g, auto out_idx){
                             auto out_edge = nmtools::get<decltype(out_idx)::value>(out_edges);
                             return g.add_edge(node_id,out_edge);
                         }, g.add_node(node_id,node));
@@ -287,9 +298,9 @@ namespace nmtools::functional
                         result_graph
                         , utility::tuple_append(operand_ids,sub_id)
                     };
-                } else /* if constexpr (meta::is_ndarray_v<operand_t>) */ {
+                } else /* if constexpr (is_ndarray_v<operand_t>) */ {
                     constexpr auto N_NODES = decltype(graph.size())::value;
-                    constexpr auto NODE_ID = meta::ct_v<N_NODES>;
+                    constexpr auto NODE_ID = ct_v<N_NODES>;
                     return nmtools_tuple{
                         graph.add_node(NODE_ID,operand)
                         , utility::tuple_append(operand_ids,NODE_ID)
@@ -304,13 +315,13 @@ namespace nmtools::functional
             auto functor = get_function(view);
 
             auto output_shape  = nmtools::shape<true>(view);
-            using element_t    = meta::get_element_type_t<decltype(view)>;
-            auto element_vtype = meta::as_value_v<element_t>;
+            using element_t    = get_element_type_t<decltype(view)>;
+            auto element_vtype = as_value_v<element_t>;
 
             auto graph = sub_graph
                 .add_node(node_id,node_t{functor,operand_ids,output_shape,element_vtype})
             ;
-            return meta::template_reduce<N>([&](auto graph, auto index){
+            return template_reduce<N>([&](auto graph, auto index){
                 auto operand_id = nmtools::get<decltype(index)::value>(operand_ids);
                 return graph.add_edge(operand_id,node_id);
             }, graph);
@@ -342,9 +353,9 @@ namespace nmtools::utils::impl
             auto fmap_str = nmtools_string("");
             fmap_str = NMTOOLS_TYPENAME_TO_STRING(F);
 
-            using mapper_type = to_string_t<meta::remove_cvref_t<decltype(fmap.fn)>,formatter_type>;
-            if constexpr (meta::has_result_type_v<mapper_type>) {
-                if constexpr (!meta::is_fail_v<typename mapper_type::result_type>) {
+            using mapper_type = to_string_t<remove_cvref_t<decltype(fmap.fn)>,formatter_type>;
+            if constexpr (has_result_type_v<mapper_type>) {
+                if constexpr (!is_fail_v<typename mapper_type::result_type>) {
                     fmap_str = to_string(fmap.fn);
                 }
             }
@@ -376,8 +387,8 @@ namespace nmtools::utils::impl
 
             auto attr_str = nmtools_string("");
             attr_str += "[{";
-            constexpr auto N = meta::len_v<attributes_t>;
-            meta::template_for<N>([&](auto index){
+            constexpr auto N = len_v<attributes_t>;
+            template_for<N>([&](auto index){
                 attr_str += to_string(nmtools::at(functor.attributes,index),formatter_type{});
                 if (index < (N-1)) {
                     attr_str += ",";
@@ -401,7 +412,7 @@ namespace nmtools::utils::impl
         {
             auto composition_str = nmtools_string("");
             constexpr auto N = sizeof...(functors_t);
-            meta::template_for<N>([&](auto index){
+            template_for<N>([&](auto index){
                 composition_str += to_string(at(composition.functors,index),formatter_type{});
                 if (index < (N-1)) {
                     composition_str += " * ";
@@ -424,11 +435,11 @@ namespace nmtools::utils::impl
             auto node_str = nmtools_string("");
             node_str += to_string(node.functor,formatter_type{});
             if constexpr (!is_none_v<output_element_t>) {
-                using element_t [[maybe_unused]] = meta::type_t<output_element_t>;
+                using element_t [[maybe_unused]] = type_t<output_element_t>;
                 node_str += " | ";
                 node_str += NMTOOLS_TYPENAME_TO_STRING(element_t);
             }
-            if constexpr (!meta::is_same_v<output_shape_t,nmtools_tuple<>>) {
+            if constexpr (!is_same_v<output_shape_t,nmtools_tuple<>>) {
                 node_str += " | ";
                 node_str += to_string(node.output_shape,formatter_type{});
             }
@@ -478,8 +489,8 @@ namespace nmtools::utils::impl
             auto fmap_str = to_string(functor.fmap,utils::Compact);
 
             auto attr_str = nmtools_string("");
-            constexpr auto N = meta::len_v<attributes_t>;
-            meta::template_for<N>([&](auto index){
+            constexpr auto N = len_v<attributes_t>;
+            template_for<N>([&](auto index){
                 attr_str += to_string(nmtools::at(functor.attributes,index),utils::Compact);
                 if (index < (N-1)) {
                     attr_str += ",";
@@ -509,14 +520,14 @@ namespace nmtools::utils::impl
             // str += "[graphviz_record_layout_open]";
 
             constexpr auto N = sizeof...(functors_t);
-            meta::template_for<N>([&](auto index){
+            template_for<N>([&](auto index){
                 constexpr auto I = (N-1) - decltype(index)::value;
                 const auto& functor = nmtools::get<I>(composition.functors);
                 auto fmap_str = to_string(functor.fmap,utils::Compact);
                 auto attr_str = nmtools_string("");
                 using attributes_t = decltype(functor.attributes);
-                constexpr auto M = meta::len_v<attributes_t>;
-                meta::template_for<M>([&](auto index){
+                constexpr auto M = len_v<attributes_t>;
+                template_for<M>([&](auto index){
                     const auto& attribute = nmtools::at(functor.attributes,index);
                     attr_str += to_string(attribute,utils::Compact);
                     if (index < (M-1)) {
@@ -546,12 +557,12 @@ namespace nmtools::utils::impl
         inline auto operator()(const node_type& node) const noexcept
         {
             auto node_str = nmtools_string("");
-            constexpr auto N = meta::len_v<decltype(node.operands)>;
+            constexpr auto N = len_v<decltype(node.operands)>;
             node_str += "[graphviz_record_layout_open] ";
             if (N >= 1) {
                 node_str += "[graphviz_record_layout_open] ";
             }
-            meta::template_for<N>([&](auto I){
+            template_for<N>([&](auto I){
                 auto id = at(node.operands,I);
                 node_str += "[graphviz_record_fieldid_open] ";
                 node_str += to_string(id);
@@ -571,11 +582,11 @@ namespace nmtools::utils::impl
             node_str += to_string(node.functor,utils::Graphviz);
             node_str += " [graphviz_record_layout_close] ";
             if constexpr (!is_none_v<output_element_t>) {
-                using element_t [[maybe_unused]] = meta::type_t<output_element_t>;
+                using element_t [[maybe_unused]] = type_t<output_element_t>;
                 node_str += " | ";
                 node_str += NMTOOLS_TYPENAME_TO_STRING(element_t);
             }
-            if constexpr (!meta::is_same_v<output_shape_t,nmtools_tuple<>>) {
+            if constexpr (!is_same_v<output_shape_t,nmtools_tuple<>>) {
                 node_str += " | ";
                 node_str += to_string(node.output_shape,utils::Compact);
             }
@@ -597,8 +608,8 @@ namespace nmtools::utils::impl
 
             {
                 auto out_edges = graph.out_edges();
-                constexpr auto N = meta::len_v<decltype(out_edges)>;
-                meta::template_for<N>([&](auto index){
+                constexpr auto N = len_v<decltype(out_edges)>;
+                template_for<N>([&](auto index){
                     auto out_edge = nmtools::at(out_edges,index);
                     auto src_edge = nmtools::get<0>(out_edge);
                     auto dst_edge = nmtools::get<1>(out_edge);
@@ -614,14 +625,14 @@ namespace nmtools::utils::impl
 
             {
                 auto nodes = graph.nodes();
-                constexpr auto N = meta::len_v<decltype(nodes)>;
-                meta::template_for<N>([&](auto index){
+                constexpr auto N = len_v<decltype(nodes)>;
+                template_for<N>([&](auto index){
                     auto node_id  = nmtools::at(nodes,index);
                     auto node = graph.nodes(node_id);
-                    using node_t = meta::remove_cvref_pointer_t<decltype(node)>;
+                    using node_t = remove_cvref_pointer_t<decltype(node)>;
                     constexpr auto is_buffered =
-                        (meta::is_ndarray_v<node_t> || meta::is_num_v<node_t>)
-                        && !meta::is_view_v<node_t>
+                        (is_ndarray_v<node_t> || is_num_v<node_t>)
+                        && !is_view_v<node_t>
                     ;
 
                     auto node_id_str = to_string(node_id,utils::Compact);
@@ -640,7 +651,7 @@ namespace nmtools::utils::impl
                     graphviz += " | ";
 
                     auto node_string = nmtools_string("");
-                    if constexpr (meta::is_ndarray_v<node_t> || meta::is_num_v<node_t> || meta::is_maybe_v<node_t>) {
+                    if constexpr (is_ndarray_v<node_t> || is_num_v<node_t> || is_maybe_v<node_t>) {
                         node_string = to_string(node,utils::Compact);
                     } else {
                         node_string = to_string(node,utils::Graphviz);

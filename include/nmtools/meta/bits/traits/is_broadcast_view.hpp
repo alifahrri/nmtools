@@ -10,7 +10,18 @@ namespace nmtools::meta
     struct is_broadcast_view : meta::false_type {};
 
     template <typename T>
+    struct is_broadcast_view<const T> : is_broadcast_view<T> {};
+
+    template <typename T>
+    struct is_broadcast_view<T&> : is_broadcast_view<T> {};
+
+    template <typename T>
     constexpr inline auto is_broadcast_view_v = is_broadcast_view<T>::value;
+}
+
+namespace nmtools
+{
+    using meta::is_broadcast_view_v;
 }
 
 #endif // NMTOOLS_META_BITS_TRAITS_IS_BROADCAST_VIEW_HPP

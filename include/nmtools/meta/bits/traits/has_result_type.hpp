@@ -34,4 +34,9 @@ namespace nmtools::meta
     inline constexpr bool has_result_type_v = has_result_type<T>::value;
 } // namespace nmtools::meta
 
+namespace nmtools
+{
+    using meta::has_result_type_v;
+}
+
 #endif // NMTOOLS_META_BITS_TRAITS_HAS_RESULT_TYPE_HPP
