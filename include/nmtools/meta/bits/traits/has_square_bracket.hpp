@@ -40,4 +40,9 @@ namespace nmtools::meta
     inline constexpr bool has_square_bracket_v = has_square_bracket<T,size_type>::value;
 } // namespace nmtools::meta
 
+namespace nmtools
+{
+    using meta::has_square_bracket_v;
+}
+
 #endif // NMTOOLS_META_BITS_TRAITS_HAS_SQUARE_BRACKET_HPP

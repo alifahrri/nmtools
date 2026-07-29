@@ -130,5 +130,14 @@ namespace nmtools::meta
     inline constexpr bool has_bracket2d_v = has_bracket2d<T,size_type>::value;
 } // namespace nmtools::meta
 
+namespace nmtools
+{
+    using meta::has_bracket_v;
+    using meta::has_bracket2d_v;
+    using meta::has_bracketnd_v;
+    using meta::has_funcnd_v;
+    using meta::has_square_bracket2d_v;
+}
+
 
 #endif // NMTOOLS_META_BITS_TRAITS_HAS_BRACKET_HPP

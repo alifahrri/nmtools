@@ -84,7 +84,7 @@ namespace nmtools::view
     { \
         auto result = view::method(view_type{*this},args...); \
         using result_t = decltype(unwrap(result)); \
-        if constexpr (meta::is_num_v<result_t>) { \
+        if constexpr (is_num_v<result_t>) { \
             return result; \
         } else { \
             return view::decorator_t<view::object_t,result_t>{unwrap(result)}; \
@@ -96,7 +96,7 @@ namespace nmtools::view
     {
         // get_element_type metafunction should be able to handle
         // ndarray, array2d, array1d etc
-        using value_type = meta::get_element_type_t<array_t>;
+        using value_type = get_element_type_t<array_t>;
         using const_reference = const value_type&;
         // array type as required by decorator
         using array_type = resolve_array_type_t<array_t>;
@@ -126,7 +126,7 @@ namespace nmtools::view
 
         constexpr auto shape() const
         {
-            if constexpr (meta::is_pointer_v<meta::remove_cvref_t<array_type>>) {
+            if constexpr (is_pointer_v<remove_cvref_t<array_type>>) {
                 return nmtools::shape<true>(*array);
             } else {
                 return nmtools::shape<true>(array);
@@ -135,7 +135,7 @@ namespace nmtools::view
 
         constexpr auto dim() const
         {
-            if constexpr (meta::is_pointer_v<meta::remove_cvref_t<array_type>>) {
+            if constexpr (is_pointer_v<remove_cvref_t<array_type>>) {
                 return nmtools::dim<true>(*array);
             } else {
                 return nmtools::dim<true>(array);
@@ -144,7 +144,7 @@ namespace nmtools::view
 
         constexpr auto size() const
         {
-            if constexpr (meta::is_pointer_v<meta::remove_cvref_t<array_type>>) {
+            if constexpr (is_pointer_v<remove_cvref_t<array_type>>) {
                 return nmtools::size<true>(*array);
             } else {
                 return nmtools::size<true>(array);
@@ -255,21 +255,21 @@ namespace nmtools::view
     #undef nmtools_ndarray_method
 
     // TODO: drop none default, make id mandatory
-    template <typename array_t, typename id_t=meta::ct<0>>
+    template <typename array_t, typename id_t=ct<0>>
     constexpr auto array(const array_t& array, id_t id=id_t{})
     {
         // TODO: handle either type
-        if constexpr (meta::is_maybe_v<array_t> || meta::is_maybe_v<id_t>) {
+        if constexpr (is_maybe_v<array_t> || is_maybe_v<id_t>) {
             return view::array(unwrap(array),unwrap(id));
-        } else if constexpr (meta::is_same_view_v<object_t,array_t> && !is_none_v<id_t>) {
+        } else if constexpr (is_same_view_v<object_t,array_t> && !is_none_v<id_t>) {
             // Quick-hack: arraying an array will rename
             const auto& m_array = array.array;
-            if constexpr (meta::is_pointer_v<meta::remove_cvref_t<decltype(m_array)>>) {
+            if constexpr (is_pointer_v<remove_cvref_t<decltype(m_array)>>) {
                 return view::array(*array.array,id);
             } else {
                 return view::array(array.array,id);
             }
-        } else if constexpr (meta::is_view_v<array_t>) {
+        } else if constexpr (is_view_v<array_t>) {
             // view is already arrayed
             static_assert( array_t::id_type::value == id_t::value );
             return array;
@@ -284,21 +284,21 @@ namespace nmtools::view
         auto array_pack = pack_operands(arrays...);
         auto f = [](const auto& array_pack){
             constexpr auto N = sizeof...(arrays);
-            constexpr auto initial_ids = meta::template_reduce<N>([&](auto init, auto index){
+            constexpr auto initial_ids = template_reduce<N>([&](auto init, auto index){
                 using array_type = decltype(unwrap(at(array_pack,index)));
-                constexpr auto id = get_id_v<meta::remove_cvref_pointer_t<array_type>>;
-                return utility::tuple_append(init,meta::ct_v<(nm_index_t)id>);
+                constexpr auto id = get_id_v<remove_cvref_pointer_t<array_type>>;
+                return utility::tuple_append(init,ct_v<(nm_index_t)id>);
             },nmtools_tuple{});
-            constexpr auto max_id    = index::max(meta::to_value_v<decltype(initial_ids)>);
+            constexpr auto max_id    = index::max(to_value_v<decltype(initial_ids)>);
             constexpr auto offset_id = max_id + 1; // if max_id: -1, then offset 0
-            constexpr auto final_ids = meta::template_reduce<N>([&](auto init, auto index){
+            constexpr auto final_ids = template_reduce<N>([&](auto init, auto index){
                 constexpr auto id = at(initial_ids,index);
                 constexpr auto final_id = ((id < 0) ? (offset_id + index) : id);
-                return utility::tuple_append(init,meta::ct_v<final_id>);
+                return utility::tuple_append(init,ct_v<final_id>);
             },nmtools_tuple{});
-            auto arrays = meta::template_reduce<N>([&](auto init, auto index){
+            auto arrays = template_reduce<N>([&](auto init, auto index){
                 const auto& array = at(array_pack,index);
-                if constexpr (meta::is_pointer_v<meta::remove_cvref_pointer_t<decltype(array)>>) {
+                if constexpr (is_pointer_v<remove_cvref_pointer_t<decltype(array)>>) {
                     return append_operands(init,view::array(*array,at(final_ids,index)));
                 } else {
                     return append_operands(init,view::array(array,at(final_ids,index)));
@@ -348,7 +348,7 @@ namespace nmtools::meta
         view::decorator_t<view::object_t,T*,args_t...>
     >
     {
-        using type = meta::remove_address_space_t<T>;
+        using type = remove_address_space_t<T>;
     };
 } // namespace nmtools::meta
 
@@ -373,7 +373,7 @@ namespace nmtools
     }
 
     #define nmtools_ndarray_reduce(method) \
-    template <typename axis_t, typename dtype_t=none_t, typename initial_t=none_t, typename keepdims_t=meta::false_type> \
+    template <typename axis_t, typename dtype_t=none_t, typename initial_t=none_t, typename keepdims_t=false_type> \
     constexpr auto reduce_##method(const axis_t& axis, dtype_t dtype=dtype_t{}, initial_t initial=initial_t{}, keepdims_t keepdims=keepdims_t{}) const \
     { \
         return nmtools::method.reduce(*this,axis,dtype,initial,keepdims,context_); \
@@ -408,9 +408,9 @@ namespace nmtools
 
         using base_type    = base_ndarray_t<object_t>;
         using buffer_type  = buffer_t;
-        using value_type   = meta::get_element_type_t<buffer_type>;
+        using value_type   = get_element_type_t<buffer_type>;
         using shape_type   = shape_buffer_t;
-        using index_type   = meta::get_element_or_common_type_t<shape_type>;
+        using index_type   = get_element_or_common_type_t<shape_type>;
         using stride_type  = stride_buffer_t<shape_type>;
         using offset_type  = compute_offset_t<shape_type,stride_type>;
         using context_type = conditional_t<
@@ -418,8 +418,8 @@ namespace nmtools
             , default_context_t<broadcasting,/*object=*/true,unroll,compute_offset_t>
             , context_t>;
 
-        static_assert( meta::is_index_array_v<shape_type>, "unsupported shape_type for ndarray" );
-        static_assert( meta::is_index_array_v<stride_type>, "unsupported stride_type for ndarray");
+        static_assert( is_index_array_v<shape_type>, "unsupported shape_type for ndarray" );
+        static_assert( is_index_array_v<stride_type>, "unsupported stride_type for ndarray");
 
         buffer_type  data_;
         shape_type   shape_;
@@ -433,7 +433,7 @@ namespace nmtools
             , strides_  (base_type::template compute_strides<stride_type>(shape_))
             , offset_   (shape_,strides_)
         {
-            if constexpr (meta::is_resizable_v<buffer_type>) {
+            if constexpr (is_resizable_v<buffer_type>) {
                 auto numel = index::product(shape_);
                 // shape may be fixed while data is resizable
                 if ((nm_size_t)len(data_) != (nm_size_t)numel) {
@@ -471,20 +471,20 @@ namespace nmtools
 
         template <typename size_type, typename...size_types>
         constexpr auto resize([[maybe_unused]] const size_type& size, const size_types&...sizes)
-            -> meta::enable_if_t<
-                   (meta::is_index_v<size_type> || meta::is_index_array_v<size_type>)
-                && (meta::is_index_v<size_types> && ...)
-                && (!meta::is_constant_index_array_v<shape_type>)
+            -> enable_if_t<
+                   (is_index_v<size_type> || is_index_array_v<size_type>)
+                && (is_index_v<size_types> && ...)
+                && (!is_constant_index_array_v<shape_type>)
             , bool>
         {
             const auto sizes_  = index::pack_indices(size,sizes...);
             const auto numel   = index::product(sizes_);
             // since size may be packed, the proper way to read dim is using len instead of sizes..+1
             auto new_dim = len(sizes_);
-            if constexpr (meta::is_resizable_v<shape_type>) {
+            if constexpr (is_resizable_v<shape_type>) {
                 shape_.resize(new_dim);
             }
-            if constexpr (meta::is_resizable_v<buffer_type>) {
+            if constexpr (is_resizable_v<buffer_type>) {
                 data_.resize(numel);
             }
             auto same_dim   = (size_t)len(shape_) == (size_t)new_dim;
@@ -493,12 +493,12 @@ namespace nmtools
                 // , to use fixed dim dynamic size, use static_vector as buffer
                 #if 0
                 // NOTE: to allow fixed buffer, fixed dim, dynamic shape
-                if (meta::is_resizable_v<buffer_type>) {
+                if (is_resizable_v<buffer_type>) {
                     // buffer is resizable, can deduce numel from len(data_)
                     return (size_t)len(data_) == (size_t)numel;
                 } else if (same_dim) {
                     // same dim and can assign value to shape
-                    return !meta::is_constant_index_array_v<shape_type>;
+                    return !is_constant_index_array_v<shape_type>;
                 } else {
                     return false;
                 }
@@ -512,8 +512,8 @@ namespace nmtools
             if (!same_dim) {
                 return false;
             }
-            if constexpr (meta::is_clipped_index_array_v<shape_type>) {
-                constexpr auto max_sizes = meta::to_value_v<shape_type>;
+            if constexpr (is_clipped_index_array_v<shape_type>) {
+                constexpr auto max_sizes = to_value_v<shape_type>;
                 if ((size_t)len(sizes_) != (size_t)len(max_sizes)) {
                     return false;
                 }
@@ -526,10 +526,10 @@ namespace nmtools
                     }
                 }
             }
-            if constexpr (meta::is_tuple_v<shape_type>) {
+            if constexpr (is_tuple_v<shape_type>) {
                 // this may be the case for clipped_shape
-                constexpr auto N = meta::len_v<shape_type>;
-                meta::template_for<N>([&](auto index){
+                constexpr auto N = len_v<shape_type>;
+                template_for<N>([&](auto index){
                     at(shape_,index) = at(sizes_,index);
                 });
             } else {
@@ -541,13 +541,13 @@ namespace nmtools
             // NOTE: using operator= directly may cause unusable for constexpr, (e.g. std::tuple)
             // quick workaround just use assignment of the elements
             auto m_strides_ = base_type::template compute_strides<stride_type>(shape_);
-            if constexpr (meta::is_tuple_v<stride_type>) {
-                constexpr auto N = meta::len_v<stride_type>;
-                meta::template_for<N>([&](auto I){
+            if constexpr (is_tuple_v<stride_type>) {
+                constexpr auto N = len_v<stride_type>;
+                template_for<N>([&](auto I){
                     at(strides_,I) = at(m_strides_,I);
                 });
             } else {
-                if constexpr (meta::is_resizable_v<stride_type>) {
+                if constexpr (is_resizable_v<stride_type>) {
                     strides_.resize(len(m_strides_));
                 }
                 for (size_t i=0; i<(size_t)len(m_strides_); i++) {
@@ -603,7 +603,7 @@ namespace nmtools
             return nmtools::unwrap(result);
         }
 
-        template <typename F, typename axis_t, typename dtype_t=none_t, typename initial_t=none_t, typename keepdims_t=meta::false_type>
+        template <typename F, typename axis_t, typename dtype_t=none_t, typename initial_t=none_t, typename keepdims_t=false_type>
         constexpr auto reduce(F&& f, const axis_t& axis, dtype_t dtype=dtype_t{}, initial_t initial=initial_t{}, keepdims_t keepdims=keepdims_t{}) const
         {
             auto v = view::reduce(nmtools::forward<F>(f),*this,axis,dtype,initial,keepdims);
@@ -884,21 +884,21 @@ namespace nmtools
         using array_type = object_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t,context_t,broadcast_enable>;
 
         static constexpr auto vtype = [](){
-            constexpr auto dim = meta::len_v<shape_buffer_t>;
-            if constexpr (meta::is_constant_index_array_v<shape_buffer_t> && (dim==1)) {
-                using type = meta::get_element_type_t<buffer_t>;
-                return meta::as_value_v<type>;
+            constexpr auto dim = len_v<shape_buffer_t>;
+            if constexpr (is_constant_index_array_v<shape_buffer_t> && (dim==1)) {
+                using type = get_element_type_t<buffer_t>;
+                return as_value_v<type>;
             } else {
-                using type = meta::error::TEMPLATE_GET_UNSUPPORTED<array_type,meta::as_type<I>>;
-                return meta::as_value_v<type>;
+                using type = meta::error::TEMPLATE_GET_UNSUPPORTED<array_type,as_type<I>>;
+                return as_value_v<type>;
             }
         }();
 
-        using type = meta::type_t<decltype(vtype)>;
+        using type = type_t<decltype(vtype)>;
 
         constexpr decltype(auto) operator()([[maybe_unused]] const array_type& t) const noexcept
         {
-            if constexpr (meta::is_fail_v<type>) {
+            if constexpr (is_fail_v<type>) {
                 return type{};
             } else {
                 return t(I);
@@ -907,7 +907,7 @@ namespace nmtools
 
         constexpr decltype(auto) operator()([[maybe_unused]] array_type& t) const noexcept
         {
-            if constexpr (meta::is_fail_v<type>) {
+            if constexpr (is_fail_v<type>) {
                 return type{};
             } else {
                 return t(I);

@@ -63,5 +63,10 @@ namespace nmtools::meta
     inline constexpr bool has_atnd_v = has_atnd<T,size_types...>::value;
 } // namespace nmtools::meta
 
+namespace nmtools
+{
+    using meta::has_at_v;
+    using meta::has_atnd_v;
+}
 
 #endif // NMTOOLS_META_BITS_TRAITS_HAS_AT_HPP

@@ -282,6 +282,7 @@ namespace nmtools
     using meta::false_type;
     using meta::index_sequence;
     using meta::make_index_sequence_v;
+    using meta::as_type;
 }
 
 namespace nmtools::meta

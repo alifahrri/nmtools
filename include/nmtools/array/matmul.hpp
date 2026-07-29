@@ -1431,8 +1431,8 @@ namespace nmtools::view
                 using return_t = nmtools_maybe<result_t>;
                 return (has_value(result)
                     ? (unwrap(size) == 1
-                        ? return_t{view::item(unwrap(result))}
-                        : return_t{unwrap(result)}
+                        ? return_t{result_t{view::item(unwrap(result))}}
+                        : return_t{result_t{unwrap(result)}}
                     ) : return_t{Nothing}
                 );
             }
