@@ -13,4 +13,9 @@ namespace nmtools::meta
     constexpr inline auto is_default_constructible_v = is_default_constructible<T>::value;
 }
 
+namespace nmtools
+{
+    using meta::is_default_constructible_v;
+}
+
 #endif // NMTOOLS_META_BITS_TRAITS_IS_DEFAULT_CONSTRUCTIBLE_HPP

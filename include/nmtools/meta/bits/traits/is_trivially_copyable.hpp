@@ -23,4 +23,9 @@ namespace nmtools::meta
     constexpr inline auto is_trivially_copyable_v = is_trivially_copyable<T>::value;
 } // namespace nmtools::meta
 
+namespace nmtools
+{
+    using meta::is_trivially_copyable_v;
+}
+
 #endif // NMTOOLS_META_BITS_TRAITS_IS_TRIVIALLY_COPYABLE_HPP

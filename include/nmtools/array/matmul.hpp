@@ -1417,24 +1417,35 @@ namespace nmtools::view
 
             auto result = view::reshape(summed,dst_result_shape);
 
-            auto size = nmtools::size<true>(result);
-
-            if constexpr (is_constant_index_v<decltype(size)>) {
-                constexpr auto SIZE = decltype(size)::value;
-                if constexpr (SIZE == 1) {
-                    return view::item(result);
+            auto itemize = [](const auto& result) {
+                auto size = nmtools::size<true>(result);
+                if constexpr (is_constant_index_v<decltype(size)>) {
+                    constexpr auto SIZE = decltype(size)::value;
+                    if constexpr (SIZE == 1) {
+                        return view::item(result);
+                    } else {
+                        return result;
+                    }
                 } else {
-                    return result;
+                    using left_t   = remove_cvref_t<decltype(view::item(result))>;
+                    using right_t  = remove_cvref_t<decltype(result)>;
+                    using return_t = conditional_t<is_same_v<left_t,right_t>,left_t,nmtools_either<left_t,right_t>>;
+                    return (size == 1
+                        ? return_t{view::item(result)}
+                        : return_t{result}
+                    );
                 }
-            } else {
-                using result_t = nmtools_either<decltype(unwrap(result)),decltype(view::item(unwrap(result)))>;
-                using return_t = nmtools_maybe<result_t>;
+            };
+
+            if constexpr (is_maybe_v<decltype(result)>) {
+                using result_t = decltype(itemize(unwrap(result)));
+                using return_t = conditional_t<is_maybe_v<result_t>,result_t,nmtools_maybe<result_t>>;
                 return (has_value(result)
-                    ? (unwrap(size) == 1
-                        ? return_t{result_t{view::item(unwrap(result))}}
-                        : return_t{result_t{unwrap(result)}}
-                    ) : return_t{Nothing}
+                    ? return_t{itemize(unwrap(result))}
+                    : return_t{Nothing}
                 );
+            } else {
+                return itemize(result);
             }
         }
     }
