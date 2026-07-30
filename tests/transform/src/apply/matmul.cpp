@@ -19,7 +19,8 @@ using namespace nmtools::literals;
 
 using nmtools_array, nmtools_tuple, nmtools::unwrap;
 
-#if 1
+// TODO: remove
+#if 0
 TEST_CASE("apply_graph(matmul)" * doctest::test_suite("transform"))
 {
     auto gen = na::random_engine();

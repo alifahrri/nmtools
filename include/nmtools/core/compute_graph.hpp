@@ -23,9 +23,9 @@ namespace nmtools::functional
                 return return_type{Nothing};
             }
         } else if constexpr (is_either_v<view_t>) {
-            using left_t   = decltype(get_compute_graph(*get_left(&view)));
-            using right_t  = decltype(get_compute_graph(*get_right(&view)));
-            using return_t = conditional_t<!is_same_v<left_t,right_t>,nmtools_either<left_t,right_t>,left_t>;
+            using left_t   = remove_cvref_t<decltype(get_compute_graph(*get_left(&view)))>;
+            using right_t  = remove_cvref_t<decltype(get_compute_graph(*get_right(&view)))>;
+            using return_t = conditional_t<is_same_v<left_t,right_t>,left_t,nmtools_either<left_t,right_t>>;
             if (auto l_ptr = get_left(&view)) {
                 return return_t{get_compute_graph(*l_ptr)};
             } else {

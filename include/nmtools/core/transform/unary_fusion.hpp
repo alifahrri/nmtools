@@ -39,31 +39,50 @@ namespace nmtools::functional
         return nmtools_tuple{from,to};
     } // find_unary_fusion
 
-    template <typename graph_t, typename n_repeats_t=meta::ct<1>>
+    template <typename graph_t, typename n_repeats_t=ct<1>>
     constexpr auto transform_unary_fusion(const graph_t& graph, n_repeats_t = n_repeats_t{})
     {
-        // TODO: check if graph is fn::compute_graph_t or utility::ct_digraph
-        constexpr auto adjacency_result = utility::adjacency_list(decltype(graph.digraph){});
-        constexpr auto adjacency_list   = nmtools::get<0>(adjacency_result);
-        constexpr auto src_id_map       = nmtools::get<1>(adjacency_result);
-
-        constexpr auto unary_fusion = find_unary_fusion(adjacency_list);
-        constexpr auto from = nmtools::get<0>(unary_fusion);
-        constexpr auto to   = nmtools::get<1>(unary_fusion);
-
-        if constexpr ((from < 0) || (to < 0)) {
-            return graph;
-        } else {
-            auto from_ct = meta::ct_v<src_id_map[from]>;
-            auto to_ct   = meta::ct_v<src_id_map[to]>;
-            auto fused   = graph.nodes(to_ct) * graph.nodes(from_ct);
-
-            auto contracted = utility::contracted_edge(graph,nmtools_tuple{from_ct,to_ct},to_ct,fused);
-            constexpr auto n_repeats = n_repeats_t::value;
-            if constexpr ((0 < (nm_index_t)n_repeats-1) || ((nm_index_t)n_repeats < 0)) {
-                return transform_unary_fusion(contracted,meta::ct_v<n_repeats-1>);
+        if constexpr (is_maybe_v<graph_t>) {
+            using result_t = decltype(transform_unary_fusion(unwrap(graph),n_repeats_t{}));
+            using return_t = conditional_t<is_maybe_v<result_t>,result_t,nmtools_maybe<result_t>>;
+            return (has_value(graph)
+                ? return_t{transform_unary_fusion(unwrap(graph),n_repeats_t{})}
+                : return_t{Nothing}
+            );
+        } else if constexpr (is_either_v<graph_t>) {
+            using left_t   = remove_cvref_t<decltype(transform_unary_fusion(*get_left(&graph),n_repeats_t{}))>;
+            using right_t  = remove_cvref_t<decltype(transform_unary_fusion(*get_right(&graph),n_repeats_t{}))>;
+            using return_t = conditional_t<is_same_v<left_t,right_t>,left_t,nmtools_either<left_t,right_t>>;
+            if (auto l_ptr = get_left(&graph)) {
+                return return_t{transform_unary_fusion(*l_ptr,n_repeats_t{})};
             } else {
-                return contracted;
+                auto r_ptr = get_right(&graph);
+                return return_t{transform_unary_fusion(*r_ptr,n_repeats_t{})};
+            }
+        } else {
+            // TODO: check if graph is fn::compute_graph_t or utility::ct_digraph
+            constexpr auto adjacency_result = utility::adjacency_list(decltype(graph.digraph){});
+            constexpr auto adjacency_list   = nmtools::get<0>(adjacency_result);
+            constexpr auto src_id_map       = nmtools::get<1>(adjacency_result);
+
+            constexpr auto unary_fusion = find_unary_fusion(adjacency_list);
+            constexpr auto from = nmtools::get<0>(unary_fusion);
+            constexpr auto to   = nmtools::get<1>(unary_fusion);
+
+            if constexpr ((from < 0) || (to < 0)) {
+                return graph;
+            } else {
+                auto from_ct = ct_v<src_id_map[from]>;
+                auto to_ct   = ct_v<src_id_map[to]>;
+                auto fused   = graph.nodes(to_ct) * graph.nodes(from_ct);
+
+                auto contracted = utility::contracted_edge(graph,nmtools_tuple{from_ct,to_ct},to_ct,fused);
+                constexpr auto n_repeats = n_repeats_t::value;
+                if constexpr ((0 < (nm_index_t)n_repeats-1) || ((nm_index_t)n_repeats < 0)) {
+                    return transform_unary_fusion(contracted,ct_v<n_repeats-1>);
+                } else {
+                    return contracted;
+                }
             }
         }
     }
@@ -72,7 +91,7 @@ namespace nmtools::functional
         , typename node_ids_t
         , typename node_attributes_t
         , typename edge_attributes_t
-        , typename n_repeats_t=meta::ct<1>>
+        , typename n_repeats_t=ct<1>>
     constexpr auto transform_unary_fusion(
         const network::digraph_t<adjacency_list_t,node_ids_t,node_attributes_t,edge_attributes_t>& digraph
         , [[maybe_unused]] n_repeats_t n_repeats = n_repeats_t{})
@@ -82,18 +101,18 @@ namespace nmtools::functional
         auto m_unary_nodes = network::filter_node_arity(digraph,1);
         auto unary_nodes = unwrap(m_unary_nodes);
 
-        constexpr auto M_MAX_NUM_NODES = meta::max_len_v<adjacency_list_t>;
+        constexpr auto M_MAX_NUM_NODES = max_len_v<adjacency_list_t>;
         constexpr auto MAX_NUM_NODES = (M_MAX_NUM_NODES >= 0 ? M_MAX_NUM_NODES : 0);
 
-        using adjacency_list_type = meta::conditional_t<(MAX_NUM_NODES > 0)
+        using adjacency_list_type = conditional_t<(MAX_NUM_NODES > 0)
             , nmtools_static_vector<nmtools_static_vector<nm_index_t,MAX_NUM_NODES>,MAX_NUM_NODES>
             , nmtools_list<nmtools_list<nm_index_t>>>;
 
-        using node_ids_type = meta::conditional_t<(MAX_NUM_NODES > 0)
+        using node_ids_type = conditional_t<(MAX_NUM_NODES > 0)
             , nmtools_static_vector<nm_index_t,MAX_NUM_NODES>
             , nmtools_list<nm_index_t>>;
-        using attribute_type = meta::get_value_type_t<node_attributes_t>;
-        using node_attributes_type = meta::conditional_t<(MAX_NUM_NODES > 0)
+        using attribute_type = get_value_type_t<node_attributes_t>;
+        using node_attributes_type = conditional_t<(MAX_NUM_NODES > 0)
             , nmtools_static_vector<attribute_type,MAX_NUM_NODES>
             , nmtools_list<attribute_type>>;
 
@@ -118,7 +137,7 @@ namespace nmtools::functional
                     // TODO: propagate error
                     to = id;
                     auto preds = network::predecessors(digraph,to);
-                    from = at(unwrap(preds),meta::ct_v<0>);
+                    from = at(unwrap(preds),ct_v<0>);
                     if (digraph.nodes(from).is_buffer()) {
                         continue;
                     }

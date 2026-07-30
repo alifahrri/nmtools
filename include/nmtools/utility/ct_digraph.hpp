@@ -187,6 +187,7 @@ namespace nmtools::utility
         return has_path;
     }
 
+    // TODO: remove, deprecated
     template <typename nodes_t=nmtools_tuple<>, typename edges_t=nmtools_tuple<>, typename node_data_t=nmtools_tuple<>>
     struct ct_digraph
     {
