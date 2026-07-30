@@ -36,8 +36,6 @@ namespace nmtools::index
         if constexpr (!is_fail_v<result_t>
             && !is_constant_index_array_v<result_t>
         ) {
-            [[maybe_unused]] constexpr auto N_SHAPE = (nm_index_t)len_v<shape_t>;
-            [[maybe_unused]] constexpr auto N_REPS  = (nm_index_t)len_v<reps_t>;
             [[maybe_unused]] auto n_shape = (nm_index_t)len(shape);
             [[maybe_unused]] auto n_reps  = (nm_index_t)len(reps);
 
@@ -49,6 +47,8 @@ namespace nmtools::index
 
             if constexpr (N_RES > 0) {
                 template_for<N_RES>([&](auto i){
+                    [[maybe_unused]] constexpr auto N_SHAPE = (nm_index_t)len_v<shape_t>;
+                    [[maybe_unused]] constexpr auto N_REPS  = (nm_index_t)len_v<reps_t>;
                     constexpr auto I  = (nm_index_t)decltype(i)::value;
                     constexpr auto SI = -(I+1);
                     auto si = ct_v<SI>;

@@ -33,7 +33,7 @@ namespace nmtools::index
                 template_reduce<DIM>([&](auto shape_i, auto i){
                     if constexpr (!is_constant_index_v<decltype(at(result,i))>) {
                         if constexpr (!is_constant_index_v<axis_t>) {
-                            if (i == axis) {
+                            if ((nm_index_t)i == axis) {
                                 at(result,i) = 1;
                             } else {
                                 if (has_value(at(shape,shape_i))) {
@@ -51,7 +51,7 @@ namespace nmtools::index
                         }
                     }
                     if constexpr (!is_constant_index_v<axis_t>) {
-                        if (i == axis) {
+                        if ((nm_index_t)i == axis) {
                             return (nm_size_t)shape_i;
                         } else {
                             return (nm_size_t)shape_i + 1;

@@ -353,7 +353,7 @@ namespace nmtools::sycl
 
         // TODO: share same queue for same context (?)
         // std::shared_ptr<queue_t> queue;
-        nmtools_maybe<device_t> device = meta::Nothing;
+        nmtools_maybe<device_t> device = Nothing;
 
         context_t()
         {}
@@ -374,16 +374,16 @@ namespace nmtools::sycl
         auto create_buffer(const array_t& array)
         {
             // TODO: pass constant index as constant index
-            static_assert( (meta::is_ndarray_v<array_t>
-                || meta::is_num_v<array_t>
-                || meta::is_constant_index_array_v<array_t>
+            static_assert( (is_ndarray_v<array_t>
+                || is_num_v<array_t>
+                || is_constant_index_array_v<array_t>
             ));
-            if constexpr (meta::is_ndarray_v<array_t>) {
+            if constexpr (is_ndarray_v<array_t>) {
                 auto data_ptr = nmtools::data(array);
                 auto numel    = nmtools::size(array);
                 return create_buffer(data_ptr,numel);
-            } else if constexpr (meta::is_constant_index_array_v<array_t>) {
-                constexpr auto value = meta::to_value_v<array_t>;
+            } else if constexpr (is_constant_index_array_v<array_t>) {
+                constexpr auto value = to_value_v<array_t>;
                 return create_buffer(value);
             } else {
                 return create_buffer(&array,1);
@@ -394,14 +394,14 @@ namespace nmtools::sycl
         auto create_array(const array_t& array)
         {
             static_assert(
-                ((meta::is_ndarray_v<meta::remove_pointer_t<array_t>> && meta::is_pointer_v<array_t>)
-                    || meta::is_num_v<array_t> || meta::is_ndarray_v<array_t>)
-                    && !meta::is_view_v<meta::remove_pointer_t<array_t>>
+                ((is_ndarray_v<remove_pointer_t<array_t>> && is_pointer_v<array_t>)
+                    || is_num_v<array_t> || is_ndarray_v<array_t>)
+                    && !is_view_v<remove_pointer_t<array_t>>
                 , "unsupported array type for create_array"
             );
-            if constexpr (meta::is_num_v<array_t>) {
+            if constexpr (is_num_v<array_t>) {
                 return array;
-            } else if constexpr (meta::is_pointer_v<array_t>) {
+            } else if constexpr (is_pointer_v<array_t>) {
                 return create_array(*array);
             } else {
                 const auto buffer = nmtools::data(array);
@@ -409,8 +409,8 @@ namespace nmtools::sycl
                 const auto shape  = nmtools::shape(array);
                 const auto dim    = nmtools::dim(array);
 
-                using element_t = meta::get_element_type_t<array_t>;
-                using dim_t     = meta::remove_cvref_t<decltype(dim)>;
+                using element_t = get_element_type_t<array_t>;
+                using dim_t     = remove_cvref_t<decltype(dim)>;
 
                 // TODO: keep src shape traits
                 using device_shape_t = nmtools_static_vector<size_t,8>;
@@ -459,7 +459,7 @@ namespace nmtools::sycl
         template <typename operand_t, typename...accessor_args_t>
         static auto get_accessor(operand_t operand, [[maybe_unused]] accessor_args_t&&...args)
         {
-            if constexpr (meta::is_num_v<operand_t>) {
+            if constexpr (is_num_v<operand_t>) {
                 return operand;
             } else {
                 return operand->accessor(nmtools::forward<accessor_args_t>(args)...);
@@ -475,7 +475,7 @@ namespace nmtools::sycl
             } else {
                 queue = std::make_shared<queue_t>(*device);
             }
-            using element_t = meta::get_element_type_t<output_array_t>;
+            using element_t = get_element_type_t<output_array_t>;
             auto numel = nmtools::size(output);
             // TODO: pass actual type (constant / clipped shape) as is to device
             auto output_shape = nmtools::shape<false,/*disable_clipped_index*/true>(output);
@@ -789,7 +789,7 @@ namespace nmtools::utils::impl
 
     template <typename T>
     struct to_string_t<
-        std::vector<T>, none_t, meta::enable_if_t<!meta::is_num_v<T>>
+        std::vector<T>, none_t, enable_if_t<!is_num_v<T>>
     > {
         auto operator()(const std::vector<T>& props) const noexcept
         {

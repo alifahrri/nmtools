@@ -58,7 +58,7 @@ namespace nmtools::index
     constexpr auto shape_reshape(const src_shape_t& src_shape, const dst_shape_t& dst_shape)
     {
         using result_t [[maybe_unused]] = resolve_optype_t<shape_reshape_t,src_shape_t,dst_shape_t>;
-        using m_result_t [[maybe_unused]] = meta::get_maybe_type_t<result_t>;
+        using m_result_t [[maybe_unused]] = get_maybe_type_t<result_t>;
 
         // TODO: try to provide common function-lifting utility
         if constexpr (is_maybe_v<src_shape_t>) {
@@ -91,7 +91,7 @@ namespace nmtools::index
                 return result_t{Nothing};
             }
         } else if constexpr (is_maybe_v<dst_shape_t>) {
-            using dst_shape_type = meta::get_maybe_type_t<dst_shape_t>;
+            using dst_shape_type = get_maybe_type_t<dst_shape_t>;
             using result_t = resolve_optype_t<shape_reshape_t,src_shape_t,dst_shape_type>;
             using return_t = conditional_t<is_maybe_v<result_t>,result_t,nmtools_maybe<result_t>>;
             return (static_cast<bool>(dst_shape)
@@ -349,16 +349,17 @@ namespace nmtools::view
     struct reshape_t
         : base_indexer_t<reshape_t<src_shape_t,dst_shape_t,src_size_t>>
     {
+        // TODO: currently there is meta::fwd_attribute_t, and nmtools::fwd_attribute_t, fix
         using src_shape_type = meta::fwd_attribute_t<decltype(unwrap(meta::declval<src_shape_t>()))>;
         using src_size_type  = meta::fwd_attribute_t<decltype(unwrap(meta::declval<src_size_t>()))>;
 
         // TODO: refactor index::shape_reshape so that the result can be easily deduced
-        // using dst_shape_type = meta::resolve_optype_t<
+        // using dst_shape_type = resolve_optype_t<
         //     index::shape_reshape_t, src_shape_type, dst_shape_t
         // >;
         // avoid storing maybe type here since it is not constexpr-friendly (at least for maybe static_vector)
-        using dst_shape_type   = decltype(unwrap(index::shape_reshape(meta::declval<src_shape_type>(),meta::declval<dst_shape_t>())));
-        using dst_strides_type = meta::resolve_optype_t<unwrap_t,meta::resolve_optype_t<
+        using dst_shape_type   = decltype(unwrap(index::shape_reshape(declval<src_shape_type>(),declval<dst_shape_t>())));
+        using dst_strides_type = resolve_optype_t<unwrap_t,resolve_optype_t<
             index::compute_strides_t, dst_shape_type
         >>;
         // reshape doesn't change the number of elements
@@ -408,18 +409,25 @@ namespace nmtools::view
     template <typename src_shape_t, typename dst_shape_t, typename src_size_t>
     constexpr auto reshaper(const src_shape_t& src_shape, const dst_shape_t& dst_shape, const src_size_t& src_size)
     {
-        auto m_dst_shape = index::shape_reshape(src_shape,dst_shape);
-        if constexpr (meta::is_fail_v<decltype(m_dst_shape)>) {
-            return m_dst_shape;
-        } else if constexpr (meta::is_maybe_v<decltype(m_dst_shape)>) {
-            using result_t = decltype(reshape_t{unwrap(src_shape),dst_shape,unwrap(src_size)});
-            using return_t = nmtools_maybe<result_t>;
-            return (m_dst_shape
-                ? return_t{result_t{unwrap(src_shape),dst_shape,unwrap(src_size)}}
-                : return_t{meta::Nothing}
+        if constexpr (is_maybe_v<src_shape_t> || is_maybe_v<dst_shape_t> || is_maybe_v<src_size_t>) {
+            using result_t = decltype(reshaper(unwrap(src_shape),unwrap(dst_shape),unwrap(src_size)));
+            using return_t = conditional_t<is_maybe_v<result_t>,result_t,nmtools_maybe<result_t>>;
+            return (has_value(src_shape) && has_value(dst_shape) && has_value(src_size)
+                ? return_t{reshaper(unwrap(src_shape),unwrap(dst_shape),unwrap(src_size))}
+                : return_t{Nothing}
             );
         } else {
-            return reshape_t{unwrap(src_shape),dst_shape,unwrap(src_size)};
+            auto m_dst_shape = index::shape_reshape(src_shape,dst_shape);
+            using result_t = reshape_t<src_shape_t,dst_shape_t,src_size_t>;
+            if constexpr (is_maybe_v<decltype(m_dst_shape)>) {
+                using return_t = nmtools_maybe<result_t>;
+                return (has_value(m_dst_shape)
+                    ? return_t{result_t{src_shape,dst_shape,src_size}}
+                    : return_t{Nothing}
+                );
+            } else {
+                return result_t{src_shape,dst_shape,src_size};
+            }
         }
     }
 

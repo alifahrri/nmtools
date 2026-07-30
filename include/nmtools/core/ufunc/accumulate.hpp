@@ -198,7 +198,7 @@ namespace nmtools::meta
                 }, as_value_v<nmtools_tuple<>>);
             } else {
                 constexpr auto DIM = len_v<shape_t>;
-                constexpr auto MAX_DIM = max_len_v<indices_t>;
+                [[maybe_unused]] constexpr auto MAX_DIM = max_len_v<indices_t>;
                 using inner_t = nmtools_array<nm_size_t,2>;
                 if constexpr (DIM > 0) {
                     using outer_t = nmtools_array<inner_t,DIM>;
