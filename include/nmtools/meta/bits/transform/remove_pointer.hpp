@@ -31,4 +31,9 @@ namespace nmtools::meta
         : remove_pointer<T> {};
 }
 
+namespace nmtools
+{
+    using meta::remove_pointer_t;
+}
+
 #endif // NMTOOLS_META_BITS_TRANSFORM_REMOVE_POINTER_HPP
