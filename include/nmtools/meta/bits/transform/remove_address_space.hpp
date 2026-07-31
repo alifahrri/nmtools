@@ -78,4 +78,9 @@ namespace nmtools::meta
     #endif
     #endif // __OPENCL_VERSION__
 } // namespace nmtools::meta
+
+namespace nmtools
+{
+    using meta::remove_address_space_t;
+}
 #endif // NMTOOLS_META_BITS_TRANSFORM_REMOVE_ADDRESS_SPACE_HPP

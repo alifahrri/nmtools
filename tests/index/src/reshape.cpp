@@ -1,4 +1,4 @@
-#include "nmtools/index/reshape.hpp"
+#include "nmtools/array/reshape.hpp"
 #include "nmtools/testing/data/index/reshape.hpp"
 #include "nmtools/testing/doctest.hpp"
 
@@ -11,7 +11,7 @@ SUBCASE(#case_name) \
     NMTOOLS_TESTING_USE_CASE(constexpr_shape_reshape, case_name); \
     using namespace args; \
     constexpr auto result = nmtools::index::shape_reshape(__VA_ARGS__); \
-    NMTOOLS_ASSERT_EQUAL( result, expect::result ); \
+    NMTOOLS_ASSERT_EQUAL_MSG_ATTRIBUTES( result, expect::result, __VA_ARGS__ ); \
 }
 
 #define SHAPE_RESHAPE_SUBCASE(case_name, ...) \
@@ -20,7 +20,7 @@ SUBCASE(#case_name) \
     NMTOOLS_TESTING_USE_CASE(shape_reshape, case_name); \
     using namespace args; \
     auto result = nmtools::index::shape_reshape(__VA_ARGS__); \
-    NMTOOLS_ASSERT_EQUAL( result, expect::result ); \
+    NMTOOLS_ASSERT_EQUAL_MSG_ATTRIBUTES( result, expect::result, __VA_ARGS__ ); \
 }
 
 TEST_CASE("shape_reshape(case1)" * doctest::test_suite("index::shape_reshape"))

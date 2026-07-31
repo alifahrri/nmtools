@@ -23,7 +23,6 @@
 #include "nmtools/array/slice.hpp"
 #include "nmtools/array/conv1d.hpp"
 #include "nmtools/array/flip.hpp"
-#include "nmtools/array/ufunc.hpp"
 #include "nmtools/array/prod.hpp"
 #include "nmtools/array/take.hpp"
 #include "nmtools/array/squeeze.hpp"

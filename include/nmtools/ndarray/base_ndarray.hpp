@@ -62,33 +62,33 @@ namespace nmtools
         template <typename shape_type, typename buffer_type>
         static constexpr auto initialize_shape(const buffer_type& buffer)
         {
-            if constexpr (meta::is_constant_index_array_v<shape_type>) {
+            if constexpr (is_constant_index_array_v<shape_type>) {
                 return shape_type {};
-            } else /* if constexpr (meta::is_fixed_index_array_v<shape_type>) */ {
+            } else /* if constexpr (is_fixed_index_array_v<shape_type>) */ {
                 auto shape = shape_type {};
-                if constexpr (meta::is_resizable_v<shape_type>) {
+                if constexpr (is_resizable_v<shape_type>) {
                     shape.resize(1);
                 }
-                constexpr auto dim = meta::len_v<shape_type>;
+                constexpr auto dim = len_v<shape_type>;
                 if constexpr (dim > 0) {
                     // to accommodate clipped shape
-                    meta::template_for<dim>([&](auto index){
+                    template_for<dim>([&](auto index){
                         // only assign to non-constant elements
-                        if constexpr (!meta::is_constant_index_v<decltype(at(shape,index))>) {
+                        if constexpr (!is_constant_index_v<decltype(at(shape,index))>) {
                             at(shape,index) = 1;
                         }
                     });
                 } else {
                     for (size_t i=0; i<len(shape)-1; i++) {
                         // only assign to non-constant elements
-                        if constexpr (!meta::is_constant_index_v<decltype(at(shape,i))>) {
+                        if constexpr (!is_constant_index_v<decltype(at(shape,i))>) {
                             at(shape,i) = 1;
                         }
                     }
                 }
                 // only assign to non-constant last element
-                if constexpr (!meta::is_constant_index_v<decltype(at(shape,meta::ct_v<-1>))>) {
-                    at(shape,meta::ct_v<-1>) = len(buffer);
+                if constexpr (!is_constant_index_v<decltype(at(shape,ct_v<-1>))>) {
+                    at(shape,ct_v<-1>) = len(buffer);
                 }
                 return shape;
             }
@@ -98,7 +98,7 @@ namespace nmtools
         static constexpr auto initialize_data()
         {
             auto buffer = buffer_type {};
-            if constexpr (meta::is_resizable_v<buffer_type>) {
+            if constexpr (is_resizable_v<buffer_type>) {
                 buffer.resize(1);
             }
             at(buffer,len(buffer)-1) = 0;
@@ -109,15 +109,15 @@ namespace nmtools
         static constexpr auto compute_strides(const shape_type& shape)
         {
             auto result  = index::compute_strides(shape);
-            if constexpr (meta::is_same_v<strides_type,decltype(result)>) {
+            if constexpr (is_same_v<strides_type,decltype(result)>) {
                 return result;
             } else {
                 auto strides = strides_type{};
                 [[maybe_unused]] auto dim = len(result);
-                if constexpr (meta::is_resizable_v<strides_type>) {
+                if constexpr (is_resizable_v<strides_type>) {
                     strides.resize(dim);
                 }
-                if constexpr (!meta::is_constant_index_array_v<strides_type>) {
+                if constexpr (!is_constant_index_array_v<strides_type>) {
                     for (size_t i=0; i<dim; i++) {
                         at(strides,i) = at(result,i);
                     }
@@ -163,10 +163,10 @@ namespace nmtools
 
         constexpr auto size() const
         {
-            using buffer_type = meta::remove_cvref_t<decltype(self()->data_)>;
-            if constexpr (meta::is_fixed_size_v<buffer_type>) {
-                constexpr auto size_ = meta::fixed_size_v<buffer_type>;
-                return meta::ct_v<size_>;
+            using buffer_type = remove_cvref_t<decltype(self()->data_)>;
+            if constexpr (is_fixed_size_v<buffer_type>) {
+                constexpr auto size_ = fixed_size_v<buffer_type>;
+                return ct_v<size_>;
             } else {
                 // assume flat
                 // return len(self()->data_);
@@ -196,7 +196,7 @@ namespace nmtools
     }; // base_ndarray_t
 
     template <typename shape_type>
-    using resolve_stride_type_t = meta::resolve_optype_t<index::compute_strides_t,shape_type>;
+    using resolve_stride_type_t = resolve_optype_t<index::compute_strides_t,shape_type>;
 } // namespace nmtools
 
 #endif // NMTOOLS_ARRAY_NDARRAY_BASE_NDARRAY_HPP

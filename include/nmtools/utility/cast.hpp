@@ -100,7 +100,7 @@ namespace nmtools
     {
         template <typename element_t, typename return_t, typename array_t, typename size_type>
         constexpr auto cast_impl(return_t &ret, const array_t& a, size_type n) {
-            for (size_t i=0; i<n; i++)
+            for (nm_size_t i=0; i<n; i++)
                 at(ret,i) = static_cast<element_t>(at(a,i));
         } // cast_impl
     } // namespace detail
@@ -277,7 +277,7 @@ namespace nmtools
         auto arr_view = unwrap(view::flatten(array));
         auto n = len(arr_view);
 
-        for (size_t i=0; i<n; i++) {
+        for (nm_size_t i=0; i<n; i++) {
             at(ret_view,i) = at(arr_view,i);
         }
 
@@ -329,10 +329,119 @@ namespace nmtools
     {
         auto res = nmtools_list<T>{};
         res.resize(N);
-        for (size_t i=0; i<N; i++) {
+        for (nm_size_t i=0; i<N; i++) {
             res.at(i) = array.at(i);
         }
         return res;
+    }
+
+    template <typename array_t, typename index_t=nm_size_t>
+    constexpr auto to_nullable(const array_t& array, const index_t index=index_t{0})
+    {
+        // TODO: suport multi index (index array)
+        auto result_vtype = [](){
+            constexpr auto DIM = len_v<array_t>;
+            [[maybe_unused]]
+            constexpr auto MAX_DIM = max_len_v<array_t>;
+            using value_t = get_index_element_type_t<array_t>;
+            using idx_t = nullable_num<value_t>;
+            if constexpr (DIM > 0) {
+                using type = nmtools_array<idx_t,DIM>;
+                return as_value_v<type>;
+            } else if constexpr (MAX_DIM > 0) {
+                using type = nmtools_static_vector<idx_t,MAX_DIM>;
+                return as_value_v<type>;
+            } else {
+                // TODO: use small vector
+                using type = nmtools_list<idx_t>;
+                return as_value_v<type>;
+            }
+        }();
+        using result_t = type_t<decltype(result_vtype)>;
+
+        auto result = result_t {};
+
+        // assume index array
+        [[maybe_unused]]
+        auto dim = len(array);
+        if constexpr (is_resizable_v<result_t>) {
+            result.resize(dim);
+        }
+
+        constexpr auto DIM = len_v<array_t>;
+        if constexpr (DIM > 0) {
+            template_for<DIM>([&](auto i){
+                if ((nm_size_t)i != (nm_size_t)index) {
+                    at(result,i) = at(array,i);
+                }
+            });
+        } else {
+            for (nm_size_t i=0; i<dim; i++) {
+                if (i != index) {
+                    at(result,i) = at(array,i);
+                }
+            }
+        }
+
+        return result;
+    }
+
+    template <typename array_t, typename index_t=ct<0>>
+    constexpr auto to_mixed(const array_t&, const index_t=index_t{})
+    {
+        auto result_vtype = [](){
+            constexpr auto array = to_value_v<array_t>;
+            constexpr auto index = to_value_v<index_t>;
+            constexpr auto result = to_nullable(array,index);
+            return template_reduce<len(result)>([&](auto init, auto index){
+                using init_t = type_t<decltype(init)>;
+                constexpr auto I = decltype(index)::value;
+                if constexpr (!has_value(at(result,I))) {
+                    using type = append_type_t<init_t,nm_size_t>;
+                    return as_value_v<type>;
+                } else {
+                    using type = append_type_t<init_t,ct<(nm_size_t)at(result,I)>>;
+                    return as_value_v<type>;
+                }
+            }, as_value_v<nmtools_tuple<>>);
+        }();
+        using result_t = type_t<decltype(result_vtype)>;
+
+        auto result = result_t {};
+
+        constexpr auto DIM = len_v<result_t>;
+
+        constexpr auto array = to_value_v<array_t>;
+        template_for<DIM>([&](auto I){
+            if constexpr (!is_constant_index_v<decltype(at(result,I))>) {
+                at(result,I) = at(array,I);
+            }
+        });
+
+        return result;
+    }
+
+    template <typename array_t>
+    constexpr auto to_maybe(const array_t& array, nm_size_t valid=nm_size_t{1})
+    {
+        using result_t = conditional_t<is_maybe_v<array_t>,array_t,nmtools_maybe<array_t>>;
+        if (valid) {
+            return result_t{array};
+        } else {
+            return result_t{Nothing};
+        }
+    }
+
+    template <typename left_t, typename right_t>
+    constexpr auto to_either(const left_t& left, const right_t& right, nm_size_t index)
+    {
+        // assume index 0 or 1
+        using result_t = nmtools_either<left_t,right_t>;
+        if (index == 0) {
+            return result_t{left};
+        } else {
+            return result_t{right};
+        }
     }
 } // namespace nmtools
 

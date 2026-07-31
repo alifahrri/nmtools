@@ -24,7 +24,6 @@ __global__ void nm_hip_run_function(const function_t fun
     , out_t *out, const out_shape_t* out_shape_ptr, const out_dim_t out_dim
     , const tuple<operands_t...> operands
 ) {
-    namespace meta = nmtools::meta;
     namespace na = nmtools;
     namespace fn = nmtools::functional;
     auto output = na::create_mutable_array<out_static_dim>(out,out_shape_ptr,out_dim);
@@ -142,8 +141,8 @@ namespace nmtools::hip
         auto create_array(const array_t& array)
         {
             static_assert(
-                meta::is_ndarray_v<array_t>
-                && !meta::is_view_v<array_t>
+                is_ndarray_v<array_t>
+                && !is_view_v<array_t>
                 , "unsupported array type for create_array"
             );
             const auto buffer = nmtools::data(array);
@@ -151,8 +150,8 @@ namespace nmtools::hip
             const auto shape  = nmtools::shape(array);
             const auto dim    = nmtools::dim(array);
 
-            using element_t = meta::get_element_type_t<array_t>;
-            using dim_t     = meta::remove_cvref_t<decltype(dim)>;
+            using element_t = get_element_type_t<array_t>;
+            using dim_t     = remove_cvref_t<decltype(dim)>;
 
             element_t* device_raw_ptr;
             {
@@ -199,17 +198,28 @@ namespace nmtools::hip
             return device_ptr;
         }
 
-        template <typename T, typename array_t>
+        template <typename T, typename array_t, enable_if_t<is_ndarray_v<array_t>,int> =0>
         auto copy_buffer(device_mem_ptr<T> mem_obj, array_t& array)
         {
-            using element_t = meta::get_element_type_t<array_t>;
-            static_assert( meta::is_same_v<T,element_t>, "element type does not match" );
+            using element_t = get_element_type_t<array_t>;
+            static_assert( is_same_v<T,element_t>, "element type does not match" );
 
             auto byte_size = nmtools::size(array) * sizeof(element_t);
             T* out_ptr     = nmtools::data(array);
 
             T* mem_obj_raw = mem_obj.get();
             auto status = hipMemcpy(out_ptr,mem_obj_raw,byte_size,hipMemcpyDeviceToHost);
+            if (status != hipSuccess) {
+                throw hip_exception(status, "error when copying memory to host");
+            }
+        }
+
+        template <typename src_t, typename dst_t, enable_if_t<is_num_v<dst_t>,int> =0>
+        auto copy_buffer(src_t src, dst_t& dst)
+        {
+            auto byte_size = sizeof(dst_t);
+            auto* mem_obj_raw = src.get();
+            auto status = hipMemcpy(&dst,mem_obj_raw,byte_size,hipMemcpyDeviceToHost);
             if (status != hipSuccess) {
                 throw hip_exception(status, "error when copying memory to host");
             }
@@ -234,7 +244,7 @@ namespace nmtools::hip
         template <typename output_array_t, typename function_t, typename...args_t, auto...Is, template<auto...>typename sequence>
         auto run_(output_array_t& output, const function_t& f, nmtools_tuple<args_t...> args_pack, sequence<Is...>)
         {
-            using out_element_t = meta::get_element_type_t<output_array_t>;
+            using out_element_t = get_element_type_t<output_array_t>;
 
             auto out_size  = nmtools::size(output);
             if (out_size <= 0) {
@@ -245,7 +255,13 @@ namespace nmtools::hip
             auto out_dim   = nmtools::len(out_shape);
 
             auto output_buffer = this->create_buffer<out_element_t>(out_size);
-            auto gpu_out_shape = this->create_buffer(out_shape);
+            auto gpu_out_shape = [&](){
+                if constexpr (is_none_v<decltype(out_shape)>) {
+                    return this->create_buffer(nmtools_tuple{ct_v<1>});
+                } else {
+                    return this->create_buffer(out_shape);
+                }
+            }();
 
             auto warp_size   = 32;
             auto thread_size = size_t(std::ceil(float(out_size) / warp_size)) * warp_size;

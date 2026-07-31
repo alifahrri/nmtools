@@ -110,9 +110,40 @@ Then run the test:
 ```
 ctest
 ```
-If there is existing container with name sycl-cuda-dev, you can remove it before build/run:
+
+Alternative: run the build non-interactively from the host:
 ```
-docker rm sycl-omp-dev
+docker run -d --name sycl-omp-dev \
+    --volume ${PWD}:/workspace/nmtools \
+    --entrypoint /bin/zsh \
+    nmtools:sycl-clang14-omp \
+    -c "sleep infinity"
+
+# cmake configure
+docker exec sycl-omp-dev sh -c "export TOOLCHAIN=sycl-clang14-omp \
+    && mkdir -p build/\${TOOLCHAIN} \
+    && cd build/\${TOOLCHAIN} \
+    && cmake -DCMAKE_TOOLCHAIN_FILE=cmake/toolchains/\${TOOLCHAIN}.cmake \
+        -DNMTOOLS_BUILD_META_TESTS=OFF \
+        -DNMTOOLS_BUILD_UTL_TESTS=OFF \
+        -DNMTOOLS_TEST_ALL=OFF \
+        -DNMTOOLS_BUILD_SYCL_TESTS=ON \
+        ../.."
+
+# build
+docker exec sycl-omp-dev sh -c "cd build/sycl-clang14-omp \
+    && make -j\$(nproc) VERBOSE=1 numeric-tests-sycl-doctest"
+
+# run tests
+docker exec sycl-omp-dev sh -c "cd build/sycl-clang14-omp && ctest"
+
+# cleanup
+docker rm -f sycl-omp-dev
+```
+
+If there is existing container with name sycl-omp-dev, you can remove it before build/run:
+```
+docker rm -f sycl-omp-dev
 ```
 Or to re-run (after stopping)
 ```
@@ -266,6 +297,32 @@ After successful build, then you can run the hip-test:
 ./tests/hip/numeric-tests-hip-doctest
 ```
 ![docs/image/hip-test.png](docs/image/hip-test.png)
+
+Alternative: run the build non-interactively from the host:
+```
+docker run -d --name hip-dev \
+    --device /dev/kfd --device /dev/dri \
+    --volume ${PWD}:/workspace/nmtools \
+    --entrypoint /bin/zsh \
+    nmtools:hip \
+    -c "sleep infinity"
+
+# cmake configure
+docker exec hip-dev sh -c "mkdir -p build/hip \
+    && cd build/hip \
+    && cmake -DCMAKE_TOOLCHAIN_FILE=../../cmake/toolchains/hip.cmake \
+        -DNMTOOLS_BUILD_HIP_TESTS=ON \
+        ../.."
+
+# build (add -DNMTOOLS_TEST_HIP_ARCH="gfx1036,gfx1100,gfx1103" to cmake configure to set target arch)
+docker exec hip-dev sh -c "cd build/hip && make -j\$(nproc) VERBOSE=1"
+
+# run tests
+docker exec hip-dev sh -c "cd build/hip && ./tests/hip/numeric-tests-hip-doctest"
+
+# cleanup
+docker rm -f hip-dev
+```
 
 If there is container naming conflict you can remove then re-run, or just restart.
 ```

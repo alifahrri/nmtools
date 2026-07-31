@@ -25,5 +25,10 @@ namespace nmtools::meta
     constexpr inline auto is_trivially_destructible_v = is_trivially_destructible<T>::value;
 } // namespace nmtools::meta
 
+namespace nmtools
+{
+    using meta::is_trivially_destructible_v;
+}
+
 
 #endif // NMTOOLS_META_BITS_TRAITS_IS_TRIVIALLY_DESTRUCTIBLE_HPP

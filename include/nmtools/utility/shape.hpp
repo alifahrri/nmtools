@@ -23,6 +23,7 @@ namespace nmtools::impl
     template <typename T, typename=void>
     struct len_t
     {
+        // TODO: make this to prioritize returning ct<LEN>
         constexpr auto operator()([[maybe_unused]] const T& a) const noexcept
         {
             [[maybe_unused]] constexpr auto LEN = meta::len_v<T>;
@@ -220,6 +221,7 @@ namespace nmtools
         return array;
     }
 
+    // TODO: mae prefer_constant_index true by default
     /**
      * @brief return the shape of an array
      *
@@ -329,6 +331,7 @@ namespace nmtools
     * @{
     */
 
+    // TODO: make prefer_constant_index true by default
     /**
      * @brief return the number of dimension of an array
      *

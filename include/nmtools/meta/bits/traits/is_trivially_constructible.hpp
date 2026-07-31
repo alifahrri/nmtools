@@ -31,4 +31,9 @@ namespace nmtools::meta
     constexpr inline auto is_trivially_constructible_v = is_trivially_constructible<T,Args...>::value;
 }
 
+namespace nmtools
+{
+    using meta::is_trivially_constructible_v;
+}
+
 #endif // NMTOOLS_META_BITS_TRAITS_IS_TRIVIALLY_CONSTRUCTIBLE_HPP

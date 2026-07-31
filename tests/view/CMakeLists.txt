@@ -91,6 +91,7 @@ set(ARRAY_VIEW_1_TEST_SOURCES
     src/mutable_slice.cpp
 )
 set(ARRAY_VIEW_2_TEST_SOURCES
+    src/item.cpp
     src/ones.cpp
     src/ones_like.cpp
     src/pad.cpp

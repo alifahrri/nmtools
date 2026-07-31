@@ -236,7 +236,7 @@ namespace nmtools
             static_assert ( dimension == sizeof...(ns)
                 , "unsupported element access, mismatched dimension"
             );
-            auto offset = index::compute_offset(strides_, indices);
+            auto offset = unwrap(index::compute_offset(strides_, indices));
             return buffer_[offset];
         } // operator()
 
@@ -257,7 +257,7 @@ namespace nmtools
             static_assert ( dimension == sizeof...(ns)
                 , "unsupported element access, mismatched dimension"
             );
-            auto offset = index::compute_offset(strides_, indices);
+            auto offset = unwrap(index::compute_offset(strides_, indices));
             return buffer_[(size_type)offset];
         } // operator()
 
@@ -285,13 +285,13 @@ namespace nmtools
 
         constexpr const_reference at(shape_type i) const
         {
-            auto offset = index::compute_offset(strides_, i);
+            auto offset = unwrap(index::compute_offset(strides_, i));
             return buffer_[offset];
         } // at
 
         constexpr reference at(shape_type i)
         {
-            auto offset = index::compute_offset(strides_, i);
+            auto offset = unwrap(index::compute_offset(strides_, i));
             return buffer_[offset];
         } // at
 

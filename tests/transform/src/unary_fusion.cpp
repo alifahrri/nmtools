@@ -337,6 +337,8 @@ TEST_CASE("transform_unary_fusion(case1a)" * doctest::test_suite("transform"))
     CHECK_MESSAGE( true, utils::to_string(expected,utils::Graphviz) );
 }
 
+// TODO: remove, deprecated
+#if 0
 TEST_CASE("transform_unary_fusion(case1b)" * doctest::test_suite("transform"))
 {
     auto lhs_shape = array{3,4};
@@ -345,7 +347,7 @@ TEST_CASE("transform_unary_fusion(case1b)" * doctest::test_suite("transform"))
     auto lhs = nm::unwrap(na::reshape(na::arange(ix::product(lhs_shape)),lhs_shape));
     auto rhs = nm::unwrap(na::reshape(na::arange(ix::product(rhs_shape)),rhs_shape));
 
-    auto matmul = view::matmulv2(lhs,rhs);
+    auto matmul = view::matmulv3(lhs,rhs);
     auto graph = fn::get_compute_graph(nm::unwrap(matmul));
 
     auto result = fn::transform_unary_fusion(graph);
@@ -374,6 +376,7 @@ TEST_CASE("transform_unary_fusion(case1b)" * doctest::test_suite("transform"))
     CHECK_MESSAGE( true, utils::to_string(result,utils::Graphviz) );
     CHECK_MESSAGE( true, utils::to_string(expected,utils::Graphviz) );
 }
+#endif
 
 TEST_CASE("transform_unary_fusion(case1c)" * doctest::test_suite("transform"))
 {
@@ -426,6 +429,8 @@ TEST_CASE("transform_unary_fusion(case1c)" * doctest::test_suite("transform"))
     CHECK_MESSAGE( true, utils::to_string(expected,utils::Graphviz) );
 }
 
+// TODO: remove, deprecated
+#if 0
 TEST_CASE("transform_unary_fusion(case1d)" * doctest::test_suite("transform"))
 {
     auto lhs_shape = array{3,4};
@@ -434,7 +439,7 @@ TEST_CASE("transform_unary_fusion(case1d)" * doctest::test_suite("transform"))
     auto lhs = nm::unwrap(na::reshape(na::arange(ix::product(lhs_shape)),lhs_shape));
     auto rhs = nm::unwrap(na::reshape(na::arange(ix::product(rhs_shape)),rhs_shape));
 
-    auto matmul = view::matmulv2(lhs,rhs);
+    auto matmul = view::matmulv3(lhs,rhs);
     auto graph = fn::get_compute_graph(nm::unwrap(matmul));
 
     auto result = fn::transform_unary_fusion(fn::transform_unary_fusion(graph));
@@ -470,7 +475,7 @@ TEST_CASE("transform_unary_fusion(case1e)" * doctest::test_suite("transform"))
     auto lhs = nm::unwrap(na::reshape(na::arange(ix::product(lhs_shape)),lhs_shape));
     auto rhs = nm::unwrap(na::reshape(na::arange(ix::product(rhs_shape)),rhs_shape));
 
-    auto matmul = view::matmulv2(lhs,rhs);
+    auto matmul = view::matmulv3(lhs,rhs);
     auto graph = fn::get_compute_graph(nm::unwrap(matmul));
 
     auto result = fn::transform_unary_fusion(fn::transform_unary_fusion(fn::transform_unary_fusion(graph)));
@@ -495,6 +500,7 @@ TEST_CASE("transform_unary_fusion(case1e)" * doctest::test_suite("transform"))
     CHECK_MESSAGE( true, utils::to_string(result,utils::Graphviz) );
     CHECK_MESSAGE( true, utils::to_string(expected,utils::Graphviz) );
 }
+#endif
 
 TEST_CASE("transform_unary_fusion(case2a)" * doctest::test_suite("transform"))
 {

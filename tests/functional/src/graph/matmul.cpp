@@ -28,7 +28,7 @@ TEST_CASE("matmul(case1)" * doctest::test_suite("functional::get_compute_graph")
     auto lhs = na::reshape(na::arange(ix::product(lhs_shape)),lhs_shape);
     auto rhs = na::reshape(na::arange(ix::product(rhs_shape)),rhs_shape);
 
-    auto result = view::matmulv2(lhs,rhs);
+    auto result = view::matmulv3(lhs,rhs);
     auto graph  = fn::get_compute_graph(unwrap(result));
 
     CHECK_MESSAGE(true, utils::to_string(graph,utils::Graphviz));

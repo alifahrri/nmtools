@@ -20,7 +20,7 @@ using nmtools::unwrap;
 { \
     auto ctx = na::hip::default_context(); \
     auto expect = na::matmul(__VA_ARGS__); \
-    auto view   = view::matmulv2(__VA_ARGS__); \
+    auto view   = view::matmulv3(__VA_ARGS__); \
     auto result = ctx->eval(view); \
     NMTOOLS_ASSERT_EQUAL( nm::shape(result), nm::shape(expect) ); \
     NMTOOLS_ASSERT_CLOSE( result, expect ); \

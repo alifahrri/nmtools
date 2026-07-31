@@ -350,6 +350,7 @@ TEST_CASE("broadcast_to(case0)" * doctest::test_suite("tilekit::vector"))
     using shape_t   = nmtools_tuple<nm::ct<4>,nm::ct<1>>;
     using f32x4x1_t = nm::object_t<buffer_t,shape_t>;
 
+    // TODO: make convinient operator= overload
     auto f32x4x1 = f32x4x1_t{};
     f32x4x1.data()[0] = 1.f;
     f32x4x1.data()[1] = 2.f;

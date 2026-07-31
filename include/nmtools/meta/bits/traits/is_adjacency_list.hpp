@@ -36,4 +36,9 @@ namespace nmtools::meta
     inline constexpr auto is_adjacency_list_v = is_adjacency_list<T>::value;
 } // namespace nmtools::meta
 
+namespace nmtools
+{
+    using meta::is_adjacency_list_v;
+}
+
 #endif // NMTOOLS_META_BITS_TRAITS_IS_ADJACENCY_LIST_HPP

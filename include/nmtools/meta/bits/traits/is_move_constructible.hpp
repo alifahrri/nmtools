@@ -16,4 +16,9 @@ namespace nmtools::meta
     constexpr inline auto is_move_constructible_v = is_move_constructible<T>::value;
 }
 
+namespace nmtools
+{
+    using meta::is_move_constructible_v;
+}
+
 #endif // NMTOOLS_META_BITS_TRAITS_IS_MOVE_CONSTRUCTIBLE_HPP

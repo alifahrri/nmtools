@@ -12,4 +12,9 @@ namespace nmtools::meta
     constexpr inline auto is_list_v = is_list<T>::value;
 } // namespace nmtools::meta
 
+namespace nmtools
+{
+    using meta::is_list_v;
+}
+
 #endif // NMTOOLS_META_BITS_TRAITS_IS_LIST_HPP

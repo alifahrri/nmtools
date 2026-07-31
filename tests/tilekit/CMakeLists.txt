@@ -267,6 +267,9 @@ set(NMTOOLS_TESTS_TILEKIT_SRCS
     src/dot_v256_mt.cpp
     src/dot_v512_st.cpp
     src/dot_v512_mt.cpp
+
+    src/matmul_scalar_st.cpp
+    # src/matmul_v128_st.cpp
 )
 if (NMTOOLS_TESTS_TILEKIT_ENABLE_TRACY)
     add_executable(${PROJECT_NAME}-doctest
@@ -280,7 +283,10 @@ if (NMTOOLS_TESTS_TILEKIT_ENABLE_TRACY)
     remove_target_compile_option(${PROJECT_NAME}-doctest "-Werror")
 else ()
     add_executable(${PROJECT_NAME}-doctest
-        tests.cpp tilekit.cpp vector.cpp
+        tests.cpp
+        tilekit.cpp
+        vector.cpp
+        scalar.cpp
         ${NMTOOLS_TESTS_TILEKIT_SRCS}
     )
 endif()

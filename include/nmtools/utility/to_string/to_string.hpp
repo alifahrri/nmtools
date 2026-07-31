@@ -90,6 +90,9 @@ namespace nmtools::utils
     {
         template<typename...>
         struct TO_STRING_UNSUPPORTED : meta::detail::fail_t {};
+
+        template<typename...>
+        struct TO_STRING_UNSUPPORTED_NO_MAPPING : meta::detail::fail_t {};
     }
 }
 
@@ -133,16 +136,16 @@ namespace nmtools::utils
     template <typename T, typename formatter_t>
     inline auto apply_to_string(const T& array, [[maybe_unused]] formatter_t formatter) -> nmtools_string
     {
-        if constexpr (meta::is_list_v<T>) {
+        if constexpr (is_list_v<T>) {
             auto str = nmtools_string();
             for (size_t i=0; i<len(array); i++) {
                 str += nmtools::utils::to_string(at(array,i),formatter);
                 str += ";\n";
             }
             return str;
-        } else if constexpr (meta::is_tuple_v<T>) {
+        } else if constexpr (is_tuple_v<T>) {
             auto str = nmtools_string();
-            meta::template_for<meta::len_v<T>>([&](auto i){
+            template_for<len_v<T>>([&](auto i){
                 str += nmtools::utils::to_string(at(array,i),formatter);
                 str += ";\n";
             });

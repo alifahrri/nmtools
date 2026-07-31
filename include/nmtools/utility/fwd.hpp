@@ -174,6 +174,7 @@ namespace nmtools
         }
     } // fwd_operand
 
+    // TODO: rename, confused with meta::fwd_attribute_t
     template <typename T, typename=void>
     struct fwd_attribute_t
     {
@@ -185,6 +186,7 @@ namespace nmtools
         }
     }; // fwd_attribute_t
 
+    // TODO: rename, confused with meta::fwd_attribute_t
     template <typename T, auto N>
     struct fwd_attribute_t<T[N], meta::enable_if_t<meta::is_num_v<T>>>
     {

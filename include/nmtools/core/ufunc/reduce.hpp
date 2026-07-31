@@ -185,12 +185,21 @@ namespace nmtools::view
         template <typename result_t, typename array_t>
         constexpr auto operator()(const array_t& array) const
         {
-            using index_t = size_t;
-            auto initial = static_cast<result_t>(at(array,0));
-            auto size = len(array);
-            for (index_t i=1; i<(index_t)size; i++)
-                initial = op(initial,at(array,i));
-            return initial;
+            constexpr auto LEN = len_v<array_t>;
+            if constexpr (LEN > 0) {
+                auto initial = static_cast<result_t>(at(array,ct_v<0>));
+                template_for<LEN-1>([&](auto i){
+                    initial = op(initial,at(array,i+ct_v<1>));
+                });
+                return initial;
+            } else {
+                using index_t = nm_size_t;
+                auto initial = static_cast<result_t>(at(array,0));
+                auto size = len(array);
+                for (index_t i=1; i<(index_t)size; i++)
+                    initial = op(initial,at(array,i));
+                return initial;
+            }
         } // operator()
 
         /**
@@ -206,11 +215,20 @@ namespace nmtools::view
         template <typename result_t, typename array_t, typename initial_t>
         constexpr auto operator()(const array_t& array, initial_t init) const
         {
-            auto initial = static_cast<result_t>(init);
-            auto size = len(array);
-            for (size_t i=0; i<size; i++)
-                initial = op(initial,at(array,i));
-            return initial;
+            constexpr auto LEN = len_v<array_t>;
+            if constexpr (LEN > 0) {
+                auto initial = static_cast<result_t>(init);
+                template_for<LEN>([&](auto i){
+                    initial = op(initial,at(array,i));
+                });
+                return initial;
+            } else {
+                auto initial = static_cast<result_t>(init);
+                auto size = len(array);
+                for (size_t i=0; i<size; i++)
+                    initial = op(initial,at(array,i));
+                return initial;
+            }
         } // operator()
     }; // reducer_t
 

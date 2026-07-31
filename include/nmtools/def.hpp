@@ -228,6 +228,8 @@ namespace nmtools
 
         using value_type = T;
 
+        /******************************************************************* */
+
         constexpr nullable_num()
             : none{}
             , tag(Tag::NONE)
@@ -242,6 +244,8 @@ namespace nmtools
             : num(number.num)
             , tag(number.tag)
         {}
+
+        /******************************************************************* */
 
         constexpr auto is_none() const noexcept
         {
@@ -262,6 +266,8 @@ namespace nmtools
         {
             return has_value();
         }
+
+        /******************************************************************* */
 
         constexpr decltype(auto) operator=(T t)
         {
@@ -284,45 +290,201 @@ namespace nmtools
             return *this;
         }
 
+        template <typename U>
+        constexpr decltype(auto) operator=(nullable_num<U> number)
+        {
+            num = number.num;
+            if (number.is_num()) {
+                tag = Tag::NUMBER;
+            } else {
+                tag = Tag::NONE;
+            }
+            return *this;
+        }
+
+        /******************************************************************* */
+
         constexpr decltype(auto) operator*=(T t)
         {
             if (!is_num()) {
-                nmtools_panic( false
-                    , "invalid cast for nullable_num" );
+                *this = None;
+            } else {
+                num *= t;
             }
-            num *= t;
             return *this;
         }
 
         constexpr decltype(auto) operator/=(T t)
         {
             if (!is_num()) {
-                nmtools_panic( false
-                    , "invalid cast for nullable_num" );
+                *this = None;
+            } else {
+                num /= t;
             }
-            num /= t;
             return *this;
         }
 
         constexpr decltype(auto) operator+=(T t)
         {
             if (!is_num()) {
-                nmtools_panic( false
-                    , "invalid cast for nullable_num" );
+                *this = None;
+            } else {
+                num += t;
             }
-            num += t;
             return *this;
         }
 
         constexpr decltype(auto) operator-=(T t)
         {
             if (!is_num()) {
-                nmtools_panic( false
-                    , "invalid cast for nullable_num" );
+                *this = None;
+            } else {
+                num -= t;
             }
-            num -= t;
             return *this;
         }
+
+        /******************************************************************* */
+
+        constexpr decltype(auto) operator*=(nullable_num t)
+        {
+            if (!is_num() || !t.is_num()) {
+                *this = None;
+            } else {
+                num *= t;
+            }
+            return *this;
+        }
+
+        constexpr decltype(auto) operator/=(nullable_num t)
+        {
+            if (!is_num() || !t.is_num()) {
+                *this = None;
+            } else {
+                num /= t;
+            }
+            return *this;
+        }
+
+        constexpr decltype(auto) operator+=(nullable_num t)
+        {
+            if (!is_num() || !t.is_num()) {
+                *this = None;
+            } else {
+                num += t;
+            }
+            return *this;
+        }
+
+        constexpr decltype(auto) operator-=(nullable_num t)
+        {
+            if (!is_num() || !t.is_num()) {
+                *this = None;
+            } else {
+                num -= t;
+            }
+            return *this;
+        }
+
+        /******************************************************************* */
+
+        template <typename U>
+        constexpr decltype(auto) operator*(U t)
+        {
+            using result_t = decltype(num * t);
+            using return_t = nullable_num<result_t>;
+            if (!is_num()) {
+                return return_t{};
+            } else {
+                return return_t{num*t};
+            }
+        }
+
+        template <typename U>
+        constexpr decltype(auto) operator/(U t)
+        {
+            using result_t = decltype(num / t);
+            using return_t = nullable_num<result_t>;
+            if (!is_num()) {
+                return return_t{};
+            } else {
+                return return_t{num/t};
+            }
+        }
+
+        template <typename U>
+        constexpr decltype(auto) operator+(U t)
+        {
+            using result_t = decltype(num + t);
+            using return_t = nullable_num<result_t>;
+            if (!is_num()) {
+                return return_t{};
+            } else {
+                return return_t{num+t};
+            }
+        }
+
+        template <typename U>
+        constexpr decltype(auto) operator-(U t)
+        {
+            using result_t = decltype(num - t);
+            using return_t = nullable_num<result_t>;
+            if (!is_num()) {
+                return return_t{};
+            } else {
+                return return_t{num-t};
+            }
+        }
+
+        template <typename U>
+        constexpr decltype(auto) operator*(nullable_num<U> t)
+        {
+            using result_t = decltype(num * t.num);
+            using return_t = nullable_num<result_t>;
+            if (!is_num() || !t.is_num()) {
+                return return_t{};
+            } else {
+                return return_t{num*t};
+            }
+        }
+
+        template <typename U>
+        constexpr decltype(auto) operator/(nullable_num<U> t)
+        {
+            using result_t = decltype(num / t.num);
+            using return_t = nullable_num<result_t>;
+            if (!is_num() || !t.is_num()) {
+                return return_t{};
+            } else {
+                return return_t{num/t};
+            }
+        }
+
+        template <typename U>
+        constexpr decltype(auto) operator+(nullable_num<U> t)
+        {
+            using result_t = decltype(num + t.num);
+            using return_t = nullable_num<result_t>;
+            if (!is_num() || !t.is_num()) {
+                return return_t{};
+            } else {
+                return return_t{num+t};
+            }
+        }
+
+        template <typename U>
+        constexpr decltype(auto) operator-(nullable_num<U> t)
+        {
+            using result_t = decltype(num - t.num);
+            using return_t = nullable_num<result_t>;
+            if (!is_num() || !t.is_num()) {
+                return return_t{};
+            } else {
+                return return_t{num-t};
+            }
+        }
+
+        /******************************************************************* */
 
         constexpr operator T() const
         {

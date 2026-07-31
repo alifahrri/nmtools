@@ -22,4 +22,9 @@ namespace nmtools::meta
     inline constexpr bool has_template_get_v = has_template_get<T,I>::value;
 } // namespace nmtools::meta
 
+namespace nmtools
+{
+    using meta::has_template_get_v;
+}
+
 #endif // NMTOOLS_META_BITS_TRAITS_HAS_TEMPLATE_GET_HPP

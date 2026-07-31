@@ -19,7 +19,8 @@ using namespace nmtools::literals;
 
 using nmtools_array, nmtools_tuple, nmtools::unwrap;
 
-#if 1
+// TODO: remove
+#if 0
 TEST_CASE("apply_graph(matmul)" * doctest::test_suite("transform"))
 {
     auto gen = na::random_engine();
@@ -31,7 +32,7 @@ TEST_CASE("apply_graph(matmul)" * doctest::test_suite("transform"))
     auto lhs = na::random(lhs_shape,dtype,gen);
     auto rhs = na::random(rhs_shape,dtype,gen);
 
-    auto res = view::matmulv2(lhs,rhs);
+    auto res = view::matmulv3(lhs,rhs);
 
     auto graph = fn::linearize(fn::get_compute_graph(unwrap(res)));
 

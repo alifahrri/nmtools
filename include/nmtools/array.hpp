@@ -44,7 +44,6 @@
 #include "nmtools/array/conv1d.hpp"
 #include "nmtools/array/flip.hpp"
 #include "nmtools/array/eye.hpp"
-#include "nmtools/array/ufunc.hpp"
 #include "nmtools/array/instance_norm.hpp"
 #include "nmtools/array/array_slice.hpp"
 #include "nmtools/array/ones_like.hpp"

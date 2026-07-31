@@ -1185,4 +1185,9 @@ namespace nmtools::meta
     }; // bounded_size
 } // namespace nmtools::meta
 
+namespace nmtools
+{
+    using meta::is_same_view_v;
+}
+
 #endif // NMTOOLS_ARRAY_VIEW_DECORATOR_HPP

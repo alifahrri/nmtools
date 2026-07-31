@@ -3,6 +3,7 @@
 
 #include "nmtools/meta.hpp"
 #include "nmtools/constants.hpp"
+#include "nmtools/utility/forward.hpp"
 
 // TODO: move to nmtools/utility/
 
@@ -25,17 +26,17 @@ namespace nmtools::impl
     {
         constexpr decltype(auto) operator()([[maybe_unused]] const array_t& a, [[maybe_unused]] index_type i) const
         {
-            if constexpr (meta::is_constant_index_array_v<array_t> && meta::is_index_v<index_type>) {
+            if constexpr (is_constant_index_array_v<array_t> && is_index_v<index_type>) {
                 // allow accessing constant index array using index type for const only
-                constexpr auto array = meta::to_value_v<array_t>;
+                constexpr auto array = to_value_v<array_t>;
                 // TODO: return constant index if index_type is constant index
-                auto value = at_t<meta::remove_cvref_t<decltype(array)>,index_type>{}(array,i);
+                auto value = at_t<remove_cvref_t<decltype(array)>,index_type>{}(array,i);
                 return value;
-            } else if constexpr (meta::is_tuple_v<array_t> && meta::is_constant_index_v<index_type>) {
+            } else if constexpr (is_tuple_v<array_t> && is_constant_index_v<index_type>) {
                 // NOTE: to properly handle at with constant negative index 
                 constexpr auto index = [&](){
                     auto value = index_type::value;
-                    auto LEN = meta::len_v<array_t>;
+                    auto LEN = len_v<array_t>;
                     if (value > 0) {
                         return value;
                     } else {
@@ -43,12 +44,12 @@ namespace nmtools::impl
                     }
                 }();
                 return nmtools::get<index>(a);
-            } else if constexpr (meta::is_tuple_v<array_t> && meta::is_index_v<index_type>) {
+            } else if constexpr (is_tuple_v<array_t> && is_index_v<index_type>) {
                 // allow const tuple to be indexed with runtime index
                 // basically just unroll, then carry value until index is matched then return
-                using common_t = meta::get_index_element_type_t<array_t>;
-                constexpr auto N = meta::len_v<array_t>;
-                using unsigned_t = meta::make_unsigned_t<common_t>;
+                using common_t = get_index_element_type_t<array_t>;
+                constexpr auto N = len_v<array_t>;
+                using unsigned_t = make_unsigned_t<common_t>;
                 auto normalized_index = [&]()->unsigned_t{
                     auto value = i;
                     if (value >= 0) {
@@ -57,18 +58,18 @@ namespace nmtools::impl
                         return N + value;
                     }
                 }();
-                return meta::template_reduce<N-1>([&](auto init, auto index){
+                return template_reduce<N-1>([&](auto init, auto index){
                     if ((index+1) == normalized_index) {
                         return (common_t)nmtools::get<decltype(index)::value+1>(a);
                     } else {
                         return (common_t)init;
                     }
                 }, (common_t)nmtools::get<0>(a));
-            } else if constexpr (meta::has_at_v<const array_t&,index_type>) {
+            } else if constexpr (has_at_v<const array_t&,index_type>) {
                 return a.at(i);
-            } else if constexpr (meta::has_square_bracket_v<const array_t&,index_type>) {
+            } else if constexpr (has_square_bracket_v<const array_t&,index_type>) {
                 return a[i];
-            } else if constexpr (meta::has_bracket_v<const array_t&,index_type>) {
+            } else if constexpr (has_bracket_v<const array_t&,index_type>) {
                 return a(i);
             } else {
                 return error::AT_UNSUPPORTED<const array_t&,index_type>{};
@@ -77,12 +78,12 @@ namespace nmtools::impl
 
         constexpr decltype(auto) operator()(array_t& a, [[maybe_unused]] index_type i) const
         {
-            if constexpr (meta::has_at_v<array_t&,index_type>) {
+            if constexpr (has_at_v<array_t&,index_type>) {
                 return a.at(i);
-            } else if constexpr (meta::is_tuple_v<array_t> && meta::is_constant_index_v<index_type>) {
+            } else if constexpr (is_tuple_v<array_t> && is_constant_index_v<index_type>) {
                 constexpr auto index = [&](){
                     auto value = index_type::value;
-                    auto LEN = meta::len_v<array_t>;
+                    auto LEN = len_v<array_t>;
                     if (value > 0) {
                         return value;
                     } else {
@@ -90,9 +91,9 @@ namespace nmtools::impl
                     }
                 }();
                 return nmtools::get<index>(a);
-            } else if constexpr (meta::has_square_bracket_v<array_t&,index_type>) {
+            } else if constexpr (has_square_bracket_v<array_t&,index_type>) {
                 return a[i];
-            } else if constexpr (meta::has_bracket_v<array_t&,index_type>) {
+            } else if constexpr (has_bracket_v<array_t&,index_type>) {
                 return a(i);
             } else {
                 return error::AT_UNSUPPORTED<array_t&,index_type>{};
@@ -101,8 +102,8 @@ namespace nmtools::impl
     }; // at_t
 
     template <typename array_t, typename index_type>
-    struct at_t<array_t,index_type,meta::enable_if_t<meta::has_address_space_v<array_t>>>
-        : at_t<meta::remove_address_space_t<array_t>,index_type> {};
+    struct at_t<array_t,index_type,enable_if_t<has_address_space_v<array_t>>>
+        : at_t<remove_address_space_t<array_t>,index_type> {};
 
     template <typename array_t, typename index_type>
     constexpr inline auto at_v = at_t<array_t, index_type>{};
@@ -129,7 +130,7 @@ namespace nmtools
     {
         using index_type = decltype(i);
 
-        if constexpr (meta::has_template_get_v<const array_t&,i>) {
+        if constexpr (has_template_get_v<const array_t&,i>) {
             // use nmtools::get to avoid ambiguous call with stl get
             return nmtools::get<i>(a);
         } else {
@@ -143,7 +144,7 @@ namespace nmtools
     {
         using index_type = decltype(i);
 
-        if constexpr (meta::has_template_get_v<array_t&,i>) {
+        if constexpr (has_template_get_v<array_t&,i>) {
             return nmtools::get<i>(a);   
         } else {
             constexpr auto at = impl::at_v<array_t,index_type>;
@@ -151,7 +152,7 @@ namespace nmtools
         }
     } // at
 
-    using last_type = meta::remove_cvref_t<decltype(Last)>;
+    using last_type = remove_cvref_t<decltype(Last)>;
 
     /**
      * @brief access element at i-th index.
@@ -170,30 +171,30 @@ namespace nmtools
     constexpr decltype(auto) at(const array_t& a, [[maybe_unused]] index_type i)
     {
         #if 0
-        if constexpr (meta::is_same_v<meta::remove_cvref_t<index_type>,last_type>) {
+        if constexpr (is_same_v<remove_cvref_t<index_type>,last_type>) {
             const auto N = len(a);
             const auto index = N - 1;
             return at(a,index);
         } else 
         #endif
-        if constexpr (meta::is_constant_index_v<index_type>) {
+        if constexpr (is_constant_index_v<index_type>) {
             // assume constant index has static member value
             constexpr auto index = index_type::value;
             if constexpr (index < 0) {
-                constexpr auto LEN = meta::len_v<array_t>;
+                constexpr auto LEN = len_v<array_t>;
                 if constexpr (LEN > 0) {
                     constexpr auto N = LEN + index;
-                    return at(a,meta::ct_v<N>);
+                    return at(a,ct_v<N>);
                 } else {
                     const auto N = len(a) + index;
-                    return at(a,meta::make_unsigned_t<decltype(N)>{N});
+                    return at(a,make_unsigned_t<decltype(N)>{N});
                 }
             } else {
                 return at<index>(a);
             }
-        } else if constexpr (meta::is_signed_v<index_type>) {
+        } else if constexpr (is_signed_v<index_type>) {
             // NOTE: make index to be unsigned to avoid infinite recursion
-            using index_t = meta::make_unsigned_t<index_type>;
+            using index_t = make_unsigned_t<index_type>;
             // NOTE: avoid recurse that triggers error: use of 'constexpr decltype(auto) nmtools::at before deduction of 'auto'
             // on arm gcc 9.2.1 (stm32 target)
             // use function object impl::at instead
@@ -231,29 +232,29 @@ namespace nmtools
     constexpr decltype(auto) at(array_t& a, [[maybe_unused]] index_type i)
     {
         #if 0
-        if constexpr (meta::is_same_v<meta::remove_cvref_t<index_type>,last_type>) {
+        if constexpr (is_same_v<remove_cvref_t<index_type>,last_type>) {
             const auto N = len(a);
             const auto index = N - 1;
             return at(a,index);
         } else 
         #endif
-        if constexpr (meta::is_constant_index_v<index_type>) {
+        if constexpr (is_constant_index_v<index_type>) {
             // assume constant index has static member value
             constexpr auto index = index_type::value;
             if constexpr (index < 0) {
-                constexpr auto LEN = meta::len_v<array_t>;
+                constexpr auto LEN = len_v<array_t>;
                 if constexpr (LEN > 0) {
                     constexpr auto N = LEN + index;
-                    return at(a,meta::ct_v<N>);
+                    return at(a,ct_v<N>);
                 } else {
                     const auto N = len(a) + index;
-                    return at(a,meta::make_unsigned_t<decltype(N)>{N});
+                    return at(a,make_unsigned_t<decltype(N)>{N});
                 }
             } else {
                 return at<index>(a);
             }
-        } else if constexpr (meta::is_signed_v<index_type>) {
-            using index_t = meta::make_unsigned_t<index_type>;
+        } else if constexpr (is_signed_v<index_type>) {
+            using index_t = make_unsigned_t<index_type>;
             // NOTE: avoid recurse that triggers error: use of 'constexpr decltype(auto) nmtools::at before deduction of 'auto'
             // on arm gcc 9.2.1 (stm32 target)
             // use function object impl::at instead
@@ -289,11 +290,11 @@ namespace nmtools
     template <typename array_t, typename index_type, typename...index_types>
     constexpr decltype(auto) at(const array_t& a, index_type i, index_types...indices)
     {
-        if constexpr (meta::has_atnd_v<const array_t&,index_type,index_types...>) {
+        if constexpr (has_atnd_v<const array_t&,index_type,index_types...>) {
             return a.at(i,indices...);
-        } else if constexpr (meta::has_bracketnd_v<const array_t&,index_type,index_types...>) {
+        } else if constexpr (has_bracketnd_v<const array_t&,index_type,index_types...>) {
             return a.operator[](i,indices...);
-        } else if constexpr (meta::has_funcnd_v<const array_t&,index_type,index_types...>) {
+        } else if constexpr (has_funcnd_v<const array_t&,index_type,index_types...>) {
             return a(i,indices...);
         } else {
             return at(at(a,i),indices...);
@@ -304,14 +305,14 @@ namespace nmtools
     template <auto i, auto j, typename array_t>
     constexpr decltype(auto) at(const array_t& a)
     {
-        // TODO (wrap std metafunctions): wrap as meta::common_type_t
-        using index_type = meta::promote_index_t<decltype(i),decltype(j)>;
+        // TODO (wrap std metafunctions): wrap as common_type_t
+        using index_type = promote_index_t<decltype(i),decltype(j)>;
         #ifndef __circle_build__
-        if constexpr (meta::has_square_bracket2d_v<const array_t&,index_type>) {
+        if constexpr (has_square_bracket2d_v<const array_t&,index_type>) {
             return a[{i,j}];
         } else
         #endif // __circle_build__
-        if constexpr (meta::has_bracket2d_v<const array_t&,index_type>) {
+        if constexpr (has_bracket2d_v<const array_t&,index_type>) {
             return a(i,j);
         } else {
             return at<j>(at<i>(a));
@@ -336,11 +337,11 @@ namespace nmtools
     template <typename array_t, typename index_type, typename...index_types>
     constexpr decltype(auto) at(array_t& a, index_type i, index_types...indices)
     {
-        if constexpr (meta::has_atnd_v<array_t&,index_type,index_types...>) {
+        if constexpr (has_atnd_v<array_t&,index_type,index_types...>) {
             return a.at(i,indices...);
-        } else if constexpr (meta::has_bracketnd_v<array_t&,index_type,index_types...>) {
+        } else if constexpr (has_bracketnd_v<array_t&,index_type,index_types...>) {
             return a.operator[](i,indices...);
-        } else if constexpr (meta::has_funcnd_v<array_t&,index_type,index_types...>) {
+        } else if constexpr (has_funcnd_v<array_t&,index_type,index_types...>) {
             return a(i,indices...);
         } else {
             return at(at(a,i),indices...);
@@ -365,19 +366,21 @@ namespace nmtools
          * @return constexpr decltype(auto) 
          */
         template <typename array_t, typename type_list, size_t...Is, template <auto...> typename sequence>
-        constexpr decltype(auto) apply_at_impl(const array_t& array, const type_list& indices, sequence<Is...>)
+        constexpr decltype(auto) apply_at_impl(array_t&& array, const type_list& indices, sequence<Is...>)
         {
-            return nmtools::at(array, nmtools::get<Is>(indices)...);
+            return nmtools::at(nmtools::forward<array_t>(array), nmtools::get<Is>(indices)...);
         } // apply_at_impl
 
+        #if 0
         // NOTE: avoid forwarding reference to avoid using stl forward
         template <typename array_t, typename type_list, size_t...Is, template <auto...> typename sequence
             // avoid ambiguous call in latest clang/emscripten :(
-            , meta::enable_if_t<!meta::is_const_v<array_t>,int> = 0 >
+            , enable_if_t<!is_const_v<array_t>,int> = 0 >
         constexpr decltype(auto) apply_at_impl(array_t& array, const type_list& indices, sequence<Is...>)
         {
             return nmtools::at(array, nmtools::get<Is>(indices)...);
         } // apply_at_impl
+        #endif
     } //  namespace detail
 
     /**
@@ -393,10 +396,9 @@ namespace nmtools
     template <typename array_t, typename indices_t>
     constexpr decltype(auto) apply_at(const array_t& array, const indices_t& indices)
     {
-        if constexpr (meta::len_v<indices_t> > 0) {
-            constexpr auto N = meta::len_v<indices_t>;
-            using sequence_t = meta::make_index_sequence<N>;
-            return detail::apply_at_impl(array,indices,sequence_t{});
+        if constexpr (len_v<indices_t> > 0) {
+            constexpr auto N = len_v<indices_t>;
+            return detail::apply_at_impl(array,indices,make_index_sequence_v<N>);
         }
         else {
             return at(array, indices);
@@ -406,10 +408,9 @@ namespace nmtools
     template <typename array_t, typename indices_t>
     constexpr decltype(auto) apply_at(array_t& array, const indices_t& indices)
     {
-        if constexpr (meta::len_v<indices_t> > 0) {
-            constexpr auto N = meta::len_v<indices_t>;
-            using sequence_t = meta::make_index_sequence<N>;
-            return detail::apply_at_impl(array,indices,sequence_t{});
+        if constexpr (len_v<indices_t> > 0) {
+            constexpr auto N = len_v<indices_t>;
+            return detail::apply_at_impl(array,indices,make_index_sequence_v<N>);
         }
         else {
             return at(array, indices);

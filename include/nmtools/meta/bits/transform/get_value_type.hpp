@@ -31,4 +31,8 @@ namespace nmtools::meta
     using get_value_type_t = type_t<get_value_type<T>>;
 } // namespace nmtools::meta
 
+namespace nmtools
+{
+    using meta::get_value_type_t;
+}
 #endif // NMTOOLS_META_BITS_TRANSFORM_GET_VALUE_TYPE_HPP

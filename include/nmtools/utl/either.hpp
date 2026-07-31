@@ -56,14 +56,14 @@ namespace nmtools::utl
         {
             using left_type  = typename Derived::left_type;
             using right_type = typename Derived::right_type;
-            static_assert( meta::is_same_v<T,left_type> || meta::is_same_v<T,right_type> || meta::is_same_v<T,Derived>
+            static_assert( is_same_v<T,left_type> || is_same_v<T,right_type> || is_same_v<T,Derived>
                 , "unsupported type for either assignment"
             );
-            if constexpr (meta::is_same_v<T,left_type>) {
+            if constexpr (is_same_v<T,left_type>) {
                 self().left = val;
                 self().tag  = Derived::LEFT;
                 return self();
-            } else if constexpr (meta::is_same_v<T,right_type>) {
+            } else if constexpr (is_same_v<T,right_type>) {
                 self().right = val;
                 self().tag   = Derived::RIGHT;
                 return self();
@@ -86,14 +86,14 @@ namespace nmtools::utl
         {
             using left_type  = typename Derived::left_type;
             using right_type = typename Derived::right_type;
-            if constexpr (meta::is_same_v<T,left_type>) {
+            if constexpr (is_same_v<T,left_type>) {
                 using type = const left_type*;
                 if (self().tag==Derived::LEFT) {
                     return type{&self().left};
                 } else {
                     return type{nullptr};
                 }
-            } else if constexpr (meta::is_same_v<T,right_type>) {
+            } else if constexpr (is_same_v<T,right_type>) {
                 using type = const right_type*;
                 if (self().tag==Derived::RIGHT) {
                     return type{&self().right};
@@ -110,14 +110,14 @@ namespace nmtools::utl
         {
             using left_type  = typename Derived::left_type;
             using right_type = typename Derived::right_type;
-            if constexpr (meta::is_same_v<T,left_type>) {
+            if constexpr (is_same_v<T,left_type>) {
                 using type = left_type*;
                 if (self().tag==Derived::LEFT) {
                     return type{&self().left};
                 } else {
                     return type{nullptr};
                 }
-            } else if constexpr (meta::is_same_v<T,right_type>) {
+            } else if constexpr (is_same_v<T,right_type>) {
                 using type = right_type*;
                 if (self().tag==Derived::RIGHT) {
                     return type{&self().right};
@@ -150,7 +150,7 @@ namespace nmtools::utl
         using left_type  = left_t;
         using right_type = right_t;
 
-        static_assert( !meta::is_same_v<left_type,right_type>
+        static_assert( !is_same_v<left_type,right_type>
             , "left_type and right_type can't be the same"
         );
 
@@ -193,9 +193,9 @@ namespace nmtools::utl
     #if 1
     template <typename left_t, typename right_t>
     struct either<left_t,right_t,
-        meta::enable_if_t<
-               (!meta::is_trivially_destructible_v<left_t> || !meta::is_trivially_destructible_v<right_t>)
-            && (!meta::is_trivially_copy_constructible_v<left_t> || !meta::is_trivially_copy_constructible_v<right_t>)
+        enable_if_t<
+               (!is_trivially_destructible_v<left_t> || !is_trivially_destructible_v<right_t>)
+            && (!is_trivially_copy_constructible_v<left_t> || !is_trivially_copy_constructible_v<right_t>)
         >
     > : base_either<either<left_t,right_t>>
     {
@@ -225,20 +225,12 @@ namespace nmtools::utl
             : right(val), tag{RIGHT} {}
         
         constexpr either(const either& other)
+            : tag(other.tag)
         {
-            tag = other.tag;
             if (other.tag == LEFT) {
-                if constexpr (meta::is_copy_assignable_v<left_t>) {
-                    left = other.left;
-                } else {
-                    new(&this->left) left_t(other.left);
-                }
+                new(&this->left) left_t(other.left);
             } else {
-                if constexpr (meta::is_copy_assignable_v<right_t>) {
-                    right = other.right;
-                } else {
-                    new(&this->right) right_t(other.right);
-                }
+                new(&this->right) right_t(other.right);
             }
         }
 
@@ -270,9 +262,9 @@ namespace nmtools::utl
     // TODO: find out if we can move the constructor to base for better composition & brevity
     template <typename left_t, typename right_t>
     struct either<left_t,right_t,
-        meta::enable_if_t<
-                (meta::is_trivially_destructible_v<left_t> && meta::is_trivially_destructible_v<right_t>)
-            &&  (!meta::is_trivially_copy_constructible_v<left_t> || !meta::is_trivially_copy_constructible_v<right_t>)
+        enable_if_t<
+                (is_trivially_destructible_v<left_t> && is_trivially_destructible_v<right_t>)
+            &&  (!is_trivially_copy_constructible_v<left_t> || !is_trivially_copy_constructible_v<right_t>)
         >
     > : base_either<either<left_t,right_t>>
     {
@@ -305,13 +297,13 @@ namespace nmtools::utl
         {
             tag = other.tag;
             if (other.tag == LEFT) {
-                if constexpr (meta::is_copy_assignable_v<left_t>) {
+                if constexpr (is_copy_assignable_v<left_t>) {
                     left = other.left;
                 } else {
                     new(&this->left) left_t(other.left);
                 }
             } else {
-                if constexpr (meta::is_copy_assignable_v<right_t>) {
+                if constexpr (is_copy_assignable_v<right_t>) {
                     right = other.right;
                 } else {
                     new(&this->right) right_t(other.right);

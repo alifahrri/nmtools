@@ -51,7 +51,7 @@ namespace nmtools::view
         constexpr auto operator()(size_types...indices) const
         {
             auto dst_indices = pack_indices(indices...);
-            auto src_indices = indexer.indices(dst_indices);
+            auto src_indices = unwrap(indexer.indices(dst_indices));
             if constexpr (meta::is_pointer_v<array_type>) {
                 return apply_at(*array,src_indices);
             } else if constexpr (is_none_v<decltype(src_indices)>) {
@@ -67,7 +67,7 @@ namespace nmtools::view
         constexpr decltype(auto) operator()(size_types...indices)
         {
             auto dst_indices = pack_indices(indices...);
-            auto src_indices = indexer.indices(dst_indices);
+            auto src_indices = unwrap(indexer.indices(dst_indices));
             static_assert( !meta::is_num_v<decltype(src_indices)>
                 , "mutable_indexing view doesn't support assignment to scalar type!" );
             if constexpr (meta::is_pointer_v<array_type>) {

@@ -74,6 +74,10 @@ add_executable(${PROJECT_NAME}-doctest tests.cpp
     src/cosh.cpp
     src/sinh.cpp
     src/tanh.cpp
+
+    src/repeat.cpp
+    src/reshape.cpp
+    src/unsqueeze.cpp
 )
 add_test(
     NAME ${PROJECT_NAME}-doctest

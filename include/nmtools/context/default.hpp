@@ -147,8 +147,8 @@ namespace nmtools
         constexpr auto eval(output_t& output, const view_t& view) const
             -> enable_if_t<!is_none_v<output_t> && !is_num_v<output_t>>
         {
-            auto out_shape = nmtools::shape(output);
-            auto inp_shape = nmtools::shape(unwrap(view));
+            auto out_shape = nmtools::shape<true>(output);
+            auto inp_shape = nmtools::shape<true>(unwrap(view));
             auto is_equal  = utils::isequal(out_shape,inp_shape);
             if (!is_equal) {
                 nmtools_assert( is_equal
@@ -173,13 +173,22 @@ namespace nmtools
                 constexpr auto INP_SIZE = len_v<decltype(inp_index)>;
                 static_assert( (OUT_SIZE > 0) && (INP_SIZE > 0) );
 
+                static_assert( is_constant_index_array_v<typename decltype(out_index)::stride_type> );
+                static_assert( is_constant_index_array_v<typename decltype(inp_index)::stride_type> );
+
                 const auto out_stride = index::compute_strides(out_shape);
                 // const auto inp_stride = index::compute_strides(inp_shape);
                 template_for<OUT_SIZE>([&](auto i){
                     auto inp_idx = inp_index[i];
                     auto out_idx = out_index[i];
+
+                    static_assert( is_constant_index_array_v<decltype(inp_idx)> );
+                    static_assert( is_constant_index_array_v<decltype(out_idx)> );
+
                     // auto flat_inp_idx = index::compute_offset(inp_idx,inp_stride);
                     auto flat_out_idx = index::compute_offset(out_idx,out_stride);
+                    static_assert( is_constant_index_v<decltype(flat_out_idx)> );
+
                     output.data()[flat_out_idx] = apply_at(view,inp_idx);
                 });
             }
@@ -188,36 +197,25 @@ namespace nmtools
         template <typename view_t>
         constexpr auto eval(const view_t& view) const
         {
-            if constexpr (meta::is_either_v<view_t>) {
-                using left_t   = meta::get_either_left_t<view_t>;
-                using right_t  = meta::get_either_right_t<view_t>;
-                // deduce return type for each type
-                using rleft_t  = decltype(this->eval(meta::declval<left_t>()));
-                using rright_t = decltype(this->eval(meta::declval<right_t>()));
-                constexpr auto vtype = [](){
-                    if constexpr (meta::is_same_v<rleft_t,rright_t>) {
-                        return meta::as_value_v<rleft_t>;
-                    } else {
-                        using either_t = meta::replace_either_t<view_t,rleft_t,rright_t>;
-                        return meta::as_value_v<either_t>;
-                    }
-                }();
-                using return_t = meta::type_t<decltype(vtype)>;
+            if constexpr (is_either_v<view_t>) {
+                using left_t   = decltype(this->eval(*get_left(&view)));
+                using right_t  = decltype(this->eval(*get_right(&view)));
+                using return_t = conditional_t<!is_same_v<left_t,right_t>,nmtools_either<left_t,right_t>,left_t>;
                 // match either type at runtime
-                if (auto view_ptr = nmtools::get_if<left_t>(&view)) {
+                if (auto view_ptr = get_left(&view)) {
                     return return_t{this->eval(*view_ptr)};
                 } else /* if (auto view_ptr = get_if<right_t>(&view)) */ {
-                    auto view_rptr = nmtools::get_if<right_t>(&view);
+                    auto view_rptr = get_right(&view);
                     return return_t{this->eval(*view_rptr)};
                 }
-            } else if constexpr (meta::is_maybe_v<view_t> && !object_enable) {
-                using view_type   = meta::get_maybe_type_t<view_t>;
-                using result_type = decltype(this->eval(meta::declval<view_type>()));
-                static_assert(!meta::is_maybe_v<result_type>);
+            } else if constexpr (is_maybe_v<view_t> && !object_enable) {
+                using view_type   = get_maybe_type_t<view_t>;
+                using result_type = decltype(this->eval(declval<view_type>()));
+                static_assert(!is_maybe_v<result_type>);
                 using return_type = nmtools_maybe<result_type>;
                 return (view
                     ? return_type{this->eval(*view)}
-                    : return_type{meta::Nothing}
+                    : return_type{Nothing}
                 );
             } else {
                 auto shape = nmtools::shape<true>(unwrap(view));

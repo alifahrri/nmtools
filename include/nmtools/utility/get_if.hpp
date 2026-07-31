@@ -2,6 +2,7 @@
 #define NMTOOLS_UTILITY_GET_IF_HPP
 
 #include "nmtools/meta/common.hpp"
+#include "nmtools/meta/bits/transform/get_either.hpp"
 
 namespace nmtools::impl::error
 {
@@ -53,6 +54,20 @@ namespace nmtools
         auto get_if = impl::get_if<T>;
         return get_if.template operator()<U>(t);
     } // get_if
+
+    template <typename T>
+    constexpr auto get_left(const T* t)
+    {
+        using left_t = get_either_left_t<T>;
+        return get_if<left_t>(t);
+    }
+
+    template <typename T>
+    constexpr auto get_right(const T* t)
+    {
+        using right_t = get_either_right_t<T>;
+        return get_if<right_t>(t);
+    }
 } // namespace nmtools
 
 #endif // NMTOOLS_UTILITY_GET_IF_HPP

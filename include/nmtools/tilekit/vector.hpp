@@ -675,6 +675,15 @@ namespace nmtools
 
 namespace nmtools::meta
 {
+    template <typename buffer_t
+        , typename shape_buffer_t
+        , auto bit_width
+        , template <typename...>typename stride_buffer_t
+        , template <typename...>typename offset_compute_t>
+    struct is_object_ndarray<
+        tilekit::vector::object_t<buffer_t,shape_buffer_t,bit_width,stride_buffer_t,offset_compute_t>
+    > : true_type {};
+
     namespace error
     {
         template <typename...>

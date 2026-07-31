@@ -19,4 +19,8 @@ namespace nmtools::meta
     constexpr inline auto is_copy_constructible_v = is_copy_constructible<T>::value;
 }
 
+namespace nmtools
+{
+    using meta::is_copy_constructible_v;
+}
 #endif // NMTOOLS_META_BITS_TRAITS_IS_COPY_CONSTRUCTIBLE_HPP

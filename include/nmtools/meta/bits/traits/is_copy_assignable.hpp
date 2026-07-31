@@ -17,4 +17,9 @@ namespace nmtools::meta
     constexpr inline auto is_copy_assignable_v = is_copy_assignable<T>::value;
 }
 
+namespace nmtools
+{
+    using meta::is_copy_assignable_v;
+}
+
 #endif // NMTOOLS_META_BITS_TRAITS_IS_COPY_ASSIGNABLE_HPP

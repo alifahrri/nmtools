@@ -36,7 +36,7 @@ TEST_CASE("constexpr_matmul(case1)" * doctest::test_suite("array::matmul"))
     CONSTEXPR_MATMUL_SUBCASE( case1, lhs_cs_fb, rhs_cs_fb );
     CONSTEXPR_MATMUL_SUBCASE( case1, lhs_cs_hb, rhs_cs_hb );
 
-    // changed to matmulv2, missing some compile-time shape inference
+    // changed to matmulv3, missing some compile-time shape inference
     // TODO: fix compile-time shape inference
     #if 0
     CONSTEXPR_MATMUL_SUBCASE( case1, lhs_fs_fb, rhs_fs_fb );
@@ -76,7 +76,7 @@ TEST_CASE("constexpr_matmul(case2)" * doctest::test_suite("array::matmul"))
     CONSTEXPR_MATMUL_SUBCASE( case2, lhs_cs_fb, rhs_cs_fb );
     CONSTEXPR_MATMUL_SUBCASE( case2, lhs_cs_hb, rhs_cs_hb );
 
-    // changed to matmulv2, missing some compile-time shape inference
+    // changed to matmulv3, missing some compile-time shape inference
     // TODO: fix compile-time shape inference
     #if 0
     CONSTEXPR_MATMUL_SUBCASE( case2, lhs_fs_fb, rhs_fs_fb );
@@ -116,7 +116,7 @@ TEST_CASE("constexpr_matmul(case3)" * doctest::test_suite("array::matmul"))
     CONSTEXPR_MATMUL_SUBCASE( case3, lhs_cs_fb, rhs_cs_fb );
     CONSTEXPR_MATMUL_SUBCASE( case3, lhs_cs_hb, rhs_cs_hb );
 
-    // changed to matmulv2, missing some compile-time shape inference
+    // changed to matmulv3, missing some compile-time shape inference
     // TODO: fix compile-time shape inference
     #if 0
     CONSTEXPR_MATMUL_SUBCASE( case3, lhs_fs_fb, rhs_fs_fb );
@@ -156,7 +156,7 @@ TEST_CASE("constexpr_matmul(case4)" * doctest::test_suite("array::matmul"))
     CONSTEXPR_MATMUL_SUBCASE( case4, lhs_cs_fb, rhs_cs_fb );
     CONSTEXPR_MATMUL_SUBCASE( case4, lhs_cs_hb, rhs_cs_hb );
 
-    // changed to matmulv2, missing some compile-time shape inference
+    // changed to matmulv3, missing some compile-time shape inference
     // TODO: fix compile-time shape inference
     #if 0
     CONSTEXPR_MATMUL_SUBCASE( case4, lhs_fs_fb, rhs_fs_fb );
@@ -196,7 +196,7 @@ TEST_CASE("constexpr_matmul(case5)" * doctest::test_suite("array::matmul"))
     CONSTEXPR_MATMUL_SUBCASE( case5, lhs_cs_fb, rhs_cs_fb );
     CONSTEXPR_MATMUL_SUBCASE( case5, lhs_cs_hb, rhs_cs_hb );
 
-    // changed to matmulv2, missing some compile-time shape inference
+    // changed to matmulv3, missing some compile-time shape inference
     // TODO: fix compile-time shape inference
     #if 0
     CONSTEXPR_MATMUL_SUBCASE( case5, lhs_fs_fb, rhs_fs_fb );
@@ -236,7 +236,7 @@ TEST_CASE("constexpr_matmul(case6)" * doctest::test_suite("array::matmul"))
     CONSTEXPR_MATMUL_SUBCASE( case6, lhs_cs_fb, rhs_cs_fb );
     CONSTEXPR_MATMUL_SUBCASE( case6, lhs_cs_hb, rhs_cs_hb );
 
-    // changed to matmulv2, missing some compile-time shape inference
+    // changed to matmulv3, missing some compile-time shape inference
     // TODO: fix compile-time shape inference
     #if 0
     CONSTEXPR_MATMUL_SUBCASE( case6, lhs_fs_fb, rhs_fs_fb );

@@ -10,8 +10,8 @@ namespace nmtools::view
     {
         auto f = [](auto& array){
             auto src_size = size<true>(array);
-            constexpr auto SRC_SIZE = meta::to_value_v<decltype(src_size)>;
-            if constexpr (!meta::is_fail_v<decltype(SRC_SIZE)>) {
+            constexpr auto SRC_SIZE = to_value_v<decltype(src_size)>;
+            if constexpr (!is_fail_v<decltype(SRC_SIZE)>) {
                 auto new_shape = nmtools_tuple{src_size};
                 return mutable_reshape(array,new_shape);
             } else {

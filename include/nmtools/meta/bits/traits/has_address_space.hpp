@@ -30,4 +30,9 @@ namespace nmtools::meta
     #endif // __OPENCL_VERSION__
 } // namespace nmtools::meta
 
+namespace nmtools
+{
+    using meta::has_address_space_v;
+}
+
 #endif // NMTOOLS_META_BITS_TRAITS_HAS_ADDRESS_SPACE_HPP

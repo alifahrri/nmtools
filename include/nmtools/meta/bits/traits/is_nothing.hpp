@@ -19,4 +19,9 @@ namespace nmtools::meta
     constexpr inline auto is_nothing_v = is_nothing<T>::value;
 } // namespace nmtools::meta
 
+namespace nmtools
+{
+    using meta::is_nothing_v;
+}
+
 #endif // NMTOOLS_META_BITS_TRAITS_IS_NOTHING_HPP
