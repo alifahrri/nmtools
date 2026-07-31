@@ -198,7 +198,7 @@ namespace nmtools::hip
             return device_ptr;
         }
 
-        template <typename T, typename array_t>
+        template <typename T, typename array_t, enable_if_t<is_ndarray_v<array_t>,int> =0>
         auto copy_buffer(device_mem_ptr<T> mem_obj, array_t& array)
         {
             using element_t = get_element_type_t<array_t>;
@@ -209,6 +209,17 @@ namespace nmtools::hip
 
             T* mem_obj_raw = mem_obj.get();
             auto status = hipMemcpy(out_ptr,mem_obj_raw,byte_size,hipMemcpyDeviceToHost);
+            if (status != hipSuccess) {
+                throw hip_exception(status, "error when copying memory to host");
+            }
+        }
+
+        template <typename src_t, typename dst_t, enable_if_t<is_num_v<dst_t>,int> =0>
+        auto copy_buffer(src_t src, dst_t& dst)
+        {
+            auto byte_size = sizeof(dst_t);
+            auto* mem_obj_raw = src.get();
+            auto status = hipMemcpy(&dst,mem_obj_raw,byte_size,hipMemcpyDeviceToHost);
             if (status != hipSuccess) {
                 throw hip_exception(status, "error when copying memory to host");
             }
@@ -244,7 +255,13 @@ namespace nmtools::hip
             auto out_dim   = nmtools::len(out_shape);
 
             auto output_buffer = this->create_buffer<out_element_t>(out_size);
-            auto gpu_out_shape = this->create_buffer(out_shape);
+            auto gpu_out_shape = [&](){
+                if constexpr (is_none_v<decltype(out_shape)>) {
+                    return this->create_buffer(nmtools_tuple{ct_v<1>});
+                } else {
+                    return this->create_buffer(out_shape);
+                }
+            }();
 
             auto warp_size   = 32;
             auto thread_size = size_t(std::ceil(float(out_size) / warp_size)) * warp_size;

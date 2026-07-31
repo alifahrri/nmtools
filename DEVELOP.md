@@ -298,6 +298,32 @@ After successful build, then you can run the hip-test:
 ```
 ![docs/image/hip-test.png](docs/image/hip-test.png)
 
+Alternative: run the build non-interactively from the host:
+```
+docker run -d --name hip-dev \
+    --device /dev/kfd --device /dev/dri \
+    --volume ${PWD}:/workspace/nmtools \
+    --entrypoint /bin/zsh \
+    nmtools:hip \
+    -c "sleep infinity"
+
+# cmake configure
+docker exec hip-dev sh -c "mkdir -p build/hip \
+    && cd build/hip \
+    && cmake -DCMAKE_TOOLCHAIN_FILE=../../cmake/toolchains/hip.cmake \
+        -DNMTOOLS_BUILD_HIP_TESTS=ON \
+        ../.."
+
+# build (add -DNMTOOLS_TEST_HIP_ARCH="gfx1036,gfx1100,gfx1103" to cmake configure to set target arch)
+docker exec hip-dev sh -c "cd build/hip && make -j\$(nproc) VERBOSE=1"
+
+# run tests
+docker exec hip-dev sh -c "cd build/hip && ./tests/hip/numeric-tests-hip-doctest"
+
+# cleanup
+docker rm -f hip-dev
+```
+
 If there is container naming conflict you can remove then re-run, or just restart.
 ```
 docker rm hip-dev
