@@ -10,7 +10,9 @@ add_executable(${PROJECT_NAME} tests.cpp
     src/vector.cpp
     src/clipped_integer.cpp
     src/algorithm.cpp
+    src/expected.cpp
     src/fmath.cpp
+    src/format.cpp
     src/power.cpp
     src/remez.cpp
     src/poly.cpp
@@ -23,6 +25,7 @@ add_executable(${PROJECT_NAME} tests.cpp
     src/static_string.cpp
     src/string.cpp
     src/tuple.cpp
+    src/variant.cpp
 )
 add_test(
     NAME ${PROJECT_NAME}
