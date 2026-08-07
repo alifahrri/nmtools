@@ -39,6 +39,7 @@ namespace nmtools::meta
 namespace nmtools
 {
     using meta::type_at_t;
+    using meta::at_t;
 }
 
 #endif // NMTOOLS_META_BITS_TRANSFORM_AT_HPP

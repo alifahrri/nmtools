@@ -15,6 +15,7 @@ namespace nmtools::impl
         struct AT_UNSUPPORTED : meta::detail::fail_t {};
     }
 
+    // declared inside impl namespace, to avoid it being mixed up with nm::at_t (which is an alias for nm::meta::at_t)
     /**
      * @brief Customization point for actual at implementation
      * 

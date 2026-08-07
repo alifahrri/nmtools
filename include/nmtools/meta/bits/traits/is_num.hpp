@@ -63,6 +63,7 @@ namespace nmtools::meta
 namespace nmtools
 {
     using meta::is_num_v;
+    using meta::is_floating_point_v;
 }
 
 #endif // NMTOOLS_META_BITS_TRAITS_IS_NUM_HPP

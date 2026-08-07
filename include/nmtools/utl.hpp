@@ -9,6 +9,7 @@
 #include "nmtools/utl/array.hpp"
 #include "nmtools/utl/tuple.hpp"
 #include "nmtools/utl/either.hpp"
+#include "nmtools/utl/expected.hpp"
 #include "nmtools/utl/maybe.hpp"
 #include "nmtools/utl/queue.hpp"
 #include "nmtools/utl/stack.hpp"
@@ -18,6 +19,7 @@
 #include "nmtools/utl/static_string.hpp"
 #include "nmtools/utl/static_vector.hpp"
 #include "nmtools/utl/string.hpp"
+#include "nmtools/utl/variant.hpp"
 #include "nmtools/utl/vector.hpp"
 #include "nmtools/utl/math.hpp"
 
@@ -28,6 +30,14 @@
 #ifndef nmtools_either
 #define nmtools_either ::nmtools::utl::either
 #endif // nmtools_either
+
+#ifndef nmtools_expected
+#define nmtools_expected ::nmtools::utl::expected
+namespace nmtools
+{
+    using utl::unexpected;
+}
+#endif // nmtools_expected
 
 #ifndef nmtools_tuple
 #define nmtools_tuple ::nmtools::utl::tuple
@@ -65,5 +75,9 @@
 #ifndef nmtools_static_string
 #define nmtools_static_string ::nmtools::utl::static_string
 #endif // nmtools_static_string
+
+#ifndef nmtools_variant
+#define nmtools_variant ::nmtools::utl::variant
+#endif // nmtools_variant
 
 #endif // NMTOOLS_UTL_HPP

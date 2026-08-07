@@ -12,11 +12,26 @@ namespace nmtools::meta
     template <typename left_t, typename right_t>
     struct is_either<utl::either<left_t,right_t>> : true_type {};
 
+    template <typename left_t, typename right_t>
+    struct is_either<utl::trivial_variant<2,left_t,right_t>> : true_type {};
+
+    template <typename left_t, typename right_t>
+    struct is_either<utl::nontrivial_variant<2,left_t,right_t>> : true_type {};
+
     template <typename T>
     struct is_maybe<utl::maybe<T>> : true_type {};
 
     template <typename...Args>
     struct is_tuple<utl::tuple<Args...>> : true_type {};
+
+    template <typename...Args>
+    struct is_variant<utl::trivial_variant<sizeof...(Args),Args...>> : true_type {};
+
+    template <typename...Args>
+    struct is_variant<utl::nontrivial_variant<sizeof...(Args),Args...>> : true_type {};
+
+    template <typename T, typename E>
+    struct is_expected<utl::expected<T,E>> : true_type {};
 
     // TODO: remove
     #if 1

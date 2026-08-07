@@ -93,6 +93,30 @@ namespace nmtools::meta
         using type = right_t;
     };
 
+    template <typename left_t, typename right_t>
+    struct get_either_left<utl::trivial_variant<2,left_t,right_t>>
+    {
+        using type = left_t;
+    };
+
+    template <typename left_t, typename right_t>
+    struct get_either_right<utl::trivial_variant<2,left_t,right_t>>
+    {
+        using type = right_t;
+    };
+
+    template <typename left_t, typename right_t>
+    struct get_either_left<utl::nontrivial_variant<2,left_t,right_t>>
+    {
+        using type = left_t;
+    };
+
+    template <typename left_t, typename right_t>
+    struct get_either_right<utl::nontrivial_variant<2,left_t,right_t>>
+    {
+        using type = right_t;
+    };
+
     // TODO: remove this specialization
     template <typename...Ts, size_t I>
     struct type_at<utl::tuple<Ts...>,I>

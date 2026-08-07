@@ -18,63 +18,81 @@ namespace nmtools::index
         [[maybe_unused]] const src_shape_t& src_shape
         , [[maybe_unused]] const dst_shape_t& dst_shape)
     {
-        using result_t = resolve_optype_t<broadcast_to_strides_t,src_shape_t,dst_shape_t>;
+        if constexpr (is_expected_v<src_shape_t> || is_expected_v<dst_shape_t>) {
+            // TODO: make sure expected<maybe<>> return expected
+            using result_t = decltype(broadcast_to_strides(unwrap(src_shape),unwrap(dst_shape)));
+            using return_t = conditional_t<is_expected_v<result_t>,result_t,nmtools_expected<result_t,error_type>>;
+            return (has_value(src_shape) && has_value(dst_shape)
+                ? return_t{broadcast_to_strides(unwrap(src_shape),unwrap(dst_shape))}
+                : return_t{error_type{}}
+            );
+        } else if constexpr (is_maybe_v<src_shape_t> || is_maybe_v<dst_shape_t>) {
+            // TODO: make sure maybe<expected<>> return expected
+            using result_t = decltype(broadcast_to_strides(unwrap(src_shape),unwrap(dst_shape)));
+            using return_t = conditional_t<is_maybe_v<result_t>,result_t,nmtools_maybe<result_t>>;
+            return (has_value(src_shape) && has_value(dst_shape)
+                ? return_t{broadcast_to_strides(unwrap(src_shape),unwrap(dst_shape))}
+                : return_t{Nothing}
+            );
+        } else {
+            using result_t = resolve_optype_t<broadcast_to_strides_t,src_shape_t,dst_shape_t>;
 
-        auto result = result_t {};
+            auto result = result_t {};
 
-        if constexpr (!is_fail_v<result_t>
-            && !is_constant_index_array_v<result_t>
-        ) {
-            auto src_dim = len(src_shape);
-            [[maybe_unused]]
-            auto dim = len(dst_shape);
+            if constexpr (!is_fail_v<result_t>
+                && !is_constant_index_array_v<result_t>
+            ) {
+                auto src_dim = len(src_shape);
+                [[maybe_unused]]
+                auto dim = len(dst_shape);
 
-            if constexpr (is_resizable_v<result_t>) {
-                result.resize(dim);
-            }
+                if constexpr (is_resizable_v<result_t>) {
+                    result.resize(dim);
+                }
 
-            const auto src_strides = compute_strides(src_shape);
+                const auto src_strides = compute_strides(src_shape);
 
-            constexpr auto DIM = len_v<result_t>;
+                constexpr auto DIM = len_v<result_t>;
 
-            if constexpr (DIM > 0) {
-                template_for<DIM>([&](auto i){
-                    constexpr auto I = decltype(i)::value;
-                    constexpr auto idx = ct_v<-(nm_index_t)(I+1)>;
-                    using result_i_t = decltype(at(result,idx));
-                    if constexpr (!is_constant_index_v<result_i_t>) {
+                if constexpr (DIM > 0) {
+                    template_for<DIM>([&](auto i){
+                        constexpr auto I = decltype(i)::value;
+                        constexpr auto idx = ct_v<-(nm_index_t)(I+1)>;
+                        using result_i_t = decltype(at(result,idx));
+                        if constexpr (!is_constant_index_v<result_i_t>) {
+                            auto value = 0;
+                            if (i<(nm_size_t)src_dim) {
+                                auto src_stride_i = at(src_strides,(nm_index_t)idx);
+                                auto src_shape_i  = at(src_shape,(nm_index_t)idx);
+                                if (has_value(src_stride_i) && has_value(src_shape_i)) {
+                                    value = (src_shape_i == 1 ? (nm_size_t)0 : (nm_size_t)src_stride_i);
+                                } else if (has_value(src_stride_i)) {
+                                    value = src_stride_i;
+                                }
+                            }
+                            at(result,idx) = value;
+                        }
+                    });
+                } else {
+                    for (nm_size_t i=0; i<(nm_size_t)dim; i++) {
                         auto value = 0;
+                        auto idx = -(nm_index_t)(i+1);
                         if (i<(nm_size_t)src_dim) {
-                            auto src_stride_i = at(src_strides,(nm_index_t)idx);
-                            auto src_shape_i  = at(src_shape,(nm_index_t)idx);
+                            auto src_stride_i = at(src_strides,idx);
+                            auto src_shape_i  = at(src_shape,idx);
                             if (has_value(src_stride_i) && has_value(src_shape_i)) {
-                                value = (src_shape_i == 1 ? (nm_size_t)0 : (nm_size_t)src_stride_i);
+                                value = (src_shape_i == 1 ? 0 : src_stride_i);
                             } else if (has_value(src_stride_i)) {
                                 value = src_stride_i;
                             }
                         }
                         at(result,idx) = value;
                     }
-                });
-            } else {
-                for (nm_size_t i=0; i<(nm_size_t)dim; i++) {
-                    auto value = 0;
-                    auto idx = -(nm_index_t)(i+1);
-                    if (i<(nm_size_t)src_dim) {
-                        auto src_stride_i = at(src_strides,idx);
-                        auto src_shape_i  = at(src_shape,idx);
-                        if (has_value(src_stride_i) && has_value(src_shape_i)) {
-                            value = (src_shape_i == 1 ? 0 : src_stride_i);
-                        } else if (has_value(src_stride_i)) {
-                            value = src_stride_i;
-                        }
-                    }
-                    at(result,idx) = value;
                 }
             }
-        }
 
-        return result;
+            return result;
+        }
     } // broadcast_to_strides
 
     template <typename indices_t, typename src_shape_t, typename dst_strides_t, typename src_strides_t>

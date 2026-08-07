@@ -46,5 +46,9 @@ namespace nmtools::meta
     struct type_at<type_list<Ts...>,I> : type_list_at<I,type_list<Ts...>> {};
 } // namespace nmtools::meta
 
+namespace nmtools
+{
+    using meta::type_list;
+}
 
 #endif // NMTOOLS_META_BITS_TRANSFORM_TYPE_LIST_AT_HPP

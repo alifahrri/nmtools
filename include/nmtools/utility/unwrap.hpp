@@ -11,9 +11,9 @@ namespace nmtools
 
     template <typename T>
     constexpr auto unwrap(const T& t)
-        -> const meta::resolve_optype_t<unwrap_t,T>
+        -> const resolve_optype_t<unwrap_t,T>
     {
-        if constexpr (is_maybe_v<T>) {
+        if constexpr (is_maybe_v<T> || is_expected_v<T> || is_nullable_num_v<T>) {
             if (!has_value(t)) {
                 // extra if to make it usable in constant expression
                 nmtools_panic( has_value(t)
@@ -28,9 +28,9 @@ namespace nmtools
 
     template <typename T>
     constexpr auto unwrap(T& t)
-        -> meta::resolve_optype_t<unwrap_t,T>
+        -> resolve_optype_t<unwrap_t,T>
     {
-        if constexpr (is_maybe_v<T> || is_nullable_num_v<T>) {
+        if constexpr (is_maybe_v<T> || is_expected_v<T> || is_nullable_num_v<T>) {
             if (!has_value(t)) {
                 // extra if to make it usable in constant expression
                 nmtools_panic( has_value(t)
@@ -56,6 +56,22 @@ namespace nmtools
     {
         return t;
     }
+
+    // inspired by rust's unwrap_err
+    template <typename T>
+    constexpr auto unwrap_error(const T& t)
+    {
+        if (has_value(t)) {
+            nmtools_panic( !has_value(t)
+                , "tried to unwrap error from a valid state"
+            );
+        }
+        if constexpr (is_maybe_v<T>) {
+            return Nothing;
+        } else if constexpr (is_expected_v<T>) {
+            return t.error();
+        }
+    }
 }
 
 namespace nmtools::meta
@@ -64,8 +80,8 @@ namespace nmtools::meta
     struct resolve_optype<void,unwrap_t,T>
     {
         static constexpr auto vtype = [](){
-            if constexpr (is_maybe_v<T> || is_nullable_num_v<T>) {
-                using type = get_maybe_type_t<T>;
+            if constexpr (is_maybe_v<T> || is_nullable_num_v<T> || is_expected_v<T>) {
+                using type = get_value_type_t<T>;
                 // TODO: handle nested maybe type
                 return as_value_v<type>;
             } else {
