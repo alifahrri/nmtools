@@ -80,7 +80,12 @@ TEST_CASE("string" * doctest::test_suite("utl"))
         for (nm_size_t i=0; i<str.size() && i<expected.size(); i++) {
             CHECK( str[i] == expected[i] );
         }
+        #if defined(__arm__) && defined(__ARM_ARCH) && __ARM_ARCH == 5
+        auto is_same = (str == "hello");
+        CHECK( is_same );
+        #else
         CHECK( str == "hello" );
+        #endif
     }
     {
         utl::string str;
@@ -93,7 +98,12 @@ TEST_CASE("string" * doctest::test_suite("utl"))
         for (nm_size_t i=0; i<str.size() && i<expected.size(); i++) {
             CHECK( str[i] == expected[i] );
         }
+        #if defined(__arm__) && defined(__ARM_ARCH) && __ARM_ARCH == 5
+        auto is_same = (str == "hello");
+        CHECK( is_same );
+        #else
         CHECK( str == "hello" );
+        #endif
     }
     {
         utl::string str;
@@ -111,7 +121,12 @@ TEST_CASE("string" * doctest::test_suite("utl"))
         for (nm_size_t i=0; i<str.size() && i<expected.size(); i++) {
             CHECK( str[i] == expected[i] );
         }
+        #if defined(__arm__) && defined(__ARM_ARCH) && __ARM_ARCH == 5
+        auto is_same = (str == "hello");
+        CHECK( is_same );
+        #else
         CHECK( str == "hello" );
+        #endif
     }
     {
         utl::string str;
@@ -129,12 +144,18 @@ TEST_CASE("string" * doctest::test_suite("utl"))
         for (nm_size_t i=0; i<str.size() && i<expected.size(); i++) {
             CHECK( str[i] == expected[i] );
         }
+        #if defined(__arm__) && defined(__ARM_ARCH) && __ARM_ARCH == 5
+        auto is_same = (str == "hello");
+        CHECK( is_same );
+        #else
         CHECK( str == "hello" );
+        #endif
     }
     {
         auto str = utl::to_string<utl::string>(3);
         CHECK( str.size() == 2 );
-        CHECK( str == "3" );
+        auto is_same = (str == "3");
+        CHECK( is_same );
     }
     {
         utl::string str;

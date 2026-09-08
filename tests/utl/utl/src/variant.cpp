@@ -7,6 +7,8 @@
 namespace nm = nmtools;
 namespace utl = nmtools::utl;
 
+#include <memory>
+
 TEST_CASE("variant" * doctest::test_suite("utl"))
 {
     {
@@ -122,7 +124,12 @@ TEST_CASE("variant" * doctest::test_suite("utl"))
         v1 = v2;
         CHECK( v1.index() == 1 );
         CHECK( v1.get_if<string_type>() );
+        #if defined(__arm__) && defined(__ARM_ARCH) && __ARM_ARCH == 5
+        auto is_same = (*v1.get_if<string_type>() == string_type("hello") );
+        CHECK( is_same );
+        #else
         CHECK( *v1.get_if<string_type>() == string_type("hello") );
+        #endif
 
         CHECK( !nmtools::is_trivially_destructible_v<variant> );
         CHECK( nmtools::variant_size_v<variant> == 2 );
@@ -149,7 +156,12 @@ TEST_CASE("variant" * doctest::test_suite("utl"))
         CHECK( v1.index() == 0 );
         v1 = v2;
         CHECK( v1.index() == 1 );
+        #if defined(__arm__) && defined(__ARM_ARCH) && __ARM_ARCH == 5
+        auto is_same = (*v1.get_if<string_type>() == string_type("hello") );
+        CHECK( is_same );
+        #else
         CHECK( *v1.get_if<string_type>() == string_type("hello") );
+        #endif
         v1 = v3;
         CHECK( v1.index() == 2 );
         CHECK( v1.get_if<array_type>() );
@@ -175,10 +187,44 @@ TEST_CASE("variant" * doctest::test_suite("utl"))
         auto v1 = variant();
         CHECK( v1.index() == 0 );
         v1 = string_type{"hello"};
+        #if defined(__arm__) && defined(__ARM_ARCH) && __ARM_ARCH == 5
+        auto is_same = ( *v1.get_if<string_type>() == string_type{"hello"} );
+        CHECK( is_same );
+        #else
         CHECK( *v1.get_if<string_type>() == string_type{"hello"} );
+        #endif
 
         CHECK( !nmtools::is_trivially_destructible_v<variant> );
         CHECK( nmtools::is_either_v<variant> == false );
         CHECK( nmtools::is_variant_v<variant> );
+    }
+
+    {
+        using u8_buffer_t  = std::shared_ptr<nmtools_list<uint8_t>>;
+        using f32_buffer_t = std::shared_ptr<nmtools_list<float>>;
+
+        using variant = utl::variant<u8_buffer_t,f32_buffer_t>;
+
+        auto v1 = variant(std::make_shared<nmtools_list<uint8_t>>());
+        auto v2 = variant(std::make_shared<nmtools_list<float>>());
+
+        CHECK( v1.index() == 0 );
+        CHECK( v2.index() == 1 );
+    }
+
+    {
+        using u8_buffer_t  = std::shared_ptr<nmtools_list<uint8_t>>;
+        using u16_buffer_t = std::shared_ptr<nmtools_list<uint16_t>>;
+        using u32_buffer_t = std::shared_ptr<nmtools_list<uint32_t>>;
+        using u64_buffer_t = std::shared_ptr<nmtools_list<uint64_t>>;
+        using f32_buffer_t = std::shared_ptr<nmtools_list<float>>;
+
+        using variant = utl::variant<u8_buffer_t,u16_buffer_t,u32_buffer_t,u64_buffer_t,f32_buffer_t>;
+
+        auto v1 = variant(std::make_shared<nmtools_list<uint8_t>>());
+        auto v2 = variant(std::make_shared<nmtools_list<float>>());
+
+        CHECK( v1.index() == 0 );
+        CHECK( v2.index() == 4 );
     }
 }
