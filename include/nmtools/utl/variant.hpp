@@ -11,12 +11,11 @@
 
 namespace nmtools::utl
 {
-    // aka non-trivial variant
-    template <nm_size_t I, typename first_t, typename...args_t>
+    template <typename always_void,typename first_t, typename...args_t>
     struct nontrivial_variant;
 
     template <typename element_t>
-    struct nontrivial_variant<1,element_t>
+    struct nontrivial_variant<void,element_t>
     {
         using element_type = element_t;
 
@@ -78,10 +77,41 @@ namespace nmtools::utl
 
             return ptr_type{&element};
         }
+
+        template <auto I>
+        constexpr auto* get_if() noexcept
+        {
+            static_assert( I < 1 );
+
+            using ptr_type = element_type*;
+
+            return ptr_type{&element};
+        }
+
+        template <typename T>
+        constexpr auto* get_if() const noexcept
+        {
+            static_assert( is_same_v<T,element_type>
+                , "unsupported type passed to get_if" );
+            
+            using ptr_type = element_type*;
+
+            return ptr_type{&element};
+        }
+
+        template <auto I>
+        constexpr auto* get_if() const noexcept
+        {
+            static_assert( I < 1 );
+
+            using ptr_type = element_type*;
+
+            return ptr_type{&element};
+        }
     };
 
     template <typename first_t, typename second_t>
-    struct nontrivial_variant<2,first_t,second_t>
+    struct nontrivial_variant<void,first_t,second_t>
     {
         using first_type  = first_t;
         using second_type = second_t;
@@ -92,7 +122,7 @@ namespace nmtools::utl
             first_type  first;
             second_type second;
         };
-        nm_size_t tag;
+        nm_size_t tag = 0;
 
         constexpr nontrivial_variant() noexcept
             : first{}
@@ -141,7 +171,7 @@ namespace nmtools::utl
                         auto* ptr = &first;
                         ptr->~first_type();
                     }
-                } else {
+                } else if (tag == 1) {
                     if constexpr (!is_trivially_destructible_v<second_type>) {
                         auto* ptr = &second;
                         ptr->~second_type();
@@ -149,10 +179,11 @@ namespace nmtools::utl
                 }
                 if (other.tag == 0) {
                     new(&first) first_type(other.first);
+                    tag = 0;
                 } else {
                     new(&second) second_type(other.second);
+                    tag = 1;
                 }
-                tag = other.tag;
             }
             return *this;
         }
@@ -167,13 +198,7 @@ namespace nmtools::utl
                 is_same_v<T,first_type> || is_same_v<T,second_type>
                 , "unsupported type for variant assignment"
             );
-            if constexpr (is_same_v<T,first_type>) {
-                first = val;
-                tag = 0;
-            } else /* if constexpr (is_same_v<T,second_type>) */ {
-                second = val;
-                tag = 1;
-            }
+            *this = nontrivial_variant(val);
             return *this;
         }
 
@@ -222,21 +247,35 @@ namespace nmtools::utl
                 }
             }
         }
+
+        template <auto I>
+        constexpr auto* get_if() noexcept
+        {
+            using T = at_t<meta::type_list<first_t,second_t>,I>;
+            return get_if<T>();
+        }
+
+        template <auto I>
+        constexpr auto* get_if() const noexcept
+        {
+            using T = at_t<meta::type_list<first_t,second_t>,I>;
+            return get_if<T>();
+        }
     };
 
     template <typename first_t, typename second_t, typename...args_t>
-    struct nontrivial_variant<sizeof...(args_t)+2,first_t,second_t,args_t...>
+    struct nontrivial_variant<enable_if_t<(sizeof...(args_t))>,first_t,second_t,args_t...>
     {
         // TODO: check all type unique
         using head_type = first_t;
         // TODO: support trivial_variant
-        using rest_type = nontrivial_variant<1+sizeof...(args_t),second_t,args_t...>;
+        using rest_type = nontrivial_variant<void,second_t,args_t...>;
         union
         {
             head_type head;
             rest_type rest;
         };
-        nm_size_t tag;
+        nm_size_t tag = 0;
 
         constexpr nontrivial_variant() noexcept
             : head{}
@@ -290,7 +329,7 @@ namespace nmtools::utl
                         auto* ptr = &head;
                         ptr->~head_type();
                     }
-                } else {
+                } else if (tag == 1) {
                     if constexpr (!is_trivially_destructible_v<rest_type>) {
                         auto *ptr = &rest;
                         ptr->~rest_type();
@@ -298,10 +337,11 @@ namespace nmtools::utl
                 }
                 if (other.tag == 0) {
                     new(&head) head_type(other.head);
+                    tag = 0;
                 } else {
                     new(&rest) rest_type(other.rest);
+                    tag = 1;
                 }
-                tag = other.tag;
             }
             return *this;
         }
@@ -310,13 +350,7 @@ namespace nmtools::utl
         template <typename T>
         constexpr nontrivial_variant& operator=(const T& val)
         {
-            if constexpr (is_same_v<T,head_type>) {
-                head = val;
-                tag = 0;
-            } else {
-                rest = val;
-                tag = 1;
-            }
+            *this = nontrivial_variant(val);
             return *this;
         }
 
@@ -359,6 +393,20 @@ namespace nmtools::utl
                 }
             }
         }
+
+        template <auto I>
+        constexpr auto* get_if() noexcept
+        {
+            using T = at_t<meta::type_list<first_t,second_t,args_t...>,I>;
+            return get_if<T>();
+        }
+
+        template <auto I>
+        constexpr auto* get_if() const noexcept
+        {
+            using T = at_t<meta::type_list<first_t,second_t,args_t...>,I>;
+            return get_if<T>();
+        }
     };
 }
 
@@ -366,11 +414,11 @@ namespace nmtools::utl
 
 namespace nmtools::utl
 {
-    template <nm_size_t I, typename first_t, typename...args_t>
+    template <typename always_void, typename first_t, typename...args_t>
     struct trivial_variant;
 
     template <typename element_t>
-    struct trivial_variant<1,element_t>
+    struct trivial_variant<void,element_t>
     {
         using element_type = element_t;
 
@@ -440,10 +488,32 @@ namespace nmtools::utl
 
             return ptr_type{&element};
         }
+
+        template <auto I>
+        constexpr auto* get_if() noexcept
+        {
+            static_assert( I == 0
+                , "unsupported index passed to get_if" );
+            
+            using ptr_type = element_type*;
+
+            return ptr_type{&element};
+        }
+
+        template <auto I>
+        constexpr auto* get_if() const noexcept
+        {
+            static_assert( I == 0
+                , "unsupported index passed to get_if" );
+            
+            using ptr_type = const element_type*;
+
+            return ptr_type{&element};
+        }
     };
 
     template <typename first_t, typename second_t>
-    struct trivial_variant<2,first_t,second_t>
+    struct trivial_variant<void,first_t,second_t>
     {
         using first_type  = first_t;
         using second_type = second_t;
@@ -454,7 +524,7 @@ namespace nmtools::utl
             first_type  first;
             second_type second;
         };
-        nm_size_t tag;
+        nm_size_t tag = 0;
 
         constexpr trivial_variant() noexcept
             : first{}
@@ -497,10 +567,11 @@ namespace nmtools::utl
             } else {
                 if (other.tag == 0) {
                     new(&first) first_type(other.first);
+                    tag = 0;
                 } else {
                     new(&second) second_type(other.second);
+                    tag = 1;
                 }
-                tag = other.tag;
             }
             return *this;
         }
@@ -570,20 +641,34 @@ namespace nmtools::utl
                 }
             }
         }
+
+        template <auto I>
+        constexpr auto* get_if() noexcept
+        {
+            using T = at_t<meta::type_list<first_t,second_t>,I>;
+            return get_if<T>();
+        }
+
+        template <auto I>
+        constexpr auto* get_if() const noexcept
+        {
+            using T = at_t<meta::type_list<first_t,second_t>,I>;
+            return get_if<T>();
+        }
     };
 
     template <typename first_t, typename second_t, typename...args_t>
-    struct trivial_variant<2+sizeof...(args_t),first_t,second_t,args_t...>
+    struct trivial_variant<enable_if_t<(sizeof...(args_t))>,first_t,second_t,args_t...>
     {
         // TODO: check all type unique
         using head_type = first_t;
-        using rest_type = trivial_variant<1+sizeof...(args_t),second_t,args_t...>;
+        using rest_type = trivial_variant<void,second_t,args_t...>;
         union
         {
             head_type head;
             rest_type rest;
         };
-        nm_size_t tag;
+        nm_size_t tag = 0;
 
         constexpr trivial_variant() noexcept
             : head{}
@@ -629,8 +714,15 @@ namespace nmtools::utl
                     rest = other.rest;
                 }
             } else {
-                new(&rest) rest_type(other.rest);
-                tag = other.tag;
+                // new(&rest) rest_type(other.rest);
+                // tag = other.tag;
+                if (other.tag == 0) {
+                    new(&head) head_type(other.head);
+                    tag = 0;
+                } else {
+                    new(&rest) rest_type(other.rest);
+                    tag = 1;
+                }
             }
             return *this;
         }
@@ -688,6 +780,20 @@ namespace nmtools::utl
                 }
             }
         }
+
+        template <auto I>
+        constexpr auto* get_if() noexcept
+        {
+            using T = at_t<meta::type_list<first_t,second_t,args_t...>,I>;
+            return get_if<T>();
+        }
+
+        template <auto I>
+        constexpr auto* get_if() const noexcept
+        {
+            using T = at_t<meta::type_list<first_t,second_t,args_t...>,I>;
+            return get_if<T>();
+        }
     };
 }
 
@@ -698,8 +804,8 @@ namespace nmtools::utl
     template <typename first_t, typename...args_t>
     using variant = conditional_t<
         (is_trivially_destructible_v<first_t> && (is_trivially_destructible_v<args_t> && ...))
-        , trivial_variant<sizeof...(args_t)+1,first_t,args_t...>
-        , nontrivial_variant<sizeof...(args_t)+1,first_t,args_t...>
+        , trivial_variant<void,first_t,args_t...>
+        , nontrivial_variant<void,first_t,args_t...>
     >;
 }
 
@@ -712,13 +818,13 @@ namespace nmtools::meta
     struct variant_size;
 
     template <typename...args_t>
-    struct variant_size<trivial_variant<sizeof...(args_t),args_t...>>
+    struct variant_size<trivial_variant<void,args_t...>>
     {
         static constexpr auto value = sizeof...(args_t);
     };
 
     template <typename...args_t>
-    struct variant_size<nontrivial_variant<sizeof...(args_t),args_t...>>
+    struct variant_size<nontrivial_variant<void,args_t...>>
     {
         static constexpr auto value = sizeof...(args_t);
     };
@@ -730,13 +836,13 @@ namespace nmtools::meta
     struct variant_alternative;
 
     template <nm_size_t I, typename...args_t>
-    struct variant_alternative<I,trivial_variant<sizeof...(args_t),args_t...>>
+    struct variant_alternative<I,trivial_variant<void,args_t...>>
     {
         using type = at_t<meta::type_list<args_t...>,I>;
     };
 
     template <nm_size_t I, typename...args_t>
-    struct variant_alternative<I,nontrivial_variant<sizeof...(args_t),args_t...>>
+    struct variant_alternative<I,nontrivial_variant<void,args_t...>>
     {
         using type = at_t<meta::type_list<args_t...>,I>;
     };
@@ -749,7 +855,7 @@ namespace nmtools::meta
 
     template <typename T, typename...args_t>
     struct variant_has_type<
-        trivial_variant<sizeof...(args_t),args_t...>
+        trivial_variant<void,args_t...>
         , T
     > {
         static constexpr auto value = (is_same_v<T,args_t> || ...);
@@ -757,7 +863,7 @@ namespace nmtools::meta
 
     template <typename T, typename...args_t>
     struct variant_has_type<
-        nontrivial_variant<sizeof...(args_t),args_t...>
+        nontrivial_variant<void,args_t...>
         , T
     > {
         static constexpr auto value = (is_same_v<T,args_t> || ...);
