@@ -124,7 +124,7 @@ TEST_CASE("variant" * doctest::test_suite("utl"))
         v1 = v2;
         CHECK( v1.index() == 1 );
         CHECK( v1.get_if<string_type>() );
-        #if defined(__arm__) && defined(__ARM_ARCH) && __ARM_ARCH == 5
+        #if defined(__arm__) && defined(__ARM_ARCH)
         auto is_same = (*v1.get_if<string_type>() == string_type("hello") );
         CHECK( is_same );
         #else
@@ -156,7 +156,7 @@ TEST_CASE("variant" * doctest::test_suite("utl"))
         CHECK( v1.index() == 0 );
         v1 = v2;
         CHECK( v1.index() == 1 );
-        #if defined(__arm__) && defined(__ARM_ARCH) && __ARM_ARCH == 5
+        #if defined(__arm__) && defined(__ARM_ARCH)
         auto is_same = (*v1.get_if<string_type>() == string_type("hello") );
         CHECK( is_same );
         #else
@@ -187,7 +187,7 @@ TEST_CASE("variant" * doctest::test_suite("utl"))
         auto v1 = variant();
         CHECK( v1.index() == 0 );
         v1 = string_type{"hello"};
-        #if defined(__arm__) && defined(__ARM_ARCH) && __ARM_ARCH == 5
+        #if defined(__arm__) && defined(__ARM_ARCH)
         auto is_same = ( *v1.get_if<string_type>() == string_type{"hello"} );
         CHECK( is_same );
         #else

@@ -61,7 +61,7 @@ TEST_CASE("format" * doctest::test_suite("utl"))
         for (nm_size_t i=expected.size(); i<string.size(); i++) {
             CHECK( string[i] == 0 );
         }
-        #if defined(__arm__) && defined(__ARM_ARCH) && __ARM_ARCH == 5
+        #if defined(__arm__) && defined(__ARM_ARCH)
         auto is_same = string == expected;
         CHECK( is_same );
         #else
@@ -79,7 +79,7 @@ TEST_CASE("format" * doctest::test_suite("utl"))
         auto string = utl::format("hello {}", number);
         auto expected = utl::string("hello 3");
         CHECK( string.size() == expected.size() );
-        #if defined(__arm__) && defined(__ARM_ARCH) && __ARM_ARCH == 5
+        #if defined(__arm__) && defined(__ARM_ARCH)
         auto is_same = string == expected;
         CHECK( is_same );
         #else
@@ -102,7 +102,7 @@ TEST_CASE("format" * doctest::test_suite("utl"))
         auto string = utl::format("hello {}", 3.14);
         auto expected = utl::string("hello 3.140000");
         CHECK( string.size() == expected.size() );
-        #if defined(__arm__) && defined(__ARM_ARCH) && __ARM_ARCH == 5
+        #if defined(__arm__) && defined(__ARM_ARCH)
         auto is_same = string == expected;
         CHECK( is_same );
         #else
@@ -114,7 +114,7 @@ TEST_CASE("format" * doctest::test_suite("utl"))
         auto string = utl::format("hello {}", -2.5f);
         auto expected = utl::string("hello -2.500000");
         CHECK( string.size() == expected.size() );
-        #if defined(__arm__) && defined(__ARM_ARCH) && __ARM_ARCH == 5
+        #if defined(__arm__) && defined(__ARM_ARCH)
         auto is_same = string == expected;
         CHECK( is_same );
         #else
@@ -126,7 +126,7 @@ TEST_CASE("format" * doctest::test_suite("utl"))
         auto string = utl::format("hello {}", 1234.5678);
         auto expected = utl::string("hello 1234.567800");
         CHECK( string.size() == expected.size() );
-        #if defined(__arm__) && defined(__ARM_ARCH) && __ARM_ARCH == 5
+        #if defined(__arm__) && defined(__ARM_ARCH)
         auto is_same = string == expected;
         CHECK( is_same );
         #else
@@ -138,7 +138,7 @@ TEST_CASE("format" * doctest::test_suite("utl"))
         auto string = utl::format<utl::string_base<64>>("{} + {} + {}", 1, 2.5, 3.14f);
         auto expected = utl::string("1 + 2.500000 + 3.140000");
         CHECK( string.size() == expected.size() );
-        #if defined(__arm__) && defined(__ARM_ARCH) && __ARM_ARCH == 5
+        #if defined(__arm__) && defined(__ARM_ARCH)
         auto is_same = string == expected;
         CHECK( is_same );
         #else
@@ -151,7 +151,7 @@ TEST_CASE("format" * doctest::test_suite("utl"))
         auto string = utl::format("hello {}", nm::meta::numeric_limits<float>::max());
         auto expected = utl::string("hello inf");
         CHECK( string.size() == expected.size() );
-        #if defined(__arm__) && defined(__ARM_ARCH) && __ARM_ARCH == 5
+        #if defined(__arm__) && defined(__ARM_ARCH)
         auto is_same = string == expected;
         CHECK( is_same );
         #else
@@ -164,7 +164,7 @@ TEST_CASE("format" * doctest::test_suite("utl"))
         auto string = utl::format("hello {}", -nm::meta::numeric_limits<double>::max());
         auto expected = utl::string("hello -inf");
         CHECK( string.size() == expected.size() );
-        #if defined(__arm__) && defined(__ARM_ARCH) && __ARM_ARCH == 5
+        #if defined(__arm__) && defined(__ARM_ARCH)
         auto is_same = string == expected;
         CHECK( is_same );
         #else
@@ -178,7 +178,7 @@ TEST_CASE("format" * doctest::test_suite("utl"))
         auto string = utl::format("hello {}", inf - inf);
         auto expected = utl::string("hello nan");
         CHECK( string.size() == expected.size() );
-        #if defined(__arm__) && defined(__ARM_ARCH) && __ARM_ARCH == 5
+        #if defined(__arm__) && defined(__ARM_ARCH)
         auto is_same = string == expected;
         CHECK( is_same );
         #else
@@ -192,7 +192,7 @@ TEST_CASE("format" * doctest::test_suite("utl"))
         auto string = utl::format("hello {}", utl::string("world"));
         auto expected = utl::string("hello world");
         CHECK( string.size() == expected.size() );
-        #if defined(__arm__) && defined(__ARM_ARCH) && __ARM_ARCH == 5
+        #if defined(__arm__) && defined(__ARM_ARCH)
         auto is_same = string == expected;
         CHECK( is_same );
         #else
@@ -205,7 +205,7 @@ TEST_CASE("format" * doctest::test_suite("utl"))
         auto string = utl::format<utl::string_base<64>>("second: {1} first {0}", 3.f, 4);
         auto expected = utl::string("second: 4 first 3.000000");
         CHECK( string.size() == expected.size() );
-        #if defined(__arm__) && defined(__ARM_ARCH) && __ARM_ARCH == 5
+        #if defined(__arm__) && defined(__ARM_ARCH)
         auto is_same = string == expected;
         CHECK( is_same );
         #else
@@ -217,7 +217,7 @@ TEST_CASE("format" * doctest::test_suite("utl"))
         auto string = utl::format("{1} then {0}", 3.f, 4);
         auto expected = utl::string("4 then 3.000000");
         CHECK( string.size() == expected.size() );
-        #if defined(__arm__) && defined(__ARM_ARCH) && __ARM_ARCH == 5
+        #if defined(__arm__) && defined(__ARM_ARCH)
         auto is_same = string == expected;
         CHECK( is_same );
         #else
@@ -229,7 +229,7 @@ TEST_CASE("format" * doctest::test_suite("utl"))
         auto string = utl::format("{} {} {0}", utl::string("x"), utl::string("y"));
         auto expected = utl::string("x y x");
         CHECK( string.size() == expected.size() );
-        #if defined(__arm__) && defined(__ARM_ARCH) && __ARM_ARCH == 5
+        #if defined(__arm__) && defined(__ARM_ARCH)
         auto is_same = string == expected;
         CHECK( is_same );
         #else
@@ -241,7 +241,7 @@ TEST_CASE("format" * doctest::test_suite("utl"))
         auto string = utl::format<utl::string_base<64>>("hello {1} and {0}", utl::string_base<64>("x"), utl::string_base<64>("y"));
         auto expected = utl::string("hello y and x");
         CHECK( string.size() == expected.size() );
-        #if defined(__arm__) && defined(__ARM_ARCH) && __ARM_ARCH == 5
+        #if defined(__arm__) && defined(__ARM_ARCH)
         auto is_same = string == expected;
         CHECK( is_same );
         #else
@@ -253,7 +253,7 @@ TEST_CASE("format" * doctest::test_suite("utl"))
         auto string = utl::format("{} {} {}", utl::string("n"), utl::string("="), 3);
         auto expected = utl::string("n = 3");
         CHECK( string.size() == expected.size() );
-        #if defined(__arm__) && defined(__ARM_ARCH) && __ARM_ARCH == 5
+        #if defined(__arm__) && defined(__ARM_ARCH)
         auto is_same = string == expected;
         CHECK( is_same );
         #else
@@ -265,7 +265,7 @@ TEST_CASE("format" * doctest::test_suite("utl"))
         auto string = utl::format("{} {}", utl::string("pi~"), 3.14);
         auto expected = utl::string("pi~ 3.140000");
         CHECK( string.size() == expected.size() );
-        #if defined(__arm__) && defined(__ARM_ARCH) && __ARM_ARCH == 5
+        #if defined(__arm__) && defined(__ARM_ARCH)
         auto is_same = string == expected;
         CHECK( is_same );
         #else
@@ -279,7 +279,7 @@ TEST_CASE("format" * doctest::test_suite("utl"))
         constexpr auto string = utl::format<utl::static_string>("hello {}", 3);
         auto expected = utl::static_string("hello 3");
         CHECK( string.size() == expected.size() );
-        #if defined(__arm__) && defined(__ARM_ARCH) && __ARM_ARCH == 5
+        #if defined(__arm__) && defined(__ARM_ARCH)
         auto is_same = string == expected;
         CHECK( is_same );
         #else
@@ -292,7 +292,7 @@ TEST_CASE("format" * doctest::test_suite("utl"))
         constexpr auto string = utl::format<utl::static_string>("second: {1} first {0}", 3.f, 4);
         auto expected = utl::static_string("second: 4 first 3.000000");
         CHECK( string.size() == expected.size() );
-        #if defined(__arm__) && defined(__ARM_ARCH) && __ARM_ARCH == 5
+        #if defined(__arm__) && defined(__ARM_ARCH)
         auto is_same = string == expected;
         CHECK( is_same );
         #else
@@ -305,7 +305,7 @@ TEST_CASE("format" * doctest::test_suite("utl"))
         constexpr auto string = utl::format<utl::static_string>("{1} {1} {0} {0}", utl::static_string("x"), utl::static_string("y"));
         auto expected = utl::static_string("y y x x");
         CHECK( string.size() == expected.size() );
-        #if defined(__arm__) && defined(__ARM_ARCH) && __ARM_ARCH == 5
+        #if defined(__arm__) && defined(__ARM_ARCH)
         auto is_same = string == expected;
         CHECK( is_same );
         #else
@@ -317,7 +317,7 @@ TEST_CASE("format" * doctest::test_suite("utl"))
         constexpr auto string = utl::format<utl::static_string>("hello {}", 3.14f);
         auto expected = utl::static_string("hello 3.140000");
         CHECK( string.size() == expected.size() );
-        #if defined(__arm__) && defined(__ARM_ARCH) && __ARM_ARCH == 5
+        #if defined(__arm__) && defined(__ARM_ARCH)
         auto is_same = string == expected;
         CHECK( is_same );
         #else
@@ -329,7 +329,7 @@ TEST_CASE("format" * doctest::test_suite("utl"))
         constexpr auto string = utl::format<utl::static_string>("hello {}", utl::static_string("world"));
         auto expected = utl::static_string("hello world");
         CHECK( string.size() == expected.size() );
-        #if defined(__arm__) && defined(__ARM_ARCH) && __ARM_ARCH == 5
+        #if defined(__arm__) && defined(__ARM_ARCH)
         auto is_same = string == expected;
         CHECK( is_same );
         #else
@@ -341,7 +341,7 @@ TEST_CASE("format" * doctest::test_suite("utl"))
         constexpr auto string = utl::format<utl::static_string>("{} + {} + {}", 1, 2.5, utl::static_string("x"));
         auto expected = utl::static_string("1 + 2.500000 + x");
         CHECK( string.size() == expected.size() );
-        #if defined(__arm__) && defined(__ARM_ARCH) && __ARM_ARCH == 5
+        #if defined(__arm__) && defined(__ARM_ARCH)
         auto is_same = string == expected;
         CHECK( is_same );
         #else
@@ -354,7 +354,7 @@ TEST_CASE("format" * doctest::test_suite("utl"))
         constexpr auto string = utl::format<utl::static_string>("hello {}", nm::meta::numeric_limits<float>::max());
         auto expected = utl::static_string("hello inf");
         CHECK( string.size() == expected.size() );
-        #if defined(__arm__) && defined(__ARM_ARCH) && __ARM_ARCH == 5
+        #if defined(__arm__) && defined(__ARM_ARCH)
         auto is_same = string == expected;
         CHECK( is_same );
         #else
