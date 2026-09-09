@@ -11,7 +11,7 @@
 
 namespace nmtools::utl
 {
-    template <typename always_void,typename first_t, typename...args_t>
+    template <typename always_void, typename first_t, typename...args_t>
     struct nontrivial_variant;
 
     template <typename element_t>
@@ -264,7 +264,7 @@ namespace nmtools::utl
     };
 
     template <typename first_t, typename second_t, typename...args_t>
-    struct nontrivial_variant<enable_if_t<(sizeof...(args_t))>,first_t,second_t,args_t...>
+    struct nontrivial_variant<enable_if_t<static_cast<bool>(sizeof...(args_t))>,first_t,second_t,args_t...>
     {
         // TODO: check all type unique
         using head_type = first_t;
@@ -658,7 +658,7 @@ namespace nmtools::utl
     };
 
     template <typename first_t, typename second_t, typename...args_t>
-    struct trivial_variant<enable_if_t<(sizeof...(args_t))>,first_t,second_t,args_t...>
+    struct trivial_variant<enable_if_t<static_cast<bool>(sizeof...(args_t))>,first_t,second_t,args_t...>
     {
         // TODO: check all type unique
         using head_type = first_t;
