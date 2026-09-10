@@ -124,7 +124,7 @@ namespace nmtools::view
     constexpr auto mean(const array_t& array, const axis_t& axis=axis_t{}, dtype_t dtype=dtype_t{}, keepdims_t keepdims=keepdims_t{})
     {
         // note that this mean view is created not by create new view type,
-        // but by composing two view (add.reduce + divide) instead
+        // but by composing two view (reduce_add + divide) instead
 
         // TODO: propagate error handling
         auto shape = unwrap(::nmtools::shape<true>(array));
@@ -151,14 +151,8 @@ namespace nmtools::view
         }();
         auto initial = None;
         // TODO: proper type promotions
-        auto reduced = reduce_add(array,m_axis,dtype_,initial,keepdims);
-        #if 0
-        // failed on clang with no-stl config, but okay on gcc with no-stl config 🤷
-        auto mean_   = divide(reduced,divisor);
-        return mean_;
-        #else
-        return divide(reduced,divisor);
-        #endif
+        auto reduced = view::reduce_add(array,m_axis,dtype_,initial,keepdims);
+        return view::divide(reduced,divisor);
     } // mean
 } // namespace nmtools::view
 
