@@ -8,12 +8,16 @@
 #include "nmtools/utl/array.hpp"
 #include "nmtools/utl/static_vector.hpp"
 #include "nmtools/meta/common.hpp"
+#include "nmtools/meta/bits/traits/has_size.hpp"
 #include "nmtools/meta/bits/traits/is_integer.hpp"
 #include "nmtools/meta/bits/traits/is_integral_constant.hpp"
-#include "nmtools/meta/bits/traits/is_string.hpp"
 #include "nmtools/meta/bits/traits/is_nullable_num.hpp"
+#include "nmtools/meta/bits/traits/is_num.hpp"
+#include "nmtools/meta/bits/traits/is_string.hpp"
 #include "nmtools/meta/bits/traits/is_tuple.hpp"
 #include "nmtools/meta/bits/transform/max_len.hpp"
+#include "nmtools/meta/bits/transform/numeric_limits.hpp"
+#include "nmtools/utl/math.hpp"
 
 #ifndef NMTOOLS_DEFAULT_STATIC_STRING_MAX_SIZE
 #define NMTOOLS_DEFAULT_STATIC_STRING_MAX_SIZE (128)
@@ -79,18 +83,20 @@ namespace nmtools::utl
             return result;
         }
 
-        template <typename array_t, enable_if_t<(max_len_v<array_t> > 0),int> = 0>
+        template <typename array_t, enable_if_t<(has_size_v<array_t> > 0),int> = 0>
         static constexpr auto to_string(const array_t& a, const static_string_base& separator=static_string_base(","))
         {
-            constexpr auto N = max_len_v<array_t>;
-            auto strings = static_vector<static_string_base,N>{};
+            constexpr nm_index_t N = max_len_v<array_t>;
+            // use compile-time size if available, otherwise fallback to capacity
+            constexpr nm_index_t num_strings = (N > 0 ? N : Capacity);
+            auto strings = static_vector<static_string_base,num_strings>{};
             if constexpr (is_tuple_v<array_t>) {
                 template_for<N>([&](auto I){
                     constexpr auto i = decltype(I)::value;
                     strings.push_back(to_string(nmtools::get<i>(a)));
                 });
             } else {
-                for (nm_size_t i=0; i<(nm_size_t)N; i++) {
+                for (nm_size_t i=0; i<(nm_size_t)a.size(); i++) {
                     strings.push_back(to_string(a[i]));
                 }
             }
@@ -145,6 +151,31 @@ namespace nmtools::utl
         constexpr auto c_str() const
         {
             return this->data();
+        }
+
+        constexpr auto is_static() const
+        {
+            return true;
+        }
+
+        constexpr auto begin()
+        {
+            return this->data();
+        }
+
+        constexpr auto begin() const
+        {
+            return this->data();
+        }
+
+        constexpr auto end()
+        {
+            return this->data() + this->size();
+        }
+
+        constexpr auto end() const
+        {
+            return this->data() + this->size();
         }
 
         template <typename str_list_t>
@@ -255,6 +286,22 @@ namespace nmtools::utl
             return *this;
         }
 
+        constexpr decltype(auto) operator+=(const T &other)
+        {
+            if (this->size() <= 1) {
+                this->resize(2);
+                this->at(0) = other;
+                this->at(1) = 0;
+            } else {
+                auto size = this->size();
+                auto init = size - 1;
+                this->resize(size+1);
+                this->at(init) = other;
+                this->at(init+1) = 0;
+            }
+            return *this;
+        }
+
         template <nm_size_t OtherCapacity>
         constexpr auto operator+=(const static_string_base<OtherCapacity,T>& other)
         {
@@ -294,13 +341,39 @@ namespace nmtools::utl
         }
 
         template <auto N>
-        constexpr auto find(const T (&other)[N]) const
+        constexpr auto find(const T (&other)[N], size_type start=0) const
         {
             auto result = npos;
 
-            auto idx = 0;
+            auto idx = size_type{0};
             T to_find = other[idx++];
-            for (nm_size_t i=0; i<this->size(); i++) {
+            for (nm_size_t i=start; i<this->size(); i++) {
+                auto chr = this->at(i);
+                if ((chr == to_find) && (result == npos)) {
+                    result = i;
+                    to_find = other[idx++];
+                } else if (chr == to_find) {
+                    to_find = other[idx++];
+                } else {
+                    result = npos;
+                }
+                if (idx == N) {
+                    break;
+                }
+            }
+
+            return result;
+        }
+
+        template <nm_size_t OtherCapacity>
+        constexpr auto find(const static_string_base<OtherCapacity,T>& other, size_type start=0) const
+        {
+            auto result = npos;
+
+            auto N = other.size();
+            auto idx = size_type{0};
+            T to_find = other[idx++];
+            for (nm_size_t i=start; i<this->size(); i++) {
                 auto chr = this->at(i);
                 if ((chr == to_find) && (result == npos)) {
                     result = i;
@@ -323,7 +396,7 @@ namespace nmtools::utl
         {
             auto result = npos;
 
-            auto idx = 0;
+            auto idx = size_type{0};
             T to_find = other[idx++];
             for (nm_index_t i=this->size()-1; i>=0; i--) {
                 auto chr = this->at(i);
@@ -380,30 +453,240 @@ namespace nmtools::utl
 
     using static_string = static_string_base<>;
 
+    template <typename T, nm_size_t Capacity, typename U>
+    constexpr auto stoint(const static_string_base<Capacity,U>& str)
+    {
+        // similar to std::stoi, parses a signed integer
+        // size may include '\0'
+        auto sign = 1;
+        auto n = str.size();
+        auto i = (nm_size_t)0;
+        // skip leading whitespace
+        while ((i < (nm_size_t)n)
+            && ((str[i] == ' ') || (str[i] == '\t') || (str[i] == '\n') || (str[i] == '\r'))) {
+            i++;
+        }
+        // handle sign
+        if (i < (nm_size_t)n) {
+            auto s = str[i];
+            if (s == '-') {
+                sign = -1;
+                i++;
+            } else if (s == '+') {
+                i++;
+            }
+        }
+        // accumulate as magnitude to detect overflow
+        auto max_magnitude = (sign > 0)
+            ? (uint64_t)meta::numeric_limits<T>::max()
+            : (uint64_t)meta::numeric_limits<T>::max() + 1;
+        uint64_t magnitude = 0;
+        auto has_digit = false;
+        for (; i < (nm_size_t)n; i++) {
+            auto s = str[i];
+            if ((s >= '0') && (s <= '9')) {
+                auto digit = s - '0';
+                if (magnitude > (max_magnitude - digit) / 10) {
+                    nmtools_panic( false
+                        , "invalid string for stoint" );
+                }
+                magnitude = magnitude * 10 + digit;
+                has_digit = true;
+            } else {
+                // stop at first non-digit, similar to std::stoi
+                break;
+            }
+        }
+        if (!has_digit) {
+            nmtools_panic( false
+                , "invalid string for stoint" );
+        }
+        T result = 0;
+        if (sign > 0) {
+            result = (T)magnitude;
+        } else if (magnitude == 0) {
+            result = 0;
+        } else {
+            result = (T)(-(T)(magnitude - 1) - 1);
+        }
+        return result;
+    }
+
     template <nm_size_t Capacity, typename T>
     constexpr auto stoi(const static_string_base<Capacity,T>& str)
     {
-        // quick hack
+        return stoint<int32_t>(str);
+    }
+
+    template <nm_size_t Capacity, typename T>
+    constexpr auto stoll(const static_string_base<Capacity,T>& str)
+    {
+        return stoint<int64_t>(str);
+    }
+
+    template <typename T, nm_size_t Capacity, typename U>
+    constexpr auto stouint(const static_string_base<Capacity,U>& str)
+    {
+        // similar to std::stoul, parses an unsigned integer
         // size may include '\0'
-        nm_index_t result = {};
-        auto sign = 1;
-        if (str.size() > 1) {
-            // TODO: fully implement stoi
-            auto s = str[0];
-            if (s == '-') {
-                sign = -1;
-                s = str[1];
-            }
-            if (!(s >= '0' && s <= '9')) {
-                nmtools_panic( false
-                    , "invalid string for stoi" );
-            }
-            result = s - '0';
-        } else {
-            nmtools_panic( false
-                , "invalid string for stoi" );
+        auto n = str.size();
+        auto i = (nm_size_t)0;
+        // skip leading whitespace
+        while ((i < n)
+            && ((str[i] == ' ') || (str[i] == '\t') || (str[i] == '\n') || (str[i] == '\r'))) {
+            i++;
         }
-        return result * sign;
+        // handle sign
+        if (i < n) {
+            auto s = str[i];
+            if (s == '+') {
+                i++;
+            } else if (s == '-') {
+                nmtools_panic( false
+                    , "invalid string for stouint" );
+            }
+        }
+        // accumulate as magnitude to detect overflow
+        auto max_magnitude = (uint64_t)meta::numeric_limits<T>::max();
+        uint64_t magnitude = 0;
+        auto has_digit = false;
+        for (; i < n; i++) {
+            auto s = str[i];
+            if ((s >= '0') && (s <= '9')) {
+                auto digit = s - '0';
+                if (magnitude > (max_magnitude - digit) / 10) {
+                    nmtools_panic( false
+                        , "invalid string for stouint" );
+                }
+                magnitude = magnitude * 10 + digit;
+                has_digit = true;
+            } else {
+                // stop at first non-digit, similar to std::stoul
+                break;
+            }
+        }
+        if (!has_digit) {
+            nmtools_panic( false
+                , "invalid string for stouint" );
+        }
+        return (T)magnitude;
+    }
+
+    template <nm_size_t Capacity, typename T>
+    constexpr auto stoul(const static_string_base<Capacity,T>& str)
+    {
+        return stouint<uint32_t>(str);
+    }
+
+    template <nm_size_t Capacity, typename T>
+    constexpr auto stoull(const static_string_base<Capacity,T>& str)
+    {
+        return stouint<uint64_t>(str);
+    }
+
+    template <typename T, nm_size_t Capacity, typename U>
+    constexpr auto stofloat(const static_string_base<Capacity,U>& str)
+    {
+        // similar to std::stof, parses a floating point number
+        // size may include '\0'
+        auto n = str.size();
+        auto i = (nm_size_t)0;
+        // skip leading whitespace
+        while ((i < n)
+            && ((str[i] == ' ') || (str[i] == '\t') || (str[i] == '\n') || (str[i] == '\r'))) {
+            i++;
+        }
+        // handle sign
+        auto sign = T(1);
+        if (i < n) {
+            auto s = str[i];
+            if (s == '-') {
+                sign = -T(1);
+                i++;
+            } else if (s == '+') {
+                i++;
+            }
+        }
+        // accumulate digits into the target type to avoid integer overflow
+        auto value = T(0);
+        auto has_digit = false;
+        auto seen_dot = false;
+        nm_index_t frac_digits = 0;
+        for (; i < n; i++) {
+            auto s = str[i];
+            if ((s >= '0') && (s <= '9')) {
+                value = value * T(10) + T(s - '0');
+                if (seen_dot) {
+                    frac_digits++;
+                }
+                has_digit = true;
+            } else if (s == '.') {
+                if (seen_dot) {
+                    // stop at second dot, similar to std::stof
+                    break;
+                }
+                seen_dot = true;
+            } else {
+                // stop at first non-digit, similar to std::stof
+                break;
+            }
+        }
+        if (!has_digit) {
+            nmtools_panic( false
+                , "invalid string for stofloat" );
+        }
+        // handle exponent
+        nm_index_t exp = 0;
+        if (i < n && ((str[i] == 'e') || (str[i] == 'E'))) {
+            i++;
+            auto exp_sign = 1;
+            if (i < n) {
+                auto s = str[i];
+                if (s == '-') {
+                    exp_sign = -1;
+                    i++;
+                } else if (s == '+') {
+                    i++;
+                }
+            }
+            auto exp_has_digit = false;
+            for (; i < n; i++) {
+                auto s = str[i];
+                if ((s >= '0') && (s <= '9')) {
+                    exp = exp * 10 + (s - '0');
+                    exp_has_digit = true;
+                } else {
+                    break;
+                }
+            }
+            if (!exp_has_digit) {
+                nmtools_panic( false
+                    , "invalid string for stofloat" );
+            }
+            exp *= exp_sign;
+        }
+        // combine value with 10^(exp - frac_digits)
+        // NOTE: for large negative exponent (e.g. 1e-40f), pow(10,k) may overflow to inf,
+        // so the result rounds to zero instead of a subnormal value.
+        auto scale = exp - frac_digits;
+        if (scale >= 0) {
+            value = value * utl::pow(T(10), (nm_size_t)scale);
+        } else {
+            value = value / utl::pow(T(10), (nm_size_t)(-scale));
+        }
+        return sign * value;
+    }
+
+    template <nm_size_t Capacity, typename T>
+    constexpr auto stof(const static_string_base<Capacity,T>& str)
+    {
+        return stofloat<float32_t>(str);
+    }
+
+    template <nm_size_t Capacity, typename T>
+    constexpr auto stod(const static_string_base<Capacity,T>& str)
+    {
+        return stofloat<float64_t>(str);
     }
 
     template <typename T=static_string_base<NMTOOLS_DEFAULT_STATIC_STRING_MAX_SIZE,char>>
@@ -423,6 +706,123 @@ namespace nmtools::utl
                 , "invalid to_string" );
         }
         return result;
+    }
+
+    template <typename T, typename U>
+    constexpr auto to_string_impl(U num)
+    {
+        // fixed-point formatting similar to std::to_string, with 6 decimal digits
+        constexpr auto num_decimals = 6;
+        constexpr auto scale = utl::pow(U(10), num_decimals);
+        T result;
+        // handle nan
+        if (num != num) {
+            result = "nan";
+            return result;
+        }
+        // handle inf
+        // note: meta::numeric_limits<U>::max() returns infinity for float/double
+        if constexpr (sizeof(U) == sizeof(float)) {
+            constexpr auto max_finite = (U)3.4028234663852886e38;
+            if (num > max_finite) {
+                result = "inf";
+                return result;
+            }
+            if (num < -max_finite) {
+                result = "-inf";
+                return result;
+            }
+        } else {
+            constexpr auto max_finite = (U)1.7976931348623157e308;
+            if (num > max_finite) {
+                result = "inf";
+                return result;
+            }
+            if (num < -max_finite) {
+                result = "-inf";
+                return result;
+            }
+        }
+        // handle sign
+        auto negative = (num < 0) || ((num == 0) && utl::signbit(num));
+        if (negative) {
+            num = -num;
+        }
+        // scaled value as integer units of 10^-6, rounded
+        // fallback to integer-only when the scaled value would overflow
+        auto scaled = num * scale;
+        auto use_scaled = (scaled < meta::numeric_limits<U>::max());
+        auto int_part = (U)0;
+        auto num_frac_digits = 0;
+        if (use_scaled) {
+            if (scaled < (U)9.2233720368547758e18) {
+                // round half away from zero, safe below 2^63
+                int_part = (U)(int64_t)(scaled + (U)0.5);
+            } else {
+                // too large for int64, but already integral
+                int_part = scaled;
+            }
+            num_frac_digits = num_decimals;
+        } else {
+            int_part = num;
+        }
+        // extract digits of int_part, reversed
+        T rev_digits;
+        if (int_part == 0) {
+            rev_digits.push_back('0');
+        } else if (int_part < (U)9.2233720368547758e18) {
+            auto m = (int64_t)int_part;
+            while (m > 0) {
+                rev_digits.push_back((char)('0' + (m % 10)));
+                m /= 10;
+            }
+        } else {
+            while (int_part > 0) {
+                auto digit = utl::fmod(int_part, U(10));
+                rev_digits.push_back((char)('0' + (nm_index_t)digit));
+                int_part = (int_part - digit) / U(10);
+            }
+        }
+        auto n_total = rev_digits.size();
+        // number of integer digits
+        auto n_int = (nm_index_t)n_total - num_frac_digits;
+        if (negative) {
+            result.push_back('-');
+        }
+        if (n_int <= 0) {
+            // value < 1, print leading zero
+            result.push_back('0');
+            result.push_back('.');
+            // pad leading fraction zeros
+            for (nm_size_t i=0; i<((nm_size_t)num_frac_digits - n_total); i++) {
+                result.push_back('0');
+            }
+            for (nm_size_t i=0; i<n_total; i++) {
+                result.push_back(rev_digits[n_total-i-1]);
+            }
+        } else {
+            // print integer digits
+            for (nm_size_t i=0; i<(nm_size_t)n_int; i++) {
+                result.push_back(rev_digits[n_total-i-1]);
+            }
+            result.push_back('.');
+            // print fraction digits from the least significant part
+            for (nm_size_t i=0; i<(nm_size_t)num_frac_digits; i++) {
+                result.push_back(rev_digits[num_frac_digits-i-1]);
+            }
+            // pad remaining fraction zeros for the huge-magnitude path
+            for (nm_size_t i=(nm_size_t)num_frac_digits; i<num_decimals; i++) {
+                result.push_back('0');
+            }
+        }
+        result.push_back('\0');
+        return result;
+    }
+
+    template <typename T=static_string_base<NMTOOLS_DEFAULT_STATIC_STRING_MAX_SIZE,char>, typename num_t, enable_if_t<is_floating_point_v<num_t>,int> = 0>
+    constexpr auto to_string(num_t num)
+    {
+        return to_string_impl<T>(num);
     }
 } // namespace nmtools::utl
 

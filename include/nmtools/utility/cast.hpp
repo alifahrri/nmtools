@@ -25,6 +25,8 @@ namespace nmtools::kind
 #ifndef NMTOOLS_ARRAY_UTILITY_CAST_HPP
 #define NMTOOLS_ARRAY_UTILITY_CAST_HPP
 
+#include "nmtools/error.hpp"
+#include "nmtools/stl.hpp"
 #include "nmtools/meta.hpp"
 #include "nmtools/utility/apply_resize.hpp"
 #include "nmtools/utility/shape.hpp"
@@ -441,6 +443,17 @@ namespace nmtools
             return result_t{left};
         } else {
             return result_t{right};
+        }
+    }
+
+    template <typename array_t, typename error_t=error_type>
+    constexpr auto to_expected(const array_t& array, const error_t& error=error_t{}, nm_size_t valid=nm_size_t{1})
+    {
+        using result_t = conditional_t<is_expected_v<array_t>,array_t,nmtools_expected<array_t,error_t>>;
+        if (valid) {
+            return result_t{array};
+        } else {
+            return result_t{nmtools::unexpected(error)};
         }
     }
 } // namespace nmtools

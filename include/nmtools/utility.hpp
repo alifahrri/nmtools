@@ -29,6 +29,7 @@
 #endif
 
 #include "nmtools/utility/random_engine.hpp"
+#include "nmtools/error.hpp"
 
 #endif // NMTOOLS_UTILITY_HPP
 
