@@ -29,8 +29,8 @@ namespace nmtools::view
     template <typename array_t, typename indices_t, typename axis_t, typename dst_shape_t>
     struct take_along_axis_t
     {
-        using array_type     = resolve_array_type_t<array_t>;
-        using indices_type   = resolve_array_type_t<indices_t>;
+        using array_type     = meta::fwd_operand_t<array_t>;
+        using indices_type   = meta::fwd_operand_t<indices_t>;
         using dst_shape_type = resolve_attribute_type_t<dst_shape_t>;
         using src_shape_type = decltype(shape(meta::declval<array_t>()));
         using axis_type      = const axis_t;
@@ -43,7 +43,7 @@ namespace nmtools::view
 
 
         constexpr take_along_axis_t(const array_t& array, const indices_t& indices, axis_t axis, const dst_shape_t& dst_shape)
-            : array(initialize<array_type>(array))
+            : array(fwd_operand(array))
             , indices(initialize<indices_type>(indices))
             , dst_shape(init_attribute<dst_shape_type>(dst_shape))
             , src_shape(shape(array))

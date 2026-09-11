@@ -99,7 +99,7 @@ namespace nmtools::view
         using value_type = get_element_type_t<array_t>;
         using const_reference = const value_type&;
         // array type as required by decorator
-        using array_type = resolve_array_type_t<array_t>;
+        using array_type = meta::fwd_operand_t<array_t>;
 
         // TODO: assert id is constant index (or none)
         using id_type = id_t;
@@ -115,7 +115,7 @@ namespace nmtools::view
          * 
          */
         constexpr object_t(const array_t& array, id_t id=id_t{})
-            : array(initialize<array_type>(array))
+            : array(fwd_operand(array))
             , id(id)
         {}
 
@@ -379,6 +379,13 @@ namespace nmtools
         return nmtools::method.reduce(*this,axis,dtype,initial,keepdims,context_); \
     }
 
+    #define nmtools_ndarray_reduce_m(method) \
+    template <typename axis_t, typename dtype_t=none_t, typename initial_t=none_t, typename keepdims_t=false_type> \
+    constexpr auto reduce_##method(const axis_t& axis, dtype_t dtype=dtype_t{}, initial_t initial=initial_t{}, keepdims_t keepdims=keepdims_t{}) const \
+    { \
+        return nmtools::reduce_##method(*this,axis,dtype,initial,keepdims,context_); \
+    }
+
     #define nmtools_ndarray_accumulate(method) \
     template <typename axis_t, typename dtype_t=none_t> \
     constexpr auto accumulate_##method(const axis_t& axis, dtype_t dtype=dtype_t{}) const \
@@ -386,11 +393,25 @@ namespace nmtools
         return nmtools::method.accumulate(*this,axis,dtype,context_); \
     }
 
+    #define nmtools_ndarray_accumulate_m(method) \
+    template <typename axis_t, typename dtype_t=none_t> \
+    constexpr auto accumulate_##method(const axis_t& axis, dtype_t dtype=dtype_t{}) const \
+    { \
+        return nmtools::accumulate_##method(*this,axis,dtype,context_); \
+    }
+
     #define nmtools_ndarray_outer(method) \
     template <typename rhs_t, typename dtype_t=none_t> \
     constexpr auto outer_##method(const rhs_t& rhs, dtype_t dtype=dtype_t{}) const \
     { \
         return nmtools::method.outer(*this,rhs,dtype,context_); \
+    }
+
+    #define nmtools_ndarray_outer_m(method) \
+    template <typename rhs_t, typename dtype_t=none_t> \
+    constexpr auto outer_##method(const rhs_t& rhs, dtype_t dtype=dtype_t{}) const \
+    { \
+        return nmtools::outer_##method(*this,rhs,dtype,context_); \
     }
 
     template <
@@ -629,21 +650,21 @@ namespace nmtools
 
         /******************************************************************* */
 
-        nmtools_ndarray_reduce(add)
-        nmtools_ndarray_reduce(multiply)
-        nmtools_ndarray_reduce(subtract)
+        nmtools_ndarray_reduce_m(add)
+        nmtools_ndarray_reduce_m(multiply)
+        nmtools_ndarray_reduce_m(subtract)
 
         /******************************************************************* */
 
-        nmtools_ndarray_accumulate(add)
-        nmtools_ndarray_accumulate(multiply)
-        nmtools_ndarray_accumulate(subtract)
+        nmtools_ndarray_accumulate_m(add)
+        nmtools_ndarray_accumulate_m(multiply)
+        nmtools_ndarray_accumulate_m(subtract)
 
         /******************************************************************* */
 
-        nmtools_ndarray_outer(add)
-        nmtools_ndarray_outer(multiply)
-        nmtools_ndarray_outer(subtract)
+        nmtools_ndarray_outer_m(add)
+        nmtools_ndarray_outer_m(multiply)
+        nmtools_ndarray_outer_m(subtract)
 
         /******************************************************************* */
 

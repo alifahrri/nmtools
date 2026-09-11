@@ -242,7 +242,7 @@ namespace nmtools::view
             auto src_indices = indexer.indices(dst_indices);
 
             using src_indices_type   = decltype(src_indices);
-            using nocvptr_array_type = meta::remove_cvref_pointer_t<array_type>;
+            using nocvptr_array_type = meta::remove_pointer_t<remove_cvref_t<array_type>>;
             static_assert(
                 (meta::is_index_array_v<src_indices_type> && meta::is_ndarray_v<nocvptr_array_type>)
                 || (meta::is_tuple_v<nocvptr_array_type> && meta::is_either_v<src_indices_type>)
@@ -426,7 +426,7 @@ namespace nmtools::meta
                 return is_index_array_v<shape_type>;
                 #endif
             } else {
-                return is_ndarray_v<array_t> || (is_num_v<array_t> && is_index_array_v<shape_type>);
+                return is_ndarray_v<remove_cvref_pointer_t<array_t>> || (is_num_v<remove_cvref_pointer_t<array_t>> && is_index_array_v<shape_type>);
             }
         }();
     };
@@ -464,7 +464,7 @@ namespace nmtools::meta
                     }
                 }, as_value_v<none_t>);
             } else {
-                using type = get_element_type_t<array_t>;
+                using type = get_element_type_t<remove_cvref_pointer_t<array_t>>;
                 return as_value_v<type>;
             }
         }();

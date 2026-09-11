@@ -15,8 +15,8 @@ namespace nmtools::view
     template <typename lhs_array_t, typename rhs_array_t, typename axis_t>
     struct concatenate_t
     {
-        using lhs_type = resolve_array_type_t<lhs_array_t>;
-        using rhs_type = resolve_array_type_t<rhs_array_t>;
+        using lhs_type = meta::fwd_operand_t<lhs_array_t>;
+        using rhs_type = meta::fwd_operand_t<rhs_array_t>;
         using lhs_value_type = meta::get_element_type_t<lhs_array_t>;
         using rhs_value_type = meta::get_element_type_t<rhs_array_t>;
         using value_type = meta::common_type_t<lhs_value_type,rhs_value_type>;

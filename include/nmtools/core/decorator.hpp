@@ -774,7 +774,7 @@ namespace nmtools::view
     template <typename array_t, typename array_type>
     constexpr array_type initialize(const array_t& array, meta::as_value<array_type>)
     {
-        return initialize<array_type>(array);
+        return fwd_operand(array);
     } // initialize
 
     template <typename operands_type, typename...arrays_t>
