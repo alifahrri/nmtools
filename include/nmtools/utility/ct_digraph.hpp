@@ -10,8 +10,10 @@
 #include "nmtools/index/contains.hpp"
 #include "nmtools/assert.hpp"
 
+// TODO: remove this file
 namespace nmtools::utility
 {
+    // TODO: remove
     template <typename tuple_t, typename key_t>
     constexpr auto contains(const tuple_t& tuple, key_t key)
     {
@@ -28,6 +30,7 @@ namespace nmtools::utility
         }, meta::false_type{});
     }
 
+    // TODO: remove
     template <typename nodes_t, typename edges_t>
     constexpr auto adjacency_matrix(ct_map<nodes_t,edges_t>)
     {
@@ -68,6 +71,7 @@ namespace nmtools::utility
         return nmtools_tuple{matrix,id_map};
     }
 
+    // TODO: remove
     template <typename nodes_t, typename edges_t>
     constexpr auto adjacency_list(ct_map<nodes_t,edges_t>)
     {
@@ -108,6 +112,7 @@ namespace nmtools::utility
         return nmtools_tuple{list,id_map};
     } // adjacency_list
 
+    // TODO: remove
     template <typename adjacency_list_t>
     constexpr auto in_degree(const adjacency_list_t& list)
     {
@@ -129,6 +134,7 @@ namespace nmtools::utility
         return result;
     } // in_degree
 
+    // TODO: remove
     template <typename adjacency_list_t>
     constexpr auto predecessors(const adjacency_list_t& adj_list)
     {
@@ -152,6 +158,7 @@ namespace nmtools::utility
         return result;
     }
 
+    // TODO: remove
     template <typename adjacency_list_t>
     constexpr auto has_path(const adjacency_list_t& adj_list, nm_index_t start_node, nm_index_t end_node)
     {

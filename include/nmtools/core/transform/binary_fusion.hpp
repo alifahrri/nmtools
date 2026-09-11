@@ -15,6 +15,7 @@
 
 namespace nmtools::functional
 {
+    // TODO: remove
     template <typename adjacency_list_t>
     constexpr auto find_binary_fusion(const adjacency_list_t& adjacency_list)
     {
@@ -83,6 +84,7 @@ namespace nmtools::functional
         return nmtools_tuple{lhs,rhs,to};
     } // find_binary_fusion
 
+    // TODO: remove
     template <typename lhs_t, typename rhs_t, typename to_t>
     constexpr auto fuse_binary(const lhs_t& lhs, const rhs_t& rhs, const to_t& to)
     {
@@ -90,6 +92,7 @@ namespace nmtools::functional
         return fused;
     }
 
+    // TODO: remove
     template <typename graph_t, typename n_repeats_t=meta::ct<1>>
     constexpr auto transform_binary_fusion(const graph_t& graph, n_repeats_t = n_repeats_t{})
     {
