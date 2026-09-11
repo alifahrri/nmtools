@@ -28,8 +28,8 @@ SUBCASE(#case_name) \
 { \
     NMTOOLS_TESTING_USE_CASE(view, reduce_add, case_name); \
     using namespace args; \
-    auto result = na::add.reduce(__VA_ARGS__, na::sycl::default_context()); \
-    auto expect = na::add.reduce(__VA_ARGS__); \
+    auto result = na::reduce_add(__VA_ARGS__, na::sycl::default_context()); \
+    auto expect = na::reduce_add(__VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( nm::shape(result), nm::shape(expect) ); \
     NMTOOLS_ASSERT_CLOSE( result, expect ); \
 }
@@ -37,7 +37,7 @@ SUBCASE(#case_name) \
 // TODO: fix sycl kernel jit compile error:
 // Cannot find symbol free in kernel library
 // Cannot find symbol malloc in kernel library
-TEST_CASE("reduce_add(case1)" * doctest::test_suite("array::add.reduce") * doctest::skip())
+TEST_CASE("reduce_add(case1)" * doctest::test_suite("array::reduce_add") * doctest::skip())
 {
     auto dtype = nm::None;
     auto initial = nm::None;

@@ -24,6 +24,8 @@ TEST_CASE("dynamic_ndarray[2,3,2]")
     NMTOOLS_ASSERT_EQUAL( ndarray.strides(),(nmtools_array{6,2,1}) );
     CHECK( dim(ndarray)==3 );
     NMTOOLS_ASSERT_EQUAL( shape(ndarray), (vector{2ul,3ul,2ul}) );
+    // TODO: remove, now unsupported
+    #if 0
     {
         ndarray = {
             {
@@ -51,6 +53,7 @@ TEST_CASE("dynamic_ndarray[2,3,2]")
         };
         CHECK( isclose(ndarray,expected) );
     }
+    #endif
 }
 
 TEST_CASE("dynamic_ndarray[2,3,1]")

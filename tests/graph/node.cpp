@@ -338,8 +338,8 @@ TEST_CASE("to_value(Node)" * doctest::test_suite("graph"))
 
     using Node = fn::Node<>;
 
-    constexpr auto NODE = nm::meta::to_value_v<decltype(node),Node>;
-    NMTOOLS_ASSERT_EQUAL( (nm::meta::is_same_v<meta::remove_cvref_t<decltype(NODE)>,Node>), true );
+    constexpr auto NODE = nm::to_value_v<decltype(node),Node>;
+    NMTOOLS_ASSERT_EQUAL( (nm::is_same_v<nm::remove_cvref_t<decltype(NODE)>,Node>), true );
     NMTOOLS_ASSERT_EQUAL( NODE.is_buffer(), true );
     NMTOOLS_ASSERT_EQUAL( NODE.dim(), nm::len(shape) );
     NMTOOLS_ASSERT_EQUAL( NODE.max_dim(), nm::len(shape) );
@@ -360,9 +360,9 @@ TEST_CASE("to_value(Node)" * doctest::test_suite("graph"))
 
     using Node = fn::Node<>;
 
-    constexpr auto NODE = nm::meta::to_value_v<decltype(node),Node>;
-    // NMTOOLS_ASSERT_EQUAL( (nm::meta::is_same_v<meta::remove_cvref_t<decltype(NODE)>,Node>), true );
-    NMTOOLS_STATIC_CHECK_IS_SAME( meta::remove_cvref_t<decltype(NODE)>, Node );
+    constexpr auto NODE = nm::to_value_v<decltype(node),Node>;
+    // NMTOOLS_ASSERT_EQUAL( (nm::is_same_v<nm::remove_cvref_t<decltype(NODE)>,Node>), true );
+    NMTOOLS_STATIC_CHECK_IS_SAME( nm::remove_cvref_t<decltype(NODE)>, Node );
     NMTOOLS_ASSERT_EQUAL( NODE.is_buffer(), true );
     NMTOOLS_ASSERT_EQUAL( NODE.dim(), -1 );
     NMTOOLS_ASSERT_EQUAL( NODE.max_dim(), -1 );
@@ -389,8 +389,8 @@ TEST_CASE("to_value(Node)" * doctest::test_suite("graph"))
 
     using Node = fn::Node<>;
 
-    constexpr auto NODE = nm::meta::to_value_v<decltype(node),Node>;
-    NMTOOLS_ASSERT_EQUAL( (nm::meta::is_same_v<meta::remove_cvref_t<decltype(NODE)>,Node>), true );
+    constexpr auto NODE = nm::to_value_v<decltype(node),Node>;
+    NMTOOLS_ASSERT_EQUAL( (nm::is_same_v<nm::remove_cvref_t<decltype(NODE)>,Node>), true );
     NMTOOLS_ASSERT_EQUAL( NODE.is_compute(), true );
     NMTOOLS_ASSERT_EQUAL( NODE.dim(), 2 );
     NMTOOLS_ASSERT_EQUAL( NODE.max_dim(), 2 );
@@ -417,8 +417,8 @@ TEST_CASE("to_value(Node)" * doctest::test_suite("graph"))
 
     using Node = fn::Node<>;
 
-    constexpr auto NODE = nm::meta::to_value_v<decltype(node),Node>;
-    NMTOOLS_ASSERT_EQUAL( (nm::meta::is_same_v<meta::remove_cvref_t<decltype(NODE)>,Node>), true );
+    constexpr auto NODE = nm::to_value_v<decltype(node),Node>;
+    NMTOOLS_ASSERT_EQUAL( (nm::is_same_v<nm::remove_cvref_t<decltype(NODE)>,Node>), true );
     NMTOOLS_ASSERT_EQUAL( NODE.is_compute(), true );
     NMTOOLS_ASSERT_EQUAL( NODE.dim(), 2 );
     NMTOOLS_ASSERT_EQUAL( NODE.max_dim(), 2 );
@@ -445,8 +445,8 @@ TEST_CASE("to_value(Node)" * doctest::test_suite("graph"))
 
     using Node = fn::Node<>;
 
-    constexpr auto NODE = nm::meta::to_value_v<decltype(node),Node>;
-    NMTOOLS_ASSERT_EQUAL( (nm::meta::is_same_v<meta::remove_cvref_t<decltype(NODE)>,Node>), true );
+    constexpr auto NODE = nm::to_value_v<decltype(node),Node>;
+    NMTOOLS_ASSERT_EQUAL( (nm::is_same_v<nm::remove_cvref_t<decltype(NODE)>,Node>), true );
     NMTOOLS_ASSERT_EQUAL( NODE.is_compute(), true );
     NMTOOLS_ASSERT_EQUAL( NODE.dim(), 1 );
     NMTOOLS_ASSERT_EQUAL( NODE.max_dim(), 1 );
@@ -472,8 +472,8 @@ TEST_CASE("to_value(Node)" * doctest::test_suite("graph"))
 
     using Node = fn::Node<>;
 
-    constexpr auto NODE = nm::meta::to_value_v<decltype(node),Node>;
-    NMTOOLS_ASSERT_EQUAL( (nm::meta::is_same_v<meta::remove_cvref_t<decltype(NODE)>,Node>), true );
+    constexpr auto NODE = nm::to_value_v<decltype(node),Node>;
+    NMTOOLS_ASSERT_EQUAL( (nm::is_same_v<nm::remove_cvref_t<decltype(NODE)>,Node>), true );
     NMTOOLS_ASSERT_EQUAL( NODE.is_compute(), true );
     NMTOOLS_ASSERT_EQUAL( NODE.dim(), 2 );
     NMTOOLS_ASSERT_EQUAL( NODE.max_dim(), 2 );
@@ -500,8 +500,8 @@ TEST_CASE("to_value(Node)" * doctest::test_suite("graph"))
 
     using Node = fn::Node<>;
 
-    constexpr auto NODE = nm::meta::to_value_v<decltype(node),Node>;
-    NMTOOLS_ASSERT_EQUAL( (nm::meta::is_same_v<meta::remove_cvref_t<decltype(NODE)>,Node>), true );
+    constexpr auto NODE = nm::to_value_v<decltype(node),Node>;
+    NMTOOLS_ASSERT_EQUAL( (nm::is_same_v<nm::remove_cvref_t<decltype(NODE)>,Node>), true );
     NMTOOLS_ASSERT_EQUAL( NODE.is_compute(), true );
     NMTOOLS_ASSERT_EQUAL( NODE.dim(), -1 );
     NMTOOLS_ASSERT_EQUAL( NODE.max_dim(), -1 );
@@ -520,8 +520,8 @@ TEST_CASE("to_value(Node)" * doctest::test_suite("graph"))
 
     using Node = fn::Node<>;
 
-    constexpr auto NODE = nm::meta::to_value_v<decltype(node),Node>;
-    NMTOOLS_ASSERT_EQUAL( (nm::meta::is_same_v<meta::remove_cvref_t<decltype(NODE)>,Node>), true );
+    constexpr auto NODE = nm::to_value_v<decltype(node),Node>;
+    NMTOOLS_ASSERT_EQUAL( (nm::is_same_v<nm::remove_cvref_t<decltype(NODE)>,Node>), true );
     NMTOOLS_ASSERT_EQUAL( NODE.is_buffer(), true );
     NMTOOLS_ASSERT_EQUAL( NODE.dim(), -1 );
     NMTOOLS_ASSERT_EQUAL( NODE.max_dim(), -1 );
@@ -547,8 +547,8 @@ TEST_CASE("to_value(Node)" * doctest::test_suite("graph"))
 
     using Node = fn::Node<>;
 
-    constexpr auto NODE = nm::meta::to_value_v<decltype(node),Node>;
-    NMTOOLS_ASSERT_EQUAL( (nm::meta::is_same_v<meta::remove_cvref_t<decltype(NODE)>,Node>), true );
+    constexpr auto NODE = nm::to_value_v<decltype(node),Node>;
+    NMTOOLS_ASSERT_EQUAL( (nm::is_same_v<nm::remove_cvref_t<decltype(NODE)>,Node>), true );
     NMTOOLS_ASSERT_EQUAL( NODE.is_compute(), true );
     NMTOOLS_ASSERT_EQUAL( NODE.dim(), -1 );
     NMTOOLS_ASSERT_EQUAL( NODE.max_dim(), 4 );
@@ -574,8 +574,8 @@ TEST_CASE("to_value(Node)" * doctest::test_suite("graph"))
 
     using Node = fn::Node<>;
 
-    constexpr auto NODE = nm::meta::to_value_v<decltype(node),Node>;
-    NMTOOLS_ASSERT_EQUAL( (nm::meta::is_same_v<meta::remove_cvref_t<decltype(NODE)>,Node>), true );
+    constexpr auto NODE = nm::to_value_v<decltype(node),Node>;
+    NMTOOLS_ASSERT_EQUAL( (nm::is_same_v<nm::remove_cvref_t<decltype(NODE)>,Node>), true );
     NMTOOLS_ASSERT_EQUAL( NODE.is_compute(), true );
     NMTOOLS_ASSERT_EQUAL( NODE.dim(), 2 );
     NMTOOLS_ASSERT_EQUAL( NODE.max_dim(), 2 );
@@ -600,8 +600,8 @@ TEST_CASE("to_value(Node)" * doctest::test_suite("graph"))
 
     using Node = fn::Node<>;
 
-    constexpr auto NODE = nm::meta::to_value_v<decltype(node),Node>;
-    NMTOOLS_ASSERT_EQUAL( (nm::meta::is_same_v<meta::remove_cvref_t<decltype(NODE)>,Node>), true );
+    constexpr auto NODE = nm::to_value_v<decltype(node),Node>;
+    NMTOOLS_ASSERT_EQUAL( (nm::is_same_v<nm::remove_cvref_t<decltype(NODE)>,Node>), true );
     NMTOOLS_ASSERT_EQUAL( NODE.is_buffer(), true );
     NMTOOLS_ASSERT_EQUAL( NODE.dim(), 2 );
     NMTOOLS_ASSERT_EQUAL( NODE.max_dim(), 2 );
@@ -620,10 +620,10 @@ TEST_CASE("to_value(Node)" * doctest::test_suite("graph"))
     using Node = fn::Node<>;
 
     auto node = fn::compute_node_t{functors,nmtools_tuple{},array{3,4},nm::float32};
-    static_assert( meta::is_functor_composition_v<decltype(node.functor)> );
-    static_assert( meta::len_v<meta::remove_cvref_t<decltype(node.functor.functors)>> == 2 );
-    constexpr auto NODE = nm::meta::to_value_v<decltype(node),Node>;
-    NMTOOLS_ASSERT_EQUAL( (nm::meta::is_same_v<meta::remove_cvref_t<decltype(NODE)>,Node>), true );
+    static_assert( nm::is_functor_composition_v<decltype(node.functor)> );
+    static_assert( nm::len_v<nm::remove_cvref_t<decltype(node.functor.functors)>> == 2 );
+    constexpr auto NODE = nm::to_value_v<decltype(node),Node>;
+    NMTOOLS_ASSERT_EQUAL( (nm::is_same_v<nm::remove_cvref_t<decltype(NODE)>,Node>), true );
     NMTOOLS_ASSERT_EQUAL( NODE.is_composition(), true );
     NMTOOLS_ASSERT_EQUAL( NODE.is_buffer(), false );
     CHECK( NODE.composition().size() == 2);
@@ -640,8 +640,8 @@ TEST_CASE("to_value(case13)" * doctest::test_suite("graph"))
     using Node = fn::Node<>;
 
     auto node = fn::compute_node_t{combinator,nmtools_tuple{},nm::None,nm::None};
-    constexpr auto NODE = nm::meta::to_value_v<decltype(node),Node>;
-    NMTOOLS_ASSERT_EQUAL( (nm::meta::is_same_v<meta::remove_cvref_t<decltype(NODE)>,Node>), true );
+    constexpr auto NODE = nm::to_value_v<decltype(node),Node>;
+    NMTOOLS_ASSERT_EQUAL( (nm::is_same_v<nm::remove_cvref_t<decltype(NODE)>,Node>), true );
     NMTOOLS_ASSERT_EQUAL( NODE.is_combinator(), true );
     CHECK( NODE.combinator_type() == fn::Combinator::SWAP );
 
@@ -655,8 +655,8 @@ TEST_CASE("to_value(Node)" * doctest::test_suite("graph"))
     using Node = fn::Node<>;
 
     auto node = fn::compute_node_t{combinator,nmtools_tuple{},nm::None,nm::None};
-    constexpr auto NODE = nm::meta::to_value_v<decltype(node),Node>;
-    NMTOOLS_ASSERT_EQUAL( (nm::meta::is_same_v<meta::remove_cvref_t<decltype(NODE)>,Node>), true );
+    constexpr auto NODE = nm::to_value_v<decltype(node),Node>;
+    NMTOOLS_ASSERT_EQUAL( (nm::is_same_v<nm::remove_cvref_t<decltype(NODE)>,Node>), true );
     NMTOOLS_ASSERT_EQUAL( NODE.is_combinator(), true );
     CHECK( NODE.combinator_type() == fn::Combinator::DUP );
     CHECK( NODE.combinator_args() == 2 );
@@ -671,10 +671,10 @@ TEST_CASE("to_value(Node)" * doctest::test_suite("graph"))
     using Node = fn::Node<>;
 
     auto node = fn::compute_node_t{functors,nmtools_tuple{},array{3,4},nm::float32};
-    // static_assert( meta::is_functor_composition_v<decltype(node.functor)> );
-    // static_assert( meta::len_v<meta::remove_cvref_t<decltype(node.functor.functors)>> == 2 );
-    constexpr auto NODE = nm::meta::to_value_v<decltype(node),Node>;
-    NMTOOLS_ASSERT_EQUAL( (nm::meta::is_same_v<meta::remove_cvref_t<decltype(NODE)>,Node>), true );
+    // static_assert( nm::is_functor_composition_v<decltype(node.functor)> );
+    // static_assert( nm::len_v<nm::remove_cvref_t<decltype(node.functor.functors)>> == 2 );
+    constexpr auto NODE = nm::to_value_v<decltype(node),Node>;
+    NMTOOLS_ASSERT_EQUAL( (nm::is_same_v<nm::remove_cvref_t<decltype(NODE)>,Node>), true );
     NMTOOLS_ASSERT_EQUAL( NODE.is_composition(), true );
     NMTOOLS_ASSERT_EQUAL( NODE.is_buffer(), false );
     CHECK( NODE.composition().size() == 3 );

@@ -7,6 +7,7 @@
 NMTOOLS_TESTING_DECLARE_CASE(network, out_degree)
 {
     using nmtools_array;
+    using namespace literals;
 
     NMTOOLS_TESTING_DECLARE_ARGS(case1)
     {
@@ -18,8 +19,12 @@ NMTOOLS_TESTING_DECLARE_CASE(network, out_degree)
             array<int,0>(),
         };
 
+        constexpr inline auto node_attributes = array{0,10,20,30,40};
+        constexpr inline auto node_attributes_ct = nmtools_tuple{0_ct,10_ct,20_ct,30_ct,40_ct};
+
         NMTOOLS_CAST_NETWORK(list)
         NMTOOLS_CONSTEXPR_CAST_NETWORK(list)
+        NMTOOLS_CAST_INDEX_ARRAYS(node_attributes)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case1)
     {
@@ -37,69 +42,79 @@ NMTOOLS_TESTING_DECLARE_CASE(network, out_degree)
             array<int,0>(),
         };
 
+        constexpr inline auto node_attributes = array{0,10,20,30,40,50};
+        constexpr inline auto node_attributes_ct = nmtools_tuple{0_ct,10_ct,20_ct,30_ct,40_ct,50_ct};
+
         NMTOOLS_CAST_NETWORK(list)
         NMTOOLS_CONSTEXPR_CAST_NETWORK(list)
+        NMTOOLS_CAST_INDEX_ARRAYS(node_attributes)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case2)
     {
         constexpr inline auto degrees = array{2,1,2,1,1,0};
     }
-    
 
     NMTOOLS_TESTING_DECLARE_ARGS(case3)
     {
-        // Graph: Single node 0 with no outgoing edges
         constexpr inline auto list = nmtools_tuple{
-            array<int,0>(),    // Node 0 neighbors
+            array<int,0>(),
         };
+
+        constexpr inline auto node_attributes = array{0};
+        constexpr inline auto node_attributes_ct = nmtools_tuple{0_ct};
 
         NMTOOLS_CAST_NETWORK(list)
         NMTOOLS_CONSTEXPR_CAST_NETWORK(list)
+        NMTOOLS_CAST_INDEX_ARRAYS(node_attributes)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case3)
     {
-        constexpr inline auto degrees = array{0}; // Out-degree for node 0
+        constexpr inline auto degrees = array{0};
     }
 
     NMTOOLS_TESTING_DECLARE_ARGS(case4)
     {
-        // Graph: 0->1, 1->{}, 2->{0,3}, 3->{}
         constexpr inline auto list = nmtools_tuple{
-            array{1},          // Node 0 neighbors
-            array<int,0>(),    // Node 1 neighbors (disconnected)
-            array{0,3},        // Node 2 neighbors
-            array<int,0>(),    // Node 3 neighbors (disconnected)
+            array{1},
+            array<int,0>(),
+            array{0,3},
+            array<int,0>(),
         };
+
+        constexpr inline auto node_attributes = array{0,10,20,30};
+        constexpr inline auto node_attributes_ct = nmtools_tuple{0_ct,10_ct,20_ct,30_ct};
 
         NMTOOLS_CAST_NETWORK(list)
         NMTOOLS_CONSTEXPR_CAST_NETWORK(list)
+        NMTOOLS_CAST_INDEX_ARRAYS(node_attributes)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case4)
     {
-        constexpr inline auto degrees = array{1,0,2,0}; // Out-degrees for nodes 0, 1, 2, 3
+        constexpr inline auto degrees = array{1,0,2,0};
     }
 
     NMTOOLS_TESTING_DECLARE_ARGS(case5)
     {
-        // Graph: Larger graph with varied degrees
-        // 0->{1,2,3}, 1->{}, 2->{4}, 3->{0,5}, 4->{5,6}, 5->{}, 6->{6} (self-loop)
         constexpr inline auto list = nmtools_tuple{
-            array{1,2,3},      // Node 0 neighbors
-            array<int,0>(),    // Node 1 neighbors
-            array{4},          // Node 2 neighbors
-            array{0,5},        // Node 3 neighbors
-            array{5,6},        // Node 4 neighbors
-            array<int,0>(),    // Node 5 neighbors
-            array{6},          // Node 6 neighbors (points to itself)
+            array{1,2,3},
+            array<int,0>(),
+            array{4},
+            array{0,5},
+            array{5,6},
+            array<int,0>(),
+            array{6},
         };
+
+        constexpr inline auto node_attributes = array{0,10,20,30,40,50,60};
+        constexpr inline auto node_attributes_ct = nmtools_tuple{0_ct,10_ct,20_ct,30_ct,40_ct,50_ct,60_ct};
 
         NMTOOLS_CAST_NETWORK(list)
         NMTOOLS_CONSTEXPR_CAST_NETWORK(list)
+        NMTOOLS_CAST_INDEX_ARRAYS(node_attributes)
     }
     NMTOOLS_TESTING_DECLARE_EXPECT(case5)
     {
-        // Out-degree is just the count of neighbors listed
-        constexpr inline auto degrees = array{3,0,1,2,2,0,1}; // Out-degrees for nodes 0, 1, 2, 3, 4, 5, 6
+        constexpr inline auto degrees = array{3,0,1,2,2,0,1};
     }
 }
 

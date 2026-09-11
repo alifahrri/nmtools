@@ -65,6 +65,21 @@ TEST_CASE("static_map" * doctest::test_suite("utl"))
         kv.erase("hello");
         NMTOOLS_ASSERT_EQUAL( kv.count("hello"), 0 );
     }
+    {
+        utl::static_map<int,int> map;
+        map[1] = 10;
+        map[2] = 20;
+        map[3] = 20;
+
+        auto inv_map = utl::static_map<int,int>();
+        for (const auto& [k,v] : map) {
+            inv_map[v] = k;
+        }
+
+        NMTOOLS_ASSERT_EQUAL( inv_map.size(), 2 );
+        NMTOOLS_ASSERT_EQUAL( inv_map.count(10), 1 );
+        NMTOOLS_ASSERT_EQUAL( inv_map.count(20), 1 );
+    }
 }
 
 TEST_CASE("constexpr_static_map" * doctest::test_suite("utl"))

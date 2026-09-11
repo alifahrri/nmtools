@@ -162,6 +162,10 @@ if (NMTOOLS_BUILD_HIP_TESTS)
     add_subdirectory(hip)
 endif (NMTOOLS_BUILD_HIP_TESTS)
 
+if (NMTOOLS_BUILD_RUNTIME_TESTS)
+    add_subdirectory(runtime)
+endif (NMTOOLS_BUILD_RUNTIME_TESTS)
+
 option(NMTOOLS_BUILD_SYCL_TESTS "build sycl test programs" OFF)
 if (NMTOOLS_BUILD_SYCL_TESTS)
     add_subdirectory(sycl)

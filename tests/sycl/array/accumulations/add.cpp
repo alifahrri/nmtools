@@ -28,8 +28,8 @@ SUBCASE(#case_name) \
 { \
     NMTOOLS_TESTING_USE_CASE(view, accumulate_add, case_name); \
     using namespace args; \
-    auto result = na::add.accumulate(__VA_ARGS__, na::sycl::default_context()); \
-    auto expect = na::add.accumulate(__VA_ARGS__); \
+    auto result = na::accumulate_add(__VA_ARGS__, na::sycl::default_context()); \
+    auto expect = na::accumulate_add(__VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( nm::shape(result), nm::shape(expect) ); \
     NMTOOLS_ASSERT_CLOSE( result, expect ); \
 }
@@ -37,7 +37,7 @@ SUBCASE(#case_name) \
 // TODO: fix sycl kernel jit compile error:
 // InvalidBitWidth: Invalid bit width in input: 48
 // LLVMToSpirv: llvm-spirv invocation failed with exit code 8
-TEST_CASE("accumulate_add(case1)" * doctest::test_suite("array::add.accumulate") * doctest::skip())
+TEST_CASE("accumulate_add(case1)" * doctest::test_suite("array::accumulate_add") * doctest::skip())
 {
     auto dtype = nm::none_t{};
     // ACCUMULATE_ADD( case1,   a, axis );

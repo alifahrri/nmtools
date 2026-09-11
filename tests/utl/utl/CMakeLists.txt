@@ -12,6 +12,7 @@ add_executable(${PROJECT_NAME} tests.cpp
     src/algorithm.cpp
     src/expected.cpp
     src/fmath.cpp
+    src/flat_map.cpp
     src/format.cpp
     src/power.cpp
     src/remez.cpp
@@ -20,6 +21,7 @@ add_executable(${PROJECT_NAME} tests.cpp
     src/stack.cpp
     src/static_map.cpp
     src/static_queue.cpp
+    src/small_vector.cpp
     src/static_vector.cpp
     src/static_stack.cpp
     src/static_string.cpp

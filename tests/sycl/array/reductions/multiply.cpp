@@ -28,8 +28,8 @@ SUBCASE(#case_name) \
 { \
     NMTOOLS_TESTING_USE_CASE(view, reduce_multiply, case_name); \
     using namespace args; \
-    auto result = na::multiply.reduce(__VA_ARGS__, na::sycl::default_context()); \
-    auto expect = na::multiply.reduce(__VA_ARGS__); \
+    auto result = na::reduce_multiply(__VA_ARGS__, na::sycl::default_context()); \
+    auto expect = na::reduce_multiply(__VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( nm::shape(result), nm::shape(expect) ); \
     NMTOOLS_ASSERT_CLOSE( result, expect ); \
 }
