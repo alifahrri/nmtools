@@ -59,6 +59,37 @@ namespace nmtools::impl
             return a.size();
         }
     };
+
+    template <typename T, auto DIM>
+    struct len_t<utl::small_vector<T,DIM>>
+    {
+        using array = utl::small_vector<T,DIM>;
+        using const_array = const array&;
+        using type  = typename array::size_type;
+
+        constexpr type operator()(const_array a) const noexcept
+        {
+            return a.size();
+        }
+    };
+
+    template <nm_size_t Capacity, typename T>
+    struct len_t<utl::static_string_base<Capacity,T>>
+    {
+        constexpr auto operator()(const utl::static_string_base<Capacity,T>& a) const noexcept
+        {
+            return a.size();
+        }
+    };
+
+    template <nm_size_t Capacity, typename T>
+    struct len_t<utl::string_base<Capacity,T>>
+    {
+        constexpr auto operator()(const utl::string_base<Capacity,T>& a) const noexcept
+        {
+            return a.size();
+        }
+    };
 } // namespace nmtools::impl
 
 #endif // NMTOOLS_ARRAY_IMPL_UTL_HPP
