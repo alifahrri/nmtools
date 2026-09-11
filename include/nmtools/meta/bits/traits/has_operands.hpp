@@ -18,4 +18,9 @@ namespace nmtools::meta
     inline constexpr auto has_operands_v = has_operands<T>::value;
 }
 
+namespace nmtools
+{
+    using meta::has_operands_v;
+}
+
 #endif // NMTOOLS_META_BITS_TRAITS_HAS_OPERANDS_HPP

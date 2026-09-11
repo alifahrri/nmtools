@@ -61,4 +61,9 @@ namespace nmtools::meta
     constexpr inline auto type_name_v = type_name<T>::value;
 }
 
+namespace nmtools
+{
+    using meta::type_name_v;
+}
+
 #endif // NMTOOLS_META_BITS_TRANSFORM_TYPE_NAME_HPP
