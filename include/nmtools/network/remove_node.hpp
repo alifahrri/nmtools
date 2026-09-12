@@ -18,26 +18,26 @@ namespace nmtools::network
     template <typename adjacency_list_t, typename node_idx_t>
     constexpr auto remove_node(const adjacency_list_t& adj_list, node_idx_t node_idx)
     {
-        if constexpr (meta::is_maybe_v<node_idx_t>
-            || meta::is_maybe_v<adjacency_list_t>
+        if constexpr (is_maybe_v<node_idx_t>
+            || is_maybe_v<adjacency_list_t>
         ) {
             using result_t = decltype(remove_node(unwrap(adj_list),unwrap(node_idx)));
-            using return_t = meta::conditional_t<meta::is_maybe_v<result_t>,result_t,nmtools_maybe<result_t>>;
+            using return_t = conditional_t<is_maybe_v<result_t>,result_t,nmtools_maybe<result_t>>;
             return (has_value(adj_list) && has_value(node_idx)
                 ? return_t{remove_node(unwrap(adj_list),unwrap(node_idx))}
-                : return_t{meta::Nothing}
+                : return_t{Nothing}
             );
         } else {
-            using result_t = meta::resolve_optype_t<tag::remove_node_t,adjacency_list_t,node_idx_t>;
+            using result_t = resolve_optype_t<tag::remove_node_t,adjacency_list_t,node_idx_t>;
 
             auto result = result_t {};
 
-            if constexpr (!meta::is_fail_v<result_t>
-                && !meta::is_constant_adjacency_list_v<result_t>
+            if constexpr (!is_fail_v<result_t>
+                && !is_constant_adjacency_list_v<result_t>
             ) {
                 auto num_nodes = len(adj_list);
 
-                using inner_t = meta::get_value_type_t<result_t>;
+                using inner_t = get_value_type_t<result_t>;
 
                 auto to_dst_node_idx = [&](auto i){
                     return ((nm_index_t)i > (nm_index_t)node_idx ? (i - 1) : i);
@@ -45,7 +45,7 @@ namespace nmtools::network
 
                 // assume node_idx < num_nodes
                 // TODO: error handling
-                if constexpr (meta::is_resizable_v<result_t>) {
+                if constexpr (is_resizable_v<result_t>) {
                     result.resize(num_nodes-1);
                 }
 
@@ -79,27 +79,27 @@ namespace nmtools::network
     template <typename node_ids_t, typename node_idx_t>
     constexpr auto remove_node_id(const node_ids_t& node_ids, node_idx_t node_idx)
     {
-        if constexpr (meta::is_maybe_v<node_ids_t>
-            || meta::is_maybe_v<node_idx_t>
+        if constexpr (is_maybe_v<node_ids_t>
+            || is_maybe_v<node_idx_t>
         ) {
             using result_t = decltype(remove_node_id(unwrap(node_ids),unwrap(node_idx)));
-            using return_t = meta::conditional_t<meta::is_maybe_v<result_t>,result_t,nmtools_maybe<result_t>>;
+            using return_t = conditional_t<is_maybe_v<result_t>,result_t,nmtools_maybe<result_t>>;
             return (has_value(node_ids) && has_value(node_idx)
                 ? return_t{remove_node_id(unwrap(node_ids),unwrap(node_idx))}
-                : return_t{meta::Nothing}
+                : return_t{Nothing}
             );
         } else {
-            using result_t = meta::resolve_optype_t<tag::remove_node_id_t,node_ids_t,node_idx_t>;
+            using result_t = resolve_optype_t<tag::remove_node_id_t,node_ids_t,node_idx_t>;
 
             auto result = result_t{};
         
-            if constexpr (!meta::is_fail_v<result_t>
+            if constexpr (!is_fail_v<result_t>
                 && !meta::is_constant_index_array_v<result_t>
             ) {
                 auto num_nodes = len(node_ids);
 
                 auto dst_num_nodes = num_nodes-1;
-                if constexpr (meta::is_resizable_v<result_t>) {
+                if constexpr (is_resizable_v<result_t>) {
                     result.resize(dst_num_nodes);
                 }
 
@@ -124,28 +124,28 @@ namespace nmtools::network
     template <typename node_attributes_t, typename node_idx_t>
     constexpr auto remove_node_attributes(const node_attributes_t& node_attributes, node_idx_t node_idx)
     {
-        if constexpr (meta::is_maybe_v<node_attributes_t>
-            || meta::is_maybe_v<node_idx_t>
+        if constexpr (is_maybe_v<node_attributes_t>
+            || is_maybe_v<node_idx_t>
         ) {
             using result_t = decltype(remove_edge_attributes(unwrap(node_attributes),unwrap(node_idx)));
-            using return_t = meta::conditional_t<meta::is_maybe_v<result_t>,result_t,nmtools_maybe<result_t>>;
+            using return_t = conditional_t<is_maybe_v<result_t>,result_t,nmtools_maybe<result_t>>;
             return (has_value(node_attributes) && has_value(node_idx)
                 ? return_t{remove_edge_attributes(unwrap(node_attributes),unwrap(node_idx))}
-                : return_t{meta::Nothing}
+                : return_t{Nothing}
             );
         } else {
-            using result_t = meta::resolve_optype_t<tag::remove_node_attributes_t,node_attributes_t,node_idx_t>;
+            using result_t = resolve_optype_t<tag::remove_node_attributes_t,node_attributes_t,node_idx_t>;
 
             auto result = result_t {};
 
             if constexpr (
-                !meta::is_fail_v<result_t>
+                !is_fail_v<result_t>
                 && !is_none_v<result_t>
             ) {
                 auto num_nodes = len(node_attributes);
 
                 auto dst_num_nodes = num_nodes - 1;
-                if constexpr (meta::is_resizable_v<result_t>) {
+                if constexpr (is_resizable_v<result_t>) {
                     result.resize(dst_num_nodes);
                 }
 
@@ -184,6 +184,7 @@ namespace nmtools::meta
         void, tag::remove_node_t, adjacency_list_t, node_idx_t
     > {
         static constexpr auto vtype = [](){
+            // TODO: compile-time computation
             if constexpr (
                 !is_adjacency_list_v<adjacency_list_t>
                 || !is_index_v<node_idx_t>
@@ -195,11 +196,13 @@ namespace nmtools::meta
                 constexpr auto B_NUM_NODES = max_len_v<adjacency_list_t>;
                 if constexpr (NUM_NODES > 0) {
                     // TODO: for multi digraph's adj list, num neighbors maybe >>> num_nodes
+                    // TODO: in such case, provide tag/hint/extra argument so it can deduced to fully dynamic
                     using inner_t = nmtools_static_vector<nm_index_t,NUM_NODES-1>;
                     using outer_t = nmtools_array<inner_t,NUM_NODES-1>;
                     return as_value_v<outer_t>;
                 } else if constexpr (B_NUM_NODES > 0) {
                     // TODO: for multi digraph's adj list, num neighbors maybe >>> num_nodes
+                    // TODO: in such case, provide tag/hint/extra argument so it can deduced to fully dynamic
                     using inner_t = nmtools_static_vector<nm_index_t,B_NUM_NODES-1>;
                     using outer_t = nmtools_static_vector<inner_t,B_NUM_NODES-1>;
                     return as_value_v<outer_t>;

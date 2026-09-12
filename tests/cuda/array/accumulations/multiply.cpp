@@ -29,8 +29,8 @@ SUBCASE(#case_name) \
 { \
     NMTOOLS_TESTING_USE_CASE(view, accumulate_multiply, case_name); \
     using namespace args; \
-    auto result = na::multiply.accumulate(__VA_ARGS__, cuda::default_context()); \
-    auto expect = na::multiply.accumulate(__VA_ARGS__); \
+    auto result = na::accumulate_multiply(__VA_ARGS__, cuda::default_context()); \
+    auto expect = na::accumulate_multiply(__VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( nm::shape(result), nm::shape(expect) ); \
     NMTOOLS_ASSERT_CLOSE( result, expect ); \
 }

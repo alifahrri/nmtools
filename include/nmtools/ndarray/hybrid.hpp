@@ -6,7 +6,7 @@
 #include "nmtools/index/compute_indices.hpp"
 #include "nmtools/index/compute_strides.hpp"
 #include "nmtools/index/compute_offset.hpp"
-#include "nmtools/array/ref.hpp"
+// #include "nmtools/array/ref.hpp"
 #include "nmtools/core/flatten.hpp"
 #include "nmtools/utility/shape.hpp"
 #include "nmtools/assert.hpp"
@@ -14,7 +14,7 @@
 #include "nmtools/platform.hpp"
 
 #ifndef NMTOOLS_DISABLE_STL
-#include "nmtools/core/ref/initializer_list.hpp"
+// #include "nmtools/core/ref/initializer_list.hpp"
 #endif
 
 namespace nmtools
@@ -57,11 +57,11 @@ namespace nmtools
         constexpr auto init_data(array_t&& array)
         {
             data_t data{};
-            auto array_ref   = view::ref(array);
-            auto array_shape = ::nmtools::shape(array_ref);
+            // auto array_ref   = view::ref(array);
+            auto array_shape = ::nmtools::shape(array);
             auto n = index::product(array_shape);
             // TODO: better error handling when dimension mismatch
-            auto array_view = unwrap(view::flatten(array_ref));
+            auto array_view = unwrap(view::flatten(array));
             for (size_t i=0; i<n; i++)
                 at(data,i) = at(array_view,i);
             return data;
@@ -107,9 +107,9 @@ namespace nmtools
         template <typename array_t>
         auto init(array_t&& array)
         {
-            auto array_ref   = view::ref(array);
+            // auto array_ref   = view::ref(array);
             auto array_dim   = ::nmtools::dim(array);
-            auto array_shape = ::nmtools::shape(array_ref);
+            auto array_shape = ::nmtools::shape(array);
             auto n = index::product(array_shape);
             nmtools_cassert ( array_dim == dimension
                 , "unsupported init, mismatched dimension"
@@ -117,7 +117,7 @@ namespace nmtools
             for (size_t i=0; i<array_dim; i++)
                 shape_[i] = ::nmtools::at(array_shape,i);
             strides_ = strides();
-            auto array_view = unwrap(view::flatten(array_ref));
+            auto array_view = unwrap(view::flatten(array));
             for (size_t i=0; i<n; i++)
                 nmtools::at(buffer_,i) = nmtools::at(array_view,i);
         } // init
@@ -308,6 +308,7 @@ namespace nmtools
             return buffer_.data();
         }
 
+        #if 0
         #define NMTOOLS_HYBRID_NDARRAY_ASSIGNMENT(N) \
         decltype(auto) operator=(meta::make_nested_dynamic_array_t<std::initializer_list,value_type,N>&& rhs) \
         {   \
@@ -331,6 +332,7 @@ namespace nmtools
         #endif // NMTOOLS_DISABLE_STL
 
         #undef NMTOOLS_HYBRID_NDARRAY_ASSIGNMENT
+        #endif
 
     }; // struct hybrid_ndarray
 

@@ -39,6 +39,11 @@ namespace nmtools::tilekit
         auto store = store_t<remove_cvref_t<ctx_t>,output_t,padding_t>{};
         return store(nmtools::forward<ctx_t>(ctx),output,offset,result,padding);
     }
+
+    template <typename ctx_t>
+    inline auto worker_id(ctx_t&& ctx);
+    template <typename ctx_t>
+    inline auto worker_size(ctx_t&& ctx);
 }
 
 // nditer

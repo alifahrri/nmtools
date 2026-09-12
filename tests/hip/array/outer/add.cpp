@@ -30,13 +30,13 @@ SUBCASE(#case_name) \
 { \
     NMTOOLS_TESTING_USE_CASE(view, outer_add, case_name); \
     using namespace args; \
-    auto result = na::add.outer(__VA_ARGS__, hip::default_context()); \
-    auto expect = na::add.outer(__VA_ARGS__); \
+    auto result = na::outer_add(__VA_ARGS__, hip::default_context()); \
+    auto expect = na::outer_add(__VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( nm::shape(result), nm::shape(expect) ); \
     NMTOOLS_ASSERT_CLOSE( result, expect ); \
 }
 
-TEST_CASE("outer_add(case1)" * doctest::test_suite("array::add.outer"))
+TEST_CASE("outer_add(case1)" * doctest::test_suite("array::outer_add"))
 {
     auto dtype = nm::None;
     // OUTER_ADD_SUBCASE(case1, a, b);

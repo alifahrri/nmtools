@@ -289,18 +289,22 @@ namespace nmtools::tilekit::vector
         constexpr auto v_tile_shape = index::array(tile_shape_t{}) / v_lane;
         constexpr auto v_tile_strides = index::compute_strides(v_tile_shape);
 
+        // can be only on non view array
         auto vectorized_load = [&](){
-            template_for<NUM_LOAD>([&](auto i){
-                constexpr auto I = decltype(i)::value;
-                auto tile_indices = index::compute_indices(i,v_tile_shape,v_tile_strides);
-                auto src_indices  = vector::compute_src_indices(tile_indices,offset,ct_v<NUM_LANE>);
-                auto src_offset   = index::compute_offset(src_indices,src_strides);
-                *((vector_t*)result.data()+I) = *((vector_t*)&array.data()[src_offset]);
-            });
+            // guard here to avoid compile error
+            if constexpr (!is_view_v<array_t>) {
+                template_for<NUM_LOAD>([&](auto i){
+                    constexpr auto I = decltype(i)::value;
+                    auto tile_indices = index::compute_indices(i,v_tile_shape,v_tile_strides);
+                    auto src_indices  = vector::compute_src_indices(tile_indices,offset,ct_v<NUM_LANE>);
+                    auto src_offset   = index::compute_offset(src_indices,src_strides);
+                    *((vector_t*)result.data()+I) = *((vector_t*)&array.data()[src_offset]);
+                });
+            }
         };
         using scalar_loader_t = load_t<scalar_t,array_t,tile_shape_t,padding_t>;
 
-        if constexpr (!padding_t::value) {
+        if constexpr (!padding_t::value && !is_view_v<array_t>) {
             vectorized_load();
         } else {
             const auto start_index  = 0;
@@ -312,7 +316,7 @@ namespace nmtools::tilekit::vector
             for (nm_size_t j=0; (j<dim) && valid; j++) {
                 valid = valid && ((nm_size_t)(at(src_indices,j) + at(tile_shape,j)) < (nm_size_t)at(src_shape,j));
             }
-            if (valid) {
+            if (valid && !is_view_v<array_t>) {
                 vectorized_load();
             } else {
                 scalar_loader_t::load(scalar_t{},result,array,src_shape,offset,tile_shape,tile_stride,padding);

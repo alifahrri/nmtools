@@ -443,3 +443,27 @@ jobs:
       - name: run tests
         run: |
           ./dockcross-${{ matrix.name }} bash -c 'build/${{ matrix.name }}/tests/unroll/numeric-tests-unroll-doctest'
+
+  dockcross-gcc-runtime:
+    name: ${{ matrix.name }}-runtime
+    runs-on: ubuntu-22.04
+    strategy:
+      matrix:
+        include:
+          - name: linux-x64
+    steps:
+      - uses: actions/checkout@v2
+      - name: setup dockcross
+        run: docker run --rm dockcross/${{ matrix.name }} > ./dockcross-${{ matrix.name }}; chmod +x ./dockcross-${{ matrix.name }}
+      - uses: actions/cache@v3
+        id: cache
+        with:
+          path: ./build/${{ matrix.name }}
+          key: ${{ github.job }}-${{ matrix.name }}-${{ hashFiles('./**') }}
+      - name: setup doctest
+        run: bash scripts/download_doctest_header.sh -d include/
+      - name: build
+        run: ./dockcross-${{ matrix.name }} bash -c 'mkdir -p build/${{ matrix.name }} && cd build/${{ matrix.name }}/ && cmake -DCMAKE_TOOLCHAIN_FILE=${PWD}/../../cmake/toolchains/gcc-werror.cmake -DNMTOOLS_TEST_ALL=OFF -DNMTOOLS_BUILD_RUNTIME_TESTS=ON ../.. && make -j1 VERBOSE=1 numeric-tests-runtime-doctest'
+      - name: run tests
+        run: |
+          ./dockcross-${{ matrix.name }} bash -c 'build/${{ matrix.name }}/tests/runtime/numeric-tests-runtime-doctest'

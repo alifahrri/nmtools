@@ -57,6 +57,7 @@ set(NETWORK_TEST_DIGRAPH_SOURCES
     src/predecessors.cpp
     src/remove_edge.cpp
     src/remove_node.cpp
+    src/subgraph.cpp
     src/topological_generations.cpp
     src/topological_sort.cpp
 

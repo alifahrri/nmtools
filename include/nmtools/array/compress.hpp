@@ -13,7 +13,7 @@ namespace nmtools::view
     struct compress_t
     {
         using condition_type = resolve_attribute_type_t<condition_t>;
-        using array_type = resolve_array_type_t<array_t>;
+        using array_type = meta::fwd_operand_t<array_t>;
         using axis_type  = resolve_attribute_type_t<axis_t>;
         using src_shape_type = decltype(nmtools::shape</*force_index_array*/true>(meta::declval<array_t>()));
         using dst_shape_type = meta::resolve_optype_t<index::shape_compress_t,condition_t,src_shape_type,axis_t>;
@@ -25,7 +25,7 @@ namespace nmtools::view
 
         constexpr compress_t(const condition_t& condition_, const array_t& array_, const axis_t& axis_)
             : condition(init_attribute<condition_type>(condition_))
-            , array(initialize<array_type>(array_))
+            , array(fwd_operand(array_))
             , axis(init_attribute<axis_type>(axis_))
             , shape_(index::shape_compress(condition_,nmtools::shape<true>(array_),axis_))
         {}

@@ -6,7 +6,7 @@
 #include "nmtools/utility/at.hpp"
 #include "nmtools/utility/shape.hpp"
 #include "nmtools/core/decorator.hpp"
-#include "nmtools/array/ref.hpp"
+// #include "nmtools/array/ref.hpp"
 
 namespace nmtools::view
 {
@@ -30,18 +30,18 @@ namespace nmtools::view
      * but specialized for 1D/2D/ND fixed/resizable array with random access and numpy-like
      * array shape information (dim(), shape())
      * 
-     * @tparam Array_t non-cvref type of array to be referenced, should be deducable via CTAD
+     * @tparam array_t non-cvref type of array to be referenced, should be deducable via CTAD
      */
-    template <typename Array_t, typename=void>
+    template <typename array_t, typename=void>
     struct mutable_ref_t
     {
         // get_element_type metafunction should be able to handle
         // ndarray, array2d, array1d etc
-        using value_type = meta::get_element_type_t<Array_t>;
+        using value_type = meta::get_element_type_t<array_t>;
         using const_reference = const value_type&;
 
         // array type as required by decorator
-        using array_type = Array_t&;
+        using array_type = meta::fwd_mutable_operand_t<array_t>;
 
         // const reference to actual array type
         array_type array;
@@ -50,7 +50,9 @@ namespace nmtools::view
          * @brief construct ref view
          * 
          */
-        constexpr mutable_ref_t(array_type array) : array(array) {}
+        constexpr mutable_ref_t(array_t& array)
+            : array(fwd_mutable_operand(array))
+        {}
 
         /**
          * @brief identity mapping of indices
@@ -62,13 +64,13 @@ namespace nmtools::view
         template <typename...size_types>
         constexpr auto index(size_types...indices)
         {
-            return detail::identity(indices...);
+            return pack_indices(indices...);
         } // index
 
         template <typename...size_types>
         constexpr auto index(size_types...indices) const
         {
-            return detail::identity(indices...);
+            return pack_indices(indices...);
         } // index
     }; // mutable_ref_t
 
@@ -167,7 +169,7 @@ namespace nmtools::meta
     template <typename array_t>
     struct is_ndarray< view::decorator_t<view::mutable_ref_t,array_t> >
     {
-        static constexpr auto value = is_ndarray_v<remove_cvref_t<array_t>>;
+        static constexpr auto value = is_ndarray_v<remove_cvref_pointer_t<array_t>>;
     };
 
     // specialization for ptr
@@ -179,10 +181,10 @@ namespace nmtools::meta
 
     template <typename T>
     struct get_element_type<
-        view::decorator_t<view::mutable_ref_t,T*>
+        view::decorator_t<view::mutable_ref_t,T>
     >
     {
-        using type = meta::remove_address_space_t<T>;
+        using type = get_element_type_t<remove_cvref_pointer_t<T>>;
     };
 } // namespace nmtools::meta
 

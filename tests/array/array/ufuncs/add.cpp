@@ -70,7 +70,7 @@ SUBCASE(#case_name) \
 { \
     NMTOOLS_TESTING_USE_CASE(view, reduce_add, case_name); \
     using namespace args; \
-    auto result = nm::add.reduce(__VA_ARGS__); \
+    auto result = nm::reduce_add(__VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( nm::shape(result), expect::shape ); \
     NMTOOLS_ASSERT_CLOSE( result, expect::result ); \
 }
@@ -80,7 +80,7 @@ SUBCASE(#case_name) \
 { \
     NMTOOLS_TESTING_USE_CASE(array, constexpr_reduce_add, case_name); \
     using namespace args; \
-    constexpr auto result = nm::add.reduce(__VA_ARGS__); \
+    constexpr auto result = nm::reduce_add(__VA_ARGS__); \
     NMTOOLS_STATIC_ASSERT_EQUAL( nm::shape(result), expect::shape ); \
     NMTOOLS_STATIC_ASSERT_CLOSE( result, expect::result ); \
 }
@@ -90,7 +90,7 @@ SUBCASE(#case_name) \
 { \
     NMTOOLS_TESTING_USE_CASE(view, accumulate_add, case_name); \
     using namespace args; \
-    auto result = nm::add.accumulate(__VA_ARGS__); \
+    auto result = nm::accumulate_add(__VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( nm::shape(result), expect::shape ); \
     NMTOOLS_ASSERT_CLOSE( result, expect::result ); \
 }
@@ -100,7 +100,7 @@ SUBCASE(#case_name) \
 { \
     NMTOOLS_TESTING_USE_CASE(array, constexpr_accumulate_add, case_name); \
     using namespace args; \
-    constexpr auto result = nm::add.accumulate(__VA_ARGS__); \
+    constexpr auto result = nm::accumulate_add(__VA_ARGS__); \
     NMTOOLS_STATIC_ASSERT_EQUAL( nm::shape(result), expect::shape ); \
     NMTOOLS_STATIC_ASSERT_CLOSE( result, expect::result ); \
 }
@@ -110,7 +110,7 @@ SUBCASE(#case_name) \
 { \
     NMTOOLS_TESTING_USE_CASE(view, outer_add, case_name); \
     using namespace args; \
-    auto result = nm::add.outer(__VA_ARGS__); \
+    auto result = nm::outer_add(__VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( nm::shape(result), expect::shape ); \
     NMTOOLS_ASSERT_CLOSE( result, expect::result ); \
 }
@@ -120,7 +120,7 @@ SUBCASE(#case_name) \
 { \
     NMTOOLS_TESTING_USE_CASE(array, constexpr_outer_add, case_name); \
     using namespace args; \
-    constexpr auto result = nm::add.outer(__VA_ARGS__); \
+    constexpr auto result = nm::outer_add(__VA_ARGS__); \
     NMTOOLS_STATIC_ASSERT_EQUAL( nm::shape(result), expect::shape ); \
     NMTOOLS_STATIC_ASSERT_CLOSE( result, expect::result ); \
 }
@@ -313,7 +313,7 @@ TEST_CASE("add(case4)" * doctest::test_suite("array::add"))
     #endif
 }
 
-TEST_CASE("reduce_add(case1)" * doctest::test_suite("array::add.reduce"))
+TEST_CASE("reduce_add(case1)" * doctest::test_suite("array::reduce_add"))
 {
     #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     REDUCE_ADD_SUBCASE( case1,   a, axis );
@@ -345,7 +345,7 @@ TEST_CASE("reduce_add(case1)" * doctest::test_suite("array::add.reduce"))
     #endif
 }
 
-TEST_CASE("reduce_add(case2)" * doctest::test_suite("array::add.reduce"))
+TEST_CASE("reduce_add(case2)" * doctest::test_suite("array::reduce_add"))
 {
     #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     REDUCE_ADD_SUBCASE( case2,   a, axis );
@@ -377,7 +377,7 @@ TEST_CASE("reduce_add(case2)" * doctest::test_suite("array::add.reduce"))
     #endif
 }
 
-TEST_CASE("reduce_add(case3)" * doctest::test_suite("array::add.reduce"))
+TEST_CASE("reduce_add(case3)" * doctest::test_suite("array::reduce_add"))
 {
     #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     REDUCE_ADD_SUBCASE( case3,   a, axis );
@@ -409,7 +409,7 @@ TEST_CASE("reduce_add(case3)" * doctest::test_suite("array::add.reduce"))
     #endif
 }
 
-TEST_CASE("reduce_add(case4)" * doctest::test_suite("array::add.reduce"))
+TEST_CASE("reduce_add(case4)" * doctest::test_suite("array::reduce_add"))
 {
     #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     REDUCE_ADD_SUBCASE( case4,   a,   axis );
@@ -501,7 +501,7 @@ TEST_CASE("reduce_add(case4)" * doctest::test_suite("array::add.reduce"))
     #endif
 }
 
-TEST_CASE("reduce_add(case5)" * doctest::test_suite("array::add.reduce"))
+TEST_CASE("reduce_add(case5)" * doctest::test_suite("array::reduce_add"))
 {
     #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     REDUCE_ADD_SUBCASE( case5,   a,   axis );
@@ -577,7 +577,7 @@ TEST_CASE("reduce_add(case5)" * doctest::test_suite("array::add.reduce"))
     #endif
 }
 
-TEST_CASE("reduce_add(case6)" * doctest::test_suite("array::add.reduce"))
+TEST_CASE("reduce_add(case6)" * doctest::test_suite("array::reduce_add"))
 {
     #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     REDUCE_ADD_SUBCASE( case6,   a,   axis );
@@ -653,7 +653,7 @@ TEST_CASE("reduce_add(case6)" * doctest::test_suite("array::add.reduce"))
     #endif
 }
 
-TEST_CASE("reduce_add(case7)" * doctest::test_suite("array::add.reduce"))
+TEST_CASE("reduce_add(case7)" * doctest::test_suite("array::reduce_add"))
 {
     #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     REDUCE_ADD_SUBCASE( case7,   a, axis, dtype );
@@ -685,7 +685,7 @@ TEST_CASE("reduce_add(case7)" * doctest::test_suite("array::add.reduce"))
     #endif
 }
 
-TEST_CASE("reduce_add(case8)" * doctest::test_suite("array::add.reduce"))
+TEST_CASE("reduce_add(case8)" * doctest::test_suite("array::reduce_add"))
 {
     #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     REDUCE_ADD_SUBCASE( case8,   a, axis, dtype, initial );
@@ -717,7 +717,7 @@ TEST_CASE("reduce_add(case8)" * doctest::test_suite("array::add.reduce"))
     #endif
 }
 
-TEST_CASE("reduce_add(case9)" * doctest::test_suite("array::add.reduce"))
+TEST_CASE("reduce_add(case9)" * doctest::test_suite("array::reduce_add"))
 {
     #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     REDUCE_ADD_SUBCASE( case9,   a, axis, dtype, initial, keepdims );
@@ -749,7 +749,7 @@ TEST_CASE("reduce_add(case9)" * doctest::test_suite("array::add.reduce"))
     #endif
 }
 
-TEST_CASE("reduce_add(case10)" * doctest::test_suite("array::add.reduce"))
+TEST_CASE("reduce_add(case10)" * doctest::test_suite("array::reduce_add"))
 {
     #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     REDUCE_ADD_SUBCASE( case10,   a, axis, dtype, initial, keepdims );
@@ -781,7 +781,7 @@ TEST_CASE("reduce_add(case10)" * doctest::test_suite("array::add.reduce"))
     #endif
 }
 
-TEST_CASE("reduce_add(case11)" * doctest::test_suite("array::add.reduce"))
+TEST_CASE("reduce_add(case11)" * doctest::test_suite("array::reduce_add"))
 {
     #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     REDUCE_ADD_SUBCASE( case11,   a, axis, dtype, initial, keepdims );
@@ -813,7 +813,7 @@ TEST_CASE("reduce_add(case11)" * doctest::test_suite("array::add.reduce"))
     #endif
 }
 
-TEST_CASE("reduce_add(case12)" * doctest::test_suite("array::add.reduce"))
+TEST_CASE("reduce_add(case12)" * doctest::test_suite("array::reduce_add"))
 {
     #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     REDUCE_ADD_SUBCASE( case12,   a, axis, dtype, initial, keepdims );
@@ -845,7 +845,7 @@ TEST_CASE("reduce_add(case12)" * doctest::test_suite("array::add.reduce"))
     #endif
 }
 
-TEST_CASE("reduce_add(case13)" * doctest::test_suite("array::add.reduce"))
+TEST_CASE("reduce_add(case13)" * doctest::test_suite("array::reduce_add"))
 {
     #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     REDUCE_ADD_SUBCASE( case13,   a, axis, dtype, initial, keepdims );
@@ -877,7 +877,7 @@ TEST_CASE("reduce_add(case13)" * doctest::test_suite("array::add.reduce"))
     #endif
 }
 
-TEST_CASE("reduce_add(case14)" * doctest::test_suite("array::add.reduce"))
+TEST_CASE("reduce_add(case14)" * doctest::test_suite("array::reduce_add"))
 {
     #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     REDUCE_ADD_SUBCASE( case14,   a, axis, dtype, initial, keepdims );
@@ -909,7 +909,7 @@ TEST_CASE("reduce_add(case14)" * doctest::test_suite("array::add.reduce"))
     #endif
 }
 
-TEST_CASE("reduce_add(case15)" * doctest::test_suite("array::add.reduce"))
+TEST_CASE("reduce_add(case15)" * doctest::test_suite("array::reduce_add"))
 {
     #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     REDUCE_ADD_SUBCASE( case15,   a, axis );
@@ -941,7 +941,7 @@ TEST_CASE("reduce_add(case15)" * doctest::test_suite("array::add.reduce"))
     #endif
 }
 
-TEST_CASE("reduce_add(case16)" * doctest::test_suite("array::add.reduce"))
+TEST_CASE("reduce_add(case16)" * doctest::test_suite("array::reduce_add"))
 {
     #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     REDUCE_ADD_SUBCASE( case16,   a, axis, nmtools::None, initial );
@@ -973,7 +973,7 @@ TEST_CASE("reduce_add(case16)" * doctest::test_suite("array::add.reduce"))
     #endif
 }
 
-TEST_CASE("reduce_add(case17)" * doctest::test_suite("array::add.reduce"))
+TEST_CASE("reduce_add(case17)" * doctest::test_suite("array::reduce_add"))
 {
     #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     REDUCE_ADD_SUBCASE( case17,   a, axis, nmtools::None, initial, keepdims );
@@ -1005,7 +1005,7 @@ TEST_CASE("reduce_add(case17)" * doctest::test_suite("array::add.reduce"))
     #endif
 }
 
-TEST_CASE("reduce_add(case18)" * doctest::test_suite("array::add.reduce"))
+TEST_CASE("reduce_add(case18)" * doctest::test_suite("array::reduce_add"))
 {
     #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     REDUCE_ADD_SUBCASE( case18,   a, axis, nmtools::None, initial, keepdims );
@@ -1037,7 +1037,7 @@ TEST_CASE("reduce_add(case18)" * doctest::test_suite("array::add.reduce"))
     #endif
 }
 
-TEST_CASE("reduce_add(case19)" * doctest::test_suite("array::add.reduce"))
+TEST_CASE("reduce_add(case19)" * doctest::test_suite("array::reduce_add"))
 {
     #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     REDUCE_ADD_SUBCASE( case19,   a, axis, nmtools::None, initial, keepdims );
@@ -1069,7 +1069,7 @@ TEST_CASE("reduce_add(case19)" * doctest::test_suite("array::add.reduce"))
     #endif
 }
 
-TEST_CASE("reduce_add(case20)" * doctest::test_suite("array::add.reduce"))
+TEST_CASE("reduce_add(case20)" * doctest::test_suite("array::reduce_add"))
 {
     #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     REDUCE_ADD_SUBCASE( case20,   a, axis, nmtools::None, initial, keepdims );
@@ -1101,7 +1101,7 @@ TEST_CASE("reduce_add(case20)" * doctest::test_suite("array::add.reduce"))
     #endif
 }
 
-TEST_CASE("reduce_add(case21)" * doctest::test_suite("array::add.reduce"))
+TEST_CASE("reduce_add(case21)" * doctest::test_suite("array::reduce_add"))
 {
     #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     REDUCE_ADD_SUBCASE( case21,   a, axis, dtype );
@@ -1133,7 +1133,7 @@ TEST_CASE("reduce_add(case21)" * doctest::test_suite("array::add.reduce"))
     #endif
 }
 
-TEST_CASE("reduce_add(case22)" * doctest::test_suite("array::add.reduce"))
+TEST_CASE("reduce_add(case22)" * doctest::test_suite("array::reduce_add"))
 {
     #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     REDUCE_ADD_SUBCASE( case22,   a, axis, dtype );
@@ -1165,7 +1165,7 @@ TEST_CASE("reduce_add(case22)" * doctest::test_suite("array::add.reduce"))
     #endif
 }
 
-TEST_CASE("reduce_add(case23)" * doctest::test_suite("array::add.reduce"))
+TEST_CASE("reduce_add(case23)" * doctest::test_suite("array::reduce_add"))
 {
     auto dtype   = nmtools::None;
     auto initial = nmtools::None;
@@ -1199,7 +1199,7 @@ TEST_CASE("reduce_add(case23)" * doctest::test_suite("array::add.reduce"))
     #endif
 }
 
-TEST_CASE("reduce_add(case24)" * doctest::test_suite("array::add.reduce"))
+TEST_CASE("reduce_add(case24)" * doctest::test_suite("array::reduce_add"))
 {
     auto dtype   = nmtools::None;
     auto initial = nmtools::None;
@@ -1233,7 +1233,7 @@ TEST_CASE("reduce_add(case24)" * doctest::test_suite("array::add.reduce"))
     #endif
 }
 
-TEST_CASE("add.accumulate(case1)" * doctest::test_suite("array::add.accumulate"))
+TEST_CASE("accumulate_add(case1)" * doctest::test_suite("array::accumulate_add"))
 {
     #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     ACCUMULATE_ADD_SUBCASE( case1,   a, axis );
@@ -1265,7 +1265,7 @@ TEST_CASE("add.accumulate(case1)" * doctest::test_suite("array::add.accumulate")
     #endif
 }
 
-TEST_CASE("add.accumulate(case2)" * doctest::test_suite("array::add.accumulate"))
+TEST_CASE("accumulate_add(case2)" * doctest::test_suite("array::accumulate_add"))
 {
     #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     ACCUMULATE_ADD_SUBCASE( case2,   a, axis );
@@ -1297,7 +1297,7 @@ TEST_CASE("add.accumulate(case2)" * doctest::test_suite("array::add.accumulate")
     #endif
 }
 
-TEST_CASE("add.accumulate(case3)" * doctest::test_suite("array::add.accumulate"))
+TEST_CASE("accumulate_add(case3)" * doctest::test_suite("array::accumulate_add"))
 {
     #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     ACCUMULATE_ADD_SUBCASE( case3,   a, axis );
@@ -1329,7 +1329,7 @@ TEST_CASE("add.accumulate(case3)" * doctest::test_suite("array::add.accumulate")
     #endif
 }
 
-TEST_CASE("add.outer(case1)" * doctest::test_suite("array::add.outer"))
+TEST_CASE("outer_add(case1)" * doctest::test_suite("array::outer_add"))
 {
     #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     OUTER_ADD_SUBCASE( case1,   a,   b );
@@ -1520,7 +1520,7 @@ TEST_CASE("add(case3)" * doctest::test_suite("array::constexpr_add"))
 #endif
 
 #if CONSTEXPR_TEST_GCC_REDUCE_ADD
-TEST_CASE("reduce_add(case1)" * doctest::test_suite("array::constexpr_add.reduce"))
+TEST_CASE("reduce_add(case1)" * doctest::test_suite("array::constexpr_reduce_add"))
 {
     #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     CONSTEXPR_REDUCE_ADD_SUBCASE( case1,   a, axis );
@@ -1544,7 +1544,7 @@ TEST_CASE("reduce_add(case1)" * doctest::test_suite("array::constexpr_add.reduce
     #endif
 }
 
-TEST_CASE("reduce_add(case4)" * doctest::test_suite("array::constexpr_add.reduce"))
+TEST_CASE("reduce_add(case4)" * doctest::test_suite("array::constexpr_reduce_add"))
 {
     #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     CONSTEXPR_REDUCE_ADD_SUBCASE( case4,   a, axis );
@@ -1568,7 +1568,7 @@ TEST_CASE("reduce_add(case4)" * doctest::test_suite("array::constexpr_add.reduce
     #endif
 }
 
-TEST_CASE("reduce_add(case9)" * doctest::test_suite("array::constexpr_add.reduce"))
+TEST_CASE("reduce_add(case9)" * doctest::test_suite("array::constexpr_reduce_add"))
 {
     #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     CONSTEXPR_REDUCE_ADD_SUBCASE( case9,   a, axis, dtype, initial, keepdims );
@@ -1592,7 +1592,7 @@ TEST_CASE("reduce_add(case9)" * doctest::test_suite("array::constexpr_add.reduce
     #endif
 }
 
-TEST_CASE("reduce_add(case14)" * doctest::test_suite("array::constexpr_add.reduce"))
+TEST_CASE("reduce_add(case14)" * doctest::test_suite("array::constexpr_reduce_add"))
 {
     #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     CONSTEXPR_REDUCE_ADD_SUBCASE( case14,   a, axis, dtype, initial, keepdims );
@@ -1616,7 +1616,7 @@ TEST_CASE("reduce_add(case14)" * doctest::test_suite("array::constexpr_add.reduc
     #endif
 }
 
-TEST_CASE("reduce_add(case15)" * doctest::test_suite("array::constexpr_add.reduce"))
+TEST_CASE("reduce_add(case15)" * doctest::test_suite("array::constexpr_reduce_add"))
 {
     #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     CONSTEXPR_REDUCE_ADD_SUBCASE( case15,   a, axis );
@@ -1642,7 +1642,7 @@ TEST_CASE("reduce_add(case15)" * doctest::test_suite("array::constexpr_add.reduc
 
 #endif // CONSTEXPR_TEST_GCC_REDUCE_ADD
 
-TEST_CASE("add.accumulate(case1)" * doctest::test_suite("array::constexpr_add.accumulate"))
+TEST_CASE("accumulate_add(case1)" * doctest::test_suite("array::constexpr_accumulate_add"))
 {
     #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     CONSTEXPR_ACCUMULATE_ADD_SUBCASE( case1,   a, axis );
@@ -1665,7 +1665,7 @@ TEST_CASE("add.accumulate(case1)" * doctest::test_suite("array::constexpr_add.ac
     #endif
 }
 
-TEST_CASE("add.accumulate(case2)" * doctest::test_suite("array::constexpr_add.accumulate"))
+TEST_CASE("accumulate_add(case2)" * doctest::test_suite("array::constexpr_accumulate_add"))
 {
     #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     CONSTEXPR_ACCUMULATE_ADD_SUBCASE( case2,   a, axis );
@@ -1688,7 +1688,7 @@ TEST_CASE("add.accumulate(case2)" * doctest::test_suite("array::constexpr_add.ac
     #endif
 }
 
-TEST_CASE("add.accumulate(case3)" * doctest::test_suite("array::constexpr_add.accumulate"))
+TEST_CASE("accumulate_add(case3)" * doctest::test_suite("array::constexpr_accumulate_add"))
 {
     #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     CONSTEXPR_ACCUMULATE_ADD_SUBCASE( case3,   a, axis );
@@ -1711,7 +1711,7 @@ TEST_CASE("add.accumulate(case3)" * doctest::test_suite("array::constexpr_add.ac
     #endif
 }
 
-TEST_CASE("add.outer(case1)" * doctest::test_suite("array::constexpr_add.outer"))
+TEST_CASE("outer_add(case1)" * doctest::test_suite("array::constexpr_outer_add"))
 {
     #if !defined(NMTOOLS_TESTING_GENERIC_NDARRAY)
     CONSTEXPR_OUTER_ADD_SUBCASE( case1,   a,   b );

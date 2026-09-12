@@ -5,6 +5,7 @@
 
 namespace nm = nmtools;
 namespace tk = nmtools::tilekit;
+namespace view = nmtools::view;
 
 using nmtools_tuple, nmtools_array;
 using namespace nmtools::literals;
@@ -76,6 +77,27 @@ TEST_CASE("vector(case2)" * doctest::test_suite("tilekit"))
         int expected[2][4] = {
             {40,41,0,0},
             {54,55,0,0},
+        };
+        NMTOOLS_ASSERT_EQUAL( block_a, expected );
+    }
+}
+
+TEST_CASE("vector(case3)" * doctest::test_suite("tilekit"))
+{
+    int a[16] = {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15};
+    auto buffer = nm::array(a);
+    auto dst_shape = tuple{2_ct,8_ct};
+    auto array = unwrap(view::reshape(buffer,dst_shape));
+
+    auto tile_shape = tuple{2_ct,4_ct};
+    auto ctx = tk::vector::Context;
+    auto padding = nm::False;
+    {
+        auto tile_ndoffset = tuple{0,0};
+        auto block_a = tk::load(ctx,array,tile_ndoffset,tile_shape,padding);
+        int expected[2][4] = {
+            {0,1, 2, 3},
+            {8,9,10,11},
         };
         NMTOOLS_ASSERT_EQUAL( block_a, expected );
     }

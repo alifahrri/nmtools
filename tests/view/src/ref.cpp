@@ -8,19 +8,12 @@
  * 
  */
 
-// @note need to includ array impl first to make sure overaload/specialization is visible
 #include "nmtools/ndarray/fixed.hpp"
 #include "nmtools/ndarray/dynamic.hpp"
 #include "nmtools/array/view.hpp"
 #include "nmtools/utility/isclose.hpp"
 #include "nmtools/utility/isequal.hpp"
-#include "nmtools/testing/testing.hpp"
-
-#if __has_include("doctest/doctest.h")
-    #include "doctest/doctest.h"
-#else
-   #include "doctest.h"
-#endif
+#include "nmtools/testing/doctest.hpp"
 
 #include <array>
 #include <vector>
@@ -31,11 +24,7 @@ using nmtools::utils::isequal;
 using nmtools::fixed_ndarray;
 using nmtools::dynamic_ndarray;
 
-/**
- * @test test case for const ref view to 1D nmtools_array
- * 
- */
-TEST_CASE("ref(nmtools_array)" * doctest::test_suite("view::ref")) // ref with 1D nmtools_array
+TEST_CASE("ref(nmtools_array)" * doctest::test_suite("view::ref"))
 {
     auto array = nmtools_array{1.,2.,3.};
     auto array_ref = view::ref(array);
@@ -47,9 +36,6 @@ TEST_CASE("ref(nmtools_array)" * doctest::test_suite("view::ref")) // ref with 1
         auto expected = nmtools_array{1.,2.,3.};
         CHECK( isclose(array_ref,expected) );
     }
-
-    // @note should be compile-error: assignment of read-only location
-    // array_ref(0) = 3; 
 
     {
         nmtools::at(array,0) = 3;
@@ -65,11 +51,7 @@ TEST_CASE("ref(nmtools_array)" * doctest::test_suite("view::ref")) // ref with 1
 }
 
 #ifndef NMTOOLS_DISABLE_STL
-/**
- * @test test case for const ref view to 2D nmtools_array
- * 
- */
-TEST_CASE("ref(nmtools_array<nmtools_array>)" * doctest::test_suite("view::ref")) // ref with 2D nmtools_array
+TEST_CASE("ref(nmtools_array<nmtools_array>)" * doctest::test_suite("view::ref"))
 {
     auto array = nmtools_array{
         nmtools_array{1.,2.,3.},
@@ -98,16 +80,12 @@ TEST_CASE("ref(nmtools_array<nmtools_array>)" * doctest::test_suite("view::ref")
     }
 
     {
-        STATIC_CHECK(( std::is_same_v<double,nmtools::meta::get_element_type_t<decltype(array_ref)>> ));
+        STATIC_CHECK(( std::is_same_v<double,nmtools::get_element_type_t<decltype(array_ref)>> ));
     }
 }
 #endif // NMTOOLS_DISABLE_STL
 
-/**
- * @test case for const ref view to 1D nmtools_list
- * 
- */
-TEST_CASE("ref(nmtools_list)" * doctest::test_suite("view::ref")) // ref with 1D nmtools_list
+TEST_CASE("ref(nmtools_list)" * doctest::test_suite("view::ref"))
 {
     auto array = nmtools_list{1.,2.,3.};
     auto array_ref = view::ref(array);
@@ -118,10 +96,6 @@ TEST_CASE("ref(nmtools_list)" * doctest::test_suite("view::ref")) // ref with 1D
         auto expected = nmtools_array{1.,2.,3.};
         CHECK( isclose(array_ref,expected) );
     }
-
-    // @note should be compile-error: assignment of read-only location
-    // array_ref(0) = 3; 
-
     {
         nmtools::at(array,0) = 3;
         auto expected = nmtools_array{3.,2.,3.};
@@ -130,15 +104,11 @@ TEST_CASE("ref(nmtools_list)" * doctest::test_suite("view::ref")) // ref with 1D
 
     {
         STATIC_CHECK(( nmtools::meta::is_array1d_v<decltype(array_ref)> ));
-        STATIC_CHECK(( std::is_same_v<double,nmtools::meta::get_element_type_t<decltype(array_ref)>> ));
+        STATIC_CHECK(( std::is_same_v<double,nmtools::get_element_type_t<decltype(array_ref)>> ));
     }
 }
 
-/**
- * @test test case for const ref view to 1D fixed_ndarray 
- * 
- */
-TEST_CASE("ref(fixed_ndarray[1])" * doctest::test_suite("view::ref")) // ref with 1D fixed_ndarray
+TEST_CASE("ref(fixed_ndarray[1])" * doctest::test_suite("view::ref"))
 {
     auto array = fixed_ndarray({1.,2.,3.});
     auto array_ref = view::ref(array);
@@ -149,15 +119,11 @@ TEST_CASE("ref(fixed_ndarray[1])" * doctest::test_suite("view::ref")) // ref wit
 
     {
         STATIC_CHECK(( nmtools::meta::is_ndarray_v<decltype(array_ref)> ));
-        STATIC_CHECK(( std::is_same_v<double,nmtools::meta::get_element_type_t<decltype(array_ref)>> ));
+        STATIC_CHECK(( std::is_same_v<double,nmtools::get_element_type_t<decltype(array_ref)>> ));
     }
 }
 
-/**
- * @test test case for const ref view to 2D fixed_ndarray
- * 
- */
-TEST_CASE("ref(fixed_ndarray[2])" * doctest::test_suite("view::ref")) // ref with 2D fixed_ndarray
+TEST_CASE("ref(fixed_ndarray[2])" * doctest::test_suite("view::ref"))
 {
     auto array = fixed_ndarray{{
         {1.,2.},
@@ -180,15 +146,11 @@ TEST_CASE("ref(fixed_ndarray[2])" * doctest::test_suite("view::ref")) // ref wit
 
     {
         STATIC_CHECK(( nmtools::meta::is_ndarray_v<decltype(array_ref)> ));
-        STATIC_CHECK(( std::is_same_v<double,nmtools::meta::get_element_type_t<decltype(array_ref)>> ));
+        STATIC_CHECK(( std::is_same_v<double,nmtools::get_element_type_t<decltype(array_ref)>> ));
     }
 }
 
-/**
- * @test test case for const ref view to 3D fixed_ndarray 
- * 
- */
-TEST_CASE("ref(fixed_ndarray[3])" * doctest::test_suite("view::ref")) // ref with 3D fixed_ndarray
+TEST_CASE("ref(fixed_ndarray[3])" * doctest::test_suite("view::ref"))
 {
     auto array = fixed_ndarray{{
         {
@@ -208,39 +170,27 @@ TEST_CASE("ref(fixed_ndarray[3])" * doctest::test_suite("view::ref")) // ref wit
     CHECK( array_ref.dim()==3 );
     CHECK( isequal(array_ref.shape(),nmtools_array{3,2,4}) );
 
-    // @todo provide constructor/assignment op from 3D array
-
     nmtools::at(array,0,1,0) = 6;
     CHECK( array_ref(0,1,0)==6 );
 
     {
         STATIC_CHECK(( nmtools::meta::is_fixed_size_ndarray_v<decltype(array_ref)> ));
-        STATIC_CHECK(( std::is_same_v<double,nmtools::meta::get_element_type_t<decltype(array_ref)>> ));
+        STATIC_CHECK(( std::is_same_v<double,nmtools::get_element_type_t<decltype(array_ref)>> ));
     }
 }
 
-/**
- * @test test case for const ref view to 4D fixed_ndarray
- * 
- */
-TEST_CASE("ref(fixed_ndarray[4])" * doctest::test_suite("view::ref")) // // ref with 4D fixed_ndarray
+TEST_CASE("ref(fixed_ndarray[4])" * doctest::test_suite("view::ref"))
 {
     auto array = fixed_ndarray<double,3,2,4,1>{};
     auto array_ref = view::ref(array);
     CHECK( array_ref.dim()==4 );
     CHECK( isequal(array_ref.shape(),nmtools_array{3,2,4,1}) );
 
-    // @todo provide constructor/assignment op from 4D array
-
     nmtools::at(array,0,1,3,0) = 6;
     CHECK( array_ref(0,1,3,0)==6 );
 }
 
-/**
- * @test test case for const ref view to 1D dynamic_ndarray
- * 
- */
-TEST_CASE("ref(dynamic_ndarray[1])" * doctest::test_suite("view::ref")) // ref with 1D dynamic_ndarray
+TEST_CASE("ref(dynamic_ndarray[1])" * doctest::test_suite("view::ref"))
 {
     auto array = dynamic_ndarray({1.,2.,3.});
     auto array_ref = view::ref(array);
@@ -248,11 +198,7 @@ TEST_CASE("ref(dynamic_ndarray[1])" * doctest::test_suite("view::ref")) // ref w
     CHECK( isequal(array_ref.shape(),nmtools_array{3}) );
 }
 
-/**
- * @test test case for const ref view to 2D dynamic_ndarray
- * 
- */
-TEST_CASE("ref(dynamic_ndarray[2])" * doctest::test_suite("view::ref")) // ref with 1D dynamic_ndarray
+TEST_CASE("ref(dynamic_ndarray[2])" * doctest::test_suite("view::ref"))
 {
     auto array = dynamic_ndarray({
         {1.,2.,3.},
@@ -263,14 +209,8 @@ TEST_CASE("ref(dynamic_ndarray[2])" * doctest::test_suite("view::ref")) // ref w
     CHECK( isequal(array_ref.shape(),nmtools_array{2,3}) );
 }
 
-/**
- * @test test case for const ref view to 3D dynamic_ndarray
- * 
- */
-TEST_CASE("ref(dynamic_ndarray[3])" * doctest::test_suite("view::ref")) // ref with 3D dynamic_ndarray
+TEST_CASE("ref(dynamic_ndarray[3])" * doctest::test_suite("view::ref"))
 {
-    // @note initialize 3D ndarray from flat storage with specified shape
-    // auto array = dynamic_ndarray({1.,2.,3.},{1,3,1});
     auto array = dynamic_ndarray<double>();
     double a[1][3][1] = {{{1.},{2.},{1.}}};
     array.resize({1,3,1});
@@ -278,17 +218,10 @@ TEST_CASE("ref(dynamic_ndarray[3])" * doctest::test_suite("view::ref")) // ref w
     auto array_ref = view::ref(array);
     CHECK( array_ref.dim()==3 );
     CHECK( isequal(array_ref.shape(),nmtools_array{1,3,1}) );
-
-    // @todo provide constructor/assignment op from 3D array
 }
 
-/**
- * @test test case for const ref view to 4D dynamic_ndarray
- * 
- */
-TEST_CASE("ref(dynamic_ndarray[4])" * doctest::test_suite("view::ref")) // ref with 4D dynamic_ndarray
+TEST_CASE("ref(dynamic_ndarray[4])" * doctest::test_suite("view::ref"))
 {
-    // @note initialize 3D ndarray from flat storage with specified shape
     auto array = dynamic_ndarray<double>();
     double a[1][2][2][1] = {
         {
@@ -308,9 +241,21 @@ TEST_CASE("ref(dynamic_ndarray[4])" * doctest::test_suite("view::ref")) // ref w
     CHECK( array_ref.dim()==4 );
     CHECK( isequal(array_ref.shape(),nmtools_array{1,2,2,1}) );
 
-    // @todo provide constructor/assignment op from 3D array
-
     CHECK( array_ref(0,1,1,0)==4 );
     nmtools::at(array,0,1,1,0) = 6;
     CHECK( array_ref(0,1,1,0)==6 );
+}
+
+TEST_CASE("ref(shared_ptr)" * doctest::test_suite("view::ref"))
+{
+    using buffer_t = std::vector<int>;
+    auto array_ptr = std::make_shared<buffer_t>(12);
+
+    [[maybe_unused]]
+    auto ref = view::ref(array_ptr);
+
+    static_assert( nmtools::is_ndarray_v<decltype(ref)> );
+    static_assert( nmtools::is_same_v<nmtools::get_element_type_t<decltype(ref)>,int> );
+    CHECK( ref.dim() == 1 );
+    NMTOOLS_ASSERT_EQUAL( ref.shape(), (nmtools_array{12}))
 }

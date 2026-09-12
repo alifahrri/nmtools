@@ -2,9 +2,11 @@
 #define NMTOOLS_CORE_NODE_HPP
 
 #include "nmtools/meta.hpp"
+#include "nmtools/dtypes.hpp"
 #include "nmtools/utility.hpp"
 #include "nmtools/core/functor.hpp"
 #include "nmtools/core/combinator.hpp"
+#include "nmtools/index/hash.hpp"
 
 #ifndef NMTOOLS_NODE_MAX_LEN
 #define NMTOOLS_NODE_MAX_LEN 64
@@ -90,6 +92,13 @@ namespace nmtools::meta
     > : true_type {};
 }
 
+namespace nmtools
+{
+    using meta::is_functor_composition_v;
+    using meta::layout_kind_v;
+    using meta::is_binary_ufunc_functor_v;
+}
+
 namespace nmtools::functional
 {
     enum class Kind : int
@@ -103,20 +112,7 @@ namespace nmtools::functional
         COMPOSITION  = 5,
     };
 
-    enum class Type : int
-    {
-        UNKNOWN = -1,
-        UInt8   = 0,
-        UInt16  = 1,
-        UInt32  = 2,
-        UInt64  = 3,
-        Int8    = 4,
-        Int16   = 5,
-        Int32   = 6,
-        Int64   = 7,
-        Float32 = 8,
-        Float64 = 9,
-    };
+    using Type = nmtools::DType;
 
     // only valid for buffer, obviously
     enum class Layout : int
@@ -135,19 +131,23 @@ namespace nmtools::functional
         BURY = 3,
     };
 
+    /*********************************************************************** */
+
     template <
         typename integer_t=nm_index_t
         , typename float_t=float32_t
-        , auto max_len=NMTOOLS_NODE_ATTRIBUTE_MAX_INDEX_ARRAY_LEN
-        , auto max_str_len=NMTOOLS_NODE_ATTRIBUTE_MAX_VALUE_STRING_LEN>
+        , typename index_array_t=utl::static_vector<integer_t,NMTOOLS_NODE_ATTRIBUTE_MAX_INDEX_ARRAY_LEN>
+        , typename string_t=utl::static_string_base<NMTOOLS_NODE_ATTRIBUTE_MAX_VALUE_STRING_LEN>>
     struct Attribute
     {
-        using index_array_type = utl::static_vector<integer_t,max_len>;
-        using string_type  = utl::static_string_base<max_str_len>;
+        // TODO: make this configurable as nmtools_list, and the string as nmtools_string
+        using index_array_type = index_array_t;
+        using string_type  = string_t;
         using none_type    = none_t;
         using integer_type = integer_t;
         using float_type   = float_t;
 
+        // TODO: detect if c++20, enable if c++20
         // very hard to make union work in constexpr (c++17)
         // maybe use union if c++20 for potential memory saving
         #if 0
@@ -195,8 +195,8 @@ namespace nmtools::functional
             , tag(Tag::STRING)
         {}
 
-        template <typename T, meta::enable_if_t<meta::is_index_array_v<T>
-            && !meta::is_same_v<meta::get_element_type_t<T>,char>
+        template <typename T, enable_if_t<is_index_array_v<T>
+            && !is_same_v<get_element_type_t<T>,char>
             , int> = 0>
         constexpr Attribute(const T& value)
             : index_array([&](){
@@ -264,8 +264,8 @@ namespace nmtools::functional
             return *this;
         }
 
-        template <typename T, meta::enable_if_t<meta::is_index_array_v<T>
-            && !meta::is_same_v<meta::get_element_type_t<T>,char>
+        template <typename T, enable_if_t<is_index_array_v<T>
+            && !is_same_v<get_element_type_t<T>,char>
             , int> = 0>
         constexpr decltype(auto) operator=(const T& value)
         {
@@ -296,28 +296,235 @@ namespace nmtools::functional
             return str;
         }
         #endif // NMTOOLS_HAS_STRING
-    };
+    }; // Attribute
 
     template <
         typename integer_t=nm_index_t
-        , typename float_t=float32_t
-        , auto max_len=NMTOOLS_NODE_ATTRIBUTE_MAX_INDEX_ARRAY_LEN
-        , auto max_str_len=NMTOOLS_NODE_ATTRIBUTE_MAX_VALUE_STRING_LEN>
-    using Attributes = utl::static_map<utl::static_string,Attribute<integer_t,float_t,max_len,max_str_len>>;
+        , typename float_t=float32_t>
+    using Attributes = utl::static_map<utl::static_string,Attribute<integer_t,float_t>>;
+
+    /*********************************************************************** */
+
+    template <typename string_type>
+    constexpr string_type kind_to_string(Kind kind)
+    {
+        auto kind_str = string_type();
+        switch (kind) {
+            case Kind::UNKNOWN:
+            kind_str += "UNKNOWN";
+            break;
+            case Kind::INDEXING:
+            kind_str += "INDEXING";
+            break;
+            case Kind::UNARY_UFUNC:
+            kind_str += "UNARY_UFUNC";
+            break;
+            case Kind::BINARY_UFUNC:
+            kind_str += "BINARY_UFUNC";
+            break;
+            case Kind::REDUCE:
+            kind_str += "REDUCE";
+            break;
+            case Kind::BUFFERED:
+            kind_str += "BUFFERED";
+            break;
+            case Kind::COMPOSITION:
+            kind_str += "COMPOSITION";
+            default:
+            break;
+        };
+        return kind_str;
+    }
+
+    template <typename string_type>
+    constexpr string_type type_to_string(Type type)
+    {
+        auto dtype_str = string_type();
+        switch (type) {
+            case Type::UNKNOWN:
+            dtype_str += "UNKNOWN";
+            break;
+            case Type::UInt8:
+            dtype_str += "uint8";
+            break;
+            case Type::UInt16:
+            dtype_str += "uint16";
+            break;
+            case Type::UInt32:
+            dtype_str += "uint32";
+            break;
+            case Type::UInt64:
+            dtype_str += "uint64";
+            break;
+            case Type::Int8:
+            dtype_str += "int8";
+            break;
+            case Type::Int16:
+            dtype_str += "int16";
+            break;
+            case Type::Int32:
+            dtype_str += "int32";
+            break;
+            case Type::Int64:
+            dtype_str += "int64";
+            break;
+            case Type::Float32:
+            dtype_str += "float32";
+            break;
+            case Type::Float64:
+            dtype_str += "float64";
+            break;
+            default:
+            break;
+        };
+        return dtype_str;
+    }
+
+    template <typename string_type>
+    constexpr string_type layout_to_string(Layout layout)
+    {
+        auto layout_str = string_type();
+
+        switch (layout) {
+            case Layout::UNKNOWN:
+            layout_str += "UNKNOWN";
+            break;
+            case Layout::RowMajor:
+            layout_str += "RowMajor";
+            break;
+            case Layout::ColMajor:
+            layout_str += "ColMajor";
+            break;
+            default:
+            break;
+        };
+        return layout_str;
+    }
+
+    template <typename string_type>
+    constexpr string_type combinator_to_string(Combinator combinator_type)
+    {
+        auto str = string_type();
+        switch (combinator_type) {
+            case Combinator::SWAP:
+            str += "SWAP";
+            break;
+            case Combinator::DUP:
+            str += "DUP";
+            break;
+            case Combinator::DIG:
+            str += "DIG";
+            break;
+            case Combinator::BURY:
+            str += "BURY";
+            break;
+            default:
+            break;
+        };
+        return str;
+    }
+
+    template <typename string_type>
+    constexpr Kind string_to_kind(const string_type& kind_str)
+    {
+        Kind kind = Kind::UNKNOWN;
+
+        if (kind_str == "INDEXING") {
+            kind = Kind::INDEXING;
+        } else if (kind_str == "UNARY_UFUNC") {
+            kind = Kind::UNARY_UFUNC;
+        } else if (kind_str == "BINARY_UFUNC") {
+            kind = Kind::BINARY_UFUNC;
+        } else if (kind_str == "REDUCE") {
+            kind = Kind::REDUCE;
+        } else if (kind_str == "BUFFERED") {
+            kind = Kind::BUFFERED;
+        } else if (kind_str == "COMPOSITION") {
+            kind = Kind::COMPOSITION;
+        }
+
+        return kind;
+    }
+
+    template <typename string_type>
+    constexpr Type string_to_type(const string_type& dtype_str)
+    {
+        Type type = Type::UNKNOWN;
+
+        if (dtype_str == "uint8") {
+            type = Type::UInt8;
+        } else if (dtype_str == "uint16") {
+            type = Type::UInt16;
+        } else if (dtype_str == "uint32") {
+            type = Type::UInt32;
+        } else if (dtype_str == "uint64") {
+            type = Type::UInt64;
+        } else if (dtype_str == "int8") {
+            type = Type::Int8;
+        } else if (dtype_str == "int16") {
+            type = Type::Int16;
+        } else if (dtype_str == "int32") {
+            type = Type::Int32;
+        } else if (dtype_str == "int64") {
+            type = Type::Int64;
+        } else if (dtype_str == "float32") {
+            type = Type::Float32;
+        } else if (dtype_str == "float64") {
+            type = Type::Float64;
+        }
+
+        return type;
+    }
+
+    template <typename string_type>
+    constexpr Layout string_to_layout(const string_type& layout_str)
+    {
+        Layout layout = Layout::UNKNOWN;
+
+        if (layout_str == "RowMajor") {
+            layout = Layout::RowMajor;
+        } else if (layout_str == "ColMajor") {
+            layout = Layout::ColMajor;
+        }
+
+        return layout;
+    }
+
+    template <typename string_type>
+    constexpr Combinator string_to_combinator(const string_type& str)
+    {
+        Combinator combinator_type = Combinator::INVALID;
+
+        if (str == "SWAP") {
+            combinator_type = Combinator::SWAP;
+        } else if (str == "DUP") {
+            combinator_type = Combinator::DUP;
+        } else if (str == "DIG") {
+            combinator_type = Combinator::DIG;
+        } else if (str == "BURY") {
+            combinator_type = Combinator::BURY;
+        }
+
+        return combinator_type;
+    }
+
+    /*********************************************************************** */
 
     template <
         auto MAX_DIM=NMTOOLS_NODE_MAX_LEN
         , auto MAX_COMPOSITION=NMTOOLS_NODE_MAX_COMPOSITION
-        , typename attributes_t=none_t
         , typename integer_t=nm_index_t
         , typename float_t=float32_t
-        , auto max_len=NMTOOLS_NODE_ATTRIBUTE_MAX_INDEX_ARRAY_LEN
-        , auto max_str_len=NMTOOLS_NODE_ATTRIBUTE_MAX_VALUE_STRING_LEN>
+        , typename vector_t=conditional_t<(MAX_DIM > 0)
+            , nmtools_static_vector<nm_index_t,(MAX_DIM > 0 ? MAX_DIM : 1)>
+            , nmtools_list<nm_index_t>>
+        , typename attributes_t=Attributes<integer_t,float_t>
+        , typename string_t=utl::static_string
+        , typename input_t=none_t
+        >
     struct Node
     {
-        using vector_type  = meta::conditional_t<(MAX_DIM > 0)
-            , nmtools_static_vector<nm_index_t,MAX_DIM>
-            , nmtools_list<nm_index_t>>;
+        using vector_type  = vector_t;
         using shape_type   = vector_type;
         using dim_type     = nm_index_t;
         // max dim is useful to check if this node results in bounded dim
@@ -330,215 +537,72 @@ namespace nmtools::functional
         // if dim -1 then num
         // if dim 0 then dynamic dim
         // if dim > 0 then fixed dim
-        using composition_type = meta::conditional_t<
+        using composition_type = conditional_t<
             (MAX_COMPOSITION > 0)
-            , nmtools_static_vector<Node<MAX_DIM,0>,MAX_COMPOSITION>
-            , meta::conditional_t<
+            , nmtools_static_vector<Node<MAX_DIM,0>,(MAX_COMPOSITION > 0? MAX_COMPOSITION : 1)>
+            , conditional_t<
                 (MAX_COMPOSITION < 0) // for runtime, no need to limit composition
                 , nmtools_list<Node>
                 , none_t
             >>;
         
-        using attributes_type = Attributes<integer_t,float_t,max_len,max_str_len>;
+        // TODO: make sure attributes is map
+        using attributes_type = attributes_t;
+        using string_type = string_t;
+
+        using attribute_type = typename attributes_type::mapped_type;
+        using index_array_type = typename attribute_type::index_array_type;
+
+        // input_type for buffer node
+        using input_type = input_t;
 
         attributes_type  attributes_  = {};
         composition_type composition_ = {};
+        input_type       input_       = {};
 
-        static constexpr utl::static_string kind_to_string(Kind kind)
+        static constexpr string_type kind_to_string(Kind kind)
         {
-            auto kind_str = utl::static_string();
-            switch (kind) {
-                case Kind::UNKNOWN:
-                kind_str += "UNKNOWN";
-                break;
-                case Kind::INDEXING:
-                kind_str += "INDEXING";
-                break;
-                case Kind::UNARY_UFUNC:
-                kind_str += "UNARY_UFUNC";
-                break;
-                case Kind::BINARY_UFUNC:
-                kind_str += "BINARY_UFUNC";
-                break;
-                case Kind::REDUCE:
-                kind_str += "REDUCE";
-                break;
-                case Kind::BUFFERED:
-                kind_str += "BUFFERED";
-                break;
-                case Kind::COMPOSITION:
-                kind_str += "COMPOSITION";
-                default:
-                break;
-            };
-            return kind_str;
+            return functional::kind_to_string<string_type>(kind);
         }
 
-        static constexpr utl::static_string type_to_string(Type type)
+        static constexpr string_type type_to_string(Type type)
         {
-            auto dtype_str = utl::static_string();
-            switch (type) {
-                case Type::UNKNOWN:
-                dtype_str += "UNKNOWN";
-                break;
-                case Type::UInt8:
-                dtype_str += "uint8";
-                break;
-                case Type::UInt16:
-                dtype_str += "uint16";
-                break;
-                case Type::UInt32:
-                dtype_str += "uint32";
-                break;
-                case Type::UInt64:
-                dtype_str += "uint64";
-                break;
-                case Type::Int8:
-                dtype_str += "int8";
-                break;
-                case Type::Int16:
-                dtype_str += "int16";
-                break;
-                case Type::Int32:
-                dtype_str += "int32";
-                break;
-                case Type::Int64:
-                dtype_str += "int64";
-                break;
-                case Type::Float32:
-                dtype_str += "float32";
-                break;
-                case Type::Float64:
-                dtype_str += "float64";
-                break;
-                default:
-                break;
-            };
-            return dtype_str;
+            return functional::type_to_string<string_type>(type);
         }
 
-        static constexpr utl::static_string layout_to_string(Layout layout)
+        static constexpr string_type layout_to_string(Layout layout)
         {
-            auto layout_str = utl::static_string();
-
-            switch (layout) {
-                case Layout::UNKNOWN:
-                layout_str += "UNKNOWN";
-                break;
-                case Layout::RowMajor:
-                layout_str += "RowMajor";
-                break;
-                case Layout::ColMajor:
-                layout_str += "ColMajor";
-                break;
-                default:
-                break;
-            };
-            return layout_str;
+            return functional::layout_to_string<string_type>(layout);
         }
 
-        static constexpr utl::static_string combinator_to_string(Combinator combinator_type)
+        static constexpr string_type combinator_to_string(Combinator combinator_type)
         {
-            auto str = utl::static_string();
-            switch (combinator_type) {
-                case Combinator::SWAP:
-                str += "SWAP";
-                break;
-                case Combinator::DUP:
-                str += "DUP";
-                break;
-                case Combinator::DIG:
-                str += "DIG";
-                break;
-                case Combinator::BURY:
-                str += "BURY";
-                break;
-                default:
-                break;
-            };
-            return str;
+            return functional::combinator_to_string<string_type>(combinator_type);
         }
 
-        static constexpr Kind string_to_kind(const utl::static_string& kind_str)
+        static constexpr Kind string_to_kind(const string_type& kind_str)
         {
-            Kind kind = Kind::UNKNOWN;
-
-            if (kind_str == "INDEXING") {
-                kind = Kind::INDEXING;
-            } else if (kind_str == "UNARY_UFUNC") {
-                kind = Kind::UNARY_UFUNC;
-            } else if (kind_str == "BINARY_UFUNC") {
-                kind = Kind::BINARY_UFUNC;
-            } else if (kind_str == "REDUCE") {
-                kind = Kind::REDUCE;
-            } else if (kind_str == "BUFFERED") {
-                kind = Kind::BUFFERED;
-            } else if (kind_str == "COMPOSITION") {
-                kind = Kind::COMPOSITION;
-            }
-
-            return kind;
+            return functional::string_to_kind(kind_str);
         }
 
-        static constexpr Type string_to_type(const utl::static_string& dtype_str)
+        static constexpr Type string_to_type(const string_type& dtype_str)
         {
-            Type type = Type::UNKNOWN;
-
-            if (dtype_str == "uint8") {
-                type = Type::UInt8;
-            } else if (dtype_str == "uint16") {
-                type = Type::UInt16;
-            } else if (dtype_str == "uint32") {
-                type = Type::UInt32;
-            } else if (dtype_str == "uint64") {
-                type = Type::UInt64;
-            } else if (dtype_str == "int8") {
-                type = Type::Int8;
-            } else if (dtype_str == "int16") {
-                type = Type::Int16;
-            } else if (dtype_str == "int32") {
-                type = Type::Int32;
-            } else if (dtype_str == "int64") {
-                type = Type::Int64;
-            } else if (dtype_str == "float32") {
-                type = Type::Float32;
-            } else if (dtype_str == "float64") {
-                type = Type::Float64;
-            }
-
-            return type;
+            return functional::string_to_type(dtype_str);
         }
 
-        static constexpr Layout string_to_layout(const utl::static_string& layout_str)
+        static constexpr Layout string_to_layout(const string_type& layout_str)
         {
-            Layout layout = Layout::UNKNOWN;
-
-            if (layout_str == "RowMajor") {
-                layout = Layout::RowMajor;
-            } else if (layout_str == "ColMajor") {
-                layout = Layout::ColMajor;
-            }
-
-            return layout;
+            return functional::string_to_layout(layout_str);
         }
 
-        static constexpr Combinator string_to_combinator(const utl::static_string& str)
+        static constexpr Combinator string_to_combinator(const string_type& str)
         {
-            Combinator combinator_type = Combinator::INVALID;
-
-            if (str == "SWAP") {
-                combinator_type = Combinator::SWAP;
-            } else if (str == "DUP") {
-                combinator_type = Combinator::DUP;
-            } else if (str == "DIG") {
-                combinator_type = Combinator::DIG;
-            } else if (str == "BURY") {
-                combinator_type = Combinator::BURY;
-            }
-
-            return combinator_type;
+            return functional::string_to_combinator(str);
         }
 
+        /*************************************************/
+
+        // TODO: reorder argumnets
         constexpr Node(const shape_type& shape
             , dim_type dim
             , max_dim_type max_dim
@@ -548,7 +612,8 @@ namespace nmtools::functional
             , composition_type composition
             , Layout layout=Layout::UNKNOWN
             , Combinator combinator=Combinator::INVALID
-            , nm_index_t combinator_args=-1)
+            , nm_index_t combinator_args=-1
+            , input_type input=input_type{})
             : attributes_([&](){
                 auto attrs = attributes_type();
                 attrs["shape"]   = shape;
@@ -563,9 +628,79 @@ namespace nmtools::functional
                 return attrs;
             }())
             , composition_{composition}
+            , input_{input}
         {}
 
         constexpr Node() {}
+
+        template <
+            auto OTHER_MAX_DIM
+            , auto OTHER_MAX_COMPOSITION
+            , typename other_integer_t
+            , typename other_float_t
+            , typename other_vector_t
+            , typename other_attributes_t
+            , typename other_string_t
+            , typename other_input_t
+        >
+        constexpr Node(const Node<
+            OTHER_MAX_DIM
+            , OTHER_MAX_COMPOSITION
+            , other_integer_t
+            , other_float_t
+            , other_vector_t
+            , other_attributes_t
+            , other_string_t
+            , other_input_t>& other)
+        {
+            static_assert( is_same_v<input_t,other_input_t> || is_none_v<other_input_t>
+                , "unsupported other input type"
+            );
+            if (is_same_v<input_t,other_input_t>) {
+                input_ = other.input_;
+            }
+            if (other.attributes_.count("shape")) {
+                const auto& other_shape = other.attributes_["shape"].index_array;
+                attributes_["shape"] = index_array_type{};
+
+                auto n = len(other_shape);
+                if constexpr (is_resizable_v<index_array_type>) {
+                    attributes_["shape"].index_array.resize(n);
+                }
+                for (nm_size_t i=0; i<(nm_size_t)n; i++) {
+                    at(attributes_["shape"].index_array,i) = at(other_shape,i);
+                }
+            }
+            if (other.attributes_.count("dim")) {
+                attributes_["dim"] = other.attributes_["dim"].integer;
+            }
+            if (other.attributes_.count("max_dim")) {
+                attributes_["max_dim"] = other.attributes_["max_dim"].integer;
+            }
+            if (other.attributes_.count("is_num")) {
+                attributes_["is_num"] = other.attributes_["is_num"].integer;
+            }
+            if (other.attributes_.count("kind")) {
+                attributes_["kind"] = kind_to_string(other.kind());
+            }
+            if (other.attributes_.count("dtype")) {
+                attributes_["dtype"] = type_to_string(other.dtype());
+            }
+            if (other.attributes_.count("layout")) {
+                attributes_["layout"] = layout_to_string(other.layout());
+            }
+            if (other.attributes_.count("combinator_type")) {
+                attributes_["combinator_type"] = combinator_to_string(other.combinator_type());
+            }
+            if (other.attributes_.count("combinator_args")) {
+                attributes_["combinator_args"] = other.combinator_args();
+            }
+            // TODO: handle the rest of the attributes
+            // for (const auto& [key,value] : other.attributes_) {
+
+            // }
+            // TODO: copy composition
+        }
 
         constexpr decltype(auto) attributes() const
         {
@@ -610,7 +745,11 @@ namespace nmtools::functional
 
         constexpr decltype(auto) dtype() const
         {
-            return string_to_type(attributes_.at("dtype").string);
+            auto str = string_type();
+            if (attributes_.count("dtype")) {
+                str = attributes_.at("dtype").string;
+            }
+            return string_to_type(str);
         }
 
         constexpr decltype(auto) composition() const
@@ -650,32 +789,39 @@ namespace nmtools::functional
             , dim_type dim
             , max_dim_type max_dim
             , Type dtype
-            , Layout layout)
+            , Layout layout
+            , input_type input=input_type{})
         {
             composition_type composition = {};
             Kind kind = Kind::BUFFERED;
             auto is_num = false;
-            return Node{shape,dim,max_dim,is_num,kind,dtype,composition,layout};
+            Combinator combinator = Combinator::INVALID;
+            nm_index_t combinator_args=-1;
+            return Node{shape,dim,max_dim,is_num,kind,dtype,composition,layout,combinator,combinator_args,input};
         }
 
         static constexpr auto buffer(const shape_type& shape
             , Type dtype
-            , Layout layout)
+            , Layout layout
+            , input_type input=input_type{})
         {
             composition_type composition = {};
             Kind kind = Kind::BUFFERED;
             auto is_num = false;
+            Combinator combinator = Combinator::INVALID;
+            nm_index_t combinator_args=-1;
             dim_type dim = shape.size();
             max_dim_type max_dim = shape.size();
-            return Node{shape,dim,max_dim,is_num,kind,dtype,composition,layout};
+            return Node{shape,dim,max_dim,is_num,kind,dtype,composition,layout,combinator,combinator_args,input};
         }
 
         template <typename shape_t>
         static constexpr auto buffer(const shape_t& shape
             , Type dtype
-            , Layout layout)
+            , Layout layout
+            , input_type input=input_type{})
         {
-            static_assert( meta::is_index_array_v<shape_t>
+            static_assert( is_index_array_v<shape_t>
                 , "expected index array but got unsupported type for buffer" );
 
             auto m_shape = shape_type{};
@@ -686,7 +832,7 @@ namespace nmtools::functional
             for (nm_size_t i=0; i<(nm_size_t)n; i++) {
                 at(m_shape,i) = at(shape,i);
             }
-            return buffer(m_shape,dtype,layout);
+            return buffer(m_shape,dtype,layout,input);
         }
 
         static constexpr auto buffer(none_t
@@ -732,7 +878,7 @@ namespace nmtools::functional
             , Type dtype
             , Layout layout=Layout::UNKNOWN)
         {
-            static_assert( meta::is_index_array_v<shape_t>
+            static_assert( is_index_array_v<shape_t>
                 , "expected index array but got unsupported type for buffer" );
 
             auto m_shape = shape_type{};
@@ -781,7 +927,7 @@ namespace nmtools::functional
         }
 
         template <typename shape_t>
-        static constexpr auto binary_ufunc(const utl::static_string& op
+        static constexpr auto binary_ufunc(const string_type& op
             , const shape_t& shape
             , Type dtype
             , Layout layout=Layout::UNKNOWN)
@@ -800,7 +946,7 @@ namespace nmtools::functional
         }
 
         template <typename shape_t>
-        static constexpr auto unary_ufunc(const utl::static_string& op
+        static constexpr auto unary_ufunc(const string_type& op
             , const shape_t& shape
             , Type dtype
             , Layout layout=Layout::UNKNOWN)
@@ -819,7 +965,7 @@ namespace nmtools::functional
         }
 
         template <typename shape_t, typename axis_t>
-        static constexpr auto reduce(const utl::static_string& op
+        static constexpr auto reduce(const string_type& op
             , const axis_t& axis
             , const shape_t& shape
             , Type dtype
@@ -838,6 +984,8 @@ namespace nmtools::functional
         {
             return compute(Kind::REDUCE,shape,dtype,layout);
         }
+
+        /******************************************************************* */
 
         constexpr auto is_combinator() const noexcept
         {
@@ -863,16 +1011,59 @@ namespace nmtools::functional
             return (!is_buffer() && !is_combinator() && !is_composition());
         }
 
+        /******************************************************************* */
+
         template <
             auto RHS_MAX_DIM
             , auto RHS_MAX_COMPOSITION>
-        constexpr auto operator=(const Node<RHS_MAX_DIM,RHS_MAX_COMPOSITION,attributes_t>& other)
+        constexpr auto operator=(const Node<RHS_MAX_DIM,RHS_MAX_COMPOSITION>& other)
         {
-            this->attributes_ = other.attributes_;
+            if constexpr (is_same_v<
+                remove_cvref_t<decltype(attributes_)>
+                , remove_cvref_t<decltype(other.attributes_)>>)
+            {
+                this->attributes_ = other.attributes_;
+            } else {
+                if (other.attributes_.count("shape")) {
+                    const auto& other_shape = other.attributes_["shape"].index_array;
+                    this->attributes_["shape"] = index_array_type{};
+                    auto n = len(other_shape);
+                    if constexpr (is_resizable_v<index_array_type>) {
+                        this->attributes_["shape"].index_array.resize(n);
+                    }
+                    for (nm_size_t i=0; i<(nm_size_t)n; i++) {
+                        at(this->attributes_["shape"].index_array,i) = at(other_shape,i);
+                    }
+                }
+                if (other.attributes_.count("dim")) {
+                    this->attributes_["dim"] = other.attributes_["dim"].integer;
+                }
+                if (other.attributes_.count("max_dim")) {
+                    this->attributes_["max_dim"] = other.attributes_["max_dim"].integer;
+                }
+                if (other.attributes_.count("is_num")) {
+                    this->attributes_["is_num"] = other.attributes_["is_num"].integer;
+                }
+                if (other.attributes_.count("kind")) {
+                    this->attributes_["kind"] = kind_to_string(other.kind());
+                }
+                if (other.attributes_.count("dtype")) {
+                    this->attributes_["dtype"] = type_to_string(other.dtype());
+                }
+                if (other.attributes_.count("layout")) {
+                    this->attributes_["layout"] = layout_to_string(other.layout());
+                }
+                if (other.attributes_.count("combinator_type")) {
+                    this->attributes_["combinator_type"] = combinator_to_string(other.combinator_type());
+                }
+                if (other.attributes_.count("combinator_args")) {
+                    this->attributes_["combinator_args"] = other.combinator_args();
+                }
+            }
 
-            if constexpr (meta::is_same_v<
-                meta::remove_cvref_t<decltype(composition_)>
-                , meta::remove_cvref_t<decltype(other.composition_)>
+            if constexpr (is_same_v<
+                remove_cvref_t<decltype(composition_)>
+                , remove_cvref_t<decltype(other.composition_)>
                 >
             ) {
                 this->composition() = other.composition();
@@ -918,7 +1109,7 @@ namespace nmtools::functional
         }
 
         #if NMTOOLS_HAS_STRING
-        inline auto to_string() const
+        inline auto to_string() const -> nmtools_list<nmtools_string>
         {
             auto strs = nmtools_list<nmtools_string>{};
 
@@ -928,8 +1119,17 @@ namespace nmtools::functional
                     kind_str += "{";
                     auto n = attributes_.at("indexer.n_args").integer;
                     for (nm_size_t i=0; i<(nm_size_t)n; i++) {
-                        auto arg_key = utl::static_string("indexer.args.");
-                        auto key = arg_key + utl::to_string(i);
+                        using key_type = typename attributes_type::key_type;
+                        // TODO: better conversion from/to std::string and utl::string,static_string
+                        auto key = [&](){
+                            auto arg_key = key_type("indexer.args.");
+                            auto i_str   = utl::to_string(i);
+                            if constexpr (!is_same_v<key_type,utl::static_string>) {
+                                return arg_key + i_str.c_str();
+                            } else {
+                                return arg_key + i_str;
+                            }
+                        }();
                         const auto& attr = attributes_.at(key);
                         if (attributes_.count(key + ".name")) {
                             kind_str += attributes_.at(key+".name").string.c_str();
@@ -1009,12 +1209,16 @@ namespace nmtools::functional
                     break;
                     case Kind::BUFFERED:
                     kind_str += "BUFFERED";
+                    kind_str += "{";
                     if (attributes_.count("layout")) {
-                        kind_str += "{";
                         kind_str += "layout=";
                         kind_str += attributes_.at("layout").string.c_str();
-                        kind_str += "}";
                     }
+                    if (attributes_.count("input_type")) {
+                        kind_str += ",input_type=";
+                        kind_str += attributes_.at("input_type").string.c_str();
+                    }
+                    kind_str += "}";
                     break;
                     case Kind::COMPOSITION:
                     kind_str += "COMPOSITION";
@@ -1023,49 +1227,9 @@ namespace nmtools::functional
                 };
                 strs.push_back(kind_str);
 
-                if constexpr (!is_none_v<attributes_t>) {
-                    
-                }
-
                 auto dtype_str = nmtools_string();
                 dtype_str += "dtype: ";
-                switch (dtype()) {
-                    case Type::UNKNOWN:
-                    dtype_str += "UNKNOWN";
-                    break;
-                    case Type::UInt8:
-                    dtype_str += "uint8";
-                    break;
-                    case Type::UInt16:
-                    dtype_str += "uint16";
-                    break;
-                    case Type::UInt32:
-                    dtype_str += "uint32";
-                    break;
-                    case Type::UInt64:
-                    dtype_str += "uint64";
-                    break;
-                    case Type::Int8:
-                    dtype_str += "int8";
-                    break;
-                    case Type::Int16:
-                    dtype_str += "int16";
-                    break;
-                    case Type::Int32:
-                    dtype_str += "int32";
-                    break;
-                    case Type::Int64:
-                    dtype_str += "int64";
-                    break;
-                    case Type::Float32:
-                    dtype_str += "float32";
-                    break;
-                    case Type::Float64:
-                    dtype_str += "float64";
-                    break;
-                    default:
-                    break;
-                };
+                dtype_str += functional::type_to_string<nmtools_string>(dtype());
 
                 if (!is_num()) {
                     dtype_str += " | ";
@@ -1104,22 +1268,7 @@ namespace nmtools::functional
                 strs.push_back(dtype_str);
             } else if (is_combinator()) {
                 auto str = nmtools_string();
-                switch (combinator_type()) {
-                    case Combinator::SWAP:
-                    str += "SWAP";
-                    break;
-                    case Combinator::DUP:
-                    str += "DUP";
-                    break;
-                    case Combinator::DIG:
-                    str += "DIG";
-                    break;
-                    case Combinator::BURY:
-                    str += "BURY";
-                    break;
-                    default:
-                    break;
-                };
+                str += functional::combinator_to_string<nmtools_string>(combinator_type());
                 if (combinator_args() > 0) {
                     str += "(";
                     str += utils::to_string(combinator_args());
@@ -1139,13 +1288,157 @@ namespace nmtools::functional
             return strs;
         }
         #endif
-    };
+    }; // Node
+
+    /*********************************************************************** */
+
+    template <typename T>
+    constexpr auto address_for_hash(const T& node)
+    {
+        nm_size_t addr = 0;
+        if constexpr (is_shared_ptr_v<T>) {
+            addr = (nm_size_t)node.get();
+        } else if constexpr (is_variant_v<T>) {
+            constexpr auto N = variant_size_v<T>;
+            template_for<N>([&](auto i){
+                constexpr auto I = decltype(i)::value;
+                auto ptr = node.template get_if<I>();
+                if (ptr) {
+                    addr = address_for_hash(*ptr);
+                }
+            });
+        }
+        return addr;
+    }
+
+    template <typename KeyType>
+    constexpr auto make_indexer_arg_key(nm_size_t i)
+    {
+        KeyType arg_key("indexer.args.");
+        auto i_str = utl::to_string(i);
+        if constexpr (is_same_v<KeyType,utl::static_string_base<>>) {
+            return arg_key + i_str;
+        } else {
+            return arg_key + i_str.c_str();
+        }
+    }
+
+    template <typename AttributeType>
+    constexpr auto hash_attribute_value(const AttributeType& attr)
+    {
+        if (attr.is_string()) {
+            return index::hash(attr.string);
+        } else if (attr.is_integer()) {
+            return (nm_size_t)attr.integer;
+        } else if (attr.is_floating()) {
+            return (nm_size_t)attr.floating;
+        } else if (attr.is_index_array()) {
+            return index::hash(attr.index_array);
+        } else {
+            return (nm_size_t)0;
+        }
+    }
+
+    template <
+        auto MAX_DIM=NMTOOLS_NODE_MAX_LEN
+        , auto MAX_COMPOSITION=NMTOOLS_NODE_MAX_COMPOSITION
+        , typename integer_t=nm_index_t
+        , typename float_t=float32_t
+        , typename vector_t=conditional_t<(MAX_DIM > 0)
+            , nmtools_static_vector<nm_index_t,(MAX_DIM > 0 ? MAX_DIM : 1)>
+            , nmtools_list<nm_index_t>>
+        , typename attributes_t=Attributes<integer_t,float_t>
+        , typename string_t=utl::static_string
+        , typename input_t=none_t
+    >
+    constexpr auto hash(const Node<MAX_DIM,MAX_COMPOSITION,integer_t,float_t,vector_t,attributes_t,string_t,input_t>& node
+        , bool hash_shape=true, bool hash_address=true)
+    {
+        using node_type = Node<MAX_DIM,MAX_COMPOSITION,integer_t,float_t,vector_t,attributes_t,string_t,input_t>;
+
+        auto dtype = node.dtype();
+        auto shape = node.shape();
+        auto kind  = node.kind();
+
+        auto kind_hash  = index::hash(node_type::kind_to_string(kind));
+        auto type_hash  = index::hash(dtype);
+        auto shape_hash = hash_shape ? index::hash(shape) : 0;
+
+        nm_size_t result {};
+
+        // NOTE: GCC's constexpr evaluator has issues with switch_expr AST
+        if (kind == Kind::INDEXING) {
+            if (node.attributes_.count("indexer")) {
+                auto indexer = node.attributes_.at("indexer").string;
+                auto idx_hash = index::hash(indexer);
+
+                auto arg_hash = idx_hash;
+                if (node.attributes_.count("indexer.n_args")) {
+                    auto n = node.attributes_.at("indexer.n_args").integer;
+                    for (nm_size_t i=0; i<(nm_size_t)n; i++) {
+                        using key_type = typename node_type::attributes_type::key_type;
+                        auto arg_key = make_indexer_arg_key<key_type>(i);
+                        const auto& attr = node.attributes_.at(arg_key);
+                        if (node.attributes_.count(arg_key + ".name")) {
+                            auto name_hash = index::hash(node.attributes_.at(arg_key+".name").string);
+                            arg_hash = index::hash_combine(arg_hash, name_hash);
+                        }
+                        arg_hash = index::hash_combine(arg_hash, hash_attribute_value(attr));
+                    }
+                }
+
+                auto to_hash = nmtools_array{kind_hash,idx_hash,arg_hash,type_hash,shape_hash};
+                result = index::hash(to_hash);
+            }
+        } else if (kind == Kind::UNARY_UFUNC) {
+            if (node.attributes_.count("op")) {
+                const auto& op_attr = node.attributes_.at("op");
+                auto op_hash = hash_attribute_value(op_attr);
+                auto to_hash = nmtools_array{kind_hash,op_hash,type_hash,shape_hash};
+                result = index::hash(to_hash);
+            }
+        } else if (kind == Kind::BINARY_UFUNC) {
+            if (node.attributes_.count("op")) {
+                const auto& op_attr = node.attributes_.at("op");
+                auto op_hash = hash_attribute_value(op_attr);
+                auto to_hash = nmtools_array{kind_hash,op_hash,type_hash,shape_hash};
+                result = index::hash(to_hash);
+            }
+        } else if (kind == Kind::REDUCE) {
+            if (node.attributes_.count("op") && node.attributes_.count("axis")
+                && node.attributes_.count("initial") && node.attributes_.count("keepdims"))
+            {
+                const auto& op_attr = node.attributes_.at("op");
+                auto op_hash = hash_attribute_value(op_attr);
+
+                const auto& axis_attr = node.attributes_.at("axis");
+                auto axis_hash = hash_attribute_value(axis_attr);
+
+                const auto& init_attr = node.attributes_.at("initial");
+                auto init_hash = hash_attribute_value(init_attr);
+
+                const auto& keepdims_attr = node.attributes_.at("keepdims");
+                auto keepdims_hash = hash_attribute_value(keepdims_attr);
+
+                auto to_hash = nmtools_array{kind_hash,op_hash,axis_hash,init_hash,keepdims_hash,type_hash,shape_hash};
+                result = index::hash(to_hash);
+            }
+        } else if (kind == Kind::BUFFERED) {
+            nm_size_t addr = hash_address ? address_for_hash(node.input_) : 0;
+            auto to_hash = nmtools_array{kind_hash,addr,type_hash,shape_hash};
+            result = index::hash(to_hash);
+        }
+
+        return result;
+    }
+
+    /*********************************************************************** */
 
     template <typename input_t, typename shape_t, typename element_t=none_t>
     struct buffer_node_t
     {
         // TODO: input must be buffered array or num
-        using input_type = meta::conditional_t<meta::is_num_v<input_t>,input_t,const input_t*>;
+        using input_type = conditional_t<is_num_v<input_t> || is_shared_ptr_v<input_t>,input_t,const input_t*>;
         using shape_type = const shape_t;
         using element_type = element_t;
         using dtype_type   = dtype_t<element_type>;
@@ -1176,26 +1469,37 @@ namespace nmtools::functional
     template <typename input_t>
     constexpr auto buffer_node(const input_t& input)
     {
-        if constexpr (meta::is_maybe_v<input_t>) {
+        if constexpr (is_maybe_v<input_t>) {
             using result_t = decltype(buffer_node(unwrap(input)));
             using return_t = nmtools_maybe<result_t>;
             // TODO: make sure unwrap return reference
             return (has_value(input)
                 ? return_t{buffer_node(unwrap(input))}
-                : return_t{meta::Nothing}
+                : return_t{Nothing}
             );
+        } else if constexpr (is_shared_ptr_v<input_t>) {
+            nmtools_panic( static_cast<bool>(input)
+                , "invalid input state for buffer_node"
+            );
+            auto shape = nmtools::shape<true>(*input);
+            using element_t = get_element_type_t<remove_pointer_t<input_t>>;
+            using shape_t   = remove_cvref_t<decltype(shape)>;
+            using node_t    = buffer_node_t<input_t,shape_t,element_t>;
+            return node_t{input,shape};
         } else {
             auto shape = nmtools::shape<true>(input);
-            using element_t = meta::get_element_type_t<input_t>;
-            using shape_t   = meta::remove_cvref_t<decltype(shape)>;
+            using element_t = get_element_type_t<remove_pointer_t<input_t>>;
+            using shape_t   = remove_cvref_t<decltype(shape)>;
             using node_t    = buffer_node_t<input_t,shape_t,element_t>;
-            if constexpr (meta::is_num_v<input_t>) {
+            if constexpr (is_num_v<input_t>) {
                 return node_t{input,shape};
             } else {
                 return node_t{&input,shape};
             }
         }
     }
+
+    /*********************************************************************** */
 
     template <typename functor_t, typename operands_t, typename output_shape_t=nmtools_tuple<>, typename output_element_t=none_t>
     struct compute_node_t
@@ -1206,7 +1510,7 @@ namespace nmtools::functional
         using functor_type  = functor_t;
         using operands_type = operands_t;
         using output_shape_type   = output_shape_t;
-        using output_element_type = meta::conditional_t<
+        using output_element_type = conditional_t<
             is_dtype_v<output_element_t> || is_none_v<output_element_t>
             , output_element_t
             , dtype_t<output_element_t>>;
@@ -1219,13 +1523,13 @@ namespace nmtools::functional
         #if NMTOOLS_HAS_STRING
         auto to_string() const noexcept
         {
-            if constexpr (meta::is_functor_composition_v<functor_type>) {
+            if constexpr (is_functor_composition_v<functor_type>) {
                 auto strs = nmtools_list<nmtools_string>{};
 
                 {
                     auto operands_str = nmtools_string("operands: ");
-                    constexpr auto N = meta::len_v<operands_type>;
-                    meta::template_for<N>([&](auto I){
+                    constexpr auto N = len_v<operands_type>;
+                    template_for<N>([&](auto I){
                         operands_str += utils::to_string(at(operands,I),utils::Compact);
                         if (I < (N-1)) {
                             operands_str += ", ";
@@ -1234,18 +1538,18 @@ namespace nmtools::functional
                     strs.push_back(operands_str);
                 }
 
-                constexpr auto N = meta::len_v<typename functor_type::functors_type>;
-                meta::template_for<N>([&](auto I){
+                constexpr auto N = len_v<typename functor_type::functors_type>;
+                template_for<N>([&](auto I){
                     auto str = nmtools_string("");
 
                     const auto& m_functor = at(functor.functors,I);
 
-                    using attributes_t = meta::remove_cvref_t<decltype(m_functor.attributes)>;
+                    using attributes_t = remove_cvref_t<decltype(m_functor.attributes)>;
                     auto fmap_str = utils::to_string(m_functor.fmap,utils::Compact);
 
                     auto attr_str = nmtools_string("");
-                    constexpr auto N = meta::len_v<attributes_t>;
-                    meta::template_for<N>([&](auto index){
+                    constexpr auto N = len_v<attributes_t>;
+                    template_for<N>([&](auto index){
                         attr_str += utils::to_string(nmtools::at(m_functor.attributes,index),utils::Compact);
                         if (index < (N-1)) {
                             attr_str += ",";
@@ -1262,7 +1566,7 @@ namespace nmtools::functional
                 {
                     auto dtype_str = nmtools_string("");
                     dtype_str += utils::to_string(output_element);
-                    if constexpr (!is_none_v<output_shape_type> && !meta::is_same_v<output_shape_type,nmtools_tuple<>>) {
+                    if constexpr (!is_none_v<output_shape_type> && !is_same_v<output_shape_type,nmtools_tuple<>>) {
                         dtype_str += " x ";
                         dtype_str += utils::to_string(output_shape,utils::Compact);
                     }
@@ -1276,8 +1580,8 @@ namespace nmtools::functional
 
                 {
                     auto operands_str = nmtools_string("operands: ");
-                    constexpr auto N = meta::len_v<operands_type>;
-                    meta::template_for<N>([&](auto I){
+                    constexpr auto N = len_v<operands_type>;
+                    template_for<N>([&](auto I){
                         operands_str += utils::to_string(at(operands,I),utils::Compact);
                         if (I < (N-1)) {
                             operands_str += ", ";
@@ -1287,12 +1591,12 @@ namespace nmtools::functional
                 }
                 {
                     auto str = nmtools_string("");
-                    using attributes_t = meta::remove_cvref_t<decltype(functor.attributes)>;
+                    using attributes_t = remove_cvref_t<decltype(functor.attributes)>;
                     auto fmap_str = utils::to_string(functor.fmap,utils::Compact);
 
                     auto attr_str = nmtools_string("");
-                    constexpr auto N = meta::len_v<attributes_t>;
-                    meta::template_for<N>([&](auto index){
+                    constexpr auto N = len_v<attributes_t>;
+                    template_for<N>([&](auto index){
                         attr_str += utils::to_string(nmtools::at(functor.attributes,index),utils::Compact);
                         if (index < (N-1)) {
                             attr_str += ",";
@@ -1308,7 +1612,7 @@ namespace nmtools::functional
                 {
                     auto dtype_str = nmtools_string("");
                     dtype_str += utils::to_string(output_element);
-                    if constexpr (!is_none_v<output_shape_type> && !meta::is_same_v<output_shape_type,nmtools_tuple<>>) {
+                    if constexpr (!is_none_v<output_shape_type> && !is_same_v<output_shape_type,nmtools_tuple<>>) {
                         dtype_str += ": ";
                         dtype_str += utils::to_string(output_shape,utils::Compact);
                     }
@@ -1319,12 +1623,12 @@ namespace nmtools::functional
                 #else
                 auto str = nmtools_string("");
                 {
-                    using attributes_t = meta::remove_cvref_t<decltype(functor.attributes)>;
+                    using attributes_t = remove_cvref_t<decltype(functor.attributes)>;
                     auto fmap_str = utils::to_string(functor.fmap,utils::Compact);
 
                     auto attr_str = nmtools_string("");
-                    constexpr auto N = meta::len_v<attributes_t>;
-                    meta::template_for<N>([&](auto index){
+                    constexpr auto N = len_v<attributes_t>;
+                    template_for<N>([&](auto index){
                         attr_str += utils::to_string(nmtools::at(functor.attributes,index),utils::Compact);
                         if (index < (N-1)) {
                             attr_str += ",";
@@ -1337,8 +1641,8 @@ namespace nmtools::functional
                 }
                 {
                     auto operands_str = nmtools_string("operands: ");
-                    constexpr auto N = meta::len_v<operands_type>;
-                    meta::template_for<N>([&](auto I){
+                    constexpr auto N = len_v<operands_type>;
+                    template_for<N>([&](auto I){
                         operands_str += utils::to_string(at(operands,I),utils::Compact);
                         if (I < (N-1)) {
                             operands_str += ", ";
@@ -1350,7 +1654,7 @@ namespace nmtools::functional
 
                 str += " | ";
                 str += utils::to_string(output_element);
-                if constexpr (!is_none_v<output_shape_type> && !meta::is_same_v<output_shape_type,nmtools_tuple<>>) {
+                if constexpr (!is_none_v<output_shape_type> && !is_same_v<output_shape_type,nmtools_tuple<>>) {
                     str += " | ";
                     str += utils::to_string(output_shape,utils::Compact);
                 }
@@ -1379,41 +1683,43 @@ namespace nmtools::functional
     template <typename view_t>
     constexpr auto compute_node(const view_t& view)
     {
-        if constexpr (meta::is_maybe_v<view_t>) {
+        if constexpr (is_maybe_v<view_t>) {
             using result_t = decltype(compute_node(unwrap(view)));
             using return_t = nmtools_maybe<result_t>;
             return (has_value(view)
                 ? return_t{compute_node(unwrap(view))}
-                : return_t{meta::Nothing}
+                : return_t{Nothing}
             );
         } else {
             auto functor   = get_function(view);
             auto operands  = view.operands_ids;
             auto shape     = nmtools::shape<true>(view);
-            using output_t = meta::get_element_type_t<view_t>;
+            using output_t = get_element_type_t<view_t>;
             auto dtype = dtype_t<output_t>{};
             auto node  = compute_node(functor,operands,shape,dtype);
             return node;
         }
     }
 
+    /*********************************************************************** */
+
     template <typename input_t>
     constexpr auto node(const input_t& input)
     {
-        if constexpr (meta::is_maybe_v<input_t>) {
+        if constexpr (is_maybe_v<input_t>) {
             using result_t = decltype(node(unwrap(input)));
-            using return_t = meta::conditional_t<meta::is_maybe_v<result_t>,result_t,nmtools_maybe<result_t>>;
+            using return_t = conditional_t<is_maybe_v<result_t>,result_t,nmtools_maybe<result_t>>;
             return (has_value(input)
                 ? return_t{node(unwrap(input))}
-                : return_t{meta::Nothing}
+                : return_t{Nothing}
             );
-        } else if constexpr (meta::is_same_view_v<view::alias_t,input_t>) {
-            if constexpr (meta::is_pointer_v<decltype(input.array)>) {
+        } else if constexpr (is_same_view_v<view::alias_t,input_t>) {
+            if constexpr (is_pointer_v<decltype(input.array)>) {
                 return buffer_node(*(input.array));
             } else {
                 return buffer_node(input.array);
             }
-        } else if constexpr (meta::is_view_v<input_t>) {
+        } else if constexpr (is_view_v<input_t>) {
             return compute_node(input);
         } else {
             return buffer_node(input);
@@ -1457,26 +1763,8 @@ namespace nmtools::meta
             Type dtype    = Type::UNKNOWN;
             Layout layout = Layout::UNKNOWN;
 
-            if (is_same_v<element_t,float32_t>) {
-                dtype = Type::Float32;
-            } else if (is_same_v<element_t,float64_t>) {
-                dtype = Type::Float64;
-            } else if (is_same_v<element_t,uint8_t>) {
-                dtype = Type::UInt8;
-            } else if (is_same_v<element_t,uint16_t>) {
-                dtype = Type::UInt16;
-            } else if (is_same_v<element_t,uint32_t>) {
-                dtype = Type::UInt32;
-            } else if (is_same_v<element_t,uint64_t>) {
-                dtype = Type::UInt64;
-            } else if (is_same_v<element_t,int8_t>) {
-                dtype = Type::Int8;
-            } else if (is_same_v<element_t,int16_t>) {
-                dtype = Type::Int16;
-            } else if (is_same_v<element_t,int32_t>) {
-                dtype = Type::Int32;
-            } else if (is_same_v<element_t,int64_t>) {
-                dtype = Type::Int64;
+            if constexpr (!is_none_v<element_t>) {
+                dtype = to_value_v<dtype_t<element_t>>;
             }
 
             auto layout_kind = layout_kind_v<input_t>;
@@ -1507,9 +1795,13 @@ namespace nmtools::meta
             }
 
             if (is_num) {
-                return Node::buffer(None,dtype);
+                auto node = Node::buffer(None,dtype);
+                node.attributes()["input_type"] = type_name_v<input_t>;
+                return node;
             } else {
-                return Node::buffer(shape,dim,max_dim,dtype,layout);
+                auto node = Node::buffer(shape,dim,max_dim,dtype,layout);
+                node.attributes()["input_type"] = type_name_v<input_t>;
+                return node;
             }
         }();
     };
@@ -1532,26 +1824,8 @@ namespace nmtools::meta
             Kind kind  = Kind::UNKNOWN;
             Type dtype = Type::UNKNOWN;
 
-            if (is_same_v<element_t,float32_t>) {
-                dtype = Type::Float32;
-            } else if (is_same_v<element_t,float64_t>) {
-                dtype = Type::Float64;
-            } else if (is_same_v<element_t,uint8_t>) {
-                dtype = Type::UInt8;
-            } else if (is_same_v<element_t,uint16_t>) {
-                dtype = Type::UInt16;
-            } else if (is_same_v<element_t,uint32_t>) {
-                dtype = Type::UInt32;
-            } else if (is_same_v<element_t,uint64_t>) {
-                dtype = Type::UInt64;
-            } else if (is_same_v<element_t,int8_t>) {
-                dtype = Type::Int8;
-            } else if (is_same_v<element_t,int16_t>) {
-                dtype = Type::Int16;
-            } else if (is_same_v<element_t,int32_t>) {
-                dtype = Type::Int32;
-            } else if (is_same_v<element_t,int64_t>) {
-                dtype = Type::Int64;
+            if constexpr (!is_none_v<element_t>) {
+                dtype = to_value_v<dtype_t<element_t>>;
             }
 
             using shape_type = typename Node::shape_type;
@@ -1590,7 +1864,7 @@ namespace nmtools::meta
                 constexpr auto num_functors = len_v<functors_t>;
                 composition.resize(num_functors);
                 using ComposeNode = remove_cvref_t<decltype(at(composition,0))>;
-                meta::template_for<num_functors>([&](auto init){
+                template_for<num_functors>([&](auto init){
                     auto node = ComposeNode{};
                     constexpr auto I = decltype(init)::value;
                     using functor_type = at_t<functors_t,I>;

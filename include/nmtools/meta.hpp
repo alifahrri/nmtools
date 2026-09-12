@@ -242,6 +242,12 @@ namespace nmtools::meta
     template <typename T>
     struct is_shared_ptr<::std::shared_ptr<T>>
         : true_type {};
+
+    template <typename T>
+    struct remove_pointer<::std::shared_ptr<T>>
+    {
+        using type = T;
+    };
 }
 
 #endif // <memory>

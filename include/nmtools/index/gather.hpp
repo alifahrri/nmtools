@@ -33,15 +33,13 @@ namespace nmtools::index
     {
         using return_t = resolve_optype_t<gather_t,vector_t,indices_t>;
 
-        if constexpr (is_maybe_v<vector_t>) {
-            // assume return_t is also maybe type
-            if (static_cast<bool>(vector)) {
-                auto result = gather(*vector,indices);
-                // TODO: handle nested optional
-                return return_t{result};
-            } else {
-                return return_t{Nothing};
-            }
+        if constexpr (is_maybe_v<vector_t> || is_maybe_v<indices_t>) {
+            using result_t = decltype(gather(unwrap(vector),unwrap(indices)));
+            using return_t = conditional_t<is_maybe_v<result_t>,result_t,nmtools_maybe<result_t>>;
+            return (has_value(vector) && has_value(indices)
+                ? return_t{gather(unwrap(vector),unwrap(indices))}
+                : return_t{Nothing}
+            );
         } else {
             [[maybe_unused]] auto m = len(indices);
 
@@ -89,7 +87,7 @@ namespace nmtools::meta
     >
     {
         static constexpr auto vtype = [](){
-            using element_t [[maybe_unused]] = remove_address_space_t<get_index_element_type_t<vector_t>>;
+            using element_t [[maybe_unused]] = conditional_t<is_index_array_v<vector_t>,get_index_element_type_t<vector_t>,get_value_type_t<vector_t>>;
             if constexpr (is_maybe_v<vector_t>) {
                 using vector_type = get_maybe_type_t<vector_t>;
                 using result_type = resolve_optype_t<index::gather_t,vector_type,indices_t>;

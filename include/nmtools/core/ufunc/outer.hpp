@@ -2,7 +2,7 @@
 #define NMTOOLS_ARRAY_VIEW_UFUNC_OUTER_HPP
 
 #include "nmtools/meta.hpp"
-#include "nmtools/array/ref.hpp"
+// #include "nmtools/array/ref.hpp"
 #include "nmtools/utility/at.hpp"
 #include "nmtools/core/decorator.hpp"
 #include "nmtools/core/flatten.hpp"

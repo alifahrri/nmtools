@@ -48,6 +48,11 @@ namespace nmtools::meta
     constexpr inline auto is_same_functor_v = is_same_functor<F,rhs_t>::value;
 }
 
+namespace nmtools
+{
+    using meta::is_same_functor_v;
+}
+
 namespace nmtools::functional
 {
     // TODO: refactor to not use empty_operands_t & empty_attributes_t
