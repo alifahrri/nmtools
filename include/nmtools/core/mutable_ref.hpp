@@ -50,7 +50,7 @@ namespace nmtools::view
          * @brief construct ref view
          * 
          */
-        constexpr mutable_ref_t(array_type array)
+        constexpr mutable_ref_t(array_t& array)
             : array(fwd_mutable_operand(array))
         {}
 
