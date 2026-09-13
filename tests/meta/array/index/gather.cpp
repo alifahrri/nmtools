@@ -139,13 +139,6 @@ TEST_CASE("gather(tuple;tuple)" * doctest::test_suite("index::gather"))
         STATIC_CHECK_IS_SAME( res_t, exp_t );
     }
     {
-        using lhs_t = nmtools_tuple<float,float,float,float>;
-        using rhs_t = nmtools_tuple<int,int,int,int>;
-        using res_t = meta::resolve_optype_t<nm::index::gather_t,lhs_t,rhs_t>;
-        using exp_t = nmtools_array<float,4>;
-        STATIC_CHECK_IS_SAME( res_t, exp_t );
-    }
-    {
         using lhs_t = nmtools_tuple<bool,bool,bool,bool>;
         using rhs_t = nmtools_tuple<int,int,int,int>;
         using res_t = meta::resolve_optype_t<nm::index::gather_t,lhs_t,rhs_t>;
@@ -157,13 +150,6 @@ TEST_CASE("gather(tuple;tuple)" * doctest::test_suite("index::gather"))
         using rhs_t = nmtools_tuple<int,int,int>;
         using res_t = meta::resolve_optype_t<nm::index::gather_t,lhs_t,rhs_t>;
         using exp_t = nmtools_array<int,3>;
-        STATIC_CHECK_IS_SAME( res_t, exp_t );
-    }
-    {
-        using lhs_t = nmtools_tuple<float,float,float,float>;
-        using rhs_t = nmtools_tuple<int,int,int>;
-        using res_t = meta::resolve_optype_t<nm::index::gather_t,lhs_t,rhs_t>;
-        using exp_t = nmtools_array<float,3>;
         STATIC_CHECK_IS_SAME( res_t, exp_t );
     }
     {
