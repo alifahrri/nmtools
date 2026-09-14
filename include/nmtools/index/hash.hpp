@@ -64,6 +64,9 @@ namespace nmtools::index
 
     template <typename to_hash_t>
     constexpr auto hash([[maybe_unused]] const to_hash_t& s)
+        // fix for clang 15
+        // TODO: keep it inferred, for example for constant index
+        -> nm_size_t
     {
         using result_t = resolve_optype_t<hash_t,to_hash_t>;
 
