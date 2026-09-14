@@ -10,7 +10,7 @@
 
 #include "nmtools/ndarray/fixed.hpp"
 #include "nmtools/ndarray/dynamic.hpp"
-#include "nmtools/array/view.hpp"
+#include "nmtools/array/ref.hpp"
 #include "nmtools/utility/isclose.hpp"
 #include "nmtools/utility/isequal.hpp"
 #include "nmtools/testing/doctest.hpp"
@@ -248,7 +248,7 @@ TEST_CASE("ref(dynamic_ndarray[4])" * doctest::test_suite("view::ref"))
 
 TEST_CASE("ref(shared_ptr)" * doctest::test_suite("view::ref"))
 {
-    using buffer_t = std::vector<int>;
+    using buffer_t = nmtools_list<int>;
     auto array_ptr = std::make_shared<buffer_t>(12);
 
     [[maybe_unused]]

@@ -1,7 +1,6 @@
 #ifndef NMTOOLS_ARRAY_VIEW_MUTABLE_REF_HPP
 #define NMTOOLS_ARRAY_VIEW_MUTABLE_REF_HPP
 
-#include "nmtools/traits.hpp"
 #include "nmtools/meta.hpp"
 #include "nmtools/utility/at.hpp"
 #include "nmtools/utility/shape.hpp"

@@ -8,7 +8,7 @@
  * 
  */
 
-#include "nmtools/array/view.hpp"
+#include "nmtools/core/mutable_ref.hpp"
 #include "nmtools/ndarray/fixed.hpp"
 #include "nmtools/ndarray/dynamic.hpp"
 #include "nmtools/utility/isclose.hpp"
