@@ -19,7 +19,7 @@ namespace nmtools::view
         using value_type = meta::get_element_type_t<array_t>;
         using const_reference = const value_type&;
         // array type as required by decorator
-        using array_type = resolve_array_type_t<array_t>;
+        using array_type = meta::fwd_operand_t<array_t>;
 
         // TODO: assert id is constant index (or none)
         using id_type = id_t;
@@ -35,7 +35,7 @@ namespace nmtools::view
          * 
          */
         constexpr alias_t(const array_t& array, id_t id)
-            : array(initialize<array_type>(array))
+            : array(fwd_operand(array))
             , id(id)
         {}
 
@@ -89,7 +89,7 @@ namespace nmtools::view
         using value_type = meta::get_element_type_t<array_t>;
         using const_reference = const value_type&;
         // array type as required by decorator
-        using array_type = resolve_array_type_t<array_t>;
+        using array_type = meta::fwd_operand_t<array_t>;
         using id_type = id_t;
 
         static constexpr auto operands_ids = nmtools_tuple{id_type{}};
@@ -145,7 +145,7 @@ namespace nmtools::view
 
         constexpr auto dim() const
         {
-            return meta::ct_v<1>;
+            return ct_v<1>;
         }
 
         constexpr auto shape() const
@@ -163,7 +163,7 @@ namespace nmtools::view
         constexpr auto operator()(const size_types...indices) const
         {
             auto indices_ = pack_indices(indices...);
-            return array[at(indices_,meta::ct_v<0>)];
+            return array[at(indices_,ct_v<0>)];
         }
     };
 
@@ -172,10 +172,10 @@ namespace nmtools::view
     constexpr auto alias(const array_t& array, id_t id=id_t{})
     {
         // TODO: handle either type
-        if constexpr (meta::is_maybe_v<array_t>) {
+        if constexpr (is_maybe_v<array_t>) {
             using array_type  = meta::get_maybe_type_t<array_t>;
             using result_type = decltype(alias(meta::declval<array_type>(),id));
-            using return_type = meta::conditional_t<meta::is_maybe_v<result_type>,result_type,nmtools_maybe<result_type>>;
+            using return_type = meta::conditional_t<is_maybe_v<result_type>,result_type,nmtools_maybe<result_type>>;
             return (static_cast<bool>(array)
                 ? return_type{alias(*array,id)}
                 : return_type{meta::Nothing}
@@ -203,21 +203,21 @@ namespace nmtools::view
         auto array_pack = pack_operands(arrays...);
         auto f = [](const auto& array_pack){
             constexpr auto N = sizeof...(arrays);
-            constexpr auto initial_ids = meta::template_reduce<N>([&](auto init, auto index){
+            constexpr auto initial_ids = template_reduce<N>([&](auto init, auto index){
                 using array_type = decltype(unwrap(at(array_pack,index)));
-                constexpr auto id = get_id_v<meta::remove_cvref_pointer_t<array_type>>;
-                return utility::tuple_append(init,meta::ct_v<(nm_index_t)id>);
+                constexpr auto id = get_id_v<remove_cvref_pointer_t<array_type>>;
+                return utility::tuple_append(init,ct_v<(nm_index_t)id>);
             },nmtools_tuple{});
-            constexpr auto max_id    = index::max(meta::to_value_v<decltype(initial_ids)>);
+            constexpr auto max_id    = index::max(to_value_v<decltype(initial_ids)>);
             constexpr auto offset_id = max_id + 1; // if max_id: -1, then offset 0
-            constexpr auto final_ids = meta::template_reduce<N>([&](auto init, auto index){
+            constexpr auto final_ids = template_reduce<N>([&](auto init, auto index){
                 constexpr auto id = at(initial_ids,index);
                 constexpr auto final_id = ((id < 0) ? (offset_id + index) : id);
-                return utility::tuple_append(init,meta::ct_v<final_id>);
+                return utility::tuple_append(init,ct_v<final_id>);
             },nmtools_tuple{});
-            auto aliased = meta::template_reduce<N>([&](auto init, auto index){
+            auto aliased = template_reduce<N>([&](auto init, auto index){
                 const auto& array = at(array_pack,index);
-                if constexpr (meta::is_pointer_v<meta::remove_cvref_pointer_t<decltype(array)>>) {
+                if constexpr (meta::is_pointer_v<remove_cvref_pointer_t<decltype(array)>>) {
                     return append_operands(init,view::alias(*array,at(final_ids,index)));
                 } else {
                     return append_operands(init,view::alias(array,at(final_ids,index)));
@@ -229,7 +229,7 @@ namespace nmtools::view
                 return aliased;
             }
         };
-        if constexpr (meta::is_maybe_v<decltype(array_pack)>) {
+        if constexpr (is_maybe_v<decltype(array_pack)>) {
             using result_t = decltype(f(unwrap(array_pack)));
             using return_t = nmtools_maybe<result_t>;
             return (array_pack

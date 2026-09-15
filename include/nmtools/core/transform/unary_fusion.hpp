@@ -2,7 +2,6 @@
 #define NMTOOLS_ARRAY_FUNCTIONAL_TRANSFORM_UNARY_FUSION_HPP
 
 #include "nmtools/meta.hpp"
-#include "nmtools/utility/ct_digraph.hpp"
 #include "nmtools/core/functor.hpp"
 #include "nmtools/network/cast.hpp"
 #include "nmtools/network/digraph.hpp"
@@ -10,8 +9,12 @@
 #include "nmtools/network/predecessors.hpp"
 #include "nmtools/core/node.hpp"
 
+// TODO: remove
+#include "nmtools/utility/ct_digraph.hpp"
+
 namespace nmtools::functional
 {
+    // TODO: remove
     // find a node that has single output and single input, in which the input only used by that node
     template <typename adjacency_list_t>
     constexpr auto find_unary_fusion(const adjacency_list_t& adjacency_list)
@@ -39,6 +42,7 @@ namespace nmtools::functional
         return nmtools_tuple{from,to};
     } // find_unary_fusion
 
+    // TODO: remove
     template <typename graph_t, typename n_repeats_t=ct<1>>
     constexpr auto transform_unary_fusion(const graph_t& graph, n_repeats_t = n_repeats_t{})
     {

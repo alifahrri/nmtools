@@ -4,40 +4,16 @@
 #include "nmtools/utl/tuple.hpp"
 #include "nmtools/utl/bit.hpp"
 #include "nmtools/meta/bits/transform/conditional.hpp"
+#include "nmtools/meta/bits/transform/get_bias.hpp"
+#include "nmtools/meta/bits/transform/num_exponent_bits.hpp"
+#include "nmtools/meta/bits/transform/num_mantissa_bits.hpp"
 
 namespace nmtools::meta
 {
-    template <typename T>
-    struct num_exponent_bits;
-
-    template <typename T>
-    struct num_mantissa_bits;
-
-    template <typename T>
-    struct get_bias;
-
     template <nm_size_t bits>
     struct get_uint;
 
     /********************************************************************* */
-
-    template <>
-    struct num_exponent_bits<float>
-    {
-        static constexpr auto value = 8;
-    };
-
-    template <>
-    struct num_mantissa_bits<float>
-    {
-        static constexpr auto value = 23;
-    };
-
-    template <>
-    struct get_bias<float>
-    {
-        static constexpr auto value = 127;
-    };
 
     template <>
     struct get_uint<32>
@@ -46,24 +22,6 @@ namespace nmtools::meta
     };
 
     /********************************************************************* */
-
-    template <>
-    struct num_exponent_bits<double>
-    {
-        static constexpr auto value = 11;
-    };
-
-    template <>
-    struct num_mantissa_bits<double>
-    {
-        static constexpr auto value = 52;
-    };
-
-    template <>
-    struct get_bias<double>
-    {
-        static constexpr auto value = 1023;
-    };
 
     template <>
     struct get_uint<64>
@@ -103,24 +61,12 @@ namespace nmtools::meta
 
     /********************************************************************* */
 
-    template <typename T>
-    constexpr inline auto num_exponent_bits_v = num_exponent_bits<T>::value;
-
-    template <typename T>
-    constexpr inline auto num_mantissa_bits_v = num_mantissa_bits<T>::value;
-
-    template <typename T>
-    constexpr inline auto get_bias_v = get_bias<T>::value;
-
     template <auto bits>
     using get_uint_t = type_t<get_uint<bits>>;
 }
 
 namespace nmtools
 {
-    using meta::num_exponent_bits_v;
-    using meta::num_mantissa_bits_v;
-    using meta::get_bias_v;
     using meta::get_uint_t;
 }
 

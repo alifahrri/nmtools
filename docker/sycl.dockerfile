@@ -31,23 +31,6 @@ RUN cd $HOME && curl -fsSLO https://raw.githubusercontent.com/romkatv/dotfiles-p
 
 ADD .devcontainer/.zshrc $HOME
 
-WORKDIR /workspace/nmtools
-
-COPY cmake cmake
-COPY scripts scripts
-COPY include include
-COPY tests tests
-COPY CMakeLists.txt CMakeLists.txt
-COPY nmtools.pc.in nmtools.pc.in
-COPY nmtoolsConfig.cmake.in nmtoolsConfig.cmake.in
-
-## install doctest
-COPY scripts/install_doctest.sh scripts/install_doctest.sh
-
-RUN bash scripts/install_doctest.sh
-
-FROM dev as build
-
 WORKDIR /opt/
 COPY scripts scripts
 
@@ -80,6 +63,21 @@ RUN bash scripts/install_pocl.sh
 RUN bash scripts/install_opensycl.sh
 
 WORKDIR /workspace/nmtools
+
+COPY cmake cmake
+COPY scripts scripts
+COPY include include
+COPY tests tests
+COPY CMakeLists.txt CMakeLists.txt
+COPY nmtools.pc.in nmtools.pc.in
+COPY nmtoolsConfig.cmake.in nmtoolsConfig.cmake.in
+
+## install doctest
+COPY scripts/install_doctest.sh scripts/install_doctest.sh
+
+RUN bash scripts/install_doctest.sh
+
+FROM dev as build
 
 FROM build as run
 

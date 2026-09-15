@@ -2,7 +2,7 @@
 #define NMTOOLS_ARRAY_VIEW_UFUNC_ACCUMULATE_HPP
 
 #include "nmtools/meta.hpp"
-#include "nmtools/array/ref.hpp"
+// #include "nmtools/array/ref.hpp"
 #include "nmtools/utility/at.hpp"
 #include "nmtools/core/decorator.hpp"
 #include "nmtools/core/slice.hpp"
@@ -233,7 +233,7 @@ namespace nmtools::view
     template <typename op_t, typename array_t, typename axis_t, typename dtype_t=none_t>
     struct accumulate_t
     {
-        using array_type    = resolve_array_type_t<array_t>;
+        using array_type    = meta::fwd_operand_t<array_t>;
         using axis_type     = resolve_attribute_type_t<axis_t>;
         using op_type       = op_t;
         using reducer_type  = reducer_t<op_t>;
@@ -257,7 +257,7 @@ namespace nmtools::view
 
         constexpr accumulate_t(op_t op, const array_t& array_, const axis_t& axis, dtype_t dtype={})
             : op(op)
-            , array(initialize<array_type>(array_))
+            , array(fwd_operand(array_))
             , axis(init_attribute<axis_type>(axis))
             , reducer{op}
             , shape_(nmtools::shape<true>(array_))

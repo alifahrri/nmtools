@@ -8,6 +8,8 @@
 #include <variant>
 #include <tuple>
 #include <optional>
+// assume has string
+#include <string>
 // TODO: remove, no need to check for include
 #if __has_include(<vector>)
     #include <vector>
@@ -100,6 +102,9 @@ namespace nmtools::meta
 
     template <typename T, typename Allocator>
     struct is_list<std::vector<T,Allocator>> : true_type {};
+
+    template <>
+    struct is_string<std::string> : true_type {};
 } // namespace nmtools::meta
 
 #endif // NMTOOLS_META_STL_TRAITS_HPP

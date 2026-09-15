@@ -6,10 +6,10 @@
 #include "nmtools/meta.hpp"
 #include "nmtools/index/compute_offset.hpp"
 #include "nmtools/index/compute_strides.hpp"
-#include "nmtools/array/ref.hpp"
+// #include "nmtools/array/ref.hpp"
 #include "nmtools/core/flatten.hpp"
 #include "nmtools/core/mutable_flatten.hpp"
-#include "nmtools/core/ref/initializer_list.hpp"
+// #include "nmtools/core/ref/initializer_list.hpp"
 #include "nmtools/utility/shape.hpp"
 #include "nmtools/assert.hpp"
 
@@ -48,14 +48,14 @@ namespace nmtools
         template <typename array_t>
         auto init(array_t&& array)
         {
-            auto array_ref = view::ref(array);
-            auto array_shape = ::nmtools::shape(array_ref);
+            // auto array_ref = view::ref(array);
+            auto array_shape = ::nmtools::shape(array);
             for (const auto& s : array_shape)
                 shape_.push_back(s);
             strides_ = strides();
             numel_   = numel();
             data_.resize(numel_);
-            auto array_view = unwrap(view::flatten(array_ref));
+            auto array_view = unwrap(view::flatten(array));
             for (size_t i=0; i<numel_; i++)
                 nmtools::at(data_,i) = nmtools::at(array_view,i);
         }
@@ -304,6 +304,7 @@ namespace nmtools
         template <typename ndarray_t, typename=meta::enable_if_t<meta::is_ndarray_v<ndarray_t>>>
         constexpr auto operator=(const ndarray_t& rhs);
 
+        #if 0
         #define NMTOOLS_DYNAMIC_NDARRAY_ASSIGNMENT(N) \
         constexpr decltype(auto) operator=(meta::make_nested_dynamic_array_t<std::initializer_list,value_type,N>&& rhs) \
         {   \
@@ -325,6 +326,7 @@ namespace nmtools
         NMTOOLS_DYNAMIC_NDARRAY_ASSIGNMENT(11)
 
         #undef NMTOOLS_DYNAMIC_NDARRAY_ASSIGNMENT
+        #endif
 
     }; // struct dynamic_ndarray
 

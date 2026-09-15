@@ -51,7 +51,7 @@ SUBCASE(#case_name) \
 { \
     NMTOOLS_TESTING_USE_CASE(view, reduce_multiply, case_name); \
     using namespace args; \
-    auto result = nmtools::multiply.reduce(__VA_ARGS__, nmtools::Unroll); \
+    auto result = nmtools::reduce_multiply(__VA_ARGS__, nmtools::Unroll); \
     NMTOOLS_STATIC_CHECK_TRAIT( nmtools::meta::is_ndarray, decltype(result) ); \
     NMTOOLS_ASSERT_EQUAL( nm::shape(result), expect::shape ); \
     NMTOOLS_ASSERT_CLOSE( result, expect::result ); \
@@ -62,7 +62,7 @@ SUBCASE(#case_name) \
 { \
     NMTOOLS_TESTING_USE_CASE(view, accumulate_multiply, case_name); \
     using namespace args; \
-    auto result = nmtools::multiply.accumulate(__VA_ARGS__, nmtools::Unroll); \
+    auto result = nmtools::accumulate_multiply(__VA_ARGS__, nmtools::Unroll); \
     NMTOOLS_STATIC_CHECK_TRAIT( nmtools::meta::is_ndarray, decltype(result) ); \
     NMTOOLS_ASSERT_EQUAL( nm::shape(result), expect::shape ); \
     NMTOOLS_ASSERT_CLOSE( result, expect::result ); \
@@ -73,7 +73,7 @@ SUBCASE(#case_name) \
 { \
     NMTOOLS_TESTING_USE_CASE(view, outer_multiply, case_name); \
     using namespace args; \
-    auto result = nmtools::multiply.outer(__VA_ARGS__, nmtools::Unroll); \
+    auto result = nmtools::outer_multiply(__VA_ARGS__, nmtools::Unroll); \
     NMTOOLS_STATIC_CHECK_TRAIT( nmtools::meta::is_ndarray, decltype(result) ); \
     NMTOOLS_ASSERT_EQUAL( nm::shape(result), expect::shape ); \
     NMTOOLS_ASSERT_CLOSE( result, expect::result ); \

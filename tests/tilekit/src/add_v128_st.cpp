@@ -6,12 +6,16 @@
 #include "nmtools/testing/doctest.hpp"
 #include "nmtools/ndarray.hpp"
 
-#include "kernels/add.hpp"
+#include "nmtools/kernel/add.hpp"
 
 #include <nanobench.h>
 
 namespace nm = nmtools;
+namespace kn = nmtools::kernel;
+namespace tk = nmtools::tilekit;
+
 using namespace nmtools::literals;
+using nmtools_tuple,nmtools_array;
 
 using v128_st = tk::vector::context_t<128>;
 
@@ -47,7 +51,7 @@ TEST_CASE(#case_name * doctest::test_suite("tilekit")) \
     ankerl::nanobench::Bench() \
         .minEpochTime(min_time) \
         .run(#case_name,[&](){ \
-            add_kernel(ctx,c,a,b,tile_shape); \
+            kn::add(ctx,c,a,b,tile_shape); \
         }); \
 \
     auto expected = nm::add(a,b); \

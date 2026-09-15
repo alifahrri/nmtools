@@ -17,7 +17,7 @@ namespace nmtools::impl
     {
         constexpr decltype(auto) operator()(const T& data) const noexcept
         {
-            if constexpr (meta::has_data_v<T>) {
+            if constexpr (has_data_v<T>) {
                 return data.data();
             } else {
                 return error::DATA_UNSUPPORTED<T>{};
@@ -26,7 +26,7 @@ namespace nmtools::impl
 
         constexpr decltype(auto) operator()(T& data) noexcept
         {
-            if constexpr (meta::has_data_v<T>) {
+            if constexpr (has_data_v<T>) {
                 return data.data();
             } else {
                 return error::DATA_UNSUPPORTED<T>{};
@@ -54,7 +54,7 @@ namespace nmtools
     template <typename array_t>
     constexpr decltype(auto) data(array_t&& array)
     {
-        using array_type = meta::remove_cvref_pointer_t<array_t>;
+        using array_type = remove_cvref_pointer_t<array_t>;
         return impl::data_t<array_type>{}(nmtools::forward<array_t>(array));
     } // data
 }

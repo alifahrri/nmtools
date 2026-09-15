@@ -28,7 +28,7 @@ namespace nmtools::view
     template <typename array_t, typename axis_t>
     struct argsort_t
     {
-        using array_type = resolve_array_type_t<array_t>;
+        using array_type = meta::fwd_operand_t<array_t>;
         using axis_type  = const axis_t;
         using shape_type = decltype(shape(meta::declval<array_t>()));
 
@@ -37,7 +37,7 @@ namespace nmtools::view
         axis_type  axis;
 
         constexpr argsort_t(const array_t& array, axis_t axis)
-            : array(initialize<array_type>(array))
+            : array(fwd_operand(array))
             // the resulting shape is just the same as source array
             , dst_shape(shape(array))
             , axis(axis)

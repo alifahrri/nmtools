@@ -6,6 +6,7 @@
 #include "nmtools/utility/get.hpp"
 #include "nmtools/utility/isequal/isequal.hpp"
 
+// TODO: remove this file
 namespace nmtools::utility
 {
     namespace error
@@ -14,6 +15,7 @@ namespace nmtools::utility
         struct CT_MAP_OUT_OF_RANGE : meta::detail::fail_t {};
     }
 
+    // TODO: remove
     template <typename keys_t=nmtools_tuple<>, typename values_t=nmtools_tuple<>>
     struct ct_map
     {

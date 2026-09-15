@@ -6,7 +6,7 @@
 #include "nmtools/index/contains.hpp"
 #include "nmtools/index/index_of.hpp"
 #include "nmtools/network/add_edge.hpp"
-#include "nmtools/network/common.hpp"
+#include "nmtools/network/base_digraph.hpp"
 #include "nmtools/network/compose.hpp"
 #include "nmtools/network/contracted_edge.hpp"
 #include "nmtools/network/filter_nodes.hpp"

@@ -1,6 +1,7 @@
 #include "nmtools/meta.hpp"
 #include "nmtools/ndarray/fixed.hpp"
 #include "nmtools/ndarray/dynamic.hpp"
+#include "nmtools/core/ref/initializer_list.hpp"
 #include "nmtools/utility/at.hpp"
 #include "nmtools/testing/doctest.hpp"
 

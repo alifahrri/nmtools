@@ -18,7 +18,7 @@ namespace nmtools::meta
     }
 
     // the following assumes T is cvref_pointer-removed
-    template <typename T>
+    template <typename T, typename=void>
     struct fwd_operand
     {
         static constexpr auto vtype = [](){
@@ -38,7 +38,7 @@ namespace nmtools::meta
                 return as_value_v<const T&>;
             } else if constexpr (is_ndarray_v<T>) {
                 return as_value_v<const T*>;
-            } else if constexpr (is_pointer_v<T> && is_ndarray_v<remove_pointer_t<T>>) {
+            } else if constexpr ((is_pointer_v<T> || is_shared_ptr_v<T>) && is_ndarray_v<remove_pointer_t<T>>) {
                 return as_value_v<const T>;
             } else if constexpr (is_either_v<T> || is_maybe_v<T>) {
                 return as_value_v<const T>;
@@ -153,8 +153,8 @@ namespace nmtools
         -> meta::fwd_operand_t<T>
     {
         using result_t = meta::fwd_operand_t<T>;
-        static_assert( !meta::is_fail_v<result_t> );
-        if constexpr (meta::is_pointer_v<result_t> && !meta::is_pointer_v<T>) {
+        static_assert( !is_fail_v<result_t> );
+        if constexpr (is_pointer_v<result_t> && !is_pointer_v<T>) {
             return &operand;
         } else {
             return operand;
@@ -166,8 +166,8 @@ namespace nmtools
         -> meta::fwd_mutable_operand_t<T>
     {
         using result_t = meta::fwd_mutable_operand_t<T>;
-        static_assert( !meta::is_fail_v<result_t> );
-        if constexpr (meta::is_pointer_v<result_t> && !meta::is_pointer_v<T>) {
+        static_assert( !is_fail_v<result_t> );
+        if constexpr (is_pointer_v<result_t> && !is_pointer_v<T>) {
             return &operand;
         } else {
             return operand;
@@ -208,22 +208,22 @@ namespace nmtools
         -> meta::type_t<fwd_attribute_t<T>>
     {
         auto op = fwd_attribute_t<T>{};
-        static_assert( !meta::is_fail_v<decltype(op(attribute))> );
+        static_assert( !is_fail_v<decltype(op(attribute))> );
         return op(attribute);
     } // fwd_attribute
 
     template <typename...Ts>
     constexpr auto pack_operands(const Ts&...ts)
     {
-        if constexpr ((meta::is_maybe_v<Ts> || ...)) {
-            using result_t = nmtools_tuple<meta::fwd_operand_t<meta::remove_cvref_t<decltype(unwrap(meta::declval<Ts>()))>>...>;
+        if constexpr ((is_maybe_v<Ts> || ...)) {
+            using result_t = nmtools_tuple<meta::fwd_operand_t<remove_cvref_t<decltype(unwrap(meta::declval<Ts>()))>>...>;
             using return_t = nmtools_maybe<result_t>;
             return ((has_value(ts) && ...)
                 ? return_t{nmtools_tuple{fwd_operand(unwrap(ts))...}}
-                : return_t{meta::Nothing}
+                : return_t{Nothing}
             );
         } else {
-            using result_t = nmtools_tuple<meta::fwd_operand_t<meta::remove_cvref_t<Ts>>...>;
+            using result_t = nmtools_tuple<meta::fwd_operand_t<remove_cvref_t<Ts>>...>;
             return result_t{fwd_operand(ts)...};
         }
     }
@@ -241,7 +241,7 @@ namespace nmtools
     {
         using result_t = tuple<
               meta::fwd_operand_t<T>
-            , meta::fwd_operand_t<meta::remove_cvref_t<Ts>>...>;
+            , meta::fwd_operand_t<remove_cvref_t<Ts>>...>;
         return result_t{fwd_operand(t),fwd_operand(nmtools::get<Is>(ts))...};
     }
 
@@ -256,7 +256,7 @@ namespace nmtools
     constexpr auto append_operands(const tuple<Ts...>& ts, const T& t, meta::index_sequence<Is...>)
     {
         using result_t = tuple<
-              meta::fwd_operand_t<meta::remove_cvref_t<Ts>>...
+              meta::fwd_operand_t<remove_cvref_t<Ts>>...
             , meta::fwd_operand_t<T>>;
         return result_t{fwd_operand(nmtools::get<Is>(ts))...,fwd_operand(t)};
     }
@@ -273,8 +273,8 @@ namespace nmtools
         , meta::index_sequence<TIs...>, meta::index_sequence<UIs...>)
     {
         using result_t = tuple<
-              meta::fwd_operand_t<meta::remove_cvref_pointer_t<Ts>>...
-            , meta::fwd_operand_t<meta::remove_cvref_pointer_t<Us>>...>;
+              meta::fwd_operand_t<remove_cvref_pointer_t<Ts>>...
+            , meta::fwd_operand_t<remove_cvref_pointer_t<Us>>...>;
         return result_t{
               fwd_operand(nmtools::get<TIs>(ts))...
             , fwd_operand(nmtools::get<UIs>(us))...

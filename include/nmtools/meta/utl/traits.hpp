@@ -57,17 +57,29 @@ namespace nmtools::meta
     template <typename T, size_t Capacity>
     struct is_hybrid_index_array<utl::static_vector<T,Capacity>,enable_if_t<is_index_v<T> || is_boolean_v<T>>> : true_type {};
 
+    template <typename T, auto DIM>
+    struct is_dynamic_index_array<utl::small_vector<T,DIM>>
+    {
+        static constexpr auto value = is_index_v<T>;
+    };
+
     template <typename T, typename allocator>
     struct is_ndarray<utl::vector<T,allocator>> : is_num<T> {};
 
     template <typename T, size_t Capacity>
     struct is_ndarray<utl::static_vector<T,Capacity>> : is_num<T> {};
 
+    template <typename T, auto DIM>
+    struct is_ndarray<utl::small_vector<T,DIM>> : is_num<T> {};
+
     template <typename T, typename allocator>
     struct is_list<utl::vector<T,allocator>> : true_type {};
 
     template <typename T, size_t Capacity>
     struct is_list<utl::static_vector<T,Capacity>> : true_type {};
+
+    template <typename T, auto DIM>
+    struct is_list<utl::small_vector<T,DIM>> : true_type {};
 
     template <typename T, size_t N>
     struct has_tuple_size<utl::array<T,N>> : true_type {};

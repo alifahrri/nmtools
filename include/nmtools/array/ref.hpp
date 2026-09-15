@@ -20,24 +20,6 @@ namespace nmtools::view
      * @{
      */
 
-    namespace detail {
-        /**
-         * @brief identity mapping of indices
-         * 
-         * @tparam size_types 
-         * @param indices 
-         * @return constexpr auto 
-         */
-        template <typename...size_types>
-        constexpr auto identity(size_types...indices)
-        {
-            using common_size_t = meta::type_t<meta::promote_index<size_types...>>;
-            using indices_t = nmtools_array<common_size_t,sizeof...(indices)>;
-            auto ndindex = indices_t{static_cast<common_size_t>(indices)...};
-            return ndindex;
-        } // identity
-    } // detail
-
     /**
      * @brief represent constant reference to 1D/2D/ND array.
      * Inspired from <a href="https://llvm.org/doxygen/classllvm_1_1ArrayRef.html">llvm ArrayRef</a>
@@ -55,7 +37,7 @@ namespace nmtools::view
         using value_type = meta::get_element_type_t<array_t>;
         using const_reference = const value_type&;
         // array type as required by decorator
-        using array_type = resolve_array_type_t<array_t>;
+        using array_type = meta::fwd_operand_t<array_t>;
 
         // const reference to actual array type
         array_type array;
@@ -65,15 +47,17 @@ namespace nmtools::view
          * 
          */
         constexpr ref_t(const array_t& array)
-            : array(initialize<array_type>(array)) {}
+            : array(fwd_operand(array)) {}
+        
+        constexpr auto operands() const noexcept
+        {
+            if constexpr (is_tuple_v<array_type>) {
+                return array;
+            } else {
+                return nmtools_tuple<array_type>{array};
+            }
+        } // operands
 
-        /**
-         * @brief identity mapping of indices
-         * 
-         * @tparam size_types 
-         * @param indices 
-         * @return constexpr auto 
-         */
         template <typename...size_types>
         constexpr auto index(size_types...indices) const
         {
@@ -82,7 +66,7 @@ namespace nmtools::view
     }; // ref_t
 
     template <typename T>
-    struct ref_t<T*, meta::enable_if_t<meta::is_num_v<T>>>
+    struct ref_t<T*, enable_if_t<is_num_v<T>>>
     {
         using value_type = T;
         using const_reference = const value_type&;
@@ -95,6 +79,8 @@ namespace nmtools::view
             : array(ptr)
             , numel(numel)
         {}
+
+        // TODO: add operands
 
         constexpr auto dim() const
         {
@@ -158,7 +144,7 @@ namespace nmtools
      */
     template <typename array_t>
     struct meta::fixed_ndarray_shape< view::ref_t<array_t>
-        , meta::enable_if_t< meta::is_fixed_size_ndarray_v<meta::remove_cvref_t<array_t>> >
+        , enable_if_t< meta::is_fixed_size_ndarray_v<meta::remove_cvref_t<array_t>> >
     > : meta::fixed_ndarray_shape<meta::remove_cvref_t<array_t>> {};
 } // namespace nmtools
 
@@ -167,7 +153,7 @@ namespace nmtools::meta
     template <typename array_t>
     struct is_ndarray< view::decorator_t<view::ref_t, array_t> >
     {
-        static constexpr auto value = is_ndarray_v<array_t>;
+        static constexpr auto value = is_ndarray_v<remove_pointer_t<array_t>>;
     };
 
     // specialization for ptr
@@ -179,11 +165,55 @@ namespace nmtools::meta
 
     template <typename T>
     struct get_element_type<
-        view::decorator_t<view::ref_t,T*>
+        view::decorator_t<view::ref_t,T>
     >
     {
-        using type = meta::remove_address_space_t<T>;
+        using type = get_element_type_t<remove_pointer_t<T>>;
     };
 } // namespace nmtools::meta
 
 #endif // NMTOOLS_ARRAY_VIEW_REF_HPP
+
+#ifndef NMTOOLS_FUNCTIONAL_REF_HPP
+#define NMTOOLS_FUNCTIONAL_REF_HPP
+
+// TODO: fix includes
+#include "nmtools/array/ref.hpp"
+#include "nmtools/core/functor.hpp"
+
+namespace nmtools::functional
+{
+    namespace fun
+    {
+        struct ref
+        {
+            template <typename...args_t>
+            constexpr auto operator()(const args_t&...args) const
+            {
+                return view::ref(args...);
+            }
+        };
+    }
+
+    constexpr inline auto ref = functor_t{unary_fmap_t<fun::ref>{}};
+
+    template <typename...args_t>
+    struct get_function_t<
+        view::decorator_t<
+            view::ref_t, args_t...
+        >
+    > {        
+        using view_type = view::decorator_t<
+            view::ref_t, args_t...
+        >;
+
+        view_type view;
+
+        constexpr auto operator()() const noexcept
+        {
+            return ref;
+        }
+    };
+}
+
+#endif // NMTOOLS_FUNCTIONAL_REF_HPP

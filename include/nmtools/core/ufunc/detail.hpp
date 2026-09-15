@@ -2,7 +2,7 @@
 #define NMTOOLS_ARRAY_VIEW_UFUNC_DETAIL_HPP
 
 #include "nmtools/meta.hpp"
-#include "nmtools/array/ref.hpp"
+// #include "nmtools/array/ref.hpp"
 #include "nmtools/utility/at.hpp"
 #include "nmtools/core/decorator.hpp"
 #include "nmtools/index/outer.hpp"
@@ -43,7 +43,7 @@ namespace nmtools::view::detail
             return meta::template_reduce<sizeof...(arrays_t)>([](auto init, auto index){
                 constexpr auto i = decltype(index)::value;
                 using array_t    = meta::at_t<arrays_type,i>;
-                using operand_t  = view::resolve_array_type_t<array_t>;
+                using operand_t  = meta::fwd_operand_t<array_t>;
                 using init_t = meta::type_t<decltype(init)>; 
                 if constexpr (meta::is_void_v<init_t>) {
                     return meta::as_value_v<nmtools_tuple<operand_t>>;

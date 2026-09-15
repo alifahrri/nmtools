@@ -139,7 +139,60 @@ namespace nmtools::utl
             auto idx = key_indices[0];
             return values_[idx];
         }
-    };
+
+        struct iter_t
+        {
+            const static_map& map;
+            nm_size_t i = 0;
+
+            constexpr decltype(auto) operator*() const
+            {
+                // TODO: return reference
+                auto pair = value_type{map.keys_[i],map.values_[i]};
+                return pair;
+            }
+
+            constexpr auto operator==(const iter_t& rhs) const
+            {
+                // also check address of map?
+                return i == rhs.i;
+            }
+
+            constexpr auto operator!=(const iter_t& rhs) const
+            {
+                // also check address of map?
+                return i != rhs.i;
+            }
+
+            constexpr auto operator++()
+            {
+                i++;
+                return *this;
+            }
+        }; // iter_t
+
+        constexpr auto begin() const
+        {
+            return iter_t{*this,0};
+        }
+
+        constexpr auto end() const
+        {
+            return iter_t{*this,size()};
+        }
+    }; // static_map
+
+    template <typename key_t, typename T, auto Capacity>
+    constexpr auto begin(const static_map<key_t,T,Capacity>& map)
+    {
+        return map.begin();
+    }
+
+    template <typename key_t, typename T, auto Capacity>
+    constexpr auto end(const static_map<key_t,T,Capacity>& map)
+    {
+        return map.end();
+    }
 }
 
 #endif // NMTOOLS_UTL_STATIC_MAP

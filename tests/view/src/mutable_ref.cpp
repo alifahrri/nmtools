@@ -8,7 +8,7 @@
  * 
  */
 
-#include "nmtools/array/view.hpp"
+#include "nmtools/core/mutable_ref.hpp"
 #include "nmtools/ndarray/fixed.hpp"
 #include "nmtools/ndarray/dynamic.hpp"
 #include "nmtools/utility/isclose.hpp"
@@ -41,38 +41,6 @@ TEST_CASE("mutable_ref(nmtools_array)" * doctest::test_suite("view::mutable_ref"
     // @todo provide isequal for integer type and use isequal instead of isclose
     CHECK( isclose(array_ref.shape(),nmtools_array{3}) );
 
-    {
-        auto expected = nmtools_array{1.,2.,3.};
-        CHECK( isclose(array_ref,expected) );
-    }
-
-    {
-        array_ref(0) = 3;
-        auto expected = nmtools_array{3.,2.,3.};
-        CHECK( isclose(array,expected) );
-    }
-
-    {
-        // view should have meta::fixed_ndarray_shape if its underlying array have too
-        constexpr auto shape = nmtools::meta::fixed_ndarray_shape_v<decltype(array_ref)>;
-        STATIC_CHECK(( nmtools::get<0>(shape)==3 ));
-    }
-}
-
-/**
- * @test test case for mutable ref view to 1D nmtools_array created using make_view
- * 
- */
-TEST_CASE("make_view<mutable_ref_t>(nmtools_array)"*doctest::test_suite("view::mutable_ref")) // make_view<mutable_ref_t>
-{
-    using view::mutable_ref_t;
-    auto array = nmtools_array{1.,2.,3.};
-    auto array_ref = view::make_view<mutable_ref_t>(array);
-
-    CHECK( array_ref.dim()==1 );
-    // @todo provide isequal for integer type and use isequal instead of isclose
-    CHECK( isequal(array_ref.shape(),nmtools_array{3}) );
-    
     {
         auto expected = nmtools_array{1.,2.,3.};
         CHECK( isclose(array_ref,expected) );

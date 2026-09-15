@@ -182,6 +182,12 @@ namespace nmtools::meta
     };
 }
 
+namespace nmtools
+{
+    using meta::is_same_combinator_v;
+    using meta::get_combinator_args_v;
+}
+
 #if NMTOOLS_HAS_STRING
 
 namespace nmtools::utils::impl

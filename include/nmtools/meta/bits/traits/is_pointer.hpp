@@ -2,11 +2,12 @@
 #define NMTOOLS_BITS_TRAITS_IS_POINTER_HPP
 
 #include "nmtools/meta/common.hpp"
+#include "nmtools/meta/bits/traits/is_shared_ptr.hpp"
 
 namespace nmtools::meta
 {
     template <typename T>
-    struct is_pointer : false_type {};
+    struct is_pointer : is_shared_ptr<T> {};
 
     template <typename T>
     struct is_pointer<T*> : true_type {};
