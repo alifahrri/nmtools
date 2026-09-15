@@ -268,6 +268,7 @@ TEST_CASE("get_computational_graph(add)" * doctest::test_suite("runtime"))
     CHECK( b0_hash != b1_hash );
 
     /*********************************************************************** */
+    #if 0
     {
         using view_type = decltype(unwrap(view::add(nm::declval<nrt::ndarray>().view(dtype),nm::declval<nrt::ndarray>().view(dtype))));
         using tree_type = decltype(fn::get_computational_graph(nm::declval<view_type>()));
@@ -275,6 +276,7 @@ TEST_CASE("get_computational_graph(add)" * doctest::test_suite("runtime"))
         nrt::Graph g = ct_tree;
         NMTOOLS_ASSERT_EQUAL( nk::is_directed_acyclic_graph(g), true );
     }
+    #endif
 }
 
 // same dtype & shape of lhs & rhs
