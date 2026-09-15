@@ -231,7 +231,7 @@ namespace nmtools
         , typename initial_t
         , enable_if_t<is_none_v<dtype_t> || is_dtype_v<dtype_t>,int> = 0
         , enable_if_t<is_none_v<initial_t> || is_num_v<initial_t>,int> = 0
-        , enable_if_t<is_context_v<context_t>,int> = 0>
+        , enable_if_t<is_context_v<context_t> || is_context_ptr_v<context_t>,int> = 0>
     constexpr auto reduce_add(const left_t& a, const axis_t& axis, dtype_t dtype, initial_t initial
         , context_t&& context)
     {
@@ -246,7 +246,7 @@ namespace nmtools
         , typename axis_t
         , typename dtype_t
         , enable_if_t<is_none_v<dtype_t> || is_dtype_v<dtype_t>,int> = 0
-        , enable_if_t<is_context_v<context_t>,int> = 0>
+        , enable_if_t<is_context_v<context_t> || is_context_ptr_v<context_t>,int> = 0>
     constexpr auto reduce_add(const left_t& a, const axis_t& axis, dtype_t dtype
         , context_t&& context)
     {
@@ -259,7 +259,7 @@ namespace nmtools
     template <typename context_t
         , typename left_t
         , typename axis_t
-        , enable_if_t<is_context_v<context_t>,int> = 0>
+        , enable_if_t<is_context_v<context_t> || is_context_ptr_v<context_t>,int> = 0>
     constexpr auto reduce_add(const left_t& a, const axis_t& axis
         , context_t&& context)
     {
@@ -288,7 +288,7 @@ namespace nmtools
     template <typename context_t
         , typename left_t
         , typename axis_t
-        , enable_if_t<is_context_v<context_t>,int> = 0>
+        , enable_if_t<is_context_v<context_t> || is_context_ptr_v<context_t>,int> = 0>
     constexpr auto accumulate_add(const left_t& a, const axis_t& axis
         , context_t&& context)
     {
@@ -317,7 +317,7 @@ namespace nmtools
     template <typename context_t
         , typename left_t
         , typename right_t
-        , enable_if_t<is_context_v<context_t>,int> = 0>
+        , enable_if_t<is_context_v<context_t> || is_context_ptr_v<context_t>,int> = 0>
     constexpr auto outer_add(const left_t& a, const right_t& b
         , context_t&& context)
     {
