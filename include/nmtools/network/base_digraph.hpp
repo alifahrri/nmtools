@@ -242,9 +242,28 @@ namespace nmtools::network
             , typename other_multi_t
             , enable_if_t<is_none_v<other_multi_t> || is_same_v<other_multi_t,multi_t>,int> =0>
         constexpr base_digraph_t(const base_digraph_t<other_adjacency_list_t,other_node_ids_t,other_node_attributes_t,other_edge_attributes_t,other_multi_t>& other)
-            : base_digraph_t(cast<adjacency_list_t>(other.adjacency_list)
-                , cast_node_ids<node_ids_t>(other.node_ids)
-                , cast_node_attributes<node_attributes_t>(other.node_attributes)
+            : base_digraph_t(
+                [&](){
+                    if constexpr (!is_same_v<adjacency_list_type,other_adjacency_list_t>) {
+                        return cast<adjacency_list_type>(other.adjacency_list);
+                    } else {
+                        return other.adjacency_list;
+                    }
+                }()
+                , [&](){
+                    if constexpr (!is_same_v<node_ids_type,other_node_ids_t>) {
+                        return cast_node_ids<node_ids_type>(other.node_ids);
+                    } else {
+                        return other.node_ids;
+                    }
+                }()
+                , [&](){
+                    if constexpr (!is_same_v<node_attributes_type,other_node_attributes_t>) {
+                        return cast_node_attributes<node_attributes_type>(other.node_attributes);
+                    } else {
+                        return other.node_attributes;
+                    }
+                }()
                 // TODO: cast edge attributes
             )
         {}
