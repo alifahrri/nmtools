@@ -10,9 +10,11 @@
 #include "nmtools/utl/tuple.hpp"
 #include "nmtools/utl/either.hpp"
 #include "nmtools/utl/expected.hpp"
+#include "nmtools/utl/flat_map.hpp"
 #include "nmtools/utl/maybe.hpp"
 #include "nmtools/utl/queue.hpp"
 #include "nmtools/utl/stack.hpp"
+#include "nmtools/utl/small_vector.hpp"
 #include "nmtools/utl/static_map.hpp"
 #include "nmtools/utl/static_queue.hpp"
 #include "nmtools/utl/static_stack.hpp"
@@ -79,5 +81,13 @@ namespace nmtools
 #ifndef nmtools_variant
 #define nmtools_variant ::nmtools::utl::variant
 #endif // nmtools_variant
+
+#ifndef nmtools_flat_map
+#define nmtools_flat_map ::nmtools::utl::flat_map
+#endif // nmtools_flat_map
+
+#ifndef nmtools_default_map
+#define nmtools_default_map ::nmtools::utl::flat_map
+#endif // nmtools_default_map
 
 #endif // NMTOOLS_UTL_HPP

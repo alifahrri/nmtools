@@ -14,30 +14,30 @@ namespace nmtools::network
     template <typename adjacency_list_t>
     constexpr auto out_degree(const adjacency_list_t& list)
     {
-        if constexpr (meta::is_maybe_v<adjacency_list_t>) {
+        if constexpr (is_maybe_v<adjacency_list_t>) {
             using result_t = decltype(out_degree(unwrap(list)));
-            using return_t = meta::conditional_t<meta::is_maybe_v<result_t>,result_t,nmtools_maybe<result_t>>;
+            using return_t = conditional_t<is_maybe_v<result_t>,result_t,nmtools_maybe<result_t>>;
             return (has_value(list)
                 ? return_t{out_degree(unwrap(list))}
-                : return_t{meta::Nothing}
+                : return_t{Nothing}
             );
         } else {
-            using result_t = meta::resolve_optype_t<tag::out_degree_t,adjacency_list_t>;
+            using result_t = resolve_optype_t<tag::out_degree_t,adjacency_list_t>;
 
             auto result = result_t {};
 
-            if constexpr (!meta::is_constant_index_array_v<result_t>
-                && !meta::is_fail_v<result_t>
+            if constexpr (!is_constant_index_array_v<result_t>
+                && !is_fail_v<result_t>
             ) {
                 [[maybe_unused]]
                 auto num_nodes = len(list);
-                if constexpr (meta::is_resizable_v<result_t>) {
+                if constexpr (is_resizable_v<result_t>) {
                     result.resize(num_nodes);
                 }
 
-                if constexpr (meta::is_tuple_v<adjacency_list_t>) {
-                    constexpr auto NUM_NODES = meta::len_v<adjacency_list_t>;
-                    meta::template_for<NUM_NODES>([&](auto I){
+                if constexpr (is_tuple_v<adjacency_list_t>) {
+                    constexpr auto NUM_NODES = len_v<adjacency_list_t>;
+                    template_for<NUM_NODES>([&](auto I){
                         at(result,I) = nmtools::size(at(list,I));
                     });
                 } else {

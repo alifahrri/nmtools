@@ -11,6 +11,7 @@
 #include <tuple>
 #include <variant>
 #include <optional>
+#include <unordered_map>
 
 #ifndef nmtools_either
 #define nmtools_either ::std::variant
@@ -28,6 +29,14 @@
 #ifndef nmtools_array
 #define nmtools_array ::std::array
 #endif // nmtools_array
+
+#ifndef nmtools_unordered_map
+#define nmtools_unordered_map ::std::unordered_map
+#endif // nmtools_unordered_map
+
+#ifndef nmtools_default_map
+#define nmtools_default_map ::std::unordered_map
+#endif // nmtools_default_map
 
 #if __has_include(<vector>)
 #include <vector>

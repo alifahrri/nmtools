@@ -33,6 +33,7 @@ add_executable(${PROJECT_NAME}-doctest tests.cpp
     src/cast.cpp
     src/data.cpp
     src/flatten_either.cpp
+    src/fwd.cpp
     src/isequal.cpp
     src/isclose.cpp
     src/to_string.cpp

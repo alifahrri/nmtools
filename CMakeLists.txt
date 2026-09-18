@@ -28,8 +28,14 @@ target_include_directories(
 
 option(NMTOOLS_BUILD_TESTS "build tests programs" ON)
 option(NMTOOLS_BUILD_EXAMPLES "build example programs" OFF)
+option(NMTOOLS_BUILD_RUNTIME "build runtime library" OFF)
+option(NMTOOLS_BUILD_RUNTIME_TESTS "build runtime test programs" OFF)
 
 include_directories(include)
+if(NMTOOLS_BUILD_RUNTIME OR NMTOOLS_BUILD_RUNTIME_TESTS)
+    add_subdirectory(src)
+endif()
+
 if(NMTOOLS_BUILD_TESTS)
     enable_testing()
     add_subdirectory(tests)

@@ -133,6 +133,7 @@ namespace nmtools::tilekit
             , [[maybe_unused]] padding_type padding)
         {
             constexpr auto tile_shape  = fixed_shape_v<result_t>;
+            static_assert( !is_fail_v<decltype(tile_shape)> );
             constexpr auto tile_stride = index::compute_strides(tile_shape);
             constexpr auto SIZE = index::product(tile_shape);
             template_for<SIZE>([&](auto i){
@@ -165,18 +166,20 @@ namespace nmtools::tilekit
         }
 
         template <typename offset_t, typename result_t>
-        auto operator()(context_type ctx, output_type& output, const offset_t& offset, const result_t& result, padding_type padding) const
+        auto operator()(context_type ctx, output_type& output, const offset_t& offset, const result_t& result, padding_type padding)
         {
             return store(ctx,output,offset,result,padding);
         }
     };
 
-    inline auto worker_id(scalar_t ctx)
+    template <>
+    inline auto worker_id(scalar_t& ctx)
     {
         return nmtools_tuple{ctx.worker_id};
     }
 
-    inline auto worker_size(scalar_t ctx)
+    template <>
+    inline auto worker_size(scalar_t& ctx)
     {
         return nmtools_tuple{ctx.worker_size};
     }

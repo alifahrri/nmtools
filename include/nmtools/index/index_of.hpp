@@ -10,7 +10,7 @@ namespace nmtools::index
 
     // if value_t is scalar, return multi will return all value in index
     template <typename list_t, typename value_t, typename return_multi_t=false_type>
-    constexpr auto index_of(const list_t& list, value_t value, return_multi_t=return_multi_t{})
+    constexpr auto index_of(const list_t& list, const value_t& value, return_multi_t=return_multi_t{})
     {
         if constexpr (is_maybe_v<list_t>
             || is_maybe_v<value_t>
@@ -55,17 +55,33 @@ namespace nmtools::index
             ) {
                 using return_t = nmtools_maybe<result_t>;
 
+                constexpr auto SIZE = len_v<value_t>;
                 auto size = len(value);
                 if constexpr (is_resizable_v<result_t>) {
                     result.resize(size);
                 }
                 auto all_found = true;
-                for (nm_size_t i=0; (i<(nm_size_t)size) && all_found; i++) {
-                    auto v = at(value,i);
-                    auto idx = index_of(list,v);
-                    all_found &= has_value(idx);
-                    if (has_value(idx)) {
-                        at(result,i) = unwrap(idx);
+                if constexpr (SIZE > 0) {
+                    template_for<SIZE>([&](auto i){
+                        if (all_found) {
+                            const auto v = at(value,i);
+                            auto idx = index_of(list,v);
+                            all_found &= has_value(idx);
+                            if (has_value(idx)) {
+                                at(result,i) = unwrap(idx);
+                            }
+                        }
+                    });
+                } else {
+                    for (nm_size_t i=0; (i<(nm_size_t)size); i++) {
+                        if (all_found) {
+                            const auto v = at(value,i);
+                            auto idx = index_of(list,v);
+                            all_found &= has_value(idx);
+                            if (has_value(idx)) {
+                                at(result,i) = unwrap(idx);
+                            }
+                        }
                     }
                 }
                 if (all_found) {

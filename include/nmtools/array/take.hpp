@@ -11,7 +11,7 @@ namespace nmtools::view
     template <typename array_t, typename indices_t, typename axis_t>
     struct take_t
     {
-        using array_type   = resolve_array_type_t<array_t>;
+        using array_type   = meta::fwd_operand_t<array_t>;
         using indices_type = resolve_attribute_type_t<indices_t>;
         using axis_type    = resolve_attribute_type_t<axis_t>;
         using src_shape_type = decltype(nmtools::shape</*force_constant_index*/true>(meta::declval<array_t>()));
@@ -23,7 +23,7 @@ namespace nmtools::view
         dst_shape_type shape_;
 
         constexpr take_t(const array_t& array_, const indices_t& indices_, const axis_t& axis)
-            : array(initialize<array_type>(array_))
+            : array(fwd_operand(array_))
             , indices(init_attribute<indices_type>(indices_))
             , axis(init_attribute<axis_type>(axis))
             , shape_(index::shape_take(nmtools::shape</*force_constant_index*/true>(array_),indices_,axis))

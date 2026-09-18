@@ -28,7 +28,9 @@ namespace nmtools::network
     {
         auto result = result_t {};
 
-        if constexpr (!meta::is_fail_v<result_t>) {
+        if constexpr (!meta::is_fail_v<result_t>
+            && !is_constant_adjacency_list_v<result_t>
+        ) {
             const auto& adj_list = unwrap(m_adj_list);
             [[maybe_unused]]
             auto num_nodes = len(adj_list);
@@ -101,13 +103,16 @@ namespace nmtools::network
     constexpr auto cast_node_ids(const src_node_ids_t& src_node_ids, meta::as_value<dst_node_ids_t> = meta::as_value<dst_node_ids_t>{})
     {
         auto dst_node_ids = dst_node_ids_t{};
-        auto num_nodes = len(src_node_ids);
-        if constexpr (meta::is_resizable_v<dst_node_ids_t>) {
-            dst_node_ids.resize(num_nodes);
-        }
-        // TODO: handle tuple
-        for (nm_size_t i=0; i<(nm_size_t)num_nodes; i++) {
-            at(dst_node_ids,i) = at(src_node_ids,i);
+
+        if constexpr (!is_constant_index_array_v<dst_node_ids_t>) {
+            auto num_nodes = len(src_node_ids);
+            if constexpr (meta::is_resizable_v<dst_node_ids_t>) {
+                dst_node_ids.resize(num_nodes);
+            }
+            // TODO: handle tuple
+            for (nm_size_t i=0; i<(nm_size_t)num_nodes; i++) {
+                at(dst_node_ids,i) = at(src_node_ids,i);
+            }
         }
         return dst_node_ids;
     }

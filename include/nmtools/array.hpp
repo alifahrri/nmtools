@@ -4,7 +4,6 @@
 #include "nmtools/array/matmul.hpp"
 #include "nmtools/array/ufuncs.hpp"
 #include "nmtools/array/layer_norm.hpp"
-#include "nmtools/array/view.hpp"
 #include "nmtools/array/where.hpp"
 #include "nmtools/array/vector_norm.hpp"
 #include "nmtools/array/vecdot.hpp"

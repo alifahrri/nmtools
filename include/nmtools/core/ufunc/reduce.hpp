@@ -2,7 +2,7 @@
 #define NMTOOLS_ARRAY_VIEW_UFUNC_REDUCE_HPP
 
 #include "nmtools/meta.hpp"
-#include "nmtools/array/ref.hpp"
+// #include "nmtools/array/ref.hpp"
 #include "nmtools/utility/at.hpp"
 #include "nmtools/core/decorator.hpp"
 #include "nmtools/core/flatten.hpp"
@@ -245,7 +245,7 @@ namespace nmtools::view
     struct reduce_t
     {
         // if given array is a view, just use value instead of reference
-        using operands_type = resolve_array_type_t<array_t>;
+        using operands_type = meta::fwd_operand_t<array_t>;
         using array_type    = operands_type;
         using axis_type     = resolve_attribute_type_t<axis_t>;
         using op_type       = op_t;
@@ -273,7 +273,7 @@ namespace nmtools::view
         dst_shape_type shape_;
 
         constexpr reduce_t(op_type op, const array_t& array_, const axis_t& axis_, initial_type initial, keepdims_type keepdims_, dtype_type dtype=dtype_type{})
-            : op(op), array(initialize<array_type>(array_))
+            : op(op), array(fwd_operand(array_))
             , axis(init_attribute<axis_type>(axis_))
             , initial(initial)
             , reducer{op} // TODO: remove, recurse to scalar reduce ufunc instead of using reducer
@@ -419,7 +419,7 @@ namespace nmtools::view
     template <typename op_t, typename array_t, typename initial_t, typename keepdims_t, typename dtype_t>
     struct reduce_t<op_t,array_t,none_t,initial_t,keepdims_t,dtype_t>
     {
-        using array_type    = resolve_array_type_t<array_t>;
+        using array_type    = meta::fwd_operand_t<array_t>;
         // use reference for now since raw array decays to pointer
         using axis_type     = none_t;
         using op_type       = op_t;
@@ -448,7 +448,7 @@ namespace nmtools::view
 
         constexpr reduce_t(op_type op, const array_t& array_, axis_type axis_, initial_type initial, keepdims_type keepdims_, dtype_type dtype=dtype_type{})
             : op(op)
-            , array(initialize<array_type>(array_))
+            , array(fwd_operand(array_))
             , axis(axis_)
             , initial(initial)
             , reducer{op}

@@ -32,4 +32,10 @@ namespace nmtools::meta
     template <typename T>
     constexpr inline auto is_reference_v = is_reference<T>::value;
 }
+
+namespace nmtools
+{
+    using meta::is_reference_v;
+}
+
 #endif // NMTOOLS_META_BITS_TRAITS_IS_REFERENCE_HPP

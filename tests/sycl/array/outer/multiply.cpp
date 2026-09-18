@@ -23,39 +23,24 @@ inline auto name##_ls_db = nmtools::cast(name, nmtools::kind::ndarray_ls_db);
 namespace nm = nmtools;
 namespace na = nmtools;
 
-#define ACCUMULATE_MULTIPLY(case_name, ...) \
+#define OUTER_MULTIPLY(case_name, ...) \
 SUBCASE(#case_name) \
 { \
-    NMTOOLS_TESTING_USE_CASE(view, accumulate_multiply, case_name); \
+    NMTOOLS_TESTING_USE_CASE(view, outer_multiply, case_name); \
     using namespace args; \
-    auto result = na::multiply.accumulate(__VA_ARGS__, na::sycl::default_context()); \
-    auto expect = na::multiply.accumulate(__VA_ARGS__); \
+    auto result = na::outer_multiply(__VA_ARGS__, na::sycl::default_context()); \
+    auto expect = na::outer_multiply(__VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( nm::shape(result), nm::shape(expect) ); \
     NMTOOLS_ASSERT_CLOSE( result, expect ); \
 }
 
-TEST_CASE("accumulate_multiply(case1)" * doctest::test_suite("array::multiply.accumulate"))
+TEST_CASE("outer_multiply(case1)" * doctest::test_suite("array::multiply.accumulate"))
 {
-    auto dtype = nm::None;
-    // ACCUMULATE_MULTIPLY( case1,   a, axis );
-    // ACCUMULATE_MULTIPLY( case1, a_a, axis );
-    // ACCUMULATE_MULTIPLY( case1, a_f, axis );
-    // ACCUMULATE_MULTIPLY( case1, a_d, axis );
-    // ACCUMULATE_MULTIPLY( case1, a_h, axis );
-
-    // ACCUMULATE_MULTIPLY( case1, a_cs_fb, axis );
-    // ACCUMULATE_MULTIPLY( case1, a_cs_hb, axis );
-    // ACCUMULATE_MULTIPLY( case1, a_cs_db, axis );
-
-    ACCUMULATE_MULTIPLY( case1, a_fs_fb, axis, dtype );
-    ACCUMULATE_MULTIPLY( case1, a_fs_hb, axis, dtype );
-    ACCUMULATE_MULTIPLY( case1, a_fs_db, axis, dtype );
-
-    ACCUMULATE_MULTIPLY( case1, a_hs_fb, axis, dtype );
-    ACCUMULATE_MULTIPLY( case1, a_hs_hb, axis, dtype );
-    ACCUMULATE_MULTIPLY( case1, a_hs_db, axis, dtype );
-
-    ACCUMULATE_MULTIPLY( case1, a_ds_fb, axis, dtype );
-    ACCUMULATE_MULTIPLY( case1, a_ds_hb, axis, dtype );
-    ACCUMULATE_MULTIPLY( case1, a_ds_db, axis, dtype );
+    static_assert( nmtools::is_context_ptr_v<decltype(na::sycl::default_context())> );
+    // can't transfer the following type to device (no .data())
+    // OUTER_MULTIPLY( case1,   a,   b );
+    // OUTER_MULTIPLY( case1, a_a, b_a );
+    OUTER_MULTIPLY( case1, a_f, b_f );
+    OUTER_MULTIPLY( case1, a_d, b_d );
+    OUTER_MULTIPLY( case1, a_h, b_h );
 }

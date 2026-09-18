@@ -427,8 +427,8 @@ namespace nmtools::view
                 }
             }();
             // element multiplication with broadcasting
-            auto multiplied = multiply(l_slice,r_slice);
-            auto reduced    = reduce_add(multiplied,/*axis=*/None);
+            auto multiplied = view::multiply(l_slice,r_slice);
+            auto reduced    = view::reduce_add(multiplied,/*axis=*/None);
             return unwrap(reduced);
         } // view_at
 

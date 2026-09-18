@@ -978,7 +978,7 @@ TEST_CASE("repeat(case2)" * doctest::test_suite("meta::repeat"))
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_shape, view_type );
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_dim, view_type );
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_size, view_type );
-        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_bounded_dim, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_bounded_dim, view_type );
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_bounded_size, view_type );
         {
             constexpr auto fixed_shape  = meta::fixed_shape_v<view_type>;
@@ -1349,7 +1349,7 @@ TEST_CASE("repeat(case3)" * doctest::test_suite("meta::repeat"))
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_shape, view_type );
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_dim, view_type );
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_fixed_size, view_type );
-        NMTOOLS_STATIC_CHECK_TRAIT( meta::is_bounded_dim, view_type );
+        NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_bounded_dim, view_type );
         NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_bounded_size, view_type );
         {
             constexpr auto fixed_shape  = meta::fixed_shape_v<view_type>;

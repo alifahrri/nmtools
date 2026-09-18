@@ -4,15 +4,42 @@
 #include "nmtools/meta/common.hpp"
 #include "nmtools/meta/bits/transform/remove_cvref.hpp"
 #include "nmtools/meta/bits/transform/get_element_type.hpp"
+// #include "nmtools/meta/bits/transform/to_value.hpp"
 
 #include "nmtools/def.hpp"
 
+namespace nmtools::meta
+{
+    template <typename T, typename>
+    struct to_value;
+}
+
 namespace nmtools
 {
+    enum class DType : int
+    {
+        UNKNOWN = -1,
+        UInt8   = 0,
+        UInt16  = 1,
+        UInt32  = 2,
+        UInt64  = 3,
+        Int8    = 4,
+        Int16   = 5,
+        Int32   = 6,
+        Int64   = 7,
+        Float32 = 8,
+        Float64 = 9,
+    };
+
     template <typename T,typename=void>
     struct dtype_t
     {
         using type = T;
+
+        constexpr auto operator==(DType other) const noexcept
+        {
+            return meta::to_value<dtype_t,void>::value == other;
+        }
     };  // dtype_t
 
     template <typename T>
@@ -143,7 +170,99 @@ namespace nmtools
         using T = get_element_type_t<array_t>;
         return dtype_t<T>{};
     }
+
+    template <typename T>
+    struct is_runtime_dtype : meta::false_type {};
+
+    template <>
+    struct is_runtime_dtype<DType> : meta::true_type {};
+
+    template <typename T>
+    constexpr inline auto is_runtime_dtype_v = is_runtime_dtype<T>::value;
+
+    constexpr inline auto is_floating_point(const DType dtype)
+    {
+        return (dtype == DType::Float32)
+            || (dtype == DType::Float64)
+            ;
+    }
+
+    constexpr inline auto is_integer(const DType dtype)
+    {
+        return (dtype == DType::UInt8)
+            || (dtype == DType::UInt16)
+            || (dtype == DType::UInt32)
+            || (dtype == DType::UInt64)
+            || (dtype == DType::Int8)
+            || (dtype == DType::Int16)
+            || (dtype == DType::Int32)
+            || (dtype == DType::Int64)
+            ;
+    }
     
 } // namespace nmtools
+
+namespace nmtools::meta
+{
+    template <>
+    struct to_value<dtype_t<int8_t>,void>
+    {
+        static constexpr auto value = DType::Int8;
+    };
+
+    template <>
+    struct to_value<dtype_t<int16_t>,void>
+    {
+        static constexpr auto value = DType::Int16;
+    };
+
+    template <>
+    struct to_value<dtype_t<int32_t>,void>
+    {
+        static constexpr auto value = DType::Int32;
+    };
+
+    template <>
+    struct to_value<dtype_t<int64_t>,void>
+    {
+        static constexpr auto value = DType::Int64;
+    };
+    
+    template <>
+    struct to_value<dtype_t<uint8_t>,void>
+    {
+        static constexpr auto value = DType::UInt8;
+    };
+
+    template <>
+    struct to_value<dtype_t<uint16_t>,void>
+    {
+        static constexpr auto value = DType::UInt16;
+    };
+
+    template <>
+    struct to_value<dtype_t<uint32_t>,void>
+    {
+        static constexpr auto value = DType::UInt32;
+    };
+
+    template <>
+    struct to_value<dtype_t<uint64_t>,void>
+    {
+        static constexpr auto value = DType::UInt64;
+    };
+
+    template <>
+    struct to_value<dtype_t<float>,void>
+    {
+        static constexpr auto value = DType::Float32;
+    };
+
+    template <>
+    struct to_value<dtype_t<double>,void>
+    {
+        static constexpr auto value = DType::Float64;
+    };
+}
 
 #endif // NMTOOLS_DTYPES_HPP

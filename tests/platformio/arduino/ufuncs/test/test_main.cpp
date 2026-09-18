@@ -126,8 +126,8 @@ NM_TEST_SUBCASE(reduce_add, case1)
     NMTOOLS_TESTING_USE_CASE( view, reduce_add, case1);
     NMTOOLS_PIO_SUBCASE( case1, result, view::reduce_add, a_a, axis );
     NMTOOLS_PIO_SUBCASE( case1, result, view::reduce_add, a, axis );
-    NMTOOLS_PIO_SUBCASE( case1, result, na::add.reduce, a_a, axis );
-    NMTOOLS_PIO_SUBCASE( case1, result, na::add.reduce, a, axis );
+    NMTOOLS_PIO_SUBCASE( case1, result, na::reduce_add, a_a, axis );
+    NMTOOLS_PIO_SUBCASE( case1, result, na::reduce_add, a, axis );
 }
 
 NM_TEST_SUBCASE(constexpr_reduce_add, case1)
@@ -135,8 +135,8 @@ NM_TEST_SUBCASE(constexpr_reduce_add, case1)
     NMTOOLS_TESTING_USE_CASE( array, constexpr_reduce_add, case1);
     NMTOOLS_PIO_CONSTEXPR_SUBCASE( case1, result, view::reduce_add, a_a, axis );
     NMTOOLS_PIO_CONSTEXPR_SUBCASE( case1, result, view::reduce_add, a, axis );
-    NMTOOLS_PIO_CONSTEXPR_SUBCASE( case1, result, na::add.reduce, a_a, axis );
-    NMTOOLS_PIO_CONSTEXPR_SUBCASE( case1, result, na::add.reduce, a, axis );
+    NMTOOLS_PIO_CONSTEXPR_SUBCASE( case1, result, na::reduce_add, a_a, axis );
+    NMTOOLS_PIO_CONSTEXPR_SUBCASE( case1, result, na::reduce_add, a, axis );
 }
 
 NM_TEST_SUBCASE(constexpr_reduce_add, case4)
@@ -144,8 +144,8 @@ NM_TEST_SUBCASE(constexpr_reduce_add, case4)
     NMTOOLS_TESTING_USE_CASE( array, constexpr_reduce_add, case4);
     NMTOOLS_PIO_CONSTEXPR_SUBCASE( case4, result, view::reduce_add, a_a, axis );
     NMTOOLS_PIO_CONSTEXPR_SUBCASE( case4, result, view::reduce_add, a, axis );
-    NMTOOLS_PIO_CONSTEXPR_SUBCASE( case4, result, na::add.reduce, a_a, axis );
-    NMTOOLS_PIO_CONSTEXPR_SUBCASE( case4, result, na::add.reduce, a, axis );
+    NMTOOLS_PIO_CONSTEXPR_SUBCASE( case4, result, na::reduce_add, a_a, axis );
+    NMTOOLS_PIO_CONSTEXPR_SUBCASE( case4, result, na::reduce_add, a, axis );
 }
 
 NM_TEST_SUBCASE(constexpr_reduce_add, case9)
@@ -153,8 +153,8 @@ NM_TEST_SUBCASE(constexpr_reduce_add, case9)
     NMTOOLS_TESTING_USE_CASE( array, constexpr_reduce_add, case9);
     NMTOOLS_PIO_CONSTEXPR_SUBCASE( case9, result, view::reduce_add, a_a, axis, dtype, initial, keepdims );
     NMTOOLS_PIO_CONSTEXPR_SUBCASE( case9, result, view::reduce_add, a, axis, dtype, initial, keepdims );
-    NMTOOLS_PIO_CONSTEXPR_SUBCASE( case9, result, na::add.reduce, a_a, axis, dtype, initial, keepdims );
-    NMTOOLS_PIO_CONSTEXPR_SUBCASE( case9, result, na::add.reduce, a, axis, dtype, initial, keepdims );
+    NMTOOLS_PIO_CONSTEXPR_SUBCASE( case9, result, na::reduce_add, a_a, axis, dtype, initial, keepdims );
+    NMTOOLS_PIO_CONSTEXPR_SUBCASE( case9, result, na::reduce_add, a, axis, dtype, initial, keepdims );
 }
 
 NM_TEST_SUBCASE(constexpr_reduce_add, case14)
@@ -162,8 +162,8 @@ NM_TEST_SUBCASE(constexpr_reduce_add, case14)
     NMTOOLS_TESTING_USE_CASE( array, constexpr_reduce_add, case14);
     NMTOOLS_PIO_CONSTEXPR_SUBCASE( case14, result, view::reduce_add, a_a, axis, dtype, initial, keepdims );
     NMTOOLS_PIO_CONSTEXPR_SUBCASE( case14, result, view::reduce_add, a, axis, dtype, initial, keepdims );
-    NMTOOLS_PIO_CONSTEXPR_SUBCASE( case14, result, na::add.reduce, a_a, axis, dtype, initial, keepdims );
-    NMTOOLS_PIO_CONSTEXPR_SUBCASE( case14, result, na::add.reduce, a, axis, dtype, initial, keepdims );
+    NMTOOLS_PIO_CONSTEXPR_SUBCASE( case14, result, na::reduce_add, a_a, axis, dtype, initial, keepdims );
+    NMTOOLS_PIO_CONSTEXPR_SUBCASE( case14, result, na::reduce_add, a, axis, dtype, initial, keepdims );
 }
 
 #endif 
@@ -173,8 +173,8 @@ NM_TEST_SUBCASE(accumulate_add, case1)
     NMTOOLS_TESTING_USE_CASE( view, accumulate_add, case1 );
     NMTOOLS_PIO_SUBCASE( case1, result, view::accumulate_add, a_a, axis );
     NMTOOLS_PIO_SUBCASE( case1, result, view::accumulate_add, a, axis );
-    NMTOOLS_PIO_SUBCASE( case1, result, na::add.accumulate, a_a, axis );
-    NMTOOLS_PIO_SUBCASE( case1, result, na::add.accumulate, a, axis );
+    NMTOOLS_PIO_SUBCASE( case1, result, na::accumulate_add, a_a, axis );
+    NMTOOLS_PIO_SUBCASE( case1, result, na::accumulate_add, a, axis );
 }
 
 NM_TEST_SUBCASE(accumulate_add, case2)
@@ -182,8 +182,8 @@ NM_TEST_SUBCASE(accumulate_add, case2)
     NMTOOLS_TESTING_USE_CASE( view, accumulate_add, case2 );
     NMTOOLS_PIO_SUBCASE( case2, result, view::accumulate_add, a_a, axis );
     NMTOOLS_PIO_SUBCASE( case2, result, view::accumulate_add, a, axis );
-    NMTOOLS_PIO_SUBCASE( case2, result, na::add.accumulate, a_a, axis );
-    NMTOOLS_PIO_SUBCASE( case2, result, na::add.accumulate, a, axis );
+    NMTOOLS_PIO_SUBCASE( case2, result, na::accumulate_add, a_a, axis );
+    NMTOOLS_PIO_SUBCASE( case2, result, na::accumulate_add, a, axis );
 }
 
 NM_TEST_SUBCASE(accumulate_add, case3)
@@ -191,8 +191,8 @@ NM_TEST_SUBCASE(accumulate_add, case3)
     NMTOOLS_TESTING_USE_CASE( view, accumulate_add, case3 );
     NMTOOLS_PIO_SUBCASE( case3, result, view::accumulate_add, a_a, axis );
     NMTOOLS_PIO_SUBCASE( case3, result, view::accumulate_add, a, axis );
-    NMTOOLS_PIO_SUBCASE( case3, result, na::add.accumulate, a_a, axis );
-    NMTOOLS_PIO_SUBCASE( case3, result, na::add.accumulate, a, axis );
+    NMTOOLS_PIO_SUBCASE( case3, result, na::accumulate_add, a_a, axis );
+    NMTOOLS_PIO_SUBCASE( case3, result, na::accumulate_add, a, axis );
 }
 
 NM_TEST_SUBCASE(constexpr_accumulate_add, case1)
@@ -200,8 +200,8 @@ NM_TEST_SUBCASE(constexpr_accumulate_add, case1)
     NMTOOLS_TESTING_USE_CASE( array, constexpr_accumulate_add, case1 );
     NMTOOLS_PIO_CONSTEXPR_SUBCASE( case1, result, view::accumulate_add, a_a, axis );
     NMTOOLS_PIO_CONSTEXPR_SUBCASE( case1, result, view::accumulate_add, a, axis );
-    NMTOOLS_PIO_CONSTEXPR_SUBCASE( case1, result, na::add.accumulate, a_a, axis );
-    NMTOOLS_PIO_CONSTEXPR_SUBCASE( case1, result, na::add.accumulate, a, axis );
+    NMTOOLS_PIO_CONSTEXPR_SUBCASE( case1, result, na::accumulate_add, a_a, axis );
+    NMTOOLS_PIO_CONSTEXPR_SUBCASE( case1, result, na::accumulate_add, a, axis );
 }
 
 NM_TEST_SUBCASE(constexpr_accumulate_add, case2)
@@ -209,8 +209,8 @@ NM_TEST_SUBCASE(constexpr_accumulate_add, case2)
     NMTOOLS_TESTING_USE_CASE( array, constexpr_accumulate_add, case2 );
     NMTOOLS_PIO_CONSTEXPR_SUBCASE( case2, result, view::accumulate_add, a_a, axis );
     NMTOOLS_PIO_CONSTEXPR_SUBCASE( case2, result, view::accumulate_add, a, axis );
-    NMTOOLS_PIO_CONSTEXPR_SUBCASE( case2, result, na::add.accumulate, a_a, axis );
-    NMTOOLS_PIO_CONSTEXPR_SUBCASE( case2, result, na::add.accumulate, a, axis );
+    NMTOOLS_PIO_CONSTEXPR_SUBCASE( case2, result, na::accumulate_add, a_a, axis );
+    NMTOOLS_PIO_CONSTEXPR_SUBCASE( case2, result, na::accumulate_add, a, axis );
 }
 
 NM_TEST_SUBCASE(constexpr_accumulate_add, case3)
@@ -218,8 +218,8 @@ NM_TEST_SUBCASE(constexpr_accumulate_add, case3)
     NMTOOLS_TESTING_USE_CASE( array, constexpr_accumulate_add, case3 );
     NMTOOLS_PIO_CONSTEXPR_SUBCASE( case3, result, view::accumulate_add, a_a, axis );
     NMTOOLS_PIO_CONSTEXPR_SUBCASE( case3, result, view::accumulate_add, a, axis );
-    NMTOOLS_PIO_CONSTEXPR_SUBCASE( case3, result, na::add.accumulate, a_a, axis );
-    NMTOOLS_PIO_CONSTEXPR_SUBCASE( case3, result, na::add.accumulate, a, axis );
+    NMTOOLS_PIO_CONSTEXPR_SUBCASE( case3, result, na::accumulate_add, a_a, axis );
+    NMTOOLS_PIO_CONSTEXPR_SUBCASE( case3, result, na::accumulate_add, a, axis );
 }
 
 NM_TEST_SUBCASE(outer_add, case1)
@@ -227,8 +227,8 @@ NM_TEST_SUBCASE(outer_add, case1)
     NMTOOLS_TESTING_USE_CASE( view, outer_add, case1 );
     NMTOOLS_PIO_SUBCASE( case1, result, view::outer_add, a_a, b_a );
     NMTOOLS_PIO_SUBCASE( case1, result, view::outer_add, a, b );
-    NMTOOLS_PIO_SUBCASE( case1, result, na::add.outer, a_a, b_a );
-    NMTOOLS_PIO_SUBCASE( case1, result, na::add.outer, a, b );
+    NMTOOLS_PIO_SUBCASE( case1, result, na::outer_add, a_a, b_a );
+    NMTOOLS_PIO_SUBCASE( case1, result, na::outer_add, a, b );
 }
 
 NM_TEST_SUBCASE(constexpr_outer_add, case1)
@@ -236,8 +236,8 @@ NM_TEST_SUBCASE(constexpr_outer_add, case1)
     NMTOOLS_TESTING_USE_CASE( array, constexpr_outer_add, case1 );
     NMTOOLS_PIO_CONSTEXPR_SUBCASE( case1, result, view::outer_add, a_a, b_a );
     NMTOOLS_PIO_CONSTEXPR_SUBCASE( case1, result, view::outer_add, a, b );
-    NMTOOLS_PIO_CONSTEXPR_SUBCASE( case1, result, na::add.outer, a_a, b_a );
-    NMTOOLS_PIO_CONSTEXPR_SUBCASE( case1, result, na::add.outer, a, b );
+    NMTOOLS_PIO_CONSTEXPR_SUBCASE( case1, result, na::outer_add, a_a, b_a );
+    NMTOOLS_PIO_CONSTEXPR_SUBCASE( case1, result, na::outer_add, a, b );
 }
 
 NM_TEST_SUBCASE(mean, case1)
@@ -276,8 +276,8 @@ NM_TEST_SUBCASE(reduce_add, case4)
     NMTOOLS_PIO_SUBCASE( case4, result, view::reduce_add, a, axis );
     // NOTE: need dynamic ndarray, currently disabled for platformio arduino
     // TODO: fix
-    // NMTOOLS_PIO_SUBCASE( case4, result, na::add.reduce, a_a, axis_a );
-    // NMTOOLS_PIO_SUBCASE( case4, result, na::add.reduce, a, axis );
+    // NMTOOLS_PIO_SUBCASE( case4, result, na::reduce_add, a_a, axis_a );
+    // NMTOOLS_PIO_SUBCASE( case4, result, na::reduce_add, a, axis );
 }
 
 NM_TEST_SUBCASE(reduce_add, case9)
@@ -287,8 +287,8 @@ NM_TEST_SUBCASE(reduce_add, case9)
     NMTOOLS_PIO_SUBCASE( case9, result, view::reduce_add, a, axis, dtype, initial, keepdims );
     // NOTE: need dynamic ndarray, currently disabled for platformio arduino
     // TODO: fix
-    // NMTOOLS_PIO_SUBCASE( case9, result, na::add.reduce, a_a, axis, dtype, initial, keepdims );
-    // NMTOOLS_PIO_SUBCASE( case9, result, na::add.reduce, a, axis, dtype, initial, keepdims );
+    // NMTOOLS_PIO_SUBCASE( case9, result, na::reduce_add, a_a, axis, dtype, initial, keepdims );
+    // NMTOOLS_PIO_SUBCASE( case9, result, na::reduce_add, a, axis, dtype, initial, keepdims );
 }
 
 NM_TEST_SUBCASE(reduce_add, case14)
@@ -298,8 +298,8 @@ NM_TEST_SUBCASE(reduce_add, case14)
     NMTOOLS_PIO_SUBCASE( case14, result, view::reduce_add, a, axis, dtype, initial, keepdims );
     // NOTE: need dynamic ndarray, currently disabled for platformio arduino
     // TODO: fix
-    // NMTOOLS_PIO_SUBCASE( case14, result, na::add.reduce, a_a, axis, dtype, initial, keepdims );
-    // NMTOOLS_PIO_SUBCASE( case14, result, na::add.reduce, a, axis, dtype, initial, keepdims );
+    // NMTOOLS_PIO_SUBCASE( case14, result, na::reduce_add, a_a, axis, dtype, initial, keepdims );
+    // NMTOOLS_PIO_SUBCASE( case14, result, na::reduce_add, a, axis, dtype, initial, keepdims );
 }
 
 NM_TEST_SUBCASE(reduce_add, case15)
@@ -309,8 +309,8 @@ NM_TEST_SUBCASE(reduce_add, case15)
     NMTOOLS_PIO_SUBCASE( case15, result, view::reduce_add, a, axis );
     // NOTE: need dynamic ndarray, currently disabled for platformio arduino
     // TODO: fix
-    // NMTOOLS_PIO_SUBCASE( case15, result, na::add.reduce, a_a, axis );
-    // NMTOOLS_PIO_SUBCASE( case15, result, na::add.reduce, a, axis );
+    // NMTOOLS_PIO_SUBCASE( case15, result, na::reduce_add, a_a, axis );
+    // NMTOOLS_PIO_SUBCASE( case15, result, na::reduce_add, a, axis );
 }
 
 NM_TEST_SUBCASE(reduce_add, case2)
