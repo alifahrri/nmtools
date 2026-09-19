@@ -89,6 +89,7 @@ namespace nmtools::index
         }
     } // compute indices
 
+    // aka unravel_index
     /**
      * @brief inverse operation of compute_offset
      * 
