@@ -548,6 +548,29 @@ NMTOOLS_TESTING_DECLARE_CASE(compute_indices)
         inline auto result_nl2 = nmtools_array{null_size_t(),null_size_t(),null_size_t(2)};
         inline auto result_nl3 = nmtools_array{null_size_t(),null_size_t(),null_size_t()};
     }
+
+    NMTOOLS_TESTING_DECLARE_ARGS(case19)
+    {
+        inline int shape[2] = {2,3};
+        inline int offset   = 5;
+        NMTOOLS_CAST_INDEX_ARRAYS(shape)
+        NMTOOLS_MAYBE_CAST_INDEX_ARRAYS(shape)
+
+        inline auto shape_ct  = nmtools_tuple{2_ct,3_ct};
+        inline auto offset_ct = 5_ct;
+
+        inline auto shape_mx1 = to_mixed(shape_ct,0_ct);
+        inline auto shape_mx2 = to_mixed(shape_ct,1_ct);
+
+        inline auto shape_nl1 = to_nullable(shape,0);
+        inline auto shape_nl2 = to_nullable(shape,1);
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case19)
+    {
+        inline auto indices = nmtools_array{1,2};
+        inline auto result_nl1 = to_nullable(indices,0);
+        inline auto result_nl2 = nmtools_array{null_size_t(),null_size_t()};
+    }
 }
 
 #endif // NMTOOLS_TESTING_DATA_INDEX_COMPUTE_INDICES_HPP

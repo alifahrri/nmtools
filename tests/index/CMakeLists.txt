@@ -108,6 +108,7 @@ if (NMTOOLS_INDEX_TEST_ALL)
 endif (NMTOOLS_INDEX_TEST_ALL)
 
 add_executable(${PROJECT_NAME}-doctest tests.cpp 
+    f2.cpp
     ${ARRAY_INDEX_TEST_SOURCES}
 )
 add_test(

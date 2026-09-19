@@ -199,7 +199,6 @@ TEST_CASE("compute_indices(case7)" * doctest::test_suite("index::compute_indices
     COMPUTE_INDICES_RESULT_SUBCASE(case7_3d, result_nl1, offset, shape_nl1);
     COMPUTE_INDICES_RESULT_SUBCASE(case7_3d, result_nl2, offset, shape_nl2);
     COMPUTE_INDICES_RESULT_SUBCASE(case7_3d, result_nl3, offset, shape_nl3);
-
 }
 
 TEST_CASE("compute_indices(case8)" * doctest::test_suite("index::compute_indices"))
@@ -354,4 +353,16 @@ TEST_CASE("compute_indices(case18)" * doctest::test_suite("index::compute_indice
     COMPUTE_INDICES_RESULT_SUBCASE(case18_3d, result_nl2, offset, shape_nl2);
     COMPUTE_INDICES_RESULT_SUBCASE(case18_3d, result_nl3, offset, shape_nl3);
 
+}
+
+TEST_CASE("compute_indices(case19)" * doctest::test_suite("index::compute_indices"))
+{
+    COMPUTE_INDICES_SUBCASE(case19, offset, shape_a);
+    COMPUTE_INDICES_SUBCASE(case19, offset, shape_v);
+    COMPUTE_INDICES_SUBCASE(case19, offset, shape_f);
+    COMPUTE_INDICES_SUBCASE(case19, offset, shape_h);
+    COMPUTE_INDICES_SUBCASE(case19, offset, shape_ls_fb);
+
+    COMPUTE_INDICES_RESULT_SUBCASE(case19, result_nl1, offset, shape_nl1);
+    COMPUTE_INDICES_RESULT_SUBCASE(case19, result_nl2, offset, shape_nl2);
 }

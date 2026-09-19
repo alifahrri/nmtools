@@ -2,6 +2,7 @@
 #define NMTOOLS_CONSTANTS_HPP
 
 #include "nmtools/meta.hpp"
+#include "nmtools/def.hpp"
 #include "nmtools/utility/tuple_cat.hpp"
 
 // TODO: rename this file to "literals.hpp", use constant.hpp only to define None, Ellipsis...
