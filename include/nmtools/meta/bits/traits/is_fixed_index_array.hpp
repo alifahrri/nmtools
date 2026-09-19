@@ -31,7 +31,7 @@ namespace nmtools::meta
     inline constexpr auto is_fixed_index_array_v = is_fixed_index_array<T>::value;
 
     template <typename T, size_t N>
-    struct is_fixed_index_array<T[N],enable_if_t<is_index_v<T>>> : true_type {};
+    struct is_fixed_index_array<T[N]> : is_index<T> {};
 
     #ifdef __OPENCL_VERSION__
     template <typename T>

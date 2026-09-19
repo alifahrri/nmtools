@@ -29,19 +29,19 @@ namespace nmtools::meta
         using type = type_t<decltype(vtype)>;
     }; // get_index_element_type
 
-    template <template<typename...>typename Tuple, typename...ClippedIndices>
+    template <template<typename...>typename tuple, typename...clipped_indices>
     struct get_index_element_type<
-        Tuple<ClippedIndices...>,
+        tuple<clipped_indices...>,
         enable_if_t<
-            is_tuple_v<Tuple<ClippedIndices...>>
-            && (is_clipped_integer_v<ClippedIndices> && ...)
+            is_tuple_v<tuple<clipped_indices...>>
+            && (is_clipped_integer_v<clipped_indices> && ...)
         >
     >
-    : get_index_element_type<Tuple<typename ClippedIndices::value_type...>> {};
+    : get_index_element_type<tuple<typename clipped_indices::value_type...>> {};
 
-    template <template<typename,auto>typename Array, typename T, auto N>
+    template <template<typename,auto>typename array, typename T, auto N>
     struct get_index_element_type<
-        Array<T,N>,
+        array<T,N>,
         enable_if_t<
             is_clipped_integer_v<T>
         >

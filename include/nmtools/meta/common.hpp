@@ -86,6 +86,12 @@ namespace nmtools::meta
             return integral_constant<T,v/val>{};
         }
 
+        template <typename U, U val>
+        constexpr auto operator^(integral_constant<U,val>) const noexcept
+        {
+            return integral_constant<T,v^val>{};
+        }
+
         constexpr auto operator-() const noexcept
         {
             using U = make_signed_t<T>;

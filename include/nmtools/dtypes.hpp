@@ -4,7 +4,6 @@
 #include "nmtools/meta/common.hpp"
 #include "nmtools/meta/bits/transform/remove_cvref.hpp"
 #include "nmtools/meta/bits/transform/get_element_type.hpp"
-// #include "nmtools/meta/bits/transform/to_value.hpp"
 
 #include "nmtools/def.hpp"
 
@@ -262,6 +261,218 @@ namespace nmtools::meta
     struct to_value<dtype_t<double>,void>
     {
         static constexpr auto value = DType::Float64;
+    };
+}
+
+/*************************************************************************** */
+#include "nmtools/meta/bits/traits/is_integer.hpp"
+#include "nmtools/meta/bits/traits/is_num.hpp"
+
+// defined here in dtypes, for reasonably complete common metafunction
+namespace nmtools
+{
+    template <typename T>
+    struct f2
+    {
+        static_assert( !is_floating_point_v<T> );
+        
+        static constexpr auto vtype = [](){
+            if constexpr (is_integral_constant_v<T>) {
+                using type = typename T::value_type;
+                return as_value_v<type>;
+            } else {
+                return as_value_v<T>;
+            }
+        }();
+        using value_type = type_t<decltype(vtype)>;
+
+        T i = {};
+
+        constexpr f2() {}
+
+        constexpr f2(T i)
+            : i(i)
+        {}
+
+        constexpr f2(const f2& other)
+            : i(other.i)
+        {}
+        
+        constexpr decltype(auto) operator=(const f2 rhs) noexcept
+        {
+            i = rhs.i;
+            return *this;
+        }
+
+        /**================================================================= */
+
+        template <typename U>
+        constexpr auto operator+(const f2<U> rhs) const noexcept
+        {
+            auto result = i ^ rhs.i;
+            return f2<decltype(result)>{result};
+        }
+
+        template <typename U>
+        constexpr auto operator-(const f2<U> rhs) const noexcept
+        {
+            return *this + rhs;
+        }
+
+        // carry-less mul
+        template <typename U, enable_if_t<!is_integral_constant_v<U>,int> = 0 >
+        static constexpr auto clmul(U a, U b)
+        {
+            U r = 0;
+            while (b) {
+                if (b & 1) {
+                    r ^= a;
+                }
+                b = b >> 1;
+                a = a << 1;
+            }
+            return r;
+        }
+
+        template <typename U, enable_if_t<!is_integral_constant_v<T> && !is_integral_constant_v<U>,int> = 0 >
+        constexpr auto operator*(const f2<U> rhs) const noexcept
+        {
+            return f2{clmul(i,rhs.i)};
+        }
+
+        template <typename U, enable_if_t<!is_integral_constant_v<T> && is_integral_constant_v<U>,int> = 0 >
+        constexpr auto operator*(const f2<U> rhs) const noexcept
+        {
+            return f2{clmul(i,(T)rhs.i)};
+        }
+
+        template <typename U, enable_if_t<is_integral_constant_v<T> && !is_integral_constant_v<U>,int> = 0 >
+        constexpr auto operator*(const f2<U> rhs) const noexcept
+        {
+            auto result = clmul((U)i.value,rhs.i);
+            return f2<decltype(result)>{result};
+        }
+
+        template <typename U, enable_if_t<is_integral_constant_v<T> && is_integral_constant_v<U>,int> = 0 >
+        constexpr auto operator*(const f2<U>) const noexcept
+        {
+            constexpr auto result = clmul(T::value,U::value);
+            return f2<decltype(result)>{result};
+        }
+
+        constexpr auto operator*(const T rhs) const noexcept
+        {
+            // TODO: handle integral constant
+            return f2{clmul(i,rhs)};
+        }
+
+        /**================================================================= */
+
+        constexpr decltype(auto) operator+=(const f2 rhs) noexcept
+        {
+            i = f2{i ^ rhs.i};
+            return *this;
+        }
+
+        constexpr decltype(auto) operator-=(const f2 rhs) noexcept
+        {
+            i = f2{i ^ rhs.i};
+            return *this;
+        }
+
+        constexpr decltype(auto) operator*=(const f2 rhs) noexcept
+        {
+            i = f2{clmul(i,rhs.i)};
+            return *this;
+        }
+
+        constexpr decltype(auto) operator+=(const T rhs) noexcept
+        {
+            i = f2{i ^ rhs};
+            return *this;
+        }
+
+        constexpr decltype(auto) operator-=(const T rhs) noexcept
+        {
+            i = f2{i ^ rhs};
+            return *this;
+        }
+
+        constexpr decltype(auto) operator*=(const T rhs) noexcept
+        {
+            i = f2{clmul(i,rhs)};
+            return *this;
+        }
+        
+        /**================================================================= */
+
+        // TODO: make this explicit?
+        constexpr operator T() const noexcept
+        {
+            return i;
+        }
+
+        template <typename U, enable_if_t<is_integer_v<U>,int> =0>
+        constexpr operator U() const noexcept
+        {
+            return static_cast<U>(i);
+        }
+
+        template <typename U>
+        constexpr auto operator==(const f2<U> rhs) const noexcept
+        {
+            return (T)i == (T)rhs.i;
+        }
+
+        // TODO: constraint to integer
+        template <typename U>
+        constexpr auto operator==(const U rhs) const noexcept
+        {
+            return static_cast<U>(i) == rhs;
+        }
+    };
+
+    template <typename T>
+    f2(T) -> f2<T>;
+}
+
+#include "nmtools/meta/bits/transform/get_index_element_type.hpp"
+#include "nmtools/meta/bits/transform/to_value.hpp"
+#include "nmtools/meta/bits/traits/is_f2_num.hpp"
+
+namespace nmtools::meta
+{
+    template <typename T>
+    struct to_value<f2<T>,enable_if_t<is_integral_constant_v<T>>>
+    {
+        static constexpr auto value = f2(T::value);
+    };
+
+    // f2 can only be int, no floating point
+    template <typename T>
+    struct is_f2_num<f2<T>>
+    {
+        static constexpr auto value = (is_integer_v<T> || is_integral_constant_v<T>) && !is_f2_num<T>::value;
+    };
+
+    template <typename T>
+    struct is_f2_num<const T> : is_f2_num<T> {};
+
+    template <typename T>
+    struct is_f2_num<T&> : is_f2_num<T> {};
+
+    // is integer
+    template <typename T>
+    struct is_integer<f2<T>> : is_integer<T> {};
+
+    template <typename T>
+    struct is_integral_constant<f2<T>> : is_integral_constant<T> {};
+
+    template <template<typename...>typename tuple, typename...Ts>
+    struct get_index_element_type<
+        tuple<f2<Ts>...>, enable_if_t<is_tuple_v<tuple<f2<Ts>...>>>
+    > {
+        using type = f2<get_index_element_type_t<tuple<Ts...>>>;
     };
 }
 

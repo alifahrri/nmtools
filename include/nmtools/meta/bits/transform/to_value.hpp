@@ -82,7 +82,7 @@ namespace nmtools::meta
                 constexpr auto NUM_NODES = sizeof...(Ts);
                 constexpr auto MAX_NEIGHBORS = [](){
                     auto max = 0;
-                    meta::template_for<NUM_NODES>([&](auto index){
+                    template_for<NUM_NODES>([&](auto index){
                         constexpr auto I = decltype(index)::value;
                         auto n_neighbors = len_v<at_t<tuple_t,I>>;
                         max = (nm_index_t)max > (nm_index_t)n_neighbors ? max : n_neighbors;
@@ -95,12 +95,12 @@ namespace nmtools::meta
 
                 auto result = result_t {};
 
-                meta::template_for<NUM_NODES>([&](auto index){
+                template_for<NUM_NODES>([&](auto index){
                     constexpr auto I = decltype(index)::value;
                     using neighbors_t = at_t<tuple_t,I>;
                     constexpr auto NUM_NEIGHBORS = len_v<neighbors_t>;
                     result[I].resize(NUM_NEIGHBORS);
-                    meta::template_for<NUM_NEIGHBORS>([&](auto index){
+                    template_for<NUM_NEIGHBORS>([&](auto index){
                         constexpr auto J = decltype(index)::value;
                         constexpr auto NEIGHBOR = to_value_v<at_t<neighbors_t,J>>;
                         result[I][J] = NEIGHBOR;
@@ -114,7 +114,7 @@ namespace nmtools::meta
                 using index_t  = nullable_num<T>;
                 using result_t = utl::array<index_t,N>;
                 auto result = result_t{};
-                meta::template_for<N>([&](auto index){
+                template_for<N>([&](auto index){
                     constexpr auto I = decltype(index)::value;
                     using type_i = at_t<tuple_t,I>;
                     if constexpr (is_constant_index_v<type_i>) {
@@ -125,8 +125,8 @@ namespace nmtools::meta
                 });
                 return result;
             } else if constexpr ((sizeof...(Ts)) && (is_constant_index_v<Ts> && ...)) {
-                using index_t = promote_index_t<decltype(Ts::value)...>;
-                return utl::array{index_t(Ts::value)...};
+                using index_t = promote_index_t<decltype(to_value_v<Ts>)...>;
+                return utl::array{index_t(to_value_v<Ts>)...};
             } else if constexpr ((sizeof...(Ts)) && (is_clipped_integer_v<Ts> && ...)) {
                 using index_t = promote_index_t<decltype(Ts::max)...>;
                 return utl::array{index_t(Ts::max)...};
