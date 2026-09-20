@@ -273,3 +273,60 @@ TEST_CASE("constexpr_stride(case1)" * doctest::test_suite("view::stride"))
     CONSTEXPR_STRIDE_SUBCASE( case1, x, shape_mx1, striding_mx1 );
     CONSTEXPR_STRIDE_SUBCASE( case1, x, shape_mx2, striding_mx2 );
 }
+
+TEST_CASE("constexpr_stride(case2)" * doctest::test_suite("view::stride"))
+{
+    CONSTEXPR_STRIDE_SUBCASE( case2, x, shape, striding );
+    CONSTEXPR_STRIDE_SUBCASE( case2, x, shape_a, striding_a );
+    CONSTEXPR_STRIDE_SUBCASE( case2, x, shape_f, striding_f );
+    CONSTEXPR_STRIDE_SUBCASE( case2, x, shape_h, striding_h );
+
+    CONSTEXPR_STRIDE_SUBCASE( case2, x, shape_ct, striding_ct );
+    CONSTEXPR_STRIDE_SUBCASE( case2, x, shape_mx1, striding_mx1 );
+    CONSTEXPR_STRIDE_SUBCASE( case2, x, shape_mx2, striding_mx2 );
+}
+
+TEST_CASE("constexpr_stride(case3)" * doctest::test_suite("view::stride"))
+{
+    CONSTEXPR_STRIDE_SUBCASE( case3, x, shape, striding );
+    CONSTEXPR_STRIDE_SUBCASE( case3, x, shape_a, striding_a );
+    CONSTEXPR_STRIDE_SUBCASE( case3, x, shape_f, striding_f );
+    CONSTEXPR_STRIDE_SUBCASE( case3, x, shape_h, striding_h );
+
+    CONSTEXPR_STRIDE_SUBCASE( case3, x, shape_ct, striding_ct );
+    CONSTEXPR_STRIDE_SUBCASE( case3, x, shape_mx1, striding_mx1 );
+    CONSTEXPR_STRIDE_SUBCASE( case3, x, shape_mx2, striding_mx2 );
+}
+
+TEST_CASE("constexpr_stride(case4)" * doctest::test_suite("view::stride"))
+{
+    CONSTEXPR_STRIDE_SUBCASE( case4, x, nested_shape_a, nested_striding_a );
+    CONSTEXPR_STRIDE_SUBCASE( case4, x, nested_shape_f, nested_striding_f );
+    CONSTEXPR_STRIDE_SUBCASE( case4, x, nested_shape_h, nested_striding_h );
+
+    CONSTEXPR_STRIDE_SUBCASE( case4, x, nested_shape_ct, nested_striding_ct );
+}
+
+TEST_CASE("constexpr_stride(case5)" * doctest::test_suite("view::stride"))
+{
+    CONSTEXPR_STRIDE_SUBCASE( case5, x, shape, striding );
+    CONSTEXPR_STRIDE_SUBCASE( case5, x, shape_a, striding_a );
+    CONSTEXPR_STRIDE_SUBCASE( case5, x, shape_f, striding_f );
+    CONSTEXPR_STRIDE_SUBCASE( case5, x, shape_h, striding_h );
+
+    CONSTEXPR_STRIDE_SUBCASE( case5, x, shape_ct, striding_ct );
+    CONSTEXPR_STRIDE_SUBCASE( case5, x, shape_mx1, striding_mx1 );
+    CONSTEXPR_STRIDE_SUBCASE( case5, x, shape_mx2, striding_mx2 );
+}
+
+TEST_CASE("constexpr_stride(case6)" * doctest::test_suite("view::stride"))
+{
+    CONSTEXPR_STRIDE_SUBCASE( case6, x, shape, striding );
+    CONSTEXPR_STRIDE_SUBCASE( case6, x, shape_a, striding_a );
+    CONSTEXPR_STRIDE_SUBCASE( case6, x, shape_f, striding_f );
+    CONSTEXPR_STRIDE_SUBCASE( case6, x, shape_h, striding_h );
+
+    CONSTEXPR_STRIDE_SUBCASE( case6, x, shape_ct, striding_ct );
+    CONSTEXPR_STRIDE_SUBCASE( case6, x, shape_mx1, striding_mx1 );
+    CONSTEXPR_STRIDE_SUBCASE( case6, x, shape_mx2, striding_mx2 );
+}

@@ -637,6 +637,181 @@ NMTOOLS_TESTING_DECLARE_CASE(array,constexpr_stride)
             {1,2,3}
         };
     }
+
+    // col-major
+    NMTOOLS_TESTING_DECLARE_ARGS(case2)
+    {
+        constexpr inline int x[32] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31};
+        constexpr inline int shape[2]    = {4,8};
+        constexpr inline int striding[2] = {1,4};
+
+        constexpr inline auto shape_ct    = tuple{4_ct,8_ct};
+        constexpr inline auto striding_ct = tuple{1_ct,4_ct};
+
+        constexpr inline auto shape_mx1 = to_mixed(shape_ct,0_ct);
+        constexpr inline auto shape_mx2 = to_mixed(shape_ct,1_ct);
+        constexpr inline auto striding_mx1 = to_mixed(striding_ct,0_ct);
+        constexpr inline auto striding_mx2 = to_mixed(striding_ct,1_ct);
+
+        NMTOOLS_CONSTEXPR_CAST_ARRAYS(x);
+        NMTOOLS_CONSTEXPR_CAST_INDEX_ARRAYS(shape);
+        NMTOOLS_CONSTEXPR_CAST_INDEX_ARRAYS(striding);
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case2)
+    {
+        constexpr inline int expected[4][8] = {
+            {0,4, 8,12,16,20,24,28},
+            {1,5, 9,13,17,21,25,29},
+            {2,6,10,14,18,22,26,30},
+            {3,7,11,15,19,23,27,31},
+        };
+    }
+
+    // col-major padded
+    NMTOOLS_TESTING_DECLARE_ARGS(case3)
+    {
+        constexpr inline int x[40] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39};
+        constexpr inline int shape[2]    = {4,8};
+        constexpr inline int striding[2] = {1,5};
+
+        constexpr inline auto shape_ct    = tuple{4_ct,8_ct};
+        constexpr inline auto striding_ct = tuple{1_ct,5_ct};
+
+        constexpr inline auto shape_mx1 = to_mixed(shape_ct,0_ct);
+        constexpr inline auto shape_mx2 = to_mixed(shape_ct,1_ct);
+        constexpr inline auto striding_mx1 = to_mixed(striding_ct,0_ct);
+        constexpr inline auto striding_mx2 = to_mixed(striding_ct,1_ct);
+
+        NMTOOLS_CONSTEXPR_CAST_ARRAYS(x);
+        NMTOOLS_CONSTEXPR_CAST_INDEX_ARRAYS(shape);
+        NMTOOLS_CONSTEXPR_CAST_INDEX_ARRAYS(striding);
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case3)
+    {
+        constexpr inline int expected[4][8] = {
+            {0,5,10,15,20,25,30,35},
+            {1,6,11,16,21,26,31,36},
+            {2,7,12,17,22,27,32,37},
+            {3,8,13,18,23,28,33,38},
+        };
+    }
+
+    // blocked column major
+    NMTOOLS_TESTING_DECLARE_ARGS(case4)
+    {
+        constexpr inline int x[64] = { 0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14, 15, 16,
+            17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33,
+            34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50,
+            51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63};
+
+        constexpr inline int shape1[2] = {2,4};
+        constexpr inline int shape2[2] = {4,2};
+
+        constexpr inline int striding1[2] = {32,1};
+        constexpr inline int striding2[2] = {8,4};
+
+        NMTOOLS_CONSTEXPR_CAST_INDEX_ARRAYS(shape1);
+        NMTOOLS_CONSTEXPR_CAST_INDEX_ARRAYS(shape2);
+        NMTOOLS_CONSTEXPR_CAST_INDEX_ARRAYS(striding1);
+        NMTOOLS_CONSTEXPR_CAST_INDEX_ARRAYS(striding2);
+
+        constexpr inline auto nested_shape_a    = tuple{shape1_a,shape2_a};
+        constexpr inline auto nested_striding_a = tuple{striding1_a,striding2_a};
+
+        constexpr inline auto nested_shape_f    = tuple{shape1_f,shape2_f};
+        constexpr inline auto nested_striding_f = tuple{striding1_f,striding2_f};
+
+        constexpr inline auto nested_shape_h    = tuple{shape1_h,shape2_h};
+        constexpr inline auto nested_striding_h = tuple{striding1_h,striding2_h};
+
+        constexpr inline auto nested_shape_ct    = tuple{tuple{2_ct,4_ct},tuple{4_ct,2_ct}};
+        constexpr inline auto nested_striding_ct = tuple{tuple{32_ct,1_ct},tuple{8_ct,4_ct}};
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case4)
+    {
+        constexpr inline int expected[8][8] = {
+            {0, 4, 8, 12, 16, 20, 24, 28},
+            {1, 5, 9, 13, 17, 21, 25, 29},
+            {2, 6, 10, 14, 18, 22, 26, 30},
+            {3, 7, 11, 15, 19, 23, 27, 31},
+            {32, 36, 40, 44, 48, 52, 56, 60},
+            {33, 37, 41, 45, 49, 53, 57, 61},
+            {34, 38, 42, 46, 50, 54, 58, 62},
+            {35, 39, 43, 47, 51, 55, 59, 63}
+        };
+    }
+
+    // f2 swizzled column major
+    NMTOOLS_TESTING_DECLARE_ARGS(case5)
+    {
+        constexpr inline int x[64] = { 0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14, 15, 16,
+            17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33,
+            34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50,
+            51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63};
+
+        constexpr inline int shape[2] = {8,8};
+        NMTOOLS_CONSTEXPR_CAST_INDEX_ARRAYS(shape);
+
+        constexpr inline f2<int> striding[2] = {f2(1),f2(9)};
+        NMTOOLS_CONSTEXPR_CAST_INDEX_ARRAYS(striding);
+
+        constexpr inline auto shape_ct    = tuple{8_ct,8_ct};
+        constexpr inline auto striding_ct = tuple{f2(1_ct),f2(9_ct)};
+
+        constexpr inline auto shape_mx1 = to_mixed(shape_ct,0_ct);
+        constexpr inline auto shape_mx2 = to_mixed(shape_ct,1_ct);
+        constexpr inline auto striding_mx1 = to_mixed(striding_ct,0_ct);
+        constexpr inline auto striding_mx2 = to_mixed(striding_ct,1_ct);
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case5)
+    {
+        constexpr inline int expected[8][8] = {
+            {0, 9, 18, 27, 36, 45, 54, 63},
+            {1, 8, 19, 26, 37, 44, 55, 62},
+            {2, 11, 16, 25, 38, 47, 52, 61},
+            {3, 10, 17, 24, 39, 46, 53, 60},
+            {4, 13, 22, 31, 32, 41, 50, 59},
+            {5, 12, 23, 30, 33, 40, 51, 58},
+            {6, 15, 20, 29, 34, 43, 48, 57},
+            {7, 14, 21, 28, 35, 42, 49, 56}
+        };
+    }
+
+    // f2 swizzled column major
+    NMTOOLS_TESTING_DECLARE_ARGS(case6)
+    {
+        constexpr inline int x[64] = { 0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14, 15, 16,
+            17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33,
+            34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50,
+            51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63};
+
+        constexpr inline int shape[2] = {8,8};
+        NMTOOLS_CONSTEXPR_CAST_INDEX_ARRAYS(shape);
+
+        constexpr inline f2<int> striding[2] = {f2(9),f2(1)};
+        NMTOOLS_CONSTEXPR_CAST_INDEX_ARRAYS(striding);
+
+        constexpr inline auto shape_ct    = tuple{8_ct,8_ct};
+        constexpr inline auto striding_ct = tuple{f2(9_ct),f2(1_ct)};
+
+        constexpr inline auto shape_mx1 = to_mixed(shape_ct,0_ct);
+        constexpr inline auto shape_mx2 = to_mixed(shape_ct,1_ct);
+        constexpr inline auto striding_mx1 = to_mixed(striding_ct,0_ct);
+        constexpr inline auto striding_mx2 = to_mixed(striding_ct,1_ct);
+    }
+    NMTOOLS_TESTING_DECLARE_EXPECT(case6)
+    {
+        constexpr inline int expected[8][8] = {
+            {0, 1, 2, 3, 4, 5, 6, 7},
+            {9, 8, 11, 10, 13, 12, 15, 14},
+            {18, 19, 16, 17, 22, 23, 20, 21},
+            {27, 26, 25, 24, 31, 30, 29, 28},
+            {36, 37, 38, 39, 32, 33, 34, 35},
+            {45, 44, 47, 46, 41, 40, 43, 42},
+            {54, 55, 52, 53, 50, 51, 48, 49},
+            {63, 62, 61, 60, 59, 58, 57, 56}
+        };
+    }
 }
 
 #endif // NMTOOLS_TESTING_DATA_ARRAY_STRIDE_HPP
