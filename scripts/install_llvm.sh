@@ -7,8 +7,22 @@ else
   echo "set LLVM_VERSION from env: ${LLVM_VERSION}"
 fi
 
+# Some CI resolvers return IPv6 addresses while IPv6 egress is unavailable.
+# Force IPv4 for APT and for wget invocations made by helper scripts.
+printf 'Acquire::ForceIPv4 "true";\n' > /etc/apt/apt.conf.d/99force-ipv4
+
 # Update and install prerequisites
 apt update && apt install -y lsb-release wget ca-certificates software-properties-common gnupg
+
+WGET_BIN="$(command -v wget)"
+WGET_WRAPPER_DIR="$(mktemp -d)"
+trap 'rm -rf "${WGET_WRAPPER_DIR}"' EXIT
+cat > "${WGET_WRAPPER_DIR}/wget" <<EOF
+#!/usr/bin/env bash
+exec "${WGET_BIN}" -4 "\$@"
+EOF
+chmod +x "${WGET_WRAPPER_DIR}/wget"
+export PATH="${WGET_WRAPPER_DIR}:${PATH}"
 
 # Clean up any existing LLVM installations and OpenMP conflicts
 apt-get purge -y libomp-* llvm-* llvm-*dev || true
@@ -16,10 +30,7 @@ apt-get autoremove -y || true
 apt-get autoclean -y || true
 
 # Install LLVM
-if ! wget -4 --tries=5 --timeout=30 --wait=5 -O llvm.sh https://apt.llvm.org/llvm.sh; then
-  echo "wget -4 failed; retrying without -4" >&2
-  wget --tries=5 --timeout=30 --wait=5 -O llvm.sh https://apt.llvm.org/llvm.sh
-fi
+wget --tries=5 --timeout=30 --wait=5 -O llvm.sh https://apt.llvm.org/llvm.sh
 chmod +x llvm.sh
 ./llvm.sh "${LLVM_VERSION}"
 
