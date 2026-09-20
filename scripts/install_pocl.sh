@@ -1,34 +1,32 @@
 #!/bin/bash
+set -euo pipefail
 
-if [[ -z "${LLVM_VERSION}" ]]; then
+if [[ -z "${LLVM_VERSION:-}" ]]; then
     LLVM_VERSION="14"
 else
-    LLVM_VERSION="${LLVM_VERSION}"
     echo "set LLVM_VERSION from env"
 fi
 
-if [[ -z "${POCL_VERSION}" ]]; then
+if [[ -z "${POCL_VERSION:-}" ]]; then
     POCL_VERSION="v5.0"
 else
-    POCL_VERSION="${POCL_VERSION}"
     echo "set POCL_VERSION from env"
 fi
 
-if [[ "${POCL_COMMIT}" ]]; then
+if [[ -n "${POCL_COMMIT:-}" ]]; then
     POCL_VERSION="${POCL_COMMIT}"
     echo "set POCL_VERSION from POCL_COMMIT env"
 fi
 
-if [[ -z "${POCL_BUILD_TYPE}" ]]; then
+if [[ -z "${POCL_BUILD_TYPE:-}" ]]; then
     POCL_BUILD_TYPE=Release
 else
     echo "set POCL_BUILD_TYPE from env"
 fi
 
-if [[ -z "${POCL_CUDA}" ]]; then
+if [[ -z "${POCL_CUDA:-}" ]]; then
     POCL_CUDA=OFF
 else
-    POCL_CUDA="${POCL_CUDA}"
     echo "set POCL_CUDA from env"
 fi
 

@@ -1,44 +1,39 @@
 #!/usr/bin/bash
+set -euo pipefail
 
-if [[ -z "${LLVM_VERSION}" ]]; then
+if [[ -z "${LLVM_VERSION:-}" ]]; then
     LLVM_VERSION="14"
 else
-    LLVM_VERSION="${LLVM_VERSION}"
     echo "set LLVM_VERSION from env"
 fi
 
-if [[ -z "${ACCELERATED_CPU}" ]]; then
+if [[ -z "${ACCELERATED_CPU:-}" ]]; then
     ACCELERATED_CPU="ON"
 else
-    ACCELERATED_CPU="${ACCELERATED_CPU}"
     echo "set ACCELERATED_CPU from env"
 fi
 
-if [[ -z "${OPENCL_BACKEND}" ]]; then
+if [[ -z "${OPENCL_BACKEND:-}" ]]; then
     OPENCL_BACKEND="OFF"
 else
-    OPENCL_BACKEND="${OPENCL_BACKEND}"
     echo "set OPENCL_BACKEND from env"
 fi
 
-if [[ -z "${CUDA_BACKEND}" ]]; then
+if [[ -z "${CUDA_BACKEND:-}" ]]; then
     CUDA_BACKEND="OFF"
 else
-    CUDA_BACKEND="${CUDA_BACKEND}"
     echo "set CUDA_BACKEND from env"
 fi
 
-if [[ -z "${LEVEL_ZERO_BACKEND}" ]]; then
+if [[ -z "${LEVEL_ZERO_BACKEND:-}" ]]; then
     LEVEL_ZERO_BACKEND="OFF"
 else
-    LEVEL_ZERO_BACKEND="${LEVEL_ZERO_BACKEND}"
     echo "set LEVEL_ZERO_BACKEND from env"
 fi
 
-if [[ -z "${BUILD_TYPE}" ]]; then
+if [[ -z "${BUILD_TYPE:-}" ]]; then
   BUILD_TYPE="Release"
 else
-  BUILD_TYPE="${BUILD_TYPE}"
   echo "set BUILD_TYPE from env"
 fi
 
@@ -53,10 +48,10 @@ GIT_REPOSITORY=https://github.com/OpenSYCL/OpenSYCL
 # VERSION=v0.9.4
 # DIR=AdaptiveCpp
 # GIT_REPOSITORY=https://github.com/AdaptiveCpp/AdaptiveCpp.git
-if [[ -z "${ADAPTIVE_CPP_VERSION}" ]]; then
-    VERSION=v23.10.0
+if [[ -z "${ADAPTIVE_CPP_VERSION:-}" ]]; then
+    VERSION="v23.10.0"
 else
-    VERSION=${ADAPTIVE_CPP_VERSION}
+    VERSION="${ADAPTIVE_CPP_VERSION}"
     echo "set AdaptiveCpp version from env: ${VERSION}"
 fi
 

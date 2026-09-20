@@ -1,8 +1,8 @@
 #!/bin/bash
+set -euo pipefail
 
-CWD=$pwd
 version="v2.4.8"
-DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )" 
+DEST=""
 doctest_url="https://raw.githubusercontent.com/onqtam/doctest/${version}/doctest/doctest.h"
 
 POSITIONAL=()
@@ -24,8 +24,8 @@ esac
 done
 set -- "${POSITIONAL[@]}" # restore positional parameters
 
-if [ -z "$DEST" -a "$DEST" != " " ]; then
+if [[ -z "${DEST}" ]]; then
     DEST="include/"
 fi
 
-wget --no-check-certificate -O $DEST/doctest.h $doctest_url
+wget -4 --tries=5 --timeout=30 --wait=5 -O "${DEST}/doctest.h" "${doctest_url}"
