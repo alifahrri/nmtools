@@ -398,8 +398,15 @@ namespace nmtools
             return template_reduce<len(result)>([&](auto init, auto index){
                 using init_t = type_t<decltype(init)>;
                 constexpr auto I = decltype(index)::value;
-                if constexpr (!has_value(at(result,I))) {
+                using result_t = decltype(unwrap(at(result,I)));
+                if constexpr (!has_value(at(result,I)) && !is_f2_num_v<result_t>) {
                     using type = append_type_t<init_t,nm_size_t>;
+                    return as_value_v<type>;
+                } else if constexpr (!has_value(at(result,I)) && is_f2_num_v<result_t>) {
+                    using type = append_type_t<init_t,f2<nm_size_t>>;
+                    return as_value_v<type>;
+                } else if constexpr (is_f2_num_v<result_t>) {
+                    using type = append_type_t<init_t,f2<ct<(nm_size_t)unwrap(at(result,I))>>>;
                     return as_value_v<type>;
                 } else {
                     using type = append_type_t<init_t,ct<(nm_size_t)at(result,I)>>;

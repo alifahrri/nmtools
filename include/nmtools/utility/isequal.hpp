@@ -335,6 +335,16 @@ namespace nmtools::utils
                 using value_type = meta::common_type_t<typename T::value_type,U>;
                 return static_cast<value_type>(t) == static_cast<value_type>(u);
             }
+            // "specialize" on bounded C arrays, avoid using ndindex/apply_at
+            else if constexpr (meta::is_bounded_array_v<T> && meta::is_bounded_array_v<U>) {
+                auto n_left = nmtools::len(t);
+                auto n_right = nmtools::len(u);
+                auto equal = n_left == n_right;
+                for (size_t i=0; (i<n_left) && equal; i++) {
+                    equal = equal && isequal(at(t,i), at(u,i));
+                }
+                return equal;
+            }
             // "specialize" on index array, avoid using ndindex
             else if constexpr (meta::is_index_array_v<T> && meta::is_index_array_v<U>) {
                 bool equal = true;

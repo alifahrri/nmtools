@@ -107,6 +107,7 @@ set(ARRAY_VIEW_2_TEST_SOURCES
     src/squeeze.cpp
     src/stack.cpp
     src/stddev.cpp
+    src/stride.cpp
     src/swapaxes.cpp
     src/take_along_axis.cpp
     src/take.cpp

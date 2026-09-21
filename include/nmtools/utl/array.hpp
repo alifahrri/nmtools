@@ -2,7 +2,7 @@
 #define NMTOOLS_UTL_ARRAY_HPP
 
 #include "nmtools/platform.hpp"
-#include "nmtools/dtypes.hpp"
+#include "nmtools/def.hpp"
 #include "nmtools/utl/common.hpp"
 #include "nmtools/meta/bits/transform/common_type.hpp"
 

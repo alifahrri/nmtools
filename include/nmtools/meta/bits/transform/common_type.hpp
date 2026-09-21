@@ -117,4 +117,10 @@ namespace nmtools::meta
     using common_type_t = type_t<common_type<lhs_t,rest_t...>>;
 } // namespace nmtools::meta
 
+namespace nmtools
+{
+    using meta::common_type_t;
+    using meta::can_cast_v;
+}
+
 #endif // NMTOOLS_META_BITS_TRANSFORM_COMMON_TYPE_HPP

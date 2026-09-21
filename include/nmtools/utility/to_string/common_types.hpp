@@ -59,7 +59,7 @@ namespace nmtools::utils::impl
     template <typename T, char tab, char space, char comma, char open_bracket, char close_bracket, bool show_types>
     struct to_string_t<T,fmt_string_t<tab,space,comma,open_bracket,close_bracket,show_types>,enable_if_t<
         is_ellipsis_v<T> || is_none_v<T> || is_either_v<T> || is_nothing_v<T> || is_maybe_v<T>
-        || is_num_v<T> || is_integral_constant_v<T> || is_ndarray_v<T> || is_list_v<T>
+        || is_num_v<T> || is_integral_constant_v<T> || is_bounded_array_v<T> || is_ndarray_v<T> || is_list_v<T>
         || is_pointer_v<T> || is_index_array_v<T> || is_tuple_v<T> || is_slice_index_v<T> || is_slice_index_array_v<T>
         || is_combinator_v<T> || is_adjacency_list_v<T>
     >>{
@@ -132,12 +132,26 @@ namespace nmtools::utils::impl
                     }
                 }
             }
+            // handle bounded C arrays recursively, avoid using ndindex/apply_at
+            else if constexpr (meta::is_bounded_array_v<T>) {
+                constexpr auto dim = meta::len_v<meta::remove_cvref_t<T>>;
+                for (size_t i=0; i<(size_t)dim; i++) {
+                    if (i==0) {
+                        str += open_bracket;
+                    }
+                    str += tab;
+                    str += to_string(at(array,i),formatter_t{});
+                    if (i==(size_t)(dim-1)) {
+                        str += close_bracket;
+                    }
+                }
+            }
             else if constexpr (is_ndarray_v<T>) {
                 // TODO: do not use as array
                 /**
                 * @brief helper lambda to make sure to return array (instead of tuple)
                 * this simplify indexing, since tuple must be unrolled (can't use runtime index)
-                * 
+                *
                 */
                 auto as_array = [](auto shape_){
                     using shape_t = decltype(shape_);

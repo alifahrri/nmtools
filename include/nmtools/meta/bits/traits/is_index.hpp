@@ -3,6 +3,7 @@
 
 #include "nmtools/meta/common.hpp"
 #include "nmtools/meta/bits/traits/is_constant_index.hpp"
+#include "nmtools/meta/bits/traits/is_f2_num.hpp"
 #include "nmtools/meta/bits/traits/is_integer.hpp"
 #include "nmtools/meta/bits/traits/is_integral_constant.hpp"
 #include "nmtools/meta/bits/traits/is_reference.hpp"
@@ -20,9 +21,12 @@ namespace nmtools::meta
     template <typename T, typename=void>
     struct is_index
     {
-        static constexpr auto value = [](){
-            return is_constant_index_v<T> || is_integer_v<T> || is_nullable_index_v<T>;
-        }();
+        static constexpr auto value = 
+            is_constant_index_v<T>
+            || is_integer_v<T>
+            || is_nullable_index_v<T>
+            || is_f2_num_v<T>
+        ;
     };
 
     template <typename T>
