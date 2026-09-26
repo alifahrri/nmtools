@@ -14,19 +14,11 @@ namespace nmtools::view::fun
     >
     struct add
     {
-        // NOTE: tried to disable but not successful
-        // TODO: remove by unifying with primary template
-        #if 0
-        // NOTE: required for 'result_type' for reduction
-        static constexpr auto result_vtype = [](){
-            if constexpr (meta::is_num_v<res_t>) {
-                return meta::as_value_v<res_t>;
-            } else {
-                return meta::as_value_v<none_t>;
-            }
-        }();
-        using result_type = meta::type_t<decltype(result_vtype)>;
-        #endif
+        template <typename T>
+        static constexpr auto identity()
+        {
+            return static_cast<T>(0);
+        }
 
         template <typename T, typename U>
         constexpr auto operator()(const T& t, const U& u) const
@@ -48,6 +40,12 @@ namespace nmtools::view::fun
         , meta::enable_if_t<meta::is_num_v<res_t>> 
     >
     {
+        template <typename T>
+        static constexpr auto identity()
+        {
+            return static_cast<T>(0);
+        }
+
         using result_type = res_t;
 
         template <typename T, typename U>

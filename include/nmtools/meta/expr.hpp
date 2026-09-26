@@ -107,8 +107,8 @@ namespace nmtools::meta
          * 
          * @tparam T type to check
          */
-        template <typename T>
-        using identity = decltype(declval<T>().identity());
+        template <typename T, typename...args_t>
+        using identity = decltype(declval<T>().template identity<args_t...>());
 
         /**
          * @brief helper alias template to deduce the return value from index subscript `[]`.

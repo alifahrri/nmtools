@@ -29,7 +29,7 @@ namespace nmtools::view
         using res_t = get_dtype_t<dtype_t>;
         using op_t  = add_t<none_t,none_t,res_t>;
         return reduce(op_t{},a,axis,dtype,initial,keepdims);
-    } // add
+    } // sum
 } // namespace nmtools::view
 
 #endif // NMTOOLS_ARRAY_VIEW_SUM_HPP
@@ -87,6 +87,7 @@ namespace nmtools
         , typename keepdims_t=meta::false_type
         , typename array_t
         , typename axis_t=none_t
+        , enable_if_t<is_ndarray_v<array_t>,int> = 0
         , enable_if_t<is_none_v<axis_t> || is_index_v<axis_t> || is_index_array_v<axis_t>,int> = 0
         , enable_if_t<is_none_v<dtype_t> || is_dtype_v<dtype_t>,int> = 0
         , enable_if_t<is_none_v<initial_t> || is_num_v<initial_t>,int> = 0
@@ -110,6 +111,7 @@ namespace nmtools
         , enable_if_t<is_none_v<initial_t> || is_num_v<initial_t>,int> = 0
         , enable_if_t<is_none_v<dtype_t> || is_dtype_v<dtype_t>,int> = 0
         , enable_if_t<is_none_v<axis_t> || is_index_v<axis_t> || is_index_array_v<axis_t>,int> = 0
+        , enable_if_t<is_ndarray_v<array_t>,int> = 0
         , enable_if_t<is_context_v<context_t>,int> = 0>
     constexpr auto sum(const array_t& a
         , const axis_t& axis
@@ -129,6 +131,7 @@ namespace nmtools
         , typename dtype_t
         , enable_if_t<is_none_v<dtype_t> || is_dtype_v<dtype_t>,int> = 0
         , enable_if_t<is_none_v<axis_t> || is_index_v<axis_t> || is_index_array_v<axis_t>,int> = 0
+        , enable_if_t<is_ndarray_v<array_t>,int> = 0
         , enable_if_t<is_context_v<context_t>,int> = 0>
     constexpr auto sum(const array_t& a
         , const axis_t& axis
@@ -145,6 +148,7 @@ namespace nmtools
         , typename array_t
         , typename axis_t
         , enable_if_t<is_none_v<axis_t> || is_index_v<axis_t> || is_index_array_v<axis_t>,int> = 0
+        , enable_if_t<is_ndarray_v<array_t>,int> = 0
         , enable_if_t<is_context_v<context_t>,int> = 0>
     constexpr auto sum(const array_t& a
         , const axis_t& axis
@@ -158,6 +162,7 @@ namespace nmtools
 
     template <typename context_t
         , typename array_t
+        , enable_if_t<is_ndarray_v<array_t>,int> = 0
         , enable_if_t<is_context_v<context_t>,int> = 0>
     constexpr auto sum(const array_t& a
         , context_t&& context)

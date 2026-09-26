@@ -6,6 +6,8 @@
 #include "nmtools/runtime/cpu/multiply.hpp"
 #include "nmtools/runtime/cpu/subtract.hpp"
 #include "nmtools/runtime/cpu/divide.hpp"
+#include "nmtools/runtime/cpu/sum.hpp"
+#include "nmtools/runtime/cpu/prod.hpp"
 
 namespace nmtools::runtime
 {
@@ -40,6 +42,24 @@ namespace nmtools::runtime
                 hashes_.push_back(fn->hash());
             });
         }
+
+        template <typename functor>
+        auto append_reduce_functor()
+        {
+            constexpr auto N = len_v<decltype(functor::types)>;
+            template_for<N>([&](auto i){
+                const auto dtype = at(functor::types,i);
+                const auto rtype = to_value_v<decltype(dtype)>;
+
+                auto fn = ::std::make_shared<functor>(rtype,false);
+                functors_.push_back(fn);
+                hashes_.push_back(fn->hash());
+
+                fn = ::std::make_shared<functor>(rtype,true);
+                functors_.push_back(fn);
+                hashes_.push_back(fn->hash());
+            });
+        }
     };
 }
 
@@ -54,6 +74,8 @@ namespace nmtools::runtime
         append_functor<cpu_multiply>();
         append_functor<cpu_subtract>();
         append_functor<cpu_divide>();
+        append_reduce_functor<cpu_sum>();
+        append_reduce_functor<cpu_prod>();
     }
 
     auto cpu::functors() const noexcept -> nmtools_list<functor_ptr_type>

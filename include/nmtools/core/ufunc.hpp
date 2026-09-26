@@ -374,7 +374,7 @@ namespace nmtools::view
             using right_t = get_either_right_t<array_t>;
             using ret_left_t  = decltype(reduce(op,declval<left_t>(),axis,dtype,initial,keepdims));
             using ret_right_t = decltype(reduce(op,declval<right_t>(),axis,dtype,initial,keepdims));
-            using either_t = replace_either_t<array_t,ret_left_t,ret_right_t>;
+            using either_t = conditional_t<is_same_v<ret_left_t,ret_right_t>,ret_left_t,nmtools_either<ret_left_t,ret_right_t>>;
             if (auto l_ptr = nmtools::get_if<left_t>(&array)) {
                 return either_t{reduce(op,*l_ptr,axis,dtype,initial,keepdims)};
             } else /* if (auto r_ptr = nmtools::get_if<right_t>(&array)) */ {
@@ -391,7 +391,7 @@ namespace nmtools::view
         else if constexpr (is_boolean_v<keepdims_t>) {
             using left_t   = decltype(reduce(op,array,axis,dtype,initial,True));
             using right_t  = decltype(reduce(op,array,axis,dtype,initial,False));
-            using either_t = nmtools_either<left_t,right_t>;
+            using either_t = conditional_t<is_same_v<left_t,right_t>,left_t,nmtools_either<left_t,right_t>>;
             return (
                 keepdims ?
                   either_t{reduce(op,array,axis,dtype,initial,True)}
