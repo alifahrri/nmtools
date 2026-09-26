@@ -624,6 +624,15 @@ namespace nmtools
             return nmtools::unwrap(result);
         }
 
+        template <typename F, typename rhs_t>
+        constexpr auto ufunc(F&& f, const rhs_t& rhs) const
+        {
+            // TODO: pass broadcasting
+            auto v = view::binary_ufunc(nmtools::forward<F>(f),*this,rhs);
+            auto result = nmtools::eval(v,context_,None);
+            return nmtools::unwrap(result);
+        }
+
         template <typename F, typename axis_t, typename dtype_t=none_t, typename initial_t=none_t, typename keepdims_t=false_type>
         constexpr auto reduce(F&& f, const axis_t& axis, dtype_t dtype=dtype_t{}, initial_t initial=initial_t{}, keepdims_t keepdims=keepdims_t{}) const
         {

@@ -16,13 +16,10 @@ namespace nmtools::view::fun
     struct multiply
     {
 
+        template <typename T>
         static constexpr auto identity()
         {
-            if constexpr (meta::is_num_v<res_t>) {
-                return static_cast<res_t>(1);
-            } else {
-                return 1;
-            }
+            return static_cast<T>(1);
         }
 
         // NOTE: tried to disable but not successful
@@ -59,6 +56,12 @@ namespace nmtools::view::fun
         , meta::enable_if_t<meta::is_num_v<res_t>>
     >
     {
+        template <typename T>
+        static constexpr auto identity()
+        {
+            return static_cast<T>(1);
+        }
+
         using result_type = res_t;
 
         template <typename T, typename U>

@@ -39,6 +39,11 @@ namespace nmtools
         {
             return meta::to_value<dtype_t,void>::value == other;
         }
+
+        constexpr operator DType() const noexcept
+        {
+            return meta::to_value<dtype_t>::value;
+        }
     };  // dtype_t
 
     template <typename T>
