@@ -25,7 +25,7 @@ TEST_CASE("subtract(f32,f32)" * doctest::test_suite("runtime"))
 
     /*********************************************************************** */
 
-    auto result = nrt::subtract(lhs,rhs);
+    auto result = nm::subtract(lhs,rhs);
 
     CHECK( lhs.is_evaluated() );
     CHECK( rhs.is_evaluated() );
@@ -67,7 +67,7 @@ TEST_CASE("subtract(f32,i32)" * doctest::test_suite("runtime"))
 
     /*********************************************************************** */
 
-    auto result = nrt::subtract(lhs,rhs);
+    auto result = nm::subtract(lhs,rhs);
 
     CHECK( lhs.is_evaluated() );
     CHECK( rhs.is_evaluated() );
@@ -131,7 +131,7 @@ TEST_CASE("subtract(i32,i32)" * doctest::test_suite("runtime"))
 
     /*********************************************************************** */
 
-    auto result = nrt::subtract(lhs,rhs);
+    auto result = nm::subtract(lhs,rhs);
 
     CHECK( lhs.is_evaluated() );
     CHECK( rhs.is_evaluated() );

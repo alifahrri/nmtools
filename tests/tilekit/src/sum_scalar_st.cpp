@@ -4,7 +4,7 @@
 #include "nmtools/testing/doctest.hpp"
 #include "nmtools/ndarray.hpp"
 
-#include "kernels/sum.hpp"
+#include "nmtools/kernel/sum.hpp"
 
 #include <nanobench.h>
 
@@ -14,6 +14,7 @@
 #define NMTOOLS_TESTING_PRECISION (1e-2)
 
 namespace nm = nmtools;
+namespace tk = nmtools::tilekit;
 using namespace nmtools::literals;
 using nmtools_tuple;
 
@@ -46,7 +47,7 @@ TEST_CASE(#case_name * doctest::test_suite("tilekit")) \
     ankerl::nanobench::Bench() \
         .minEpochTime(min_time) \
         .run(#case_name,[&](){ \
-            sum_kernel(ctx,out,inp,tk::index(tile_shape),axis); \
+            nmtools::kernel::sum(ctx,out,inp,tk::index(tile_shape),axis); \
         }); \
 \
     auto expected = nm::sum(inp,axis); \
