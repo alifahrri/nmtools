@@ -8,6 +8,40 @@
 #include "nmtools/runtime/cpu/divide.hpp"
 #include "nmtools/runtime/cpu/sum.hpp"
 #include "nmtools/runtime/cpu/prod.hpp"
+#include "nmtools/runtime/cpu/cos.hpp"
+#include "nmtools/runtime/cpu/cosh.hpp"
+#include "nmtools/runtime/cpu/sin.hpp"
+#include "nmtools/runtime/cpu/sinh.hpp"
+#include "nmtools/runtime/cpu/exp.hpp"
+#include "nmtools/runtime/cpu/exp2.hpp"
+#include "nmtools/runtime/cpu/expm1.hpp"
+#include "nmtools/runtime/cpu/fabs.hpp"
+#include "nmtools/runtime/cpu/floor.hpp"
+#include "nmtools/runtime/cpu/invert.hpp"
+#include "nmtools/runtime/cpu/isfinite.hpp"
+#include "nmtools/runtime/cpu/isinf.hpp"
+#include "nmtools/runtime/cpu/isnan.hpp"
+#include "nmtools/runtime/cpu/log.hpp"
+#include "nmtools/runtime/cpu/log1p.hpp"
+#include "nmtools/runtime/cpu/log2.hpp"
+#include "nmtools/runtime/cpu/log10.hpp"
+#include "nmtools/runtime/cpu/negative.hpp"
+#include "nmtools/runtime/cpu/reciprocal.hpp"
+#include "nmtools/runtime/cpu/rint.hpp"
+#include "nmtools/runtime/cpu/signbit.hpp"
+#include "nmtools/runtime/cpu/sqrt.hpp"
+#include "nmtools/runtime/cpu/square.hpp"
+#include "nmtools/runtime/cpu/tan.hpp"
+#include "nmtools/runtime/cpu/tanh.hpp"
+#include "nmtools/runtime/cpu/trunc.hpp"
+#include "nmtools/runtime/cpu/arccos.hpp"
+#include "nmtools/runtime/cpu/arccosh.hpp"
+#include "nmtools/runtime/cpu/arcsin.hpp"
+#include "nmtools/runtime/cpu/arcsinh.hpp"
+#include "nmtools/runtime/cpu/arctan.hpp"
+#include "nmtools/runtime/cpu/arctanh.hpp"
+#include "nmtools/runtime/cpu/cbrt.hpp"
+#include "nmtools/runtime/cpu/ceil.hpp"
 
 namespace nmtools::runtime
 {
@@ -60,6 +94,19 @@ namespace nmtools::runtime
                 hashes_.push_back(fn->hash());
             });
         }
+
+        template <typename functor>
+        auto append_unary_functor()
+        {
+            constexpr auto N = len_v<decltype(functor::types)>;
+            template_for<N>([&](auto i){
+                const auto dtype = at(functor::types,i);
+
+                auto fn = ::std::make_shared<functor>(static_cast<DType>(dtype));
+                functors_.push_back(fn);
+                hashes_.push_back(fn->hash());
+            });
+        }
     };
 }
 
@@ -76,6 +123,40 @@ namespace nmtools::runtime
         append_functor<cpu_divide>();
         append_reduce_functor<cpu_sum>();
         append_reduce_functor<cpu_prod>();
+        append_unary_functor<cpu_cos>();
+        append_unary_functor<cpu_cosh>();
+        append_unary_functor<cpu_sin>();
+        append_unary_functor<cpu_sinh>();
+        append_unary_functor<cpu_exp>();
+        append_unary_functor<cpu_exp2>();
+        append_unary_functor<cpu_expm1>();
+        append_unary_functor<cpu_fabs>();
+        append_unary_functor<cpu_floor>();
+        append_unary_functor<cpu_invert>();
+        append_unary_functor<cpu_isfinite>();
+        append_unary_functor<cpu_isinf>();
+        append_unary_functor<cpu_isnan>();
+        append_unary_functor<cpu_log>();
+        append_unary_functor<cpu_log1p>();
+        append_unary_functor<cpu_log2>();
+        append_unary_functor<cpu_log10>();
+        append_unary_functor<cpu_negative>();
+        append_unary_functor<cpu_reciprocal>();
+        append_unary_functor<cpu_rint>();
+        append_unary_functor<cpu_signbit>();
+        append_unary_functor<cpu_sqrt>();
+        append_unary_functor<cpu_square>();
+        append_unary_functor<cpu_tan>();
+        append_unary_functor<cpu_tanh>();
+        append_unary_functor<cpu_trunc>();
+        append_unary_functor<cpu_arccos>();
+        append_unary_functor<cpu_arccosh>();
+        append_unary_functor<cpu_arcsin>();
+        append_unary_functor<cpu_arcsinh>();
+        append_unary_functor<cpu_arctan>();
+        append_unary_functor<cpu_arctanh>();
+        append_unary_functor<cpu_cbrt>();
+        append_unary_functor<cpu_ceil>();
     }
 
     auto cpu::functors() const noexcept -> nmtools_list<functor_ptr_type>
