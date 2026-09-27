@@ -13,7 +13,11 @@
 namespace nmtools::runtime
 {
     using DType = functional::Type;
+    // TODO: use small vector
     using IndexType = nmtools_list<nm_index_t>;
+
+    using Indices = small_vector<nm_index_t>;
+    using Shape   = small_vector<nm_index_t>; // some dim in shape may be -1 (unknown)
 
     using functional::Kind;
     using functional::Type;
@@ -57,6 +61,11 @@ namespace nmtools::runtime
     using AdjacencyList  = nmtools_list<nmtools_list<nm_index_t>>;
     using NodeAttributes = nmtools_list<runtime::Node<>>;
     using NodeIDs = nmtools_list<nm_index_t>;
+
+    // for reductions
+    using Axis        = nmtools_variant<none_t,nm_index_t,IndexType>;
+    using DTypeOrNone = nmtools_variant<none_t,DType>;
+    using Initial     = nmtools_variant<none_t,nm_index_t,float32_t>;
 
     using Graph = network::digraph_t<AdjacencyList,NodeIDs,NodeAttributes>;
 }

@@ -47,6 +47,7 @@ namespace nmtools
     auto output_id(const runtime::Graph& graph);
     auto shape(const runtime::Graph& graph);
     auto type(const runtime::Graph& graph);
+    bool is_scalar(const runtime::Graph& graph);
 }
 
 // TODO: guard the runtime implementation using macro
@@ -111,6 +112,27 @@ namespace nmtools
             , "multiple output detected for this graph" );
 
         return type;
+    }
+
+    inline
+    bool is_scalar(const runtime::Graph& graph)
+    {
+        auto out_degrees = graph.out_degree();
+        auto num_outputs = 0ul;
+        auto scalar      = false;
+
+        for (nm_size_t i=0; i<out_degrees.size(); i++) {
+            const auto& [node, degree] = out_degrees[i];
+            if (degree == 0) {
+                scalar = node.is_num();
+                num_outputs++;
+            }
+        }
+
+        nmtools_panic( num_outputs == 1
+            , "multiple output detected for this graph" );
+
+        return scalar;
     }
 }
 

@@ -25,7 +25,7 @@ TEST_CASE("divide(f32,f32)" * doctest::test_suite("runtime"))
 
     /*********************************************************************** */
 
-    auto result = nrt::divide(lhs,rhs);
+    auto result = nm::divide(lhs,rhs);
 
     CHECK( lhs.is_evaluated() );
     CHECK( rhs.is_evaluated() );
@@ -68,7 +68,7 @@ TEST_CASE("divide(f32,i32)" * doctest::test_suite("runtime"))
 
     /*********************************************************************** */
 
-    auto result = nrt::divide(lhs,rhs);
+    auto result = nm::divide(lhs,rhs);
 
     CHECK( lhs.is_evaluated() );
     CHECK( rhs.is_evaluated() );
@@ -133,7 +133,7 @@ TEST_CASE("divide(i32,i32)" * doctest::test_suite("runtime"))
 
     /*********************************************************************** */
 
-    auto result = nrt::divide(lhs,rhs);
+    auto result = nm::divide(lhs,rhs);
 
     CHECK( lhs.is_evaluated() );
     CHECK( rhs.is_evaluated() );

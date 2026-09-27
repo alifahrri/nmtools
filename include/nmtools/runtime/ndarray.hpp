@@ -7,6 +7,7 @@
 #include "nmtools/utility.hpp"
 #include "nmtools/runtime/def.hpp"
 #include "nmtools/array/ref.hpp"
+#include "nmtools/index/cast.hpp"
 #include "nmtools/ndarray/base_ndarray.hpp"
 #include "nmtools/runtime/computational_graph.hpp"
 
@@ -41,6 +42,7 @@ namespace nmtools::runtime
         runtime::DType type_;
         buffer_type    buffer_;
         graph_type     graph_;
+        bool           is_scalar_ = false;
 
     private:
         template <typename T>
@@ -77,12 +79,20 @@ namespace nmtools::runtime
                 at(*ptr,i) = at(flat_rhs,i);
             }
         }
+    
+    private:
+        ndarray(buffer_type new_buffer, const index_type& shape, DType type)
+            : shape_(shape)
+            , type_(type)
+            , buffer_(new_buffer)
+        {}
 
     public:
         template <typename T>
         ndarray(const index_type& shape_, dtype_t<T>)
             : shape_(shape_)
         {
+            is_scalar_ = (len(shape_) == 0);
             constexpr auto N = len_v<decltype(types)>;
             template_for<N>([&](auto i){
                 auto dtype = at(types,i);
@@ -103,6 +113,7 @@ namespace nmtools::runtime
             for (nm_size_t i=0; i<(nm_size_t)n; i++) {
                 shape_[i] = shape[i];
             }
+            is_scalar_ = (len(shape_) == 0);
             constexpr auto N = len_v<decltype(types)>;
             template_for<N>([&](auto i){
                 auto dtype = at(types,i);
@@ -119,6 +130,43 @@ namespace nmtools::runtime
         ndarray(const rhs_t& rhs)
         {
             *this = rhs;
+        }
+
+        template <typename value_t, typename element_t, enable_if_t<is_num_v<value_t> && is_num_v<element_t>,int> =0>
+        ndarray(value_t value, dtype_t<element_t>)
+            : shape_()
+            , type_(to_value_v<dtype_t<element_t>>)
+            , buffer_(std::make_shared<nmtools_list<element_t>>())
+            , graph_(graph_type{
+                AdjacencyList{nmtools_list<nm_index_t>{}},
+                NodeIDs{0},
+                NodeAttributes{Node<>::buffer(none_t{}, type_)}
+            })
+            , is_scalar_(true)
+        {
+            using ptr_type = std::shared_ptr<nmtools_list<element_t>>;
+            auto vptr = buffer_.template get_if<ptr_type>();
+            nmtools_panic( vptr
+                , "invalid scalar buffer"
+            );
+            (*vptr)->push_back(static_cast<element_t>(value));
+        }
+
+        auto is_scalar() const noexcept -> bool
+        {
+            return is_scalar_;
+        }
+
+        template <typename T, enable_if_t<is_num_v<T>,int> =0>
+        T item() const
+        {
+            using buffer_t = nmtools_list<T>;
+            using ptr_type = std::shared_ptr<buffer_t>;
+            auto vptr = buffer_.template get_if<ptr_type>();
+            nmtools_panic( vptr && (*vptr)->size() == 1
+                , "ndarray: item<T>() requires an evaluated one-element buffer"
+            );
+            return at(*(*vptr),0);
         }
 
         template <typename T>
@@ -140,9 +188,18 @@ namespace nmtools::runtime
             return buffer_;
         }
 
-        template <typename element_t>
-        auto view(dtype_t<element_t> = dtype_t<element_t>{}) const
+        template <typename shape_t>
+        auto reshape(const shape_t& dst_shape) const
         {
+            return this->reshape(index::cast<index_type>(dst_shape));
+        }
+
+        template <typename element_t, typename shape_t=none_t>
+        auto view(dtype_t<element_t> = dtype_t<element_t>{}, const shape_t& shape=shape_t{}) const
+        {
+            nmtools_panic( !is_scalar_
+                , "ndarray: view is not supported for scalar ndarray"
+            );
             using buffer_t = nmtools_list<element_t>;
             using ptr_type = ::std::shared_ptr<buffer_t>;
             auto vptr = buffer_.template get_if<ptr_type>();
@@ -154,12 +211,22 @@ namespace nmtools::runtime
             // TODO: mark as unaliasable?
             // TODO: do not need ref
             // return unwrap(view::reshape(view::ref(ptr),shape_));
-            return unwrap(view::reshape(ptr,shape_));
+            if constexpr (is_none_v<shape_t>) {
+                return unwrap(view::reshape(ptr,shape_));
+            } else {
+                nmtools_panic( utils::isequal(shape,shape_)
+                    , "invalid shape when getting view"
+                );
+                return unwrap(view::reshape(ptr,shape));
+            }
         }
 
-        template <typename element_t>
-        auto mutable_view(dtype_t<element_t> = dtype_t<element_t>{})
+        template <typename element_t, typename shape_t=none_t>
+        auto mutable_view(dtype_t<element_t> = dtype_t<element_t>{}, const shape_t& shape=shape_t{})
         {
+            nmtools_panic( !is_scalar_
+                , "ndarray: mutable_view is not supported for scalar ndarray"
+            );
             using buffer_t = nmtools_list<element_t>;
             using ptr_type = ::std::shared_ptr<buffer_t>;
             auto vptr = buffer_.template get_if<ptr_type>();
@@ -169,7 +236,14 @@ namespace nmtools::runtime
             auto ptr = *vptr;
 
             // TODO: read use count, if > 1, then copy
-            return unwrap(nmtools::view::mutable_reshape(ptr,shape_));
+            if constexpr (is_none_v<shape_t>) {
+                return unwrap(nmtools::view::mutable_reshape(ptr,shape_));
+            } else {
+                nmtools_panic( utils::isequal(shape,shape_)
+                    , "invalid shape when getting mutable view"
+                );
+                return unwrap(nmtools::view::mutable_reshape(ptr,shape));
+            }
         }
 
         template <typename rhs_t, enable_if_t<is_ndarray_v<rhs_t>,int> =0>
@@ -177,9 +251,8 @@ namespace nmtools::runtime
         {
             auto rhs_shape = nmtools::shape(rhs);
             auto dim = len(rhs_shape);
-            if (shape_.size() < dim) {
-                shape_.resize(dim);
-            }
+            shape_.resize(dim);
+            is_scalar_ = (dim == 0);
             for (nm_size_t i=0; i<(nm_size_t)dim; i++) {
                 at(shape_,i) = at(rhs_shape,i);
             }
@@ -208,6 +281,7 @@ namespace nmtools::runtime
         auto graph() const noexcept -> graph_type;
         void resize(const index_type& shape) noexcept;
         auto is_evaluated() const noexcept -> bool;
+        auto reshape(const index_type& dst_shape) const -> ndarray;
         auto operator+(const ndarray& rhs) const -> ndarray;
         auto operator*(const ndarray& rhs) const -> ndarray;
         auto operator-(const ndarray& rhs) const -> ndarray;
@@ -223,13 +297,16 @@ namespace nmtools::runtime
 
 /*************************************************************************** */
 
-// TODO: move out to nmtools namespace
-namespace nmtools::runtime
+namespace nmtools
 {
     auto add(const runtime::ndarray& lhs, const runtime::ndarray& rhs) -> runtime::ndarray;
     auto multiply(const runtime::ndarray& lhs, const runtime::ndarray& rhs) -> runtime::ndarray;
     auto subtract(const runtime::ndarray& lhs, const runtime::ndarray& rhs) -> runtime::ndarray;
     auto divide(const runtime::ndarray& lhs, const runtime::ndarray& rhs) -> runtime::ndarray;
+
+    // reductions
+    auto sum(const runtime::ndarray& array, runtime::Axis axis=None, runtime::DTypeOrNone dtype=None, runtime::Initial initial=None, bool keepdims=false) -> runtime::ndarray;
+    auto prod(const runtime::ndarray& array, runtime::Axis axis=None, runtime::DTypeOrNone dtype=None, runtime::Initial initial=None, bool keepdims=false) -> runtime::ndarray;
 }
 
 namespace nmtools
@@ -239,6 +316,7 @@ namespace nmtools
 
 /*************************************************************************** */
 
+// core implementation
 #ifdef NMTOOLS_RUNTIME_NDARRAY_IMPLEMENTATION
 namespace nmtools::runtime
 {
@@ -255,6 +333,7 @@ namespace nmtools::runtime
         this->graph_ = graph_;
         shape_ = nmtools::shape(graph_);
         type_  = nmtools::type(graph_);
+        is_scalar_ = nmtools::is_scalar(graph_);
     }
 
     auto ndarray::shape() const noexcept -> ndarray::index_type
@@ -264,7 +343,7 @@ namespace nmtools::runtime
 
     auto ndarray::size() const noexcept -> nm_size_t
     {
-        return index::product(shape_);
+        return is_scalar_ ? 1 : index::product(shape_);
     }
 
     auto ndarray::dim() const noexcept -> nm_size_t
@@ -292,6 +371,7 @@ namespace nmtools::runtime
     void ndarray::resize(const IndexType& shape) noexcept
     {
         shape_ = shape;
+        is_scalar_ = (len(shape_) == 0);
         constexpr auto N = len_v<decltype(types)>;
         template_for<N>([&](auto i){
             auto dtype = at(types,i);
@@ -301,6 +381,11 @@ namespace nmtools::runtime
                 resize<buffer_t>(shape_);
             }
         });
+    }
+
+    auto ndarray::reshape(const IndexType& dst_shape) const -> ndarray
+    {
+        return ndarray(this->buffer_,dst_shape,this->type_);
     }
 
     auto ndarray::operator+(const ndarray& rhs) const -> ndarray
@@ -330,12 +415,13 @@ namespace nmtools::runtime
 #include "nmtools/core/computational_tree.hpp"
 #include "nmtools/core/transform/cse.hpp"
 
-namespace nmtools::runtime
+namespace nmtools
 {
     auto add(const runtime::ndarray& lhs, const runtime::ndarray& rhs) -> runtime::ndarray
     {
         namespace fn = functional;
         namespace rt = runtime;
+        using runtime::ndarray;
 
         // TODO: support default constructor for ndarray
         // auto result = rt::ndarray();
@@ -371,12 +457,13 @@ namespace nmtools::runtime
 #include "nmtools/core/computational_tree.hpp"
 #include "nmtools/core/transform/cse.hpp"
 
-namespace nmtools::runtime
+namespace nmtools
 {
     auto multiply(const runtime::ndarray& lhs, const runtime::ndarray& rhs) -> runtime::ndarray
     {
         namespace fn = functional;
         namespace rt = runtime;
+        using runtime::ndarray;
 
         // TODO: support default constructor for ndarray
         // auto result = rt::ndarray();
@@ -412,12 +499,13 @@ namespace nmtools::runtime
 #include "nmtools/core/computational_tree.hpp"
 #include "nmtools/core/transform/cse.hpp"
 
-namespace nmtools::runtime
+namespace nmtools
 {
     auto subtract(const runtime::ndarray& lhs, const runtime::ndarray& rhs) -> runtime::ndarray
     {
         namespace fn = functional;
         namespace rt = runtime;
+        using runtime::ndarray;
 
         // TODO: support default constructor for ndarray
         // auto result = rt::ndarray();
@@ -453,12 +541,13 @@ namespace nmtools::runtime
 #include "nmtools/core/computational_tree.hpp"
 #include "nmtools/core/transform/cse.hpp"
 
-namespace nmtools::runtime
+namespace nmtools
 {
     auto divide(const runtime::ndarray& lhs, const runtime::ndarray& rhs) -> runtime::ndarray
     {
         namespace fn = functional;
         namespace rt = runtime;
+        using runtime::ndarray;
 
         // TODO: support default constructor for ndarray
         // auto result = rt::ndarray();
@@ -522,5 +611,109 @@ namespace nmtools
     }
 }
 #endif // NMTOOLS_RUNTIME_BROADCAST_TO_GRAPH_IMPLEMENTATION
+
+#ifdef NMTOOLS_RUNTIME_SUM_GRAPH_IMPLEMENTATION
+#include "nmtools/array/sum.hpp"
+#include "nmtools/core/computational_tree.hpp"
+#include "nmtools/core/transform/cse.hpp"
+
+namespace nmtools
+{
+    auto sum(const runtime::ndarray& array, runtime::Axis axis, runtime::DTypeOrNone dtype, runtime::Initial initial, bool keepdims) -> runtime::ndarray
+    {
+        namespace fn = functional;
+        namespace rt = runtime;
+        using runtime::ndarray;
+
+        // TODO: support default constructor for ndarray
+        // auto result = rt::ndarray();
+        auto result = rt::ndarray(array.shape(),array.dtype());
+
+        constexpr auto N = len_v<decltype(ndarray::types)>;
+        template_for<N>([&](auto i){
+            const auto ct = at(ndarray::types,i);
+            const auto rt = to_value_v<decltype(ct)>;
+            if (array.dtype() == rt) {
+                auto input = array.view(ct);
+                // TODO: handle type
+                auto m_axis    = *axis.get_if<nm_index_t>();
+                auto m_dtype   = *dtype.get_if<none_t>();
+                auto m_initial = *initial.get_if<none_t>();
+
+                // TODO: fix
+                // auto ctree = unwrap(fn::get_computational_tree(view::sum(input,m_axis,m_dtype,m_initial,keepdims)));
+                // auto rtree = rt::to_value(ctree);
+                // auto graph = fn::cse(rtree);
+                // result = graph;
+
+                if (keepdims) {
+                    auto ctree = unwrap(fn::get_computational_tree(view::sum(input,m_axis,m_dtype,m_initial,True)));
+                    auto rtree = rt::to_value(ctree);
+                    auto graph = fn::cse(rtree);
+                    result = graph;
+                } else {
+                    auto ctree = unwrap(fn::get_computational_tree(view::sum(input,m_axis,m_dtype,m_initial,False)));
+                    auto rtree = rt::to_value(ctree);
+                    auto graph = fn::cse(rtree);
+                    result = graph;
+                }
+            }
+        });
+        return result;
+    }
+}
+#endif // NMTOOLS_RUNTIME_SUM_GRAPH_IMPLEMENTATION
+
+#ifdef NMTOOLS_RUNTIME_PROD_GRAPH_IMPLEMENTATION
+#include "nmtools/array/prod.hpp"
+#include "nmtools/core/computational_tree.hpp"
+#include "nmtools/core/transform/cse.hpp"
+
+namespace nmtools
+{
+    auto prod(const runtime::ndarray& array, runtime::Axis axis, runtime::DTypeOrNone dtype, runtime::Initial initial, bool keepdims) -> runtime::ndarray
+    {
+        namespace fn = functional;
+        namespace rt = runtime;
+        using runtime::ndarray;
+
+        // TODO: support default constructor for ndarray
+        // auto result = rt::ndarray();
+        auto result = rt::ndarray(array.shape(),array.dtype());
+
+        constexpr auto N = len_v<decltype(ndarray::types)>;
+        template_for<N>([&](auto i){
+            const auto ct = at(ndarray::types,i);
+            const auto rt = to_value_v<decltype(ct)>;
+            if (array.dtype() == rt) {
+                auto input = array.view(ct);
+                // TODO: handle type
+                auto m_axis    = *axis.get_if<nm_index_t>();
+                auto m_dtype   = *dtype.get_if<none_t>();
+                auto m_initial = *initial.get_if<none_t>();
+
+                // TODO: fix
+                // auto ctree = unwrap(fn::get_computational_tree(view::prod(input,m_axis,m_dtype,m_initial,keepdims)));
+                // auto rtree = rt::to_value(ctree);
+                // auto graph = fn::cse(rtree);
+                // result = graph;
+
+                if (keepdims) {
+                    auto ctree = unwrap(fn::get_computational_tree(view::prod(input,m_axis,m_dtype,m_initial,True)));
+                    auto rtree = rt::to_value(ctree);
+                    auto graph = fn::cse(rtree);
+                    result = graph;
+                } else {
+                    auto ctree = unwrap(fn::get_computational_tree(view::prod(input,m_axis,m_dtype,m_initial,False)));
+                    auto rtree = rt::to_value(ctree);
+                    auto graph = fn::cse(rtree);
+                    result = graph;
+                }
+            }
+        });
+        return result;
+    }
+}
+#endif // NMTOOLS_RUNTIME_PROD_GRAPH_IMPLEMENTATION
 
 #endif // NMTOOLS_RUNTIME_NDARRAY_HPP

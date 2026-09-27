@@ -31,11 +31,16 @@ add_executable(${PROJECT_NAME}-doctest tests.cpp
     node.cpp
     computational_graph.cpp
 
-    src/add.cpp
     src/broadcast_to.cpp
+    src/reshape.cpp
+
+    src/add.cpp
     src/multiply.cpp
     src/subtract.cpp
     src/divide.cpp
+
+    src/sum.cpp
+    src/prod.cpp
 )
 
 add_test(
