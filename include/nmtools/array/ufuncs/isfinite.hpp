@@ -17,11 +17,23 @@ namespace nmtools::view::fun
             return math::isfinite(t);
         } // operator()
     }; // isfinite
+
+    struct isfinite_int8
+    {
+        template <typename T>
+        nmtools_func_attribute
+        NMTOOLS_UFUNC_CONSTEXPR
+        auto operator()(const T& t) const
+        {
+            return static_cast<int8_t>(math::isfinite(t));
+        } // operator()
+    }; // isfinite_int8
 }
 
 namespace nmtools::view
 {
     using isfinite_t = fun::isfinite;
+    using isfinite_int8_t = fun::isfinite_int8;
 
     template <typename left_t>
     nmtools_func_attribute
@@ -30,6 +42,14 @@ namespace nmtools::view
     {
         return unary_ufunc(isfinite_t{},a);
     } // isfinite
+
+    template <typename left_t>
+    nmtools_func_attribute
+    NMTOOLS_UFUNC_CONSTEXPR
+    auto isfinite_int8(const left_t& a)
+    {
+        return unary_ufunc(isfinite_int8_t{},a);
+    } // isfinite_int8
 }
 
 #if NMTOOLS_HAS_STRING
@@ -85,20 +105,20 @@ namespace nmtools::functional
 
 namespace nmtools
 {
-    namespace fn
+    template <
+        typename output_t=none_t
+        , typename context_t=default_context_t<>
+        , typename array_t
+        , enable_if_t<is_ndarray_v<array_t> || is_num_v<array_t> || (is_maybe_v<array_t> && (is_ndarray_v<array_t> || is_num_v<array_t>)),int> =0>
+    constexpr auto isfinite(const array_t& a,
+        context_t&& context=context_t{}, output_t&& output=output_t{})
     {
-        struct isfinite
-        {
-            template <typename output_t=none_t, typename context_t=default_context_t<>, typename left_t>
-            inline constexpr auto operator()(const left_t& a, context_t&& context=context_t{}, output_t&& output=output_t{}) const
-            {
-                auto isfinite = view::isfinite(a);
-                return eval(isfinite, nmtools::forward<context_t>(context), nmtools::forward<output_t>(output));
-            } // operator()
-        }; // isfinite
-    } // namespace fn
-
-    constexpr inline auto isfinite = fn::isfinite{};
-} // nmtools
+        auto isfinite = view::isfinite(a);
+        return eval(isfinite
+            ,nmtools::forward<context_t>(context)
+            ,nmtools::forward<output_t>(output)
+        );
+    } // isfinite
+} // namespace nmtools
 
 #endif // NMTOOLS_ARRAY_ARRAY_ISFINITE_HPP

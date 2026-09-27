@@ -307,6 +307,42 @@ namespace nmtools
     // reductions
     auto sum(const runtime::ndarray& array, runtime::Axis axis=None, runtime::DTypeOrNone dtype=None, runtime::Initial initial=None, bool keepdims=false) -> runtime::ndarray;
     auto prod(const runtime::ndarray& array, runtime::Axis axis=None, runtime::DTypeOrNone dtype=None, runtime::Initial initial=None, bool keepdims=false) -> runtime::ndarray;
+
+    // unary ufuncs
+    auto cos(const runtime::ndarray& array) -> runtime::ndarray;
+    auto cosh(const runtime::ndarray& array) -> runtime::ndarray;
+    auto sin(const runtime::ndarray& array) -> runtime::ndarray;
+    auto sinh(const runtime::ndarray& array) -> runtime::ndarray;
+    auto exp(const runtime::ndarray& array) -> runtime::ndarray;
+    auto exp2(const runtime::ndarray& array) -> runtime::ndarray;
+    auto expm1(const runtime::ndarray& array) -> runtime::ndarray;
+    auto fabs(const runtime::ndarray& array) -> runtime::ndarray;
+    auto floor(const runtime::ndarray& array) -> runtime::ndarray;
+    auto invert(const runtime::ndarray& array) -> runtime::ndarray;
+    auto isfinite(const runtime::ndarray& array) -> runtime::ndarray;
+    auto isinf(const runtime::ndarray& array) -> runtime::ndarray;
+    auto isnan(const runtime::ndarray& array) -> runtime::ndarray;
+    auto log(const runtime::ndarray& array) -> runtime::ndarray;
+    auto log1p(const runtime::ndarray& array) -> runtime::ndarray;
+    auto log2(const runtime::ndarray& array) -> runtime::ndarray;
+    auto log10(const runtime::ndarray& array) -> runtime::ndarray;
+    auto negative(const runtime::ndarray& array) -> runtime::ndarray;
+    auto reciprocal(const runtime::ndarray& array) -> runtime::ndarray;
+    auto rint(const runtime::ndarray& array) -> runtime::ndarray;
+    auto signbit(const runtime::ndarray& array) -> runtime::ndarray;
+    auto sqrt(const runtime::ndarray& array) -> runtime::ndarray;
+    auto square(const runtime::ndarray& array) -> runtime::ndarray;
+    auto tan(const runtime::ndarray& array) -> runtime::ndarray;
+    auto tanh(const runtime::ndarray& array) -> runtime::ndarray;
+    auto trunc(const runtime::ndarray& array) -> runtime::ndarray;
+    auto arccos(const runtime::ndarray& array) -> runtime::ndarray;
+    auto arccosh(const runtime::ndarray& array) -> runtime::ndarray;
+    auto arcsin(const runtime::ndarray& array) -> runtime::ndarray;
+    auto arcsinh(const runtime::ndarray& array) -> runtime::ndarray;
+    auto arctan(const runtime::ndarray& array) -> runtime::ndarray;
+    auto arctanh(const runtime::ndarray& array) -> runtime::ndarray;
+    auto cbrt(const runtime::ndarray& array) -> runtime::ndarray;
+    auto ceil(const runtime::ndarray& array) -> runtime::ndarray;
 }
 
 namespace nmtools
@@ -715,5 +751,1240 @@ namespace nmtools
     }
 }
 #endif // NMTOOLS_RUNTIME_PROD_GRAPH_IMPLEMENTATION
+
+#ifdef NMTOOLS_RUNTIME_COS_GRAPH_IMPLEMENTATION
+#include "nmtools/array/ufuncs/cos.hpp"
+#include "nmtools/core/computational_tree.hpp"
+#include "nmtools/core/transform/cse.hpp"
+
+namespace nmtools
+{
+    auto cos(const runtime::ndarray& array) -> runtime::ndarray
+    {
+        namespace fn = functional;
+        namespace rt = runtime;
+        using runtime::ndarray;
+
+        // TODO: support default constructor for ndarray
+        // auto result = rt::ndarray();
+        auto result = rt::ndarray(array.shape(),array.dtype());
+
+        constexpr auto N = len_v<decltype(ndarray::types)>;
+        template_for<N>([&](auto i){
+            const auto ct = at(ndarray::types,i);
+            if (ct == array.dtype()) {
+                auto v = view::cos(array.view(ct));
+
+                auto ctree = unwrap(fn::get_computational_tree(v));
+                auto rtree = rt::to_value(ctree);
+                auto graph = fn::cse(rtree);
+                result = graph;
+            }
+        });
+
+        return result;
+    }
+}
+
+#endif // NMTOOLS_RUNTIME_COS_GRAPH_IMPLEMENTATION
+
+#ifdef NMTOOLS_RUNTIME_COSH_GRAPH_IMPLEMENTATION
+#include "nmtools/array/ufuncs/cosh.hpp"
+#include "nmtools/core/computational_tree.hpp"
+#include "nmtools/core/transform/cse.hpp"
+
+namespace nmtools
+{
+    auto cosh(const runtime::ndarray& array) -> runtime::ndarray
+    {
+        namespace fn = functional;
+        namespace rt = runtime;
+        using runtime::ndarray;
+
+        // TODO: support default constructor for ndarray
+        // auto result = rt::ndarray();
+        auto result = rt::ndarray(array.shape(),array.dtype());
+
+        constexpr auto N = len_v<decltype(ndarray::types)>;
+        template_for<N>([&](auto i){
+            const auto ct = at(ndarray::types,i);
+            if (ct == array.dtype()) {
+                auto v = view::cosh(array.view(ct));
+
+                auto ctree = unwrap(fn::get_computational_tree(v));
+                auto rtree = rt::to_value(ctree);
+                auto graph = fn::cse(rtree);
+                result = graph;
+            }
+        });
+
+        return result;
+    }
+}
+
+#endif // NMTOOLS_RUNTIME_COSH_GRAPH_IMPLEMENTATION
+
+#ifdef NMTOOLS_RUNTIME_SIN_GRAPH_IMPLEMENTATION
+#include "nmtools/array/ufuncs/sin.hpp"
+#include "nmtools/core/computational_tree.hpp"
+#include "nmtools/core/transform/cse.hpp"
+
+namespace nmtools
+{
+    auto sin(const runtime::ndarray& array) -> runtime::ndarray
+    {
+        namespace fn = functional;
+        namespace rt = runtime;
+        using runtime::ndarray;
+
+        // TODO: support default constructor for ndarray
+        // auto result = rt::ndarray();
+        auto result = rt::ndarray(array.shape(),array.dtype());
+
+        constexpr auto N = len_v<decltype(ndarray::types)>;
+        template_for<N>([&](auto i){
+            const auto ct = at(ndarray::types,i);
+            if (ct == array.dtype()) {
+                auto v = view::sin(array.view(ct));
+
+                auto ctree = unwrap(fn::get_computational_tree(v));
+                auto rtree = rt::to_value(ctree);
+                auto graph = fn::cse(rtree);
+                result = graph;
+            }
+        });
+
+        return result;
+    }
+}
+
+#endif // NMTOOLS_RUNTIME_SIN_GRAPH_IMPLEMENTATION
+
+#ifdef NMTOOLS_RUNTIME_SINH_GRAPH_IMPLEMENTATION
+#include "nmtools/array/ufuncs/sinh.hpp"
+#include "nmtools/core/computational_tree.hpp"
+#include "nmtools/core/transform/cse.hpp"
+
+namespace nmtools
+{
+    auto sinh(const runtime::ndarray& array) -> runtime::ndarray
+    {
+        namespace fn = functional;
+        namespace rt = runtime;
+        using runtime::ndarray;
+
+        // TODO: support default constructor for ndarray
+        // auto result = rt::ndarray();
+        auto result = rt::ndarray(array.shape(),array.dtype());
+
+        constexpr auto N = len_v<decltype(ndarray::types)>;
+        template_for<N>([&](auto i){
+            const auto ct = at(ndarray::types,i);
+            if (ct == array.dtype()) {
+                auto v = view::sinh(array.view(ct));
+
+                auto ctree = unwrap(fn::get_computational_tree(v));
+                auto rtree = rt::to_value(ctree);
+                auto graph = fn::cse(rtree);
+                result = graph;
+            }
+        });
+
+        return result;
+    }
+}
+
+#endif // NMTOOLS_RUNTIME_SINH_GRAPH_IMPLEMENTATION
+
+#ifdef NMTOOLS_RUNTIME_EXP_GRAPH_IMPLEMENTATION
+#include "nmtools/array/ufuncs/exp.hpp"
+#include "nmtools/core/computational_tree.hpp"
+#include "nmtools/core/transform/cse.hpp"
+
+namespace nmtools
+{
+    auto exp(const runtime::ndarray& array) -> runtime::ndarray
+    {
+        namespace fn = functional;
+        namespace rt = runtime;
+        using runtime::ndarray;
+
+        // TODO: support default constructor for ndarray
+        // auto result = rt::ndarray();
+        auto result = rt::ndarray(array.shape(),array.dtype());
+
+        constexpr auto N = len_v<decltype(ndarray::types)>;
+        template_for<N>([&](auto i){
+            const auto ct = at(ndarray::types,i);
+            if (ct == array.dtype()) {
+                auto v = view::exp(array.view(ct));
+
+                auto ctree = unwrap(fn::get_computational_tree(v));
+                auto rtree = rt::to_value(ctree);
+                auto graph = fn::cse(rtree);
+                result = graph;
+            }
+        });
+
+        return result;
+    }
+}
+
+#endif // NMTOOLS_RUNTIME_EXP_GRAPH_IMPLEMENTATION
+
+#ifdef NMTOOLS_RUNTIME_EXP2_GRAPH_IMPLEMENTATION
+#include "nmtools/array/ufuncs/exp2.hpp"
+#include "nmtools/core/computational_tree.hpp"
+#include "nmtools/core/transform/cse.hpp"
+
+namespace nmtools
+{
+    auto exp2(const runtime::ndarray& array) -> runtime::ndarray
+    {
+        namespace fn = functional;
+        namespace rt = runtime;
+        using runtime::ndarray;
+
+        // TODO: support default constructor for ndarray
+        // auto result = rt::ndarray();
+        auto result = rt::ndarray(array.shape(),array.dtype());
+
+        constexpr auto N = len_v<decltype(ndarray::types)>;
+        template_for<N>([&](auto i){
+            const auto ct = at(ndarray::types,i);
+            if (ct == array.dtype()) {
+                auto v = view::exp2(array.view(ct));
+
+                auto ctree = unwrap(fn::get_computational_tree(v));
+                auto rtree = rt::to_value(ctree);
+                auto graph = fn::cse(rtree);
+                result = graph;
+            }
+        });
+
+        return result;
+    }
+}
+
+#endif // NMTOOLS_RUNTIME_EXP2_GRAPH_IMPLEMENTATION
+
+#ifdef NMTOOLS_RUNTIME_EXPM1_GRAPH_IMPLEMENTATION
+#include "nmtools/array/ufuncs/expm1.hpp"
+#include "nmtools/core/computational_tree.hpp"
+#include "nmtools/core/transform/cse.hpp"
+
+namespace nmtools
+{
+    auto expm1(const runtime::ndarray& array) -> runtime::ndarray
+    {
+        namespace fn = functional;
+        namespace rt = runtime;
+        using runtime::ndarray;
+
+        // TODO: support default constructor for ndarray
+        // auto result = rt::ndarray();
+        auto result = rt::ndarray(array.shape(),array.dtype());
+
+        constexpr auto N = len_v<decltype(ndarray::types)>;
+        template_for<N>([&](auto i){
+            const auto ct = at(ndarray::types,i);
+            if (ct == array.dtype()) {
+                auto v = view::expm1(array.view(ct));
+
+                auto ctree = unwrap(fn::get_computational_tree(v));
+                auto rtree = rt::to_value(ctree);
+                auto graph = fn::cse(rtree);
+                result = graph;
+            }
+        });
+
+        return result;
+    }
+}
+
+#endif // NMTOOLS_RUNTIME_EXPM1_GRAPH_IMPLEMENTATION
+
+#ifdef NMTOOLS_RUNTIME_FABS_GRAPH_IMPLEMENTATION
+#include "nmtools/array/ufuncs/fabs.hpp"
+#include "nmtools/core/computational_tree.hpp"
+#include "nmtools/core/transform/cse.hpp"
+
+namespace nmtools
+{
+    auto fabs(const runtime::ndarray& array) -> runtime::ndarray
+    {
+        namespace fn = functional;
+        namespace rt = runtime;
+        using runtime::ndarray;
+
+        // TODO: support default constructor for ndarray
+        // auto result = rt::ndarray();
+        auto result = rt::ndarray(array.shape(),array.dtype());
+
+        constexpr auto N = len_v<decltype(ndarray::types)>;
+        template_for<N>([&](auto i){
+            const auto ct = at(ndarray::types,i);
+            if (ct == array.dtype()) {
+                auto v = view::fabs(array.view(ct));
+
+                auto ctree = unwrap(fn::get_computational_tree(v));
+                auto rtree = rt::to_value(ctree);
+                auto graph = fn::cse(rtree);
+                result = graph;
+            }
+        });
+
+        return result;
+    }
+}
+
+#endif // NMTOOLS_RUNTIME_FABS_GRAPH_IMPLEMENTATION
+
+#ifdef NMTOOLS_RUNTIME_FLOOR_GRAPH_IMPLEMENTATION
+#include "nmtools/array/ufuncs/floor.hpp"
+#include "nmtools/core/computational_tree.hpp"
+#include "nmtools/core/transform/cse.hpp"
+
+namespace nmtools
+{
+    auto floor(const runtime::ndarray& array) -> runtime::ndarray
+    {
+        namespace fn = functional;
+        namespace rt = runtime;
+        using runtime::ndarray;
+
+        // TODO: support default constructor for ndarray
+        // auto result = rt::ndarray();
+        auto result = rt::ndarray(array.shape(),array.dtype());
+
+        constexpr auto N = len_v<decltype(ndarray::types)>;
+        template_for<N>([&](auto i){
+            const auto ct = at(ndarray::types,i);
+            if (ct == array.dtype()) {
+                auto v = view::floor(array.view(ct));
+
+                auto ctree = unwrap(fn::get_computational_tree(v));
+                auto rtree = rt::to_value(ctree);
+                auto graph = fn::cse(rtree);
+                result = graph;
+            }
+        });
+
+        return result;
+    }
+}
+
+#endif // NMTOOLS_RUNTIME_FLOOR_GRAPH_IMPLEMENTATION
+
+#ifdef NMTOOLS_RUNTIME_INVERT_GRAPH_IMPLEMENTATION
+#include "nmtools/array/ufuncs/invert.hpp"
+#include "nmtools/core/computational_tree.hpp"
+#include "nmtools/core/transform/cse.hpp"
+
+namespace nmtools
+{
+    auto invert(const runtime::ndarray& array) -> runtime::ndarray
+    {
+        namespace fn = functional;
+        namespace rt = runtime;
+        using runtime::ndarray;
+
+        // TODO: support default constructor for ndarray
+        // auto result = rt::ndarray();
+        auto result = rt::ndarray(array.shape(),array.dtype());
+
+        static constexpr auto invert_types = nmtools_tuple{
+            uint8,
+            uint16,
+            uint32,
+            uint64,
+            int8,
+            int16,
+            int32,
+            int64
+        };
+
+        constexpr auto N = len_v<decltype(invert_types)>;
+        template_for<N>([&](auto i){
+            const auto ct = at(invert_types,i);
+            if (ct == array.dtype()) {
+                auto v = view::invert(array.view(ct));
+
+                auto ctree = unwrap(fn::get_computational_tree(v));
+                auto rtree = rt::to_value(ctree);
+                auto graph = fn::cse(rtree);
+                result = graph;
+            }
+        });
+
+        return result;
+    }
+}
+
+#endif // NMTOOLS_RUNTIME_INVERT_GRAPH_IMPLEMENTATION
+
+#ifdef NMTOOLS_RUNTIME_ISFINITE_GRAPH_IMPLEMENTATION
+#include "nmtools/array/ufuncs/isfinite.hpp"
+#include "nmtools/core/computational_tree.hpp"
+#include "nmtools/core/transform/cse.hpp"
+
+namespace nmtools
+{
+    auto isfinite(const runtime::ndarray& array) -> runtime::ndarray
+    {
+        namespace fn = functional;
+        namespace rt = runtime;
+        using runtime::ndarray;
+
+        // TODO: support default constructor for ndarray
+        // auto result = rt::ndarray();
+        auto result = rt::ndarray(array.shape(),array.dtype());
+
+        constexpr auto N = len_v<decltype(ndarray::types)>;
+        template_for<N>([&](auto i){
+            const auto ct = at(ndarray::types,i);
+            if (ct == array.dtype()) {
+                auto v = view::isfinite_int8(array.view(ct));
+
+                auto ctree = unwrap(fn::get_computational_tree(v));
+                auto rtree = rt::to_value(ctree);
+                auto graph = fn::cse(rtree);
+                result = graph;
+            }
+        });
+
+        return result;
+    }
+}
+
+#endif // NMTOOLS_RUNTIME_ISFINITE_GRAPH_IMPLEMENTATION
+
+#ifdef NMTOOLS_RUNTIME_ISINF_GRAPH_IMPLEMENTATION
+#include "nmtools/array/ufuncs/isinf.hpp"
+#include "nmtools/core/computational_tree.hpp"
+#include "nmtools/core/transform/cse.hpp"
+
+namespace nmtools
+{
+    auto isinf(const runtime::ndarray& array) -> runtime::ndarray
+    {
+        namespace fn = functional;
+        namespace rt = runtime;
+        using runtime::ndarray;
+
+        // TODO: support default constructor for ndarray
+        // auto result = rt::ndarray();
+        auto result = rt::ndarray(array.shape(),array.dtype());
+
+        constexpr auto N = len_v<decltype(ndarray::types)>;
+        template_for<N>([&](auto i){
+            const auto ct = at(ndarray::types,i);
+            if (ct == array.dtype()) {
+                auto v = view::isinf_int8(array.view(ct));
+
+                auto ctree = unwrap(fn::get_computational_tree(v));
+                auto rtree = rt::to_value(ctree);
+                auto graph = fn::cse(rtree);
+                result = graph;
+            }
+        });
+
+        return result;
+    }
+}
+
+#endif // NMTOOLS_RUNTIME_ISINF_GRAPH_IMPLEMENTATION
+
+#ifdef NMTOOLS_RUNTIME_ISNAN_GRAPH_IMPLEMENTATION
+#include "nmtools/array/ufuncs/isnan.hpp"
+#include "nmtools/core/computational_tree.hpp"
+#include "nmtools/core/transform/cse.hpp"
+
+namespace nmtools
+{
+    auto isnan(const runtime::ndarray& array) -> runtime::ndarray
+    {
+        namespace fn = functional;
+        namespace rt = runtime;
+        using runtime::ndarray;
+
+        // TODO: support default constructor for ndarray
+        // auto result = rt::ndarray();
+        auto result = rt::ndarray(array.shape(),array.dtype());
+
+        constexpr auto N = len_v<decltype(ndarray::types)>;
+        template_for<N>([&](auto i){
+            const auto ct = at(ndarray::types,i);
+            if (ct == array.dtype()) {
+                auto v = view::isnan_int8(array.view(ct));
+
+                auto ctree = unwrap(fn::get_computational_tree(v));
+                auto rtree = rt::to_value(ctree);
+                auto graph = fn::cse(rtree);
+                result = graph;
+            }
+        });
+
+        return result;
+    }
+}
+
+#endif // NMTOOLS_RUNTIME_ISNAN_GRAPH_IMPLEMENTATION
+
+#ifdef NMTOOLS_RUNTIME_LOG_GRAPH_IMPLEMENTATION
+#include "nmtools/array/ufuncs/log.hpp"
+#include "nmtools/core/computational_tree.hpp"
+#include "nmtools/core/transform/cse.hpp"
+
+namespace nmtools
+{
+    auto log(const runtime::ndarray& array) -> runtime::ndarray
+    {
+        namespace fn = functional;
+        namespace rt = runtime;
+        using runtime::ndarray;
+
+        // TODO: support default constructor for ndarray
+        // auto result = rt::ndarray();
+        auto result = rt::ndarray(array.shape(),array.dtype());
+
+        constexpr auto N = len_v<decltype(ndarray::types)>;
+        template_for<N>([&](auto i){
+            const auto ct = at(ndarray::types,i);
+            if (ct == array.dtype()) {
+                auto v = view::log(array.view(ct));
+
+                auto ctree = unwrap(fn::get_computational_tree(v));
+                auto rtree = rt::to_value(ctree);
+                auto graph = fn::cse(rtree);
+                result = graph;
+            }
+        });
+
+        return result;
+    }
+}
+
+#endif // NMTOOLS_RUNTIME_LOG_GRAPH_IMPLEMENTATION
+
+#ifdef NMTOOLS_RUNTIME_LOG1P_GRAPH_IMPLEMENTATION
+#include "nmtools/array/ufuncs/log1p.hpp"
+#include "nmtools/core/computational_tree.hpp"
+#include "nmtools/core/transform/cse.hpp"
+
+namespace nmtools
+{
+    auto log1p(const runtime::ndarray& array) -> runtime::ndarray
+    {
+        namespace fn = functional;
+        namespace rt = runtime;
+        using runtime::ndarray;
+
+        // TODO: support default constructor for ndarray
+        // auto result = rt::ndarray();
+        auto result = rt::ndarray(array.shape(),array.dtype());
+
+        constexpr auto N = len_v<decltype(ndarray::types)>;
+        template_for<N>([&](auto i){
+            const auto ct = at(ndarray::types,i);
+            if (ct == array.dtype()) {
+                auto v = view::log1p(array.view(ct));
+
+                auto ctree = unwrap(fn::get_computational_tree(v));
+                auto rtree = rt::to_value(ctree);
+                auto graph = fn::cse(rtree);
+                result = graph;
+            }
+        });
+
+        return result;
+    }
+}
+
+#endif // NMTOOLS_RUNTIME_LOG1P_GRAPH_IMPLEMENTATION
+
+#ifdef NMTOOLS_RUNTIME_LOG2_GRAPH_IMPLEMENTATION
+#include "nmtools/array/ufuncs/log2.hpp"
+#include "nmtools/core/computational_tree.hpp"
+#include "nmtools/core/transform/cse.hpp"
+
+namespace nmtools
+{
+    auto log2(const runtime::ndarray& array) -> runtime::ndarray
+    {
+        namespace fn = functional;
+        namespace rt = runtime;
+        using runtime::ndarray;
+
+        // TODO: support default constructor for ndarray
+        // auto result = rt::ndarray();
+        auto result = rt::ndarray(array.shape(),array.dtype());
+
+        constexpr auto N = len_v<decltype(ndarray::types)>;
+        template_for<N>([&](auto i){
+            const auto ct = at(ndarray::types,i);
+            if (ct == array.dtype()) {
+                auto v = view::log2(array.view(ct));
+
+                auto ctree = unwrap(fn::get_computational_tree(v));
+                auto rtree = rt::to_value(ctree);
+                auto graph = fn::cse(rtree);
+                result = graph;
+            }
+        });
+
+        return result;
+    }
+}
+
+#endif // NMTOOLS_RUNTIME_LOG2_GRAPH_IMPLEMENTATION
+
+#ifdef NMTOOLS_RUNTIME_LOG10_GRAPH_IMPLEMENTATION
+#include "nmtools/array/ufuncs/log10.hpp"
+#include "nmtools/core/computational_tree.hpp"
+#include "nmtools/core/transform/cse.hpp"
+
+namespace nmtools
+{
+    auto log10(const runtime::ndarray& array) -> runtime::ndarray
+    {
+        namespace fn = functional;
+        namespace rt = runtime;
+        using runtime::ndarray;
+
+        // TODO: support default constructor for ndarray
+        // auto result = rt::ndarray();
+        auto result = rt::ndarray(array.shape(),array.dtype());
+
+        constexpr auto N = len_v<decltype(ndarray::types)>;
+        template_for<N>([&](auto i){
+            const auto ct = at(ndarray::types,i);
+            if (ct == array.dtype()) {
+                auto v = view::log10(array.view(ct));
+
+                auto ctree = unwrap(fn::get_computational_tree(v));
+                auto rtree = rt::to_value(ctree);
+                auto graph = fn::cse(rtree);
+                result = graph;
+            }
+        });
+
+        return result;
+    }
+}
+
+#endif // NMTOOLS_RUNTIME_LOG10_GRAPH_IMPLEMENTATION
+
+#ifdef NMTOOLS_RUNTIME_NEGATIVE_GRAPH_IMPLEMENTATION
+#include "nmtools/array/ufuncs/negative.hpp"
+#include "nmtools/core/computational_tree.hpp"
+#include "nmtools/core/transform/cse.hpp"
+
+namespace nmtools
+{
+    auto negative(const runtime::ndarray& array) -> runtime::ndarray
+    {
+        namespace fn = functional;
+        namespace rt = runtime;
+        using runtime::ndarray;
+
+        // TODO: support default constructor for ndarray
+        // auto result = rt::ndarray();
+        auto result = rt::ndarray(array.shape(),array.dtype());
+
+        constexpr auto N = len_v<decltype(ndarray::types)>;
+        template_for<N>([&](auto i){
+            const auto ct = at(ndarray::types,i);
+            if (ct == array.dtype()) {
+                auto v = view::negative(array.view(ct));
+
+                auto ctree = unwrap(fn::get_computational_tree(v));
+                auto rtree = rt::to_value(ctree);
+                auto graph = fn::cse(rtree);
+                result = graph;
+            }
+        });
+
+        return result;
+    }
+}
+
+#endif // NMTOOLS_RUNTIME_NEGATIVE_GRAPH_IMPLEMENTATION
+
+#ifdef NMTOOLS_RUNTIME_RECIPROCAL_GRAPH_IMPLEMENTATION
+#include "nmtools/array/ufuncs/reciprocal.hpp"
+#include "nmtools/core/computational_tree.hpp"
+#include "nmtools/core/transform/cse.hpp"
+
+namespace nmtools
+{
+    auto reciprocal(const runtime::ndarray& array) -> runtime::ndarray
+    {
+        namespace fn = functional;
+        namespace rt = runtime;
+        using runtime::ndarray;
+
+        // TODO: support default constructor for ndarray
+        // auto result = rt::ndarray();
+        auto result = rt::ndarray(array.shape(),array.dtype());
+
+        constexpr auto N = len_v<decltype(ndarray::types)>;
+        template_for<N>([&](auto i){
+            const auto ct = at(ndarray::types,i);
+            if (ct == array.dtype()) {
+                auto v = view::reciprocal(array.view(ct));
+
+                auto ctree = unwrap(fn::get_computational_tree(v));
+                auto rtree = rt::to_value(ctree);
+                auto graph = fn::cse(rtree);
+                result = graph;
+            }
+        });
+
+        return result;
+    }
+}
+
+#endif // NMTOOLS_RUNTIME_RECIPROCAL_GRAPH_IMPLEMENTATION
+
+#ifdef NMTOOLS_RUNTIME_RINT_GRAPH_IMPLEMENTATION
+#include "nmtools/array/ufuncs/rint.hpp"
+#include "nmtools/core/computational_tree.hpp"
+#include "nmtools/core/transform/cse.hpp"
+
+namespace nmtools
+{
+    auto rint(const runtime::ndarray& array) -> runtime::ndarray
+    {
+        namespace fn = functional;
+        namespace rt = runtime;
+        using runtime::ndarray;
+
+        // TODO: support default constructor for ndarray
+        // auto result = rt::ndarray();
+        auto result = rt::ndarray(array.shape(),array.dtype());
+
+        constexpr auto N = len_v<decltype(ndarray::types)>;
+        template_for<N>([&](auto i){
+            const auto ct = at(ndarray::types,i);
+            if (ct == array.dtype()) {
+                auto v = view::rint(array.view(ct));
+
+                auto ctree = unwrap(fn::get_computational_tree(v));
+                auto rtree = rt::to_value(ctree);
+                auto graph = fn::cse(rtree);
+                result = graph;
+            }
+        });
+
+        return result;
+    }
+}
+
+#endif // NMTOOLS_RUNTIME_RINT_GRAPH_IMPLEMENTATION
+
+#ifdef NMTOOLS_RUNTIME_SIGNBIT_GRAPH_IMPLEMENTATION
+#include "nmtools/array/ufuncs/signbit.hpp"
+#include "nmtools/core/computational_tree.hpp"
+#include "nmtools/core/transform/cse.hpp"
+
+namespace nmtools
+{
+    auto signbit(const runtime::ndarray& array) -> runtime::ndarray
+    {
+        namespace fn = functional;
+        namespace rt = runtime;
+        using runtime::ndarray;
+
+        // TODO: support default constructor for ndarray
+        // auto result = rt::ndarray();
+        auto result = rt::ndarray(array.shape(),array.dtype());
+
+        constexpr auto N = len_v<decltype(ndarray::types)>;
+        template_for<N>([&](auto i){
+            const auto ct = at(ndarray::types,i);
+            if (ct == array.dtype()) {
+                auto v = view::signbit_int8(array.view(ct));
+
+                auto ctree = unwrap(fn::get_computational_tree(v));
+                auto rtree = rt::to_value(ctree);
+                auto graph = fn::cse(rtree);
+                result = graph;
+            }
+        });
+
+        return result;
+    }
+}
+
+#endif // NMTOOLS_RUNTIME_SIGNBIT_GRAPH_IMPLEMENTATION
+
+#ifdef NMTOOLS_RUNTIME_SQRT_GRAPH_IMPLEMENTATION
+#include "nmtools/array/ufuncs/sqrt.hpp"
+#include "nmtools/core/computational_tree.hpp"
+#include "nmtools/core/transform/cse.hpp"
+
+namespace nmtools
+{
+    auto sqrt(const runtime::ndarray& array) -> runtime::ndarray
+    {
+        namespace fn = functional;
+        namespace rt = runtime;
+        using runtime::ndarray;
+
+        // TODO: support default constructor for ndarray
+        // auto result = rt::ndarray();
+        auto result = rt::ndarray(array.shape(),array.dtype());
+
+        constexpr auto N = len_v<decltype(ndarray::types)>;
+        template_for<N>([&](auto i){
+            const auto ct = at(ndarray::types,i);
+            if (ct == array.dtype()) {
+                auto v = view::sqrt(array.view(ct));
+
+                auto ctree = unwrap(fn::get_computational_tree(v));
+                auto rtree = rt::to_value(ctree);
+                auto graph = fn::cse(rtree);
+                result = graph;
+            }
+        });
+
+        return result;
+    }
+}
+
+#endif // NMTOOLS_RUNTIME_SQRT_GRAPH_IMPLEMENTATION
+
+#ifdef NMTOOLS_RUNTIME_SQUARE_GRAPH_IMPLEMENTATION
+#include "nmtools/array/ufuncs/square.hpp"
+#include "nmtools/core/computational_tree.hpp"
+#include "nmtools/core/transform/cse.hpp"
+
+namespace nmtools
+{
+    auto square(const runtime::ndarray& array) -> runtime::ndarray
+    {
+        namespace fn = functional;
+        namespace rt = runtime;
+        using runtime::ndarray;
+
+        // TODO: support default constructor for ndarray
+        // auto result = rt::ndarray();
+        auto result = rt::ndarray(array.shape(),array.dtype());
+
+        constexpr auto N = len_v<decltype(ndarray::types)>;
+        template_for<N>([&](auto i){
+            const auto ct = at(ndarray::types,i);
+            if (ct == array.dtype()) {
+                auto v = view::square(array.view(ct));
+
+                auto ctree = unwrap(fn::get_computational_tree(v));
+                auto rtree = rt::to_value(ctree);
+                auto graph = fn::cse(rtree);
+                result = graph;
+            }
+        });
+
+        return result;
+    }
+}
+
+#endif // NMTOOLS_RUNTIME_SQUARE_GRAPH_IMPLEMENTATION
+
+#ifdef NMTOOLS_RUNTIME_TAN_GRAPH_IMPLEMENTATION
+#include "nmtools/array/ufuncs/tan.hpp"
+#include "nmtools/core/computational_tree.hpp"
+#include "nmtools/core/transform/cse.hpp"
+
+namespace nmtools
+{
+    auto tan(const runtime::ndarray& array) -> runtime::ndarray
+    {
+        namespace fn = functional;
+        namespace rt = runtime;
+        using runtime::ndarray;
+
+        // TODO: support default constructor for ndarray
+        // auto result = rt::ndarray();
+        auto result = rt::ndarray(array.shape(),array.dtype());
+
+        constexpr auto N = len_v<decltype(ndarray::types)>;
+        template_for<N>([&](auto i){
+            const auto ct = at(ndarray::types,i);
+            if (ct == array.dtype()) {
+                auto v = view::tan(array.view(ct));
+
+                auto ctree = unwrap(fn::get_computational_tree(v));
+                auto rtree = rt::to_value(ctree);
+                auto graph = fn::cse(rtree);
+                result = graph;
+            }
+        });
+
+        return result;
+    }
+}
+
+#endif // NMTOOLS_RUNTIME_TAN_GRAPH_IMPLEMENTATION
+
+#ifdef NMTOOLS_RUNTIME_TANH_GRAPH_IMPLEMENTATION
+#include "nmtools/array/ufuncs/tanh.hpp"
+#include "nmtools/core/computational_tree.hpp"
+#include "nmtools/core/transform/cse.hpp"
+
+namespace nmtools
+{
+    auto tanh(const runtime::ndarray& array) -> runtime::ndarray
+    {
+        namespace fn = functional;
+        namespace rt = runtime;
+        using runtime::ndarray;
+
+        // TODO: support default constructor for ndarray
+        // auto result = rt::ndarray();
+        auto result = rt::ndarray(array.shape(),array.dtype());
+
+        constexpr auto N = len_v<decltype(ndarray::types)>;
+        template_for<N>([&](auto i){
+            const auto ct = at(ndarray::types,i);
+            if (ct == array.dtype()) {
+                auto v = view::tanh(array.view(ct));
+
+                auto ctree = unwrap(fn::get_computational_tree(v));
+                auto rtree = rt::to_value(ctree);
+                auto graph = fn::cse(rtree);
+                result = graph;
+            }
+        });
+
+        return result;
+    }
+}
+
+#endif // NMTOOLS_RUNTIME_TANH_GRAPH_IMPLEMENTATION
+
+#ifdef NMTOOLS_RUNTIME_TRUNC_GRAPH_IMPLEMENTATION
+#include "nmtools/array/ufuncs/trunc.hpp"
+#include "nmtools/core/computational_tree.hpp"
+#include "nmtools/core/transform/cse.hpp"
+
+namespace nmtools
+{
+    auto trunc(const runtime::ndarray& array) -> runtime::ndarray
+    {
+        namespace fn = functional;
+        namespace rt = runtime;
+        using runtime::ndarray;
+
+        // TODO: support default constructor for ndarray
+        // auto result = rt::ndarray();
+        auto result = rt::ndarray(array.shape(),array.dtype());
+
+        constexpr auto N = len_v<decltype(ndarray::types)>;
+        template_for<N>([&](auto i){
+            const auto ct = at(ndarray::types,i);
+            if (ct == array.dtype()) {
+                auto v = view::trunc(array.view(ct));
+
+                auto ctree = unwrap(fn::get_computational_tree(v));
+                auto rtree = rt::to_value(ctree);
+                auto graph = fn::cse(rtree);
+                result = graph;
+            }
+        });
+
+        return result;
+    }
+}
+
+#endif // NMTOOLS_RUNTIME_TRUNC_GRAPH_IMPLEMENTATION
+
+#ifdef NMTOOLS_RUNTIME_ARCCOS_GRAPH_IMPLEMENTATION
+#include "nmtools/array/ufuncs/arccos.hpp"
+#include "nmtools/core/computational_tree.hpp"
+#include "nmtools/core/transform/cse.hpp"
+
+namespace nmtools
+{
+    auto arccos(const runtime::ndarray& array) -> runtime::ndarray
+    {
+        namespace fn = functional;
+        namespace rt = runtime;
+        using runtime::ndarray;
+
+        // TODO: support default constructor for ndarray
+        // auto result = rt::ndarray();
+        auto result = rt::ndarray(array.shape(),array.dtype());
+
+        constexpr auto N = len_v<decltype(ndarray::types)>;
+        template_for<N>([&](auto i){
+            const auto ct = at(ndarray::types,i);
+            if (ct == array.dtype()) {
+                auto v = view::arccos(array.view(ct));
+
+                auto ctree = unwrap(fn::get_computational_tree(v));
+                auto rtree = rt::to_value(ctree);
+                auto graph = fn::cse(rtree);
+                result = graph;
+            }
+        });
+
+        return result;
+    }
+}
+
+#endif // NMTOOLS_RUNTIME_ARCCOS_GRAPH_IMPLEMENTATION
+
+#ifdef NMTOOLS_RUNTIME_ARCCOSH_GRAPH_IMPLEMENTATION
+#include "nmtools/array/ufuncs/arccosh.hpp"
+#include "nmtools/core/computational_tree.hpp"
+#include "nmtools/core/transform/cse.hpp"
+
+namespace nmtools
+{
+    auto arccosh(const runtime::ndarray& array) -> runtime::ndarray
+    {
+        namespace fn = functional;
+        namespace rt = runtime;
+        using runtime::ndarray;
+
+        // TODO: support default constructor for ndarray
+        // auto result = rt::ndarray();
+        auto result = rt::ndarray(array.shape(),array.dtype());
+
+        constexpr auto N = len_v<decltype(ndarray::types)>;
+        template_for<N>([&](auto i){
+            const auto ct = at(ndarray::types,i);
+            if (ct == array.dtype()) {
+                auto v = view::arccosh(array.view(ct));
+
+                auto ctree = unwrap(fn::get_computational_tree(v));
+                auto rtree = rt::to_value(ctree);
+                auto graph = fn::cse(rtree);
+                result = graph;
+            }
+        });
+
+        return result;
+    }
+}
+
+#endif // NMTOOLS_RUNTIME_ARCCOSH_GRAPH_IMPLEMENTATION
+
+#ifdef NMTOOLS_RUNTIME_ARCSIN_GRAPH_IMPLEMENTATION
+#include "nmtools/array/ufuncs/arcsin.hpp"
+#include "nmtools/core/computational_tree.hpp"
+#include "nmtools/core/transform/cse.hpp"
+
+namespace nmtools
+{
+    auto arcsin(const runtime::ndarray& array) -> runtime::ndarray
+    {
+        namespace fn = functional;
+        namespace rt = runtime;
+        using runtime::ndarray;
+
+        // TODO: support default constructor for ndarray
+        // auto result = rt::ndarray();
+        auto result = rt::ndarray(array.shape(),array.dtype());
+
+        constexpr auto N = len_v<decltype(ndarray::types)>;
+        template_for<N>([&](auto i){
+            const auto ct = at(ndarray::types,i);
+            if (ct == array.dtype()) {
+                auto v = view::arcsin(array.view(ct));
+
+                auto ctree = unwrap(fn::get_computational_tree(v));
+                auto rtree = rt::to_value(ctree);
+                auto graph = fn::cse(rtree);
+                result = graph;
+            }
+        });
+
+        return result;
+    }
+}
+
+#endif // NMTOOLS_RUNTIME_ARCSIN_GRAPH_IMPLEMENTATION
+
+#ifdef NMTOOLS_RUNTIME_ARCSINH_GRAPH_IMPLEMENTATION
+#include "nmtools/array/ufuncs/arcsinh.hpp"
+#include "nmtools/core/computational_tree.hpp"
+#include "nmtools/core/transform/cse.hpp"
+
+namespace nmtools
+{
+    auto arcsinh(const runtime::ndarray& array) -> runtime::ndarray
+    {
+        namespace fn = functional;
+        namespace rt = runtime;
+        using runtime::ndarray;
+
+        // TODO: support default constructor for ndarray
+        // auto result = rt::ndarray();
+        auto result = rt::ndarray(array.shape(),array.dtype());
+
+        constexpr auto N = len_v<decltype(ndarray::types)>;
+        template_for<N>([&](auto i){
+            const auto ct = at(ndarray::types,i);
+            if (ct == array.dtype()) {
+                auto v = view::arcsinh(array.view(ct));
+
+                auto ctree = unwrap(fn::get_computational_tree(v));
+                auto rtree = rt::to_value(ctree);
+                auto graph = fn::cse(rtree);
+                result = graph;
+            }
+        });
+
+        return result;
+    }
+}
+
+#endif // NMTOOLS_RUNTIME_ARCSINH_GRAPH_IMPLEMENTATION
+
+#ifdef NMTOOLS_RUNTIME_ARCTAN_GRAPH_IMPLEMENTATION
+#include "nmtools/array/ufuncs/arctan.hpp"
+#include "nmtools/core/computational_tree.hpp"
+#include "nmtools/core/transform/cse.hpp"
+
+namespace nmtools
+{
+    auto arctan(const runtime::ndarray& array) -> runtime::ndarray
+    {
+        namespace fn = functional;
+        namespace rt = runtime;
+        using runtime::ndarray;
+
+        // TODO: support default constructor for ndarray
+        // auto result = rt::ndarray();
+        auto result = rt::ndarray(array.shape(),array.dtype());
+
+        constexpr auto N = len_v<decltype(ndarray::types)>;
+        template_for<N>([&](auto i){
+            const auto ct = at(ndarray::types,i);
+            if (ct == array.dtype()) {
+                auto v = view::arctan(array.view(ct));
+
+                auto ctree = unwrap(fn::get_computational_tree(v));
+                auto rtree = rt::to_value(ctree);
+                auto graph = fn::cse(rtree);
+                result = graph;
+            }
+        });
+
+        return result;
+    }
+}
+
+#endif // NMTOOLS_RUNTIME_ARCTAN_GRAPH_IMPLEMENTATION
+
+#ifdef NMTOOLS_RUNTIME_ARCTANH_GRAPH_IMPLEMENTATION
+#include "nmtools/array/ufuncs/arctanh.hpp"
+#include "nmtools/core/computational_tree.hpp"
+#include "nmtools/core/transform/cse.hpp"
+
+namespace nmtools
+{
+    auto arctanh(const runtime::ndarray& array) -> runtime::ndarray
+    {
+        namespace fn = functional;
+        namespace rt = runtime;
+        using runtime::ndarray;
+
+        // TODO: support default constructor for ndarray
+        // auto result = rt::ndarray();
+        auto result = rt::ndarray(array.shape(),array.dtype());
+
+        constexpr auto N = len_v<decltype(ndarray::types)>;
+        template_for<N>([&](auto i){
+            const auto ct = at(ndarray::types,i);
+            if (ct == array.dtype()) {
+                auto v = view::arctanh(array.view(ct));
+
+                auto ctree = unwrap(fn::get_computational_tree(v));
+                auto rtree = rt::to_value(ctree);
+                auto graph = fn::cse(rtree);
+                result = graph;
+            }
+        });
+
+        return result;
+    }
+}
+
+#endif // NMTOOLS_RUNTIME_ARCTANH_GRAPH_IMPLEMENTATION
+
+#ifdef NMTOOLS_RUNTIME_CBRT_GRAPH_IMPLEMENTATION
+#include "nmtools/array/ufuncs/cbrt.hpp"
+#include "nmtools/core/computational_tree.hpp"
+#include "nmtools/core/transform/cse.hpp"
+
+namespace nmtools
+{
+    auto cbrt(const runtime::ndarray& array) -> runtime::ndarray
+    {
+        namespace fn = functional;
+        namespace rt = runtime;
+        using runtime::ndarray;
+
+        // TODO: support default constructor for ndarray
+        // auto result = rt::ndarray();
+        auto result = rt::ndarray(array.shape(),array.dtype());
+
+        constexpr auto N = len_v<decltype(ndarray::types)>;
+        template_for<N>([&](auto i){
+            const auto ct = at(ndarray::types,i);
+            if (ct == array.dtype()) {
+                auto v = view::cbrt(array.view(ct));
+
+                auto ctree = unwrap(fn::get_computational_tree(v));
+                auto rtree = rt::to_value(ctree);
+                auto graph = fn::cse(rtree);
+                result = graph;
+            }
+        });
+
+        return result;
+    }
+}
+
+#endif // NMTOOLS_RUNTIME_CBRT_GRAPH_IMPLEMENTATION
+
+#ifdef NMTOOLS_RUNTIME_CEIL_GRAPH_IMPLEMENTATION
+#include "nmtools/array/ufuncs/ceil.hpp"
+#include "nmtools/core/computational_tree.hpp"
+#include "nmtools/core/transform/cse.hpp"
+
+namespace nmtools
+{
+    auto ceil(const runtime::ndarray& array) -> runtime::ndarray
+    {
+        namespace fn = functional;
+        namespace rt = runtime;
+        using runtime::ndarray;
+
+        // TODO: support default constructor for ndarray
+        // auto result = rt::ndarray();
+        auto result = rt::ndarray(array.shape(),array.dtype());
+
+        constexpr auto N = len_v<decltype(ndarray::types)>;
+        template_for<N>([&](auto i){
+            const auto ct = at(ndarray::types,i);
+            if (ct == array.dtype()) {
+                auto v = view::ceil(array.view(ct));
+
+                auto ctree = unwrap(fn::get_computational_tree(v));
+                auto rtree = rt::to_value(ctree);
+                auto graph = fn::cse(rtree);
+                result = graph;
+            }
+        });
+
+        return result;
+    }
+}
+
+#endif // NMTOOLS_RUNTIME_CEIL_GRAPH_IMPLEMENTATION
 
 #endif // NMTOOLS_RUNTIME_NDARRAY_HPP

@@ -41,6 +41,41 @@ add_executable(${PROJECT_NAME}-doctest tests.cpp
 
     src/sum.cpp
     src/prod.cpp
+
+    src/cos.cpp
+    src/cosh.cpp
+    src/sin.cpp
+    src/sinh.cpp
+    src/exp.cpp
+    src/exp2.cpp
+    src/expm1.cpp
+    src/fabs.cpp
+    src/floor.cpp
+    src/invert.cpp
+    src/isfinite.cpp
+    src/isinf.cpp
+    src/isnan.cpp
+    src/log.cpp
+    src/log1p.cpp
+    src/log2.cpp
+    src/log10.cpp
+    src/negative.cpp
+    src/reciprocal.cpp
+    src/rint.cpp
+    src/signbit.cpp
+    src/sqrt.cpp
+    src/square.cpp
+    src/tan.cpp
+    src/tanh.cpp
+    src/trunc.cpp
+    src/arccos.cpp
+    src/arccosh.cpp
+    src/arcsin.cpp
+    src/arcsinh.cpp
+    src/arctan.cpp
+    src/arctanh.cpp
+    src/cbrt.cpp
+    src/ceil.cpp
 )
 
 add_test(

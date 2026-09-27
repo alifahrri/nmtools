@@ -63,25 +63,20 @@ namespace nmtools::utils::impl
 
 namespace nmtools
 {
-    namespace fn
+    template <
+        typename output_t=none_t
+        , typename context_t=default_context_t<>
+        , typename array_t
+        , enable_if_t<is_ndarray_v<array_t> || is_num_v<array_t> || (is_maybe_v<array_t> && (is_ndarray_v<array_t> || is_num_v<array_t>)),int> =0>
+    constexpr auto trunc(const array_t& a,
+        context_t&& context=context_t{}, output_t&& output=output_t{})
     {
-        struct trunc
-        {
-            template <typename output_t=none_t, typename context_t=default_context_t<>,
-                typename left_t>
-            inline constexpr auto operator()(const left_t& a,
-                context_t&& context=context_t{}, output_t&& output=output_t{}) const
-            {
-                auto trunc = view::trunc(a);
-                return eval(trunc
-                    ,nmtools::forward<context_t>(context)
-                    ,nmtools::forward<output_t>(output)
-                );
-            } // operator()
-        }; // trunc
-    } // namespace fn
-
-    constexpr inline auto trunc = fn::trunc{};
+        auto trunc = view::trunc(a);
+        return eval(trunc
+            ,nmtools::forward<context_t>(context)
+            ,nmtools::forward<output_t>(output)
+        );
+    } // trunc
 } // nmtools
 
 #endif // NMTOOLS_ARRAY_ARRAY_TRUNC_HPP

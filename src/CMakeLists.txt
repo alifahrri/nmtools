@@ -8,6 +8,41 @@ add_library(nmtoolsrt STATIC
     graph/sum.cpp
     graph/prod.cpp
 
+    graph/cos.cpp
+    graph/cosh.cpp
+    graph/sin.cpp
+    graph/sinh.cpp
+    graph/exp.cpp
+    graph/exp2.cpp
+    graph/expm1.cpp
+    graph/fabs.cpp
+    graph/floor.cpp
+    graph/invert.cpp
+    graph/isfinite.cpp
+    graph/isinf.cpp
+    graph/isnan.cpp
+    graph/log.cpp
+    graph/log1p.cpp
+    graph/log2.cpp
+    graph/log10.cpp
+    graph/negative.cpp
+    graph/reciprocal.cpp
+    graph/rint.cpp
+    graph/signbit.cpp
+    graph/sqrt.cpp
+    graph/square.cpp
+    graph/tan.cpp
+    graph/tanh.cpp
+    graph/trunc.cpp
+    graph/arccos.cpp
+    graph/arccosh.cpp
+    graph/arcsin.cpp
+    graph/arcsinh.cpp
+    graph/arctan.cpp
+    graph/arctanh.cpp
+    graph/cbrt.cpp
+    graph/ceil.cpp
+
     cpu/cpu.cpp
     cpu/add.cpp
     cpu/multiply.cpp
@@ -15,6 +50,41 @@ add_library(nmtoolsrt STATIC
     cpu/divide.cpp
     cpu/sum.cpp
     cpu/prod.cpp
+
+    cpu/cos.cpp
+    cpu/cosh.cpp
+    cpu/sin.cpp
+    cpu/sinh.cpp
+    cpu/exp.cpp
+    cpu/exp2.cpp
+    cpu/expm1.cpp
+    cpu/fabs.cpp
+    cpu/floor.cpp
+    cpu/invert.cpp
+    cpu/isfinite.cpp
+    cpu/isinf.cpp
+    cpu/isnan.cpp
+    cpu/log.cpp
+    cpu/log1p.cpp
+    cpu/log2.cpp
+    cpu/log10.cpp
+    cpu/negative.cpp
+    cpu/reciprocal.cpp
+    cpu/rint.cpp
+    cpu/signbit.cpp
+    cpu/sqrt.cpp
+    cpu/square.cpp
+    cpu/tan.cpp
+    cpu/tanh.cpp
+    cpu/trunc.cpp
+    cpu/arccos.cpp
+    cpu/arccosh.cpp
+    cpu/arcsin.cpp
+    cpu/arcsinh.cpp
+    cpu/arctan.cpp
+    cpu/arctanh.cpp
+    cpu/cbrt.cpp
+    cpu/ceil.cpp
 )
 
 target_include_directories(nmtoolsrt PUBLIC

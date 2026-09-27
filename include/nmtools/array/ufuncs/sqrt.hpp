@@ -85,25 +85,20 @@ namespace nmtools::functional
 
 namespace nmtools
 {
-    namespace fn
+    template <
+        typename output_t=none_t
+        , typename context_t=default_context_t<>
+        , typename array_t
+        , enable_if_t<is_ndarray_v<array_t> || is_num_v<array_t> || (is_maybe_v<array_t> && (is_ndarray_v<array_t> || is_num_v<array_t>)),int> =0>
+    constexpr auto sqrt(const array_t& a,
+        context_t&& context=context_t{}, output_t&& output=output_t{})
     {
-        struct sqrt
-        {
-            template <typename output_t=none_t, typename context_t=default_context_t<>,
-                typename left_t>
-            inline constexpr auto operator()(const left_t& a,
-                context_t&& context=context_t{}, output_t&& output=output_t{}) const
-            {
-                auto sqrt = view::sqrt(a);
-                return eval(sqrt
-                    ,nmtools::forward<context_t>(context)
-                    ,nmtools::forward<output_t>(output)
-                );
-            } // operator()
-        }; // sqrt
-    } // namespace fn
-
-    constexpr inline auto sqrt = fn::sqrt{};
+        auto sqrt = view::sqrt(a);
+        return eval(sqrt
+            ,nmtools::forward<context_t>(context)
+            ,nmtools::forward<output_t>(output)
+        );
+    } // sqrt
 } // namespace nmtools
 
 #endif // NMTOOLS_ARRAY_ARRAY_SQRT_HPP

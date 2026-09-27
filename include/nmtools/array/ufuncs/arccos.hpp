@@ -85,25 +85,20 @@ namespace nmtools::functional
 
 namespace nmtools
 {
-    namespace fn
+    template <
+        typename output_t=none_t
+        , typename context_t=default_context_t<>
+        , typename array_t
+        , enable_if_t<is_ndarray_v<array_t> || is_num_v<array_t> || (is_maybe_v<array_t> && (is_ndarray_v<array_t> || is_num_v<array_t>)),int> =0>
+    constexpr auto arccos(const array_t& a,
+        context_t&& context=context_t{}, output_t&& output=output_t{})
     {
-        struct arccos
-        {
-            template <typename output_t=none_t, typename context_t=default_context_t<>,
-                typename left_t>
-            inline constexpr auto operator()(const left_t& a,
-                context_t&& context=context_t{}, output_t&& output=output_t{}) const
-            {
-                auto arccos = view::arccos(a);
-                return eval(arccos
-                    ,nmtools::forward<context_t>(context)
-                    ,nmtools::forward<output_t>(output)
-                );
-            } // operator()
-        }; // arccos
-    } // namespace fn
-
-    constexpr inline auto arccos = fn::arccos{};
+        auto arccos = view::arccos(a);
+        return eval(arccos
+            ,nmtools::forward<context_t>(context)
+            ,nmtools::forward<output_t>(output)
+        );
+    } // arccos
 } // namespace nmtools
 
 #endif // NMTOOLS_ARRAY_ARRAY_ARCCOS_HPP

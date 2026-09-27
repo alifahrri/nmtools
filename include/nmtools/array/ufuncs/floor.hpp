@@ -85,20 +85,20 @@ namespace nmtools::functional
 
 namespace nmtools
 {
-    namespace fn
+    template <
+        typename output_t=none_t
+        , typename context_t=default_context_t<>
+        , typename array_t
+        , enable_if_t<is_ndarray_v<array_t> || is_num_v<array_t> || (is_maybe_v<array_t> && (is_ndarray_v<array_t> || is_num_v<array_t>)),int> =0>
+    constexpr auto floor(const array_t& a,
+        context_t&& context=context_t{}, output_t&& output=output_t{})
     {
-        struct floor
-        {
-            template <typename output_t=none_t, typename context_t=default_context_t<>, typename left_t>
-            inline constexpr auto operator()(const left_t& a, context_t&& context=context_t{}, output_t&& output=output_t{}) const
-            {
-                auto floor = view::floor(a);
-                return eval(floor, nmtools::forward<context_t>(context), nmtools::forward<output_t>(output));
-            } // operator()
-        }; // floor
-    } // namespace fn
-
-    constexpr inline auto floor = fn::floor{};
-} // nmtools
+        auto floor = view::floor(a);
+        return eval(floor
+            ,nmtools::forward<context_t>(context)
+            ,nmtools::forward<output_t>(output)
+        );
+    } // floor
+} // namespace nmtools
 
 #endif // NMTOOLS_ARRAY_ARRAY_FLOOR_HPP

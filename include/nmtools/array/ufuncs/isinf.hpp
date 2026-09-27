@@ -17,11 +17,23 @@ namespace nmtools::view::fun
             return math::isinf(t);
         } // operator()
     }; // isinf
+
+    struct isinf_int8
+    {
+        template <typename T>
+        nmtools_func_attribute
+        NMTOOLS_UFUNC_CONSTEXPR
+        auto operator()(const T& t) const
+        {
+            return static_cast<int8_t>(math::isinf(t));
+        } // operator()
+    }; // isinf_int8
 }
 
 namespace nmtools::view
 {
     using isinf_t = fun::isinf;
+    using isinf_int8_t = fun::isinf_int8;
 
     template <typename left_t>
     nmtools_func_attribute
@@ -30,6 +42,14 @@ namespace nmtools::view
     {
         return unary_ufunc(isinf_t{},a);
     } // isinf
+
+    template <typename left_t>
+    nmtools_func_attribute
+    NMTOOLS_UFUNC_CONSTEXPR
+    auto isinf_int8(const left_t& a)
+    {
+        return unary_ufunc(isinf_int8_t{},a);
+    } // isinf_int8
 }
 
 #if NMTOOLS_HAS_STRING
@@ -85,20 +105,20 @@ namespace nmtools::functional
 
 namespace nmtools
 {
-    namespace fn
+    template <
+        typename output_t=none_t
+        , typename context_t=default_context_t<>
+        , typename array_t
+        , enable_if_t<is_ndarray_v<array_t> || is_num_v<array_t> || (is_maybe_v<array_t> && (is_ndarray_v<array_t> || is_num_v<array_t>)),int> =0>
+    constexpr auto isinf(const array_t& a,
+        context_t&& context=context_t{}, output_t&& output=output_t{})
     {
-        struct isinf
-        {
-            template <typename output_t=none_t, typename context_t=default_context_t<>, typename left_t>
-            inline constexpr auto operator()(const left_t& a, context_t&& context=context_t{}, output_t&& output=output_t{}) const
-            {
-                auto isinf = view::isinf(a);
-                return eval(isinf, nmtools::forward<context_t>(context), nmtools::forward<output_t>(output));
-            } // operator()
-        }; // isinf
-    } // namespace fn
-
-    constexpr inline auto isinf = fn::isinf{};
-} // nmtools
+        auto isinf = view::isinf(a);
+        return eval(isinf
+            ,nmtools::forward<context_t>(context)
+            ,nmtools::forward<output_t>(output)
+        );
+    } // isinf
+} // namespace nmtools
 
 #endif // NMTOOLS_ARRAY_ARRAY_ISINF_HPP
