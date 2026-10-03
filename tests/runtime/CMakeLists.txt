@@ -76,6 +76,26 @@ add_executable(${PROJECT_NAME}-doctest tests.cpp
     src/arctanh.cpp
     src/cbrt.cpp
     src/ceil.cpp
+
+    src/bitwise_and.cpp
+    src/bitwise_or.cpp
+    src/bitwise_xor.cpp
+    src/equal.cpp
+    src/greater_equal.cpp
+    src/greater.cpp
+    src/less_equal.cpp
+    src/less.cpp
+    src/fmax.cpp
+    src/fmin.cpp
+    src/fmod.cpp
+    src/hypot.cpp
+    src/ldexp.cpp
+    src/left_shift.cpp
+    src/right_shift.cpp
+    src/maximum.cpp
+    src/minimum.cpp
+    src/mod.cpp
+    src/power.cpp
 )
 
 add_test(

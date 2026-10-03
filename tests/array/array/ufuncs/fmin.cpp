@@ -42,7 +42,7 @@ SUBCASE(#case_name) \
 { \
     NMTOOLS_TESTING_USE_CASE(view, reduce_fmin, case_name); \
     using namespace args; \
-    auto result = nm::fmin.reduce(__VA_ARGS__); \
+    auto result = nm::reduce_fmin(__VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( ::nm::shape(result), expect::shape ); \
     NMTOOLS_ASSERT_CLOSE( result, expect::result ); \
 }
@@ -160,7 +160,7 @@ SUBCASE(#case_name) \
 { \
     NMTOOLS_TESTING_USE_CASE(view, accumulate_fmin, case_name); \
     using namespace args; \
-    auto result = nm::fmin.accumulate(__VA_ARGS__); \
+    auto result = nm::accumulate_fmin(__VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( ::nm::shape(result), expect::shape ); \
     NMTOOLS_ASSERT_CLOSE( result, expect::result ); \
 }
@@ -200,7 +200,7 @@ SUBCASE(#case_name) \
 { \
     NMTOOLS_TESTING_USE_CASE(view, outer_fmin, case_name); \
     using namespace args; \
-    auto result = nm::fmin.outer(__VA_ARGS__); \
+    auto result = nm::outer_fmin(__VA_ARGS__); \
     NMTOOLS_ASSERT_EQUAL( ::nm::shape(result), expect::shape ); \
     NMTOOLS_ASSERT_CLOSE( result, expect::result ); \
 }
