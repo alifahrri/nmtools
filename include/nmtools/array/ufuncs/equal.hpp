@@ -1,6 +1,7 @@
 #ifndef NMTOOLS_ARRAY_VIEW_UFUNCS_EQUAL_HPP
 #define NMTOOLS_ARRAY_VIEW_UFUNCS_EQUAL_HPP
 
+#include "nmtools/utility/to_string/to_string.hpp"
 #include "nmtools/core/ufunc.hpp"
 
 namespace nmtools::view::fun
@@ -59,20 +60,12 @@ namespace nmtools::utils::impl
 
 namespace nmtools
 {
-    namespace fn
+    template <typename output_t=none_t, typename context_t=default_context_t<>, typename left_t, typename right_t>
+    constexpr auto equal(const left_t& a, const right_t& b, context_t&& context=context_t{}, output_t&& output=output_t{})
     {
-        struct equal
-        {
-            template <typename output_t=none_t, typename context_t=default_context_t<>, typename left_t, typename right_t>
-            inline constexpr auto operator()(const left_t& a, const right_t& b, context_t&& context=context_t{}, output_t&& output=output_t{}) const
-            {
-                auto equal = view::equal(a,b);
-                return eval(equal, nmtools::forward<context_t>(context), nmtools::forward<output_t>(output));
-            } // operator()
-        }; // equal
-    } // namespace fn
-
-    constexpr inline auto equal = fn::equal{};
+        auto equal = view::equal(a,b);
+        return eval(equal, nmtools::forward<context_t>(context), nmtools::forward<output_t>(output));
+    } // equal
 } // nmtools
 
 #endif // NMTOOLS_ARRAY_ARRAY_EQUAL_HPP

@@ -77,7 +77,7 @@ SUBCASE(#case_name) \
 { \
     NMTOOLS_TESTING_USE_CASE(view, reduce_minimum, case_name); \
     using namespace args; \
-    auto result = nmtools::minimum.reduce(__VA_ARGS__,nmtools::Object); \
+    auto result = nmtools::reduce_minimum(__VA_ARGS__,nmtools::Object); \
     NMTOOLS_STATIC_CHECK_TRAIT( nmtools::meta::is_object_ndarray, decltype(result) ); \
     NMTOOLS_ASSERT_EQUAL( ::nm::shape(result), expect::shape ); \
     NMTOOLS_ASSERT_CLOSE( result, expect::result ); \
@@ -142,7 +142,7 @@ SUBCASE(#case_name) \
 { \
     NMTOOLS_TESTING_USE_CASE(view, accumulate_minimum, case_name); \
     using namespace args; \
-    auto result = nmtools::minimum.accumulate(__VA_ARGS__, nmtools::Object); \
+    auto result = nmtools::accumulate_minimum(__VA_ARGS__, nmtools::Object); \
     NMTOOLS_STATIC_CHECK_TRAIT( nmtools::meta::is_object_ndarray, decltype(result) ); \
     NMTOOLS_ASSERT_EQUAL( ::nm::shape(result), expect::shape ); \
     NMTOOLS_ASSERT_CLOSE( result, expect::result ); \
@@ -181,7 +181,7 @@ SUBCASE(#case_name) \
 { \
     NMTOOLS_TESTING_USE_CASE(view, outer_minimum, case_name); \
     using namespace args; \
-    auto result = nmtools::minimum.outer( __VA_ARGS__, nmtools::Object); \
+    auto result = nmtools::outer_minimum(__VA_ARGS__, nmtools::Object); \
     NMTOOLS_STATIC_CHECK_TRAIT( nmtools::meta::is_object_ndarray, decltype(result) ); \
     NMTOOLS_ASSERT_EQUAL( ::nm::shape(result), expect::shape ); \
     NMTOOLS_ASSERT_CLOSE( result, expect::result ); \

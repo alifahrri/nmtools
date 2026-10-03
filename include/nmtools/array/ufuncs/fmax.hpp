@@ -67,7 +67,7 @@ namespace nmtools::view
     NMTOOLS_UFUNC_CONSTEXPR
     auto reduce_fmax(const left_t& a, const axis_t& axis, dtype_t dtype)
     {
-        return reduce_fmax(a,axis,dtype,None);
+        return view::reduce_fmax(a,axis,dtype,None);
     } // reduce_fmax
 
     // TODO: use default args instead of overload
@@ -75,7 +75,7 @@ namespace nmtools::view
     NMTOOLS_UFUNC_CONSTEXPR
     auto reduce_fmax(const left_t& a, const axis_t& axis)
     {
-        return reduce_fmax(a,axis,None,None);
+        return view::reduce_fmax(a,axis,None,None);
     } // reduce_fmax
 
     template <typename left_t, typename axis_t, typename dtype_t>
@@ -91,7 +91,7 @@ namespace nmtools::view
     NMTOOLS_UFUNC_CONSTEXPR
     auto accumulate_fmax(const left_t& a, const axis_t& axis)
     {
-        return accumulate_fmax(a,axis,None);
+        return view::accumulate_fmax(a,axis,None);
     } // accumulate_fmax
 
     template <typename left_t, typename right_t, typename dtype_t=none_t>
@@ -115,59 +115,153 @@ namespace nmtools::view
 
 namespace nmtools
 {
-    namespace fn
+    template <typename output_t=none_t, typename context_t=default_context_t<>,
+        typename left_t, typename right_t>
+    constexpr inline auto fmax(const left_t& a, const right_t& b,
+        context_t&& context=context_t{}, output_t&& output=output_t{})
     {
-        struct fmax
-        {
-            template <typename output_t=none_t, typename context_t=default_context_t<>,
-                typename left_t, typename right_t>
-            inline constexpr auto operator()(const left_t& a, const right_t& b,
-                context_t&& context=context_t{}, output_t&& output=output_t{}) const
-            {
-                auto fmax = view::fmax(a,b);
-                return eval(fmax
-                    ,nmtools::forward<context_t>(context)
-                    ,nmtools::forward<output_t>(output)
-                );
-            }
-            template <typename output_t=none_t, typename context_t=default_context_t<>,
-                typename dtype_t=none_t, typename initial_t=none_t,
-                typename keepdims_t=meta::false_type, typename left_t, typename axis_t>
-            static constexpr auto reduce(const left_t& a, const axis_t& axis, dtype_t dtype=dtype_t{},
-                initial_t initial=initial_t{}, keepdims_t keepdims=keepdims_t{},
-                context_t&& context=context_t{}, output_t&& output=output_t{})
-            {
-                auto fmax = view::reduce_fmax(a,axis,dtype,initial,keepdims);
-                return eval(fmax
-                    ,nmtools::forward<context_t>(context)
-                    ,nmtools::forward<output_t>(output)
-                );
-            }
-            template <typename output_t=none_t, typename context_t=default_context_t<>,
-                typename dtype_t=none_t, typename left_t, typename axis_t>
-            static constexpr auto accumulate(const left_t& a, const axis_t& axis, dtype_t dtype=dtype_t{},
-                context_t&& context=context_t{}, output_t&& output=output_t{})
-            {
-                auto fmax = view::accumulate_fmax(a,axis,dtype);
-                return eval(fmax
-                    ,nmtools::forward<context_t>(context)
-                    ,nmtools::forward<output_t>(output)
-                );
-            }
-            template <typename output_t=none_t, typename context_t=default_context_t<>,
-                typename dtype_t=none_t, typename left_t, typename right_t>
-            static constexpr auto outer(const left_t& a, const right_t& b, dtype_t dtype=dtype_t{},
-                context_t&& context=context_t{}, output_t&& output=output_t{})
-            {
-                auto fmax = view::outer_fmax(a,b,dtype);
-                return eval(fmax
-                    ,nmtools::forward<context_t>(context)
-                    ,nmtools::forward<output_t>(output)
-                );
-            }
-        };
-    }
-    constexpr inline auto fmax = fn::fmax{};
+        auto fmax = view::fmax(a,b);
+        return eval(fmax
+            ,nmtools::forward<context_t>(context)
+            ,nmtools::forward<output_t>(output)
+        );
+    } // fmax
+
+    template <typename output_t=none_t, typename context_t=default_context_t<>,
+        typename left_t, typename right_t>
+    constexpr inline auto fmax(const left_t& a, const right_t& b, casting::same_kind_t,
+        context_t&& context=context_t{}, output_t&& output=output_t{})
+    {
+        auto fmax = view::fmax(a,b,casting::same_kind_t{});
+        return eval(fmax
+            ,nmtools::forward<context_t>(context)
+            ,nmtools::forward<output_t>(output)
+        );
+    } // fmax
+
+    template <typename output_t=none_t
+        , typename context_t=default_context_t<>
+        , typename dtype_t=none_t
+        , typename initial_t=none_t
+        , typename keepdims_t=meta::false_type
+        , typename left_t
+        , typename axis_t
+        , enable_if_t<is_none_v<dtype_t> || is_dtype_v<dtype_t>,int> = 0
+        , enable_if_t<is_none_v<initial_t> || is_num_v<initial_t>,int> = 0
+        , enable_if_t<is_none_v<keepdims_t> || is_num_v<keepdims_t>,int> = 0>
+    constexpr auto reduce_fmax(const left_t& a, const axis_t& axis, dtype_t dtype=dtype_t{}
+        , initial_t initial=initial_t{}, keepdims_t keepdims=keepdims_t{}
+        , context_t&& context=context_t{}, output_t&& output=output_t{})
+    {
+        auto fmax = view::reduce_fmax(a,axis,dtype,initial,keepdims);
+        return eval(fmax
+            , nmtools::forward<context_t>(context)
+            , nmtools::forward<output_t>(output)
+        );
+    } // reduce
+
+    template <typename context_t
+        , typename left_t
+        , typename axis_t
+        , typename dtype_t
+        , typename initial_t
+        , enable_if_t<is_none_v<dtype_t> || is_dtype_v<dtype_t>,int> = 0
+        , enable_if_t<is_none_v<initial_t> || is_num_v<initial_t>,int> = 0
+        , enable_if_t<is_context_v<context_t> || is_context_ptr_v<context_t>,int> = 0>
+    constexpr auto reduce_fmax(const left_t& a, const axis_t& axis, dtype_t dtype, initial_t initial
+        , context_t&& context)
+    {
+        auto fmax = view::reduce_fmax(a,axis,dtype,initial);
+        return eval(fmax
+            , nmtools::forward<context_t>(context)
+        );
+    } // reduce
+
+    template <typename context_t
+        , typename left_t
+        , typename axis_t
+        , typename dtype_t
+        , enable_if_t<is_none_v<dtype_t> || is_dtype_v<dtype_t>,int> = 0
+        , enable_if_t<is_context_v<context_t> || is_context_ptr_v<context_t>,int> = 0>
+    constexpr auto reduce_fmax(const left_t& a, const axis_t& axis, dtype_t dtype
+        , context_t&& context)
+    {
+        auto fmax = view::reduce_fmax(a,axis,dtype);
+        return eval(fmax
+            , nmtools::forward<context_t>(context)
+        );
+    } // reduce
+
+    template <typename context_t
+        , typename left_t
+        , typename axis_t
+        , enable_if_t<is_context_v<context_t> || is_context_ptr_v<context_t>,int> = 0>
+    constexpr auto reduce_fmax(const left_t& a, const axis_t& axis
+        , context_t&& context)
+    {
+        auto fmax = view::reduce_fmax(a,axis);
+        return eval(fmax
+            , nmtools::forward<context_t>(context)
+        );
+    } // reduce
+
+    template <typename output_t=none_t
+        , typename context_t=default_context_t<>
+        , typename dtype_t=none_t
+        , typename left_t
+        , typename axis_t
+        , enable_if_t<is_none_v<dtype_t> || is_dtype_v<dtype_t>,int> = 0>
+    constexpr auto accumulate_fmax(const left_t& a, const axis_t& axis, dtype_t dtype=dtype_t{}
+        , context_t&& context=context_t{}, output_t&& output=output_t{})
+    {
+        auto fmax = view::accumulate_fmax(a,axis,dtype);
+        return eval(fmax
+            ,nmtools::forward<context_t>(context)
+            ,nmtools::forward<output_t>(output)
+        );
+    } // accumulate_fmax
+
+    template <typename context_t
+        , typename left_t
+        , typename axis_t
+        , enable_if_t<is_context_v<context_t> || is_context_ptr_v<context_t>,int> = 0>
+    constexpr auto accumulate_fmax(const left_t& a, const axis_t& axis
+        , context_t&& context)
+    {
+        auto fmax = view::accumulate_fmax(a,axis);
+        return eval(fmax
+            , nmtools::forward<context_t>(context)
+        );
+    } // accumulate_fmax
+
+    template <typename output_t=none_t
+        , typename context_t=default_context_t<>
+        , typename dtype_t=none_t
+        , typename left_t
+        , typename right_t
+        , enable_if_t<is_none_v<dtype_t> || is_dtype_v<dtype_t>,int> = 0>
+    constexpr auto outer_fmax(const left_t& a, const right_t& b, dtype_t dtype=dtype_t{},
+        context_t&& context=context_t{}, output_t&& output=output_t{})
+    {
+        auto fmax = view::outer_fmax(a,b,dtype);
+        return eval(fmax
+            ,nmtools::forward<context_t>(context)
+            ,nmtools::forward<output_t>(output)
+        );
+    } // outer_fmax
+
+    template <typename context_t
+        , typename left_t
+        , typename right_t
+        , enable_if_t<is_context_v<context_t> || is_context_ptr_v<context_t>,int> = 0>
+    constexpr auto outer_fmax(const left_t& a, const right_t& b
+        , context_t&& context)
+    {
+        auto fmax = view::outer_fmax(a,b);
+        return eval(fmax
+            , nmtools::forward<context_t>(context)
+        );
+    } // outer_fmax
 } // namespace nmtools
 
 #endif // NMTOOLS_ARRAY_ARRAY_FMAX_HPP

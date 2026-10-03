@@ -17,23 +17,11 @@ namespace nmtools::view::fun
             return math::isinf(t);
         } // operator()
     }; // isinf
-
-    struct isinf_int8
-    {
-        template <typename T>
-        nmtools_func_attribute
-        NMTOOLS_UFUNC_CONSTEXPR
-        auto operator()(const T& t) const
-        {
-            return static_cast<int8_t>(math::isinf(t));
-        } // operator()
-    }; // isinf_int8
 }
 
 namespace nmtools::view
 {
     using isinf_t = fun::isinf;
-    using isinf_int8_t = fun::isinf_int8;
 
     template <typename left_t>
     nmtools_func_attribute
@@ -42,14 +30,6 @@ namespace nmtools::view
     {
         return unary_ufunc(isinf_t{},a);
     } // isinf
-
-    template <typename left_t>
-    nmtools_func_attribute
-    NMTOOLS_UFUNC_CONSTEXPR
-    auto isinf_int8(const left_t& a)
-    {
-        return unary_ufunc(isinf_int8_t{},a);
-    } // isinf_int8
 }
 
 #if NMTOOLS_HAS_STRING

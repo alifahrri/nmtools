@@ -40,13 +40,13 @@ TEST_CASE("signbit(f32)" * doctest::test_suite("runtime"))
     CHECK( input.is_evaluated() );
     CHECK( !result.is_evaluated() );
     NMTOOLS_ASSERT_EQUAL( input.shape(), shape );
-    CHECK( result.dtype() == nrt::DType::Int8 );
+    CHECK( result.dtype() == nrt::DType::UInt8 );
 
     {
         auto fn = nrt::cpu_signbit(nrt::DType::Float32);
         auto result = fn({input});
         CHECK( result.is_evaluated() );
-        NMTOOLS_ASSERT_CLOSE( result.view(nm::int8), expected );
+        NMTOOLS_ASSERT_CLOSE( result.view(nm::uint8), expected );
         CHECK_MESSAGE( true, utils::to_string(fn.graph(),utils::Graphviz) );
     }
     {
@@ -54,6 +54,6 @@ TEST_CASE("signbit(f32)" * doctest::test_suite("runtime"))
         auto fn  = ctx.get_functor(result.graph());
         auto result = (*fn)({input});
         CHECK( result.is_evaluated() );
-        NMTOOLS_ASSERT_CLOSE( result.view(nm::int8), expected );
+        NMTOOLS_ASSERT_CLOSE( result.view(nm::uint8), expected );
     }
 }

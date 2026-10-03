@@ -17,23 +17,11 @@ namespace nmtools::view::fun
             return math::isnan(t);
         } // operator()
     }; // isnan
-
-    struct isnan_int8
-    {
-        template <typename T>
-        nmtools_func_attribute
-        NMTOOLS_UFUNC_CONSTEXPR
-        auto operator()(const T& t) const
-        {
-            return static_cast<int8_t>(math::isnan(t));
-        } // operator()
-    }; // isnan_int8
 }
 
 namespace nmtools::view
 {
     using isnan_t = fun::isnan;
-    using isnan_int8_t = fun::isnan_int8;
 
     template <typename left_t>
     nmtools_func_attribute
@@ -42,14 +30,6 @@ namespace nmtools::view
     {
         return unary_ufunc(isnan_t{},a);
     } // isnan
-
-    template <typename left_t>
-    nmtools_func_attribute
-    NMTOOLS_UFUNC_CONSTEXPR
-    auto isnan_int8(const left_t& a)
-    {
-        return unary_ufunc(isnan_int8_t{},a);
-    } // isnan_int8
 }
 
 #if NMTOOLS_HAS_STRING

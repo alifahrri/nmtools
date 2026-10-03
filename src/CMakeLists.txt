@@ -43,6 +43,26 @@ add_library(nmtoolsrt STATIC
     graph/cbrt.cpp
     graph/ceil.cpp
 
+    graph/bitwise_and.cpp
+    graph/bitwise_or.cpp
+    graph/bitwise_xor.cpp
+    graph/equal.cpp
+    graph/greater_equal.cpp
+    graph/greater.cpp
+    graph/less_equal.cpp
+    graph/less.cpp
+    graph/fmax.cpp
+    graph/fmin.cpp
+    graph/fmod.cpp
+    graph/hypot.cpp
+    graph/ldexp.cpp
+    graph/left_shift.cpp
+    graph/right_shift.cpp
+    graph/maximum.cpp
+    graph/minimum.cpp
+    graph/mod.cpp
+    graph/power.cpp
+
     cpu/cpu.cpp
     cpu/add.cpp
     cpu/multiply.cpp
@@ -85,6 +105,26 @@ add_library(nmtoolsrt STATIC
     cpu/arctanh.cpp
     cpu/cbrt.cpp
     cpu/ceil.cpp
+
+    cpu/bitwise_and.cpp
+    cpu/bitwise_or.cpp
+    cpu/bitwise_xor.cpp
+    cpu/equal.cpp
+    cpu/greater_equal.cpp
+    cpu/greater.cpp
+    cpu/less_equal.cpp
+    cpu/less.cpp
+    cpu/fmax.cpp
+    cpu/fmin.cpp
+    cpu/fmod.cpp
+    cpu/hypot.cpp
+    cpu/ldexp.cpp
+    cpu/left_shift.cpp
+    cpu/right_shift.cpp
+    cpu/maximum.cpp
+    cpu/minimum.cpp
+    cpu/mod.cpp
+    cpu/power.cpp
 )
 
 target_include_directories(nmtoolsrt PUBLIC

@@ -74,7 +74,9 @@ namespace nmtools::runtime
         Type dtype = Type::UNKNOWN;
 
         if constexpr (!is_none_v<element_t>) {
-            dtype = to_value_v<dtype_t<element_t>>;
+            // promote bool -> uint8
+            using element_type = conditional_t<is_same_v<bool,element_t>,uint8_t,element_t>;
+            dtype = to_value_v<dtype_t<element_type>>;
         }
         /*********************************************************** */
 
