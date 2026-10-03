@@ -745,14 +745,14 @@ namespace nmtools
         nmtools_broadcastable_ndarray_method(maximum)
         nmtools_broadcastable_ndarray_method(minimum)
 
-        nmtools_ndarray_reduce(maximum)
-        nmtools_ndarray_reduce(minimum)
+        nmtools_ndarray_reduce_m(maximum)
+        nmtools_ndarray_reduce_m(minimum)
 
-        nmtools_ndarray_outer(maximum)
-        nmtools_ndarray_outer(minimum)
+        nmtools_ndarray_outer_m(maximum)
+        nmtools_ndarray_outer_m(minimum)
         
-        nmtools_ndarray_accumulate(maximum)
-        nmtools_ndarray_accumulate(minimum)
+        nmtools_ndarray_accumulate_m(maximum)
+        nmtools_ndarray_accumulate_m(minimum)
 
         nmtools_ndarray_method(max)
         nmtools_ndarray_method(min)

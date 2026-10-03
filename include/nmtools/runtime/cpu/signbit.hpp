@@ -50,7 +50,7 @@ namespace nmtools::runtime
             if (dtype == this->dtype_) {
                 // dim/shape & address are not hashed
                 auto input = ndarray(IndexType{1,1},dtype);
-                auto v = unwrap(view::signbit_int8(input.view(dtype)));
+                auto v = unwrap(view::signbit(input.view(dtype)));
                 auto tree = fn::get_computational_tree(v);
                 graph_ = rt::to_value(tree);
             }
@@ -75,7 +75,7 @@ namespace nmtools::runtime
         // TODO: default constructor
         auto array = ndarray(IndexType{},DType::UNKNOWN);
 
-        auto signbit = kernel::unary_t<view::signbit_int8_t>{};
+        auto signbit = kernel::unary_t<view::signbit_t>{};
 
         constexpr auto N = len_v<decltype(types)>;
         template_for<N>([&](auto i){
@@ -83,9 +83,9 @@ namespace nmtools::runtime
             if (dtype == input.dtype()) {
                 using namespace literals;
 
-                auto v = unwrap(view::signbit_int8(input.view(dtype)));
+                auto v = unwrap(view::signbit(input.view(dtype)));
 
-                auto rtype = type(v);
+                auto rtype  = uint8;
                 auto result = ndarray(shape(v),rtype);
 
                 auto ctx        = tilekit::Scalar;

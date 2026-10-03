@@ -59,25 +59,17 @@ namespace nmtools::utils::impl
 #include "nmtools/constants.hpp"
 namespace nmtools
 {
-    namespace fn
+    template <typename output_t=none_t, typename context_t=default_context_t<>
+        , typename left_t, typename right_t>
+    constexpr auto not_equal(const left_t& a, const right_t& b
+        , context_t&& context=context_t{}, output_t&& output=output_t{})
     {
-        struct not_equal
-        {
-            template <typename output_t=none_t, typename context_t=default_context_t<>,
-                typename left_t, typename right_t>
-            inline constexpr auto operator()(const left_t& a, const right_t& b,
-                context_t&& context=context_t{}, output_t&& output=output_t{}) const
-            {
-                auto not_equal = view::not_equal(a,b);
-                return eval(not_equal
-                    ,nmtools::forward<context_t>(context)
-                    ,nmtools::forward<output_t>(output)
-                );
-            } // operator()
-        }; // not_equal
-    } // namespace fn
-
-    constexpr inline auto not_equal = fn::not_equal{};
+        auto not_equal = view::not_equal(a,b);
+        return eval(not_equal
+            ,nmtools::forward<context_t>(context)
+            ,nmtools::forward<output_t>(output)
+        );
+    }
 } // namespace nmtools
 
 #endif // NMTOOLS_ARRAY_ARRAY_NOT_EQUAL_HPP

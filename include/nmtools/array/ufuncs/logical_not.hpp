@@ -61,25 +61,17 @@ namespace nmtools::utils::impl
 
 namespace nmtools
 {
-    namespace fn
+    template <typename output_t=none_t, typename context_t=default_context_t<>
+        , typename left_t>
+    constexpr auto logical_not(const left_t& a
+        , context_t&& context=context_t{}, output_t&& output=output_t{})
     {
-        struct logical_not
-        {
-            template <typename output_t=none_t, typename context_t=default_context_t<>,
-                typename left_t>
-            inline constexpr auto operator()(const left_t& a,
-                context_t&& context=context_t{}, output_t&& output=output_t{}) const
-            {
-                auto logical_not = view::logical_not(a);
-                return eval(logical_not
-                    ,nmtools::forward<context_t>(context)
-                    ,nmtools::forward<output_t>(output)
-                );
-            } // operator()
-        }; // logical_not
-    } // namespace fn
-
-    constexpr inline auto logical_not = fn::logical_not{};
+        auto logical_not = view::logical_not(a);
+        return eval(logical_not
+            ,nmtools::forward<context_t>(context)
+            ,nmtools::forward<output_t>(output)
+        );
+    }
 } // namespace nmtools
 
 #endif // NMTOOLS_ARRAY_ARRAY_LOGICAL_NOT_HPP

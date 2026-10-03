@@ -2,46 +2,6 @@
 #define NMTOOLS_RUNTIME_CPU_HPP
 
 #include "nmtools/runtime/context.hpp"
-#include "nmtools/runtime/cpu/add.hpp"
-#include "nmtools/runtime/cpu/multiply.hpp"
-#include "nmtools/runtime/cpu/subtract.hpp"
-#include "nmtools/runtime/cpu/divide.hpp"
-#include "nmtools/runtime/cpu/sum.hpp"
-#include "nmtools/runtime/cpu/prod.hpp"
-#include "nmtools/runtime/cpu/cos.hpp"
-#include "nmtools/runtime/cpu/cosh.hpp"
-#include "nmtools/runtime/cpu/sin.hpp"
-#include "nmtools/runtime/cpu/sinh.hpp"
-#include "nmtools/runtime/cpu/exp.hpp"
-#include "nmtools/runtime/cpu/exp2.hpp"
-#include "nmtools/runtime/cpu/expm1.hpp"
-#include "nmtools/runtime/cpu/fabs.hpp"
-#include "nmtools/runtime/cpu/floor.hpp"
-#include "nmtools/runtime/cpu/invert.hpp"
-#include "nmtools/runtime/cpu/isfinite.hpp"
-#include "nmtools/runtime/cpu/isinf.hpp"
-#include "nmtools/runtime/cpu/isnan.hpp"
-#include "nmtools/runtime/cpu/log.hpp"
-#include "nmtools/runtime/cpu/log1p.hpp"
-#include "nmtools/runtime/cpu/log2.hpp"
-#include "nmtools/runtime/cpu/log10.hpp"
-#include "nmtools/runtime/cpu/negative.hpp"
-#include "nmtools/runtime/cpu/reciprocal.hpp"
-#include "nmtools/runtime/cpu/rint.hpp"
-#include "nmtools/runtime/cpu/signbit.hpp"
-#include "nmtools/runtime/cpu/sqrt.hpp"
-#include "nmtools/runtime/cpu/square.hpp"
-#include "nmtools/runtime/cpu/tan.hpp"
-#include "nmtools/runtime/cpu/tanh.hpp"
-#include "nmtools/runtime/cpu/trunc.hpp"
-#include "nmtools/runtime/cpu/arccos.hpp"
-#include "nmtools/runtime/cpu/arccosh.hpp"
-#include "nmtools/runtime/cpu/arcsin.hpp"
-#include "nmtools/runtime/cpu/arcsinh.hpp"
-#include "nmtools/runtime/cpu/arctan.hpp"
-#include "nmtools/runtime/cpu/arctanh.hpp"
-#include "nmtools/runtime/cpu/cbrt.hpp"
-#include "nmtools/runtime/cpu/ceil.hpp"
 
 namespace nmtools::runtime
 {
@@ -112,6 +72,66 @@ namespace nmtools::runtime
 
 #ifdef NMTOOLS_RUNTIME_CPU_IMPLEMENTATION
 #include "nmtools/core/transform/gvn.hpp"
+#include "nmtools/runtime/cpu/add.hpp"
+#include "nmtools/runtime/cpu/multiply.hpp"
+#include "nmtools/runtime/cpu/subtract.hpp"
+#include "nmtools/runtime/cpu/divide.hpp"
+#include "nmtools/runtime/cpu/sum.hpp"
+#include "nmtools/runtime/cpu/prod.hpp"
+#include "nmtools/runtime/cpu/cos.hpp"
+#include "nmtools/runtime/cpu/cosh.hpp"
+#include "nmtools/runtime/cpu/sin.hpp"
+#include "nmtools/runtime/cpu/sinh.hpp"
+#include "nmtools/runtime/cpu/exp.hpp"
+#include "nmtools/runtime/cpu/exp2.hpp"
+#include "nmtools/runtime/cpu/expm1.hpp"
+#include "nmtools/runtime/cpu/fabs.hpp"
+#include "nmtools/runtime/cpu/floor.hpp"
+#include "nmtools/runtime/cpu/invert.hpp"
+#include "nmtools/runtime/cpu/isfinite.hpp"
+#include "nmtools/runtime/cpu/isinf.hpp"
+#include "nmtools/runtime/cpu/isnan.hpp"
+#include "nmtools/runtime/cpu/log.hpp"
+#include "nmtools/runtime/cpu/log1p.hpp"
+#include "nmtools/runtime/cpu/log2.hpp"
+#include "nmtools/runtime/cpu/log10.hpp"
+#include "nmtools/runtime/cpu/negative.hpp"
+#include "nmtools/runtime/cpu/reciprocal.hpp"
+#include "nmtools/runtime/cpu/rint.hpp"
+#include "nmtools/runtime/cpu/signbit.hpp"
+#include "nmtools/runtime/cpu/sqrt.hpp"
+#include "nmtools/runtime/cpu/square.hpp"
+#include "nmtools/runtime/cpu/tan.hpp"
+#include "nmtools/runtime/cpu/tanh.hpp"
+#include "nmtools/runtime/cpu/trunc.hpp"
+#include "nmtools/runtime/cpu/arccos.hpp"
+#include "nmtools/runtime/cpu/arccosh.hpp"
+#include "nmtools/runtime/cpu/arcsin.hpp"
+#include "nmtools/runtime/cpu/arcsinh.hpp"
+#include "nmtools/runtime/cpu/arctan.hpp"
+#include "nmtools/runtime/cpu/arctanh.hpp"
+#include "nmtools/runtime/cpu/cbrt.hpp"
+#include "nmtools/runtime/cpu/ceil.hpp"
+
+#include "nmtools/runtime/cpu/bitwise_and.hpp"
+#include "nmtools/runtime/cpu/bitwise_or.hpp"
+#include "nmtools/runtime/cpu/bitwise_xor.hpp"
+#include "nmtools/runtime/cpu/equal.hpp"
+#include "nmtools/runtime/cpu/greater_equal.hpp"
+#include "nmtools/runtime/cpu/greater.hpp"
+#include "nmtools/runtime/cpu/fmax.hpp"
+#include "nmtools/runtime/cpu/fmin.hpp"
+#include "nmtools/runtime/cpu/fmod.hpp"
+#include "nmtools/runtime/cpu/hypot.hpp"
+#include "nmtools/runtime/cpu/ldexp.hpp"
+#include "nmtools/runtime/cpu/less_equal.hpp"
+#include "nmtools/runtime/cpu/less.hpp"
+#include "nmtools/runtime/cpu/left_shift.hpp"
+#include "nmtools/runtime/cpu/right_shift.hpp"
+#include "nmtools/runtime/cpu/maximum.hpp"
+#include "nmtools/runtime/cpu/minimum.hpp"
+#include "nmtools/runtime/cpu/mod.hpp"
+#include "nmtools/runtime/cpu/power.hpp"
 
 namespace nmtools::runtime
 {
@@ -121,8 +141,29 @@ namespace nmtools::runtime
         append_functor<cpu_multiply>();
         append_functor<cpu_subtract>();
         append_functor<cpu_divide>();
+        append_functor<cpu_bitwise_and>();
+        append_functor<cpu_bitwise_or>();
+        append_functor<cpu_bitwise_xor>();
+        append_functor<cpu_equal>();
+        append_functor<cpu_greater_equal>();
+        append_functor<cpu_greater>();
+        append_functor<cpu_fmax>();
+        append_functor<cpu_fmin>();
+        append_functor<cpu_fmod>();
+        append_functor<cpu_hypot>();
+        append_functor<cpu_ldexp>();
+        append_functor<cpu_left_shift>();
+        append_functor<cpu_less_equal>();
+        append_functor<cpu_less>();
+        append_functor<cpu_right_shift>();
+        append_functor<cpu_maximum>();
+        append_functor<cpu_minimum>();
+        append_functor<cpu_mod>();
+        append_functor<cpu_power>();
+
         append_reduce_functor<cpu_sum>();
         append_reduce_functor<cpu_prod>();
+
         append_unary_functor<cpu_cos>();
         append_unary_functor<cpu_cosh>();
         append_unary_functor<cpu_sin>();

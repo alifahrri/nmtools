@@ -59,25 +59,12 @@ namespace nmtools::utils::impl
 #include "nmtools/constants.hpp"
 namespace nmtools
 {
-    namespace fn
+    template <typename output_t=none_t, typename context_t=default_context_t<>, typename left_t, typename right_t>
+    constexpr auto less(const left_t& a, const right_t& b, context_t&& context=context_t{}, output_t&& output=output_t{})
     {
-        struct less
-        {
-            template <typename output_t=none_t, typename context_t=default_context_t<>,
-                typename left_t, typename right_t>
-            inline constexpr auto operator()(const left_t& a, const right_t& b,
-                context_t&& context=context_t{}, output_t&& output=output_t{}) const
-            {
-                auto less = view::less(a,b);
-                return eval(less
-                    ,nmtools::forward<context_t>(context)
-                    ,nmtools::forward<output_t>(output)
-                );
-            } // operator()
-        }; // less
-    } // namespace fn
-
-    constexpr inline auto less = fn::less{};
-} // namespace nmtools
+        auto less = view::less(a,b);
+        return eval(less, nmtools::forward<context_t>(context), nmtools::forward<output_t>(output));
+    }
+} // nmtools
 
 #endif // NMTOOLS_ARRAY_ARRAY_LESS_HPP

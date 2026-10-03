@@ -17,23 +17,11 @@ namespace nmtools::view::fun
             return math::isfinite(t);
         } // operator()
     }; // isfinite
-
-    struct isfinite_int8
-    {
-        template <typename T>
-        nmtools_func_attribute
-        NMTOOLS_UFUNC_CONSTEXPR
-        auto operator()(const T& t) const
-        {
-            return static_cast<int8_t>(math::isfinite(t));
-        } // operator()
-    }; // isfinite_int8
 }
 
 namespace nmtools::view
 {
     using isfinite_t = fun::isfinite;
-    using isfinite_int8_t = fun::isfinite_int8;
 
     template <typename left_t>
     nmtools_func_attribute
@@ -42,14 +30,6 @@ namespace nmtools::view
     {
         return unary_ufunc(isfinite_t{},a);
     } // isfinite
-
-    template <typename left_t>
-    nmtools_func_attribute
-    NMTOOLS_UFUNC_CONSTEXPR
-    auto isfinite_int8(const left_t& a)
-    {
-        return unary_ufunc(isfinite_int8_t{},a);
-    } // isfinite_int8
 }
 
 #if NMTOOLS_HAS_STRING

@@ -67,7 +67,7 @@ namespace nmtools::view
     NMTOOLS_UFUNC_CONSTEXPR
     auto reduce_fmin(const left_t& a, const axis_t& axis, dtype_t dtype)
     {
-        return reduce_fmin(a,axis,dtype,None);
+        return view::reduce_fmin(a,axis,dtype,None);
     } // reduce_fmin
 
     // TODO: use default args, instead of overloads
@@ -75,7 +75,7 @@ namespace nmtools::view
     NMTOOLS_UFUNC_CONSTEXPR
     auto reduce_fmin(const left_t& a, const axis_t& axis)
     {
-        return reduce_fmin(a,axis,None,None);
+        return view::reduce_fmin(a,axis,None,None);
     } // reduce_fmin
 
     template <typename left_t, typename axis_t, typename dtype_t>
@@ -91,7 +91,7 @@ namespace nmtools::view
     NMTOOLS_UFUNC_CONSTEXPR
     auto accumulate_fmin(const left_t& a, const axis_t& axis)
     {
-        return accumulate_fmin(a,axis,None);
+        return view::accumulate_fmin(a,axis,None);
     } // accumulate_fmin
 
     template <typename left_t, typename right_t, typename dtype_t=none_t>
@@ -115,63 +115,153 @@ namespace nmtools::view
 
 namespace nmtools
 {
-    namespace fn
+    template <typename output_t=none_t, typename context_t=default_context_t<>,
+        typename left_t, typename right_t>
+    constexpr inline auto fmin(const left_t& a, const right_t& b,
+        context_t&& context=context_t{}, output_t&& output=output_t{})
     {
-        struct fmin
-        {
-            template <typename output_t=none_t, typename context_t=default_context_t<>,
-                typename left_t, typename right_t>
-            inline constexpr auto operator()(const left_t& a, const right_t& b,
-                context_t&& context=context_t{}, output_t&& output=output_t{}) const
-            {
-                auto fmin = view::fmin(a,b);
-                return eval(fmin
-                    ,nmtools::forward<context_t>(context)
-                    ,nmtools::forward<output_t>(output)
-                );
-            } // operator()
+        auto fmin = view::fmin(a,b);
+        return eval(fmin
+            ,nmtools::forward<context_t>(context)
+            ,nmtools::forward<output_t>(output)
+        );
+    } // fmin
 
-            template <typename output_t=none_t, typename context_t=default_context_t<>,
-                typename dtype_t=none_t, typename initial_t=none_t,
-                typename keepdims_t=meta::false_type, typename left_t, typename axis_t>
-            static constexpr auto reduce(const left_t& a, const axis_t& axis, dtype_t dtype=dtype_t{},
-                initial_t initial=initial_t{}, keepdims_t keepdims=keepdims_t{},
-                context_t&& context=context_t{}, output_t&& output=output_t{})
-            {
-                auto fmin = view::reduce_fmin(a,axis,dtype,initial,keepdims);
-                return eval(fmin
-                    ,nmtools::forward<context_t>(context)
-                    ,nmtools::forward<output_t>(output)
-                );
-            } // reduce
+    template <typename output_t=none_t, typename context_t=default_context_t<>,
+        typename left_t, typename right_t>
+    constexpr inline auto fmin(const left_t& a, const right_t& b, casting::same_kind_t,
+        context_t&& context=context_t{}, output_t&& output=output_t{})
+    {
+        auto fmin = view::fmin(a,b,casting::same_kind_t{});
+        return eval(fmin
+            ,nmtools::forward<context_t>(context)
+            ,nmtools::forward<output_t>(output)
+        );
+    } // fmin
 
-            template <typename output_t=none_t, typename context_t=default_context_t<>,
-                typename dtype_t=none_t, typename left_t, typename axis_t>
-            static constexpr auto accumulate(const left_t& a, const axis_t& axis, dtype_t dtype=dtype_t{},
-                context_t&& context=context_t{}, output_t&& output=output_t{})
-            {
-                auto fmin = view::accumulate_fmin(a,axis,dtype);
-                return eval(fmin
-                    ,nmtools::forward<context_t>(context)
-                    ,nmtools::forward<output_t>(output)
-                );
-            } // accumulate
+    template <typename output_t=none_t
+        , typename context_t=default_context_t<>
+        , typename dtype_t=none_t
+        , typename initial_t=none_t
+        , typename keepdims_t=meta::false_type
+        , typename left_t
+        , typename axis_t
+        , enable_if_t<is_none_v<dtype_t> || is_dtype_v<dtype_t>,int> = 0
+        , enable_if_t<is_none_v<initial_t> || is_num_v<initial_t>,int> = 0
+        , enable_if_t<is_none_v<keepdims_t> || is_num_v<keepdims_t>,int> = 0>
+    constexpr auto reduce_fmin(const left_t& a, const axis_t& axis, dtype_t dtype=dtype_t{}
+        , initial_t initial=initial_t{}, keepdims_t keepdims=keepdims_t{}
+        , context_t&& context=context_t{}, output_t&& output=output_t{})
+    {
+        auto fmin = view::reduce_fmin(a,axis,dtype,initial,keepdims);
+        return eval(fmin
+            , nmtools::forward<context_t>(context)
+            , nmtools::forward<output_t>(output)
+        );
+    } // reduce
 
-            template <typename output_t=none_t, typename context_t=default_context_t<>,
-                typename dtype_t=none_t, typename left_t, typename right_t>
-            static constexpr auto outer(const left_t& a, const right_t& b, dtype_t dtype=dtype_t{},
-                context_t&& context=context_t{}, output_t&& output=output_t{})
-            {
-                auto fmin = view::outer_fmin(a,b,dtype);
-                return eval(fmin
-                    ,nmtools::forward<context_t>(context)
-                    ,nmtools::forward<output_t>(output)
-                );
-            } // outer
-        }; // fmin
-    } // namespace fn
+    template <typename context_t
+        , typename left_t
+        , typename axis_t
+        , typename dtype_t
+        , typename initial_t
+        , enable_if_t<is_none_v<dtype_t> || is_dtype_v<dtype_t>,int> = 0
+        , enable_if_t<is_none_v<initial_t> || is_num_v<initial_t>,int> = 0
+        , enable_if_t<is_context_v<context_t> || is_context_ptr_v<context_t>,int> = 0>
+    constexpr auto reduce_fmin(const left_t& a, const axis_t& axis, dtype_t dtype, initial_t initial
+        , context_t&& context)
+    {
+        auto fmin = view::reduce_fmin(a,axis,dtype,initial);
+        return eval(fmin
+            , nmtools::forward<context_t>(context)
+        );
+    } // reduce
 
-    constexpr inline auto fmin = fn::fmin{};
-} // nmtools
+    template <typename context_t
+        , typename left_t
+        , typename axis_t
+        , typename dtype_t
+        , enable_if_t<is_none_v<dtype_t> || is_dtype_v<dtype_t>,int> = 0
+        , enable_if_t<is_context_v<context_t> || is_context_ptr_v<context_t>,int> = 0>
+    constexpr auto reduce_fmin(const left_t& a, const axis_t& axis, dtype_t dtype
+        , context_t&& context)
+    {
+        auto fmin = view::reduce_fmin(a,axis,dtype);
+        return eval(fmin
+            , nmtools::forward<context_t>(context)
+        );
+    } // reduce
+
+    template <typename context_t
+        , typename left_t
+        , typename axis_t
+        , enable_if_t<is_context_v<context_t> || is_context_ptr_v<context_t>,int> = 0>
+    constexpr auto reduce_fmin(const left_t& a, const axis_t& axis
+        , context_t&& context)
+    {
+        auto fmin = view::reduce_fmin(a,axis);
+        return eval(fmin
+            , nmtools::forward<context_t>(context)
+        );
+    } // reduce
+
+    template <typename output_t=none_t
+        , typename context_t=default_context_t<>
+        , typename dtype_t=none_t
+        , typename left_t
+        , typename axis_t
+        , enable_if_t<is_none_v<dtype_t> || is_dtype_v<dtype_t>,int> = 0>
+    constexpr auto accumulate_fmin(const left_t& a, const axis_t& axis, dtype_t dtype=dtype_t{}
+        , context_t&& context=context_t{}, output_t&& output=output_t{})
+    {
+        auto fmin = view::accumulate_fmin(a,axis,dtype);
+        return eval(fmin
+            ,nmtools::forward<context_t>(context)
+            ,nmtools::forward<output_t>(output)
+        );
+    } // accumulate_fmin
+
+    template <typename context_t
+        , typename left_t
+        , typename axis_t
+        , enable_if_t<is_context_v<context_t> || is_context_ptr_v<context_t>,int> = 0>
+    constexpr auto accumulate_fmin(const left_t& a, const axis_t& axis
+        , context_t&& context)
+    {
+        auto fmin = view::accumulate_fmin(a,axis);
+        return eval(fmin
+            , nmtools::forward<context_t>(context)
+        );
+    } // accumulate_fmin
+
+    template <typename output_t=none_t
+        , typename context_t=default_context_t<>
+        , typename dtype_t=none_t
+        , typename left_t
+        , typename right_t
+        , enable_if_t<is_none_v<dtype_t> || is_dtype_v<dtype_t>,int> = 0>
+    constexpr auto outer_fmin(const left_t& a, const right_t& b, dtype_t dtype=dtype_t{},
+        context_t&& context=context_t{}, output_t&& output=output_t{})
+    {
+        auto fmin = view::outer_fmin(a,b,dtype);
+        return eval(fmin
+            ,nmtools::forward<context_t>(context)
+            ,nmtools::forward<output_t>(output)
+        );
+    } // outer_fmin
+
+    template <typename context_t
+        , typename left_t
+        , typename right_t
+        , enable_if_t<is_context_v<context_t> || is_context_ptr_v<context_t>,int> = 0>
+    constexpr auto outer_fmin(const left_t& a, const right_t& b
+        , context_t&& context)
+    {
+        auto fmin = view::outer_fmin(a,b);
+        return eval(fmin
+            , nmtools::forward<context_t>(context)
+        );
+    } // outer_fmin
+} // namespace nmtools
 
 #endif // NMTOOLS_ARRAY_ARRAY_FMIN_HPP
