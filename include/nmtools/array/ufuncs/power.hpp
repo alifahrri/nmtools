@@ -141,7 +141,7 @@ namespace nmtools::view
     NMTOOLS_UFUNC_CONSTEXPR
     auto reduce_power(const left_t& a, const axis_t& axis)
     {
-        return reduce_power(a,axis,None);
+        return view::reduce_power(a,axis,None);
     } // reduce_power
 
     template <typename left_t, typename axis_t, typename dtype_t>
@@ -157,7 +157,7 @@ namespace nmtools::view
     NMTOOLS_UFUNC_CONSTEXPR
     auto accumulate_power(const left_t& a, const axis_t& axis)
     {
-        return accumulate_power(a,axis,None);
+        return view::accumulate_power(a,axis,None);
     } // accumulate_power
 
     template <typename left_t, typename right_t, typename dtype_t=none_t>
