@@ -73,14 +73,14 @@ namespace nmtools::view
     template <typename left_t, typename axis_t, typename dtype_t>
     constexpr auto reduce_right_shift(const left_t& a, const axis_t& axis, dtype_t dtype)
     {
-        return reduce_right_shift(a,axis,dtype,None);
+        return view::reduce_right_shift(a,axis,dtype,None);
     } // reduce_right_shift
 
     // TODO: use default args instead of overloads!
     template <typename left_t, typename axis_t>
     constexpr auto reduce_right_shift(const left_t& a, const axis_t& axis)
     {
-        return reduce_right_shift(a,axis,None,None);
+        return view::reduce_right_shift(a,axis,None,None);
     } // reduce_right_shift
 
     template <typename left_t, typename axis_t, typename dtype_t>
@@ -94,7 +94,7 @@ namespace nmtools::view
     template <typename left_t, typename axis_t>
     auto accumulate_right_shift(const left_t& a, const axis_t& axis)
     {
-        return accumulate_right_shift(a,axis,None);
+        return view::accumulate_right_shift(a,axis,None);
     } // accumulate_right_shift
 
     template <typename left_t, typename right_t, typename dtype_t=none_t>
