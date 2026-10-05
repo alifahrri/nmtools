@@ -1,6 +1,7 @@
 #ifndef NMTOOLS_ARRAY_VIEW_UFUNCS_GREATER_EQUAL_HPP
 #define NMTOOLS_ARRAY_VIEW_UFUNCS_GREATER_EQUAL_HPP
 
+#include "nmtools/utility/to_string/to_string.hpp"
 #include "nmtools/core/ufunc.hpp"
 
 namespace nmtools::view::fun
@@ -58,20 +59,12 @@ namespace nmtools::utils::impl
 #include "nmtools/constants.hpp"
 namespace nmtools
 {
-    namespace fn
+    template <typename output_t=none_t, typename context_t=default_context_t<>, typename left_t, typename right_t>
+    constexpr auto greater_equal(const left_t& a, const right_t& b, context_t&& context=context_t{}, output_t&& output=output_t{})
     {
-        struct greater_equal
-        {
-            template <typename output_t=none_t, typename context_t=default_context_t<>, typename left_t, typename right_t>
-            inline constexpr auto operator()(const left_t& a, const right_t& b, context_t&& context=context_t{}, output_t&& output=output_t{}) const
-            {
-                auto greater_equal = view::greater_equal(a,b);
-                return eval(greater_equal, nmtools::forward<context_t>(context), nmtools::forward<output_t>(output));
-            } // operator()
-        }; // greater_equal
-    } // namespace fn
-
-    constexpr inline auto greater_equal = fn::greater_equal{};
+        auto greater_equal = view::greater_equal(a,b);
+        return eval(greater_equal, nmtools::forward<context_t>(context), nmtools::forward<output_t>(output));
+    }
 } // nmtools
 
 #endif // NMTOOLS_ARRAY_ARRAY_GREATER_EQUAL_HPP

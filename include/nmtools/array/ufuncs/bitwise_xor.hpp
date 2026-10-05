@@ -60,25 +60,17 @@ namespace nmtools::utils::impl
 
 namespace nmtools
 {
-    namespace fn
+    template <typename output_t=none_t, typename context_t=default_context_t<>,
+        typename left_t, typename right_t>
+    constexpr auto bitwise_xor(const left_t& a, const right_t& b,
+        context_t&& context=context_t{}, output_t&& output=output_t{})
     {
-        struct bitwise_xor
-        {
-            template <typename output_t=none_t, typename context_t=default_context_t<>,
-                typename left_t, typename right_t>
-            inline constexpr auto operator()(const left_t& a, const right_t& b,
-                context_t&& context=context_t{}, output_t&& output=output_t{}) const
-            {
-                auto bitwise_xor = view::bitwise_xor(a,b);
-                return eval(bitwise_xor
-                    ,nmtools::forward<context_t>(context)
-                    ,nmtools::forward<output_t>(output)
-                );
-            } // operator()
-        }; // bitwise_xor
-    } // namespace fn
-
-    constexpr inline auto bitwise_xor = fn::bitwise_xor{};
+        auto bitwise_xor = view::bitwise_xor(a,b);
+        return eval(bitwise_xor
+            ,nmtools::forward<context_t>(context)
+            ,nmtools::forward<output_t>(output)
+        );
+    }
 } // namespace nmtools
 
 #endif // NMTOOLS_ARRAY_ARRAY_BITWISE_XOR_HPP

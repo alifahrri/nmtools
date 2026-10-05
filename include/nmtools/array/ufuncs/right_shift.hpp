@@ -73,14 +73,14 @@ namespace nmtools::view
     template <typename left_t, typename axis_t, typename dtype_t>
     constexpr auto reduce_right_shift(const left_t& a, const axis_t& axis, dtype_t dtype)
     {
-        return reduce_right_shift(a,axis,dtype,None);
+        return view::reduce_right_shift(a,axis,dtype,None);
     } // reduce_right_shift
 
     // TODO: use default args instead of overloads!
     template <typename left_t, typename axis_t>
     constexpr auto reduce_right_shift(const left_t& a, const axis_t& axis)
     {
-        return reduce_right_shift(a,axis,None,None);
+        return view::reduce_right_shift(a,axis,None,None);
     } // reduce_right_shift
 
     template <typename left_t, typename axis_t, typename dtype_t>
@@ -94,7 +94,7 @@ namespace nmtools::view
     template <typename left_t, typename axis_t>
     auto accumulate_right_shift(const left_t& a, const axis_t& axis)
     {
-        return accumulate_right_shift(a,axis,None);
+        return view::accumulate_right_shift(a,axis,None);
     } // accumulate_right_shift
 
     template <typename left_t, typename right_t, typename dtype_t=none_t>
@@ -117,63 +117,141 @@ namespace nmtools::view
 
 namespace nmtools
 {
-    namespace fn
+    template <typename output_t=none_t, typename context_t=default_context_t<>,
+        typename left_t, typename right_t>
+    constexpr inline auto right_shift(const left_t& a, const right_t& b,
+        context_t&& context=context_t{}, output_t&& output=output_t{})
     {
-        struct right_shift
-        {
-            template <typename output_t=none_t, typename context_t=default_context_t<>,
-                typename left_t, typename right_t>
-            inline constexpr auto operator()(const left_t& a, const right_t& b,
-                context_t&& context=context_t{}, output_t&& output=output_t{}) const
-            {
-                auto right_shift = view::right_shift(a,b);
-                return eval(right_shift
-                    ,nmtools::forward<context_t>(context)
-                    ,nmtools::forward<output_t>(output)
-                );
-            } // operator()
+        auto right_shift = view::right_shift(a,b);
+        return eval(right_shift
+            ,nmtools::forward<context_t>(context)
+            ,nmtools::forward<output_t>(output)
+        );
+    } // right_shift
 
-            template <typename output_t=none_t, typename context_t=default_context_t<>,
-                typename dtype_t=none_t, typename initial_t=none_t,
-                typename keepdims_t=meta::false_type, typename left_t, typename axis_t>
-            static constexpr auto reduce(const left_t& a, const axis_t& axis, dtype_t dtype=dtype_t{},
-                initial_t initial=initial_t{}, keepdims_t keepdims=keepdims_t{},
-                context_t&& context=context_t{}, output_t&& output=output_t{})
-            {
-                auto right_shift = view::reduce_right_shift(a,axis,dtype,initial,keepdims);
-                return eval(right_shift
-                    ,nmtools::forward<context_t>(context)
-                    ,nmtools::forward<output_t>(output)
-                );
-            } // reduce
+    template <typename output_t=none_t
+        , typename context_t=default_context_t<>
+        , typename dtype_t=none_t
+        , typename initial_t=none_t
+        , typename keepdims_t=meta::false_type
+        , typename left_t
+        , typename axis_t
+        , enable_if_t<is_none_v<dtype_t> || is_dtype_v<dtype_t>,int> = 0
+        , enable_if_t<is_none_v<initial_t> || is_num_v<initial_t>,int> = 0
+        , enable_if_t<is_none_v<keepdims_t> || is_num_v<keepdims_t>,int> = 0>
+    constexpr auto reduce_right_shift(const left_t& a, const axis_t& axis, dtype_t dtype=dtype_t{}
+        , initial_t initial=initial_t{}, keepdims_t keepdims=keepdims_t{}
+        , context_t&& context=context_t{}, output_t&& output=output_t{})
+    {
+        auto right_shift = view::reduce_right_shift(a,axis,dtype,initial,keepdims);
+        return eval(right_shift
+            , nmtools::forward<context_t>(context)
+            , nmtools::forward<output_t>(output)
+        );
+    } // reduce_right_shift
 
-            template <typename output_t=none_t, typename context_t=default_context_t<>,
-                typename dtype_t=none_t, typename left_t, typename axis_t>
-            static constexpr auto accumulate(const left_t& a, const axis_t& axis, dtype_t dtype=dtype_t{},
-                context_t&& context=context_t{}, output_t&& output=output_t{})
-            {
-                auto right_shift = view::accumulate_right_shift(a,axis,dtype);
-                return eval(right_shift
-                    ,nmtools::forward<context_t>(context)
-                    ,nmtools::forward<output_t>(output)
-                );
-            } // accumulate
+    template <typename context_t
+        , typename left_t
+        , typename axis_t
+        , typename dtype_t
+        , typename initial_t
+        , enable_if_t<is_none_v<dtype_t> || is_dtype_v<dtype_t>,int> = 0
+        , enable_if_t<is_none_v<initial_t> || is_num_v<initial_t>,int> = 0
+        , enable_if_t<is_context_v<context_t> || is_context_ptr_v<context_t>,int> = 0>
+    constexpr auto reduce_right_shift(const left_t& a, const axis_t& axis, dtype_t dtype, initial_t initial
+        , context_t&& context)
+    {
+        auto right_shift = view::reduce_right_shift(a,axis,dtype,initial);
+        return eval(right_shift
+            , nmtools::forward<context_t>(context)
+        );
+    } // reduce_right_shift
 
-            template <typename output_t=none_t, typename context_t=default_context_t<>,
-                typename dtype_t=none_t, typename left_t, typename right_t>
-            static constexpr auto outer(const left_t& a, const right_t& b, dtype_t dtype=dtype_t{},
-                context_t&& context=context_t{}, output_t&& output=output_t{})
-            {
-                auto right_shift = view::outer_right_shift(a,b,dtype);
-                return eval(right_shift
-                    ,nmtools::forward<context_t>(context)
-                    ,nmtools::forward<output_t>(output)
-                );
-            } // outer
-        }; // right_shift
-    } // namespace fn
+    template <typename context_t
+        , typename left_t
+        , typename axis_t
+        , typename dtype_t
+        , enable_if_t<is_none_v<dtype_t> || is_dtype_v<dtype_t>,int> = 0
+        , enable_if_t<is_context_v<context_t> || is_context_ptr_v<context_t>,int> = 0>
+    constexpr auto reduce_right_shift(const left_t& a, const axis_t& axis, dtype_t dtype
+        , context_t&& context)
+    {
+        auto right_shift = view::reduce_right_shift(a,axis,dtype);
+        return eval(right_shift
+            , nmtools::forward<context_t>(context)
+        );
+    } // reduce_right_shift
 
-    constexpr inline auto right_shift = fn::right_shift{};
-} // namespace nmtools
+    template <typename context_t
+        , typename left_t
+        , typename axis_t
+        , enable_if_t<is_context_v<context_t> || is_context_ptr_v<context_t>,int> = 0>
+    constexpr auto reduce_right_shift(const left_t& a, const axis_t& axis
+        , context_t&& context)
+    {
+        auto right_shift = view::reduce_right_shift(a,axis);
+        return eval(right_shift
+            , nmtools::forward<context_t>(context)
+        );
+    } // reduce_right_shift
+
+    template <typename output_t=none_t
+        , typename context_t=default_context_t<>
+        , typename dtype_t=none_t
+        , typename left_t
+        , typename axis_t
+        , enable_if_t<is_none_v<dtype_t> || is_dtype_v<dtype_t>,int> = 0>
+    constexpr auto accumulate_right_shift(const left_t& a, const axis_t& axis, dtype_t dtype=dtype_t{}
+        , context_t&& context=context_t{}, output_t&& output=output_t{})
+    {
+        auto right_shift = view::accumulate_right_shift(a,axis,dtype);
+        return eval(right_shift
+            ,nmtools::forward<context_t>(context)
+            ,nmtools::forward<output_t>(output)
+        );
+    } // accumulate_right_shift
+
+    template <typename context_t
+        , typename left_t
+        , typename axis_t
+        , enable_if_t<is_context_v<context_t> || is_context_ptr_v<context_t>,int> = 0>
+    constexpr auto accumulate_right_shift(const left_t& a, const axis_t& axis
+        , context_t&& context)
+    {
+        auto right_shift = view::accumulate_right_shift(a,axis);
+        return eval(right_shift
+            , nmtools::forward<context_t>(context)
+        );
+    } // accumulate_right_shift
+
+    template <typename output_t=none_t
+        , typename context_t=default_context_t<>
+        , typename dtype_t=none_t
+        , typename left_t
+        , typename right_t
+        , enable_if_t<is_none_v<dtype_t> || is_dtype_v<dtype_t>,int> = 0>
+    constexpr auto outer_right_shift(const left_t& a, const right_t& b, dtype_t dtype=dtype_t{},
+        context_t&& context=context_t{}, output_t&& output=output_t{})
+    {
+        auto right_shift = view::outer_right_shift(a,b,dtype);
+        return eval(right_shift
+            ,nmtools::forward<context_t>(context)
+            ,nmtools::forward<output_t>(output)
+        );
+    } // outer_right_shift
+
+    template <typename context_t
+        , typename left_t
+        , typename right_t
+        , enable_if_t<is_context_v<context_t> || is_context_ptr_v<context_t>,int> = 0>
+    constexpr auto outer_right_shift(const left_t& a, const right_t& b
+        , context_t&& context)
+    {
+        auto right_shift = view::outer_right_shift(a,b);
+        return eval(right_shift
+            , nmtools::forward<context_t>(context)
+        );
+    } // outer_right_shift
+} // nmtools
 
 #endif // NMTOOLS_ARRAY_ARRAY_RIGHT_SHIFT_HPP

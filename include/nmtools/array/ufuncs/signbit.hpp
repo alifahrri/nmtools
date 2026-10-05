@@ -17,23 +17,11 @@ namespace nmtools::view::fun
             return math::signbit(t);
         } // operator()
     }; // signbit
-
-    struct signbit_int8
-    {
-        template <typename T>
-        nmtools_func_attribute
-        NMTOOLS_UFUNC_CONSTEXPR
-        auto operator()(const T& t) const
-        {
-            return static_cast<int8_t>(math::signbit(t));
-        } // operator()
-    }; // signbit_int8
 }
 
 namespace nmtools::view
 {
     using signbit_t = fun::signbit;
-    using signbit_int8_t = fun::signbit_int8;
 
     template <typename left_t>
     nmtools_func_attribute
@@ -42,14 +30,6 @@ namespace nmtools::view
     {
         return unary_ufunc(signbit_t{},a);
     } // signbit
-
-    template <typename left_t>
-    nmtools_func_attribute
-    NMTOOLS_UFUNC_CONSTEXPR
-    auto signbit_int8(const left_t& a)
-    {
-        return unary_ufunc(signbit_int8_t{},a);
-    } // signbit_int8
 }
 
 #if NMTOOLS_HAS_STRING

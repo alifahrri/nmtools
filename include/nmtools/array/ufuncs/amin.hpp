@@ -25,7 +25,7 @@ namespace nmtools::view
     template <typename array_t, typename axis_t=none_t, typename dtype_t=none_t, typename initial_t=none_t, typename keepdims_t=meta::false_type>
     constexpr auto amin(const array_t& a, const axis_t& axis=None, dtype_t dtype=dtype_t{}, initial_t initial=initial_t{}, keepdims_t keepdims=False)
     {
-        return reduce_minimum(a,axis,dtype,initial,keepdims);
+        return view::reduce_minimum(a,axis,dtype,initial,keepdims);
     } // amin
 } // namespace nmtools::view
 
