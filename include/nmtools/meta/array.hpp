@@ -27,7 +27,6 @@
 #include "nmtools/meta/bits/array/bounded_num_edges.hpp"
 #include "nmtools/meta/bits/array/bounded_num_nodes.hpp"
 #include "nmtools/meta/bits/array/bounded_size.hpp"
-#include "nmtools/meta/bits/array/contiguous_axis.hpp"
 #include "nmtools/meta/bits/array/resize_dim.hpp"
 #include "nmtools/meta/bits/array/resize_size.hpp"
 #include "nmtools/meta/bits/array/resize_shape.hpp"

@@ -34,4 +34,9 @@ namespace nmtools::meta
     inline constexpr bool has_shape_v = has_shape<T>::value;
 } // namespace nmtools::meta
 
+namespace nmtools
+{
+    using meta::has_shape_v;
+}
+
 #endif // NMTOOLS_META_BITS_TRAITS_HAS_SHAPE_HPP

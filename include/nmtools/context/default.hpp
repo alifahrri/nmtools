@@ -69,10 +69,10 @@ namespace nmtools
 
             using result_t = conditional_t<object_enable
                 , object_t<buffer_t,shape_t,resolve_stride_type_t,layout_t,default_context_t,broadcast_enable>
-                , ndarray_t<buffer_t,shape_t,resolve_stride_type_t,layout_t>
+                , ndarray_t<buffer_t,shape_t,none_t>
             >;
 
-            auto result = result_t {};
+            auto result = result_t{};
             return result;
         }
 
@@ -83,10 +83,10 @@ namespace nmtools
 
             using result_t = conditional_t<object_enable
                 , object_t<buffer_t,shape_t,resolve_stride_type_t,layout_t,default_context_t,broadcast_enable>
-                , ndarray_t<buffer_t,shape_t,resolve_stride_type_t,layout_t>
+                , ndarray_t<buffer_t,shape_t,none_t>
             >;
 
-            auto result = result_t {};
+            auto result = result_t{};
             if constexpr (!is_constant_index_array_v<shape_t>) {
                 result.resize(shape);
             }

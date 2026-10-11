@@ -19,5 +19,4 @@
 #include "nmtools/meta/bits/array/remove_nested_array_dim.hpp"
 #include "nmtools/meta/bits/array/remove_all_nested_array_dim.hpp"
 #include "nmtools/meta/bits/array/resize_bounded_size.hpp"
-#include "nmtools/meta/bits/array/contiguous_axis.hpp"
 #include "nmtools/meta/bits/array/resize_bounded_dim.hpp"
