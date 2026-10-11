@@ -91,6 +91,13 @@ namespace nmtools
             , strides_(base_type::template compute_strides<stride_type>(shape_))
             , offset_ (shape_,strides_)
         {}
+
+        template <typename indices_t>
+        nmtools_func_attribute
+        constexpr decltype(auto) offset(const indices_t& indices) const
+        {
+            return offset_(indices);
+        } // offset
     };
 
     template <typename data_t, typename shape_t, typename dim_t>

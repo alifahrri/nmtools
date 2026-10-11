@@ -490,6 +490,12 @@ namespace nmtools
             return data_.data();
         }
 
+        template <typename indices_t>
+        constexpr decltype(auto) offset(const indices_t& indices) const
+        {
+            return offset_(indices);
+        } // offset
+
         template <typename size_type, typename...size_types>
         constexpr auto resize([[maybe_unused]] const size_type& size, const size_types&...sizes)
             -> enable_if_t<

@@ -1732,18 +1732,16 @@ namespace nmtools::meta
     template <
           typename buffer_t
         , typename shape_buffer_t
-        , template <typename...>typename stride_buffer_t
-        , template <typename...>typename offset_compute_t>
+        , typename stride_buffer_t>
     struct layout_kind<
-        ndarray_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t>
+        ndarray_t<buffer_t,shape_buffer_t,stride_buffer_t>
     > {
-        using array_type  = ndarray_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t>;
-        using offset_type = typename array_type::offset_type;
+        using array_type  = ndarray_t<buffer_t,shape_buffer_t,stride_buffer_t>;
+        // derived strides (none_t) are always row major
+        // explicit strides are values, layout cannot be deduced at compile time
         static constexpr auto value = [](){
-            if constexpr (is_row_major_offset_v<offset_type>) {
+            if constexpr (is_none_v<stride_buffer_t>) {
                 return functional::Layout::RowMajor;
-            } else if constexpr (is_column_major_offset_v<offset_type>) {
-                return functional::Layout::ColMajor;
             } else {
                 return error::LAYOUT_KIND_UNSUPPORTED<array_type>{};
             }
