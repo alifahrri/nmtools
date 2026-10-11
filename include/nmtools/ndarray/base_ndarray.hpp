@@ -175,23 +175,15 @@ namespace nmtools
         }
 
         template <typename...size_types>
-        constexpr decltype(auto) offset(const size_types&...indices) const
-        {
-            auto indices_ = index::pack_indices(indices...);
-            auto offset   = self()->offset_(indices_);
-            return offset;
-        }
-
-        template <typename...size_types>
         constexpr decltype(auto) operator()(const size_types&...indices)
         {
-            return nmtools::at(self()->data_,offset(indices...));
+            return nmtools::at(self()->data_,self()->offset(index::pack_indices(indices...)));
         } // operator()
 
         template <typename...size_types>
         constexpr decltype(auto) operator()(const size_types&...indices) const
         {
-            return nmtools::at(self()->data_,offset(indices...));
+            return nmtools::at(self()->data_,self()->offset(index::pack_indices(indices...)));
         } // operator()
     }; // base_ndarray_t
 
