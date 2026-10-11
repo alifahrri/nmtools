@@ -91,6 +91,13 @@ namespace nmtools
             , strides_(base_type::template compute_strides<stride_type>(shape_))
             , offset_ (shape_,strides_)
         {}
+
+        template <typename indices_t>
+        nmtools_func_attribute
+        constexpr decltype(auto) offset(const indices_t& indices) const
+        {
+            return offset_(indices);
+        } // offset
     };
 
     template <typename data_t, typename shape_t, typename dim_t>
@@ -400,22 +407,6 @@ namespace nmtools::meta
         }();
     }; // is_index_array
 
-    template <typename data_t, typename shape_t, typename dim_t>
-    struct contiguous_axis<
-        device_array<data_t,shape_t,dim_t>
-    > {
-        using array_type  = device_array<data_t,shape_t,dim_t>;
-        using offset_type = typename array_type::offset_type;
-        static constexpr auto value = [](){
-            if constexpr (is_row_major_offset_v<offset_type>) {
-                return -1;
-            } else if constexpr (is_column_major_offset_v<offset_type>) {
-                return 0;
-            } else {
-                return error::CONTIGUOUS_AXIS_UNSUPPORTED<array_type>{};
-            }
-        }();
-    };
 } // namespace nmtools::meta
 
 #undef NMTOOLS_KERNEL_MAX_DIM_

@@ -490,6 +490,12 @@ namespace nmtools
             return data_.data();
         }
 
+        template <typename indices_t>
+        constexpr decltype(auto) offset(const indices_t& indices) const
+        {
+            return offset_(indices);
+        } // offset
+
         template <typename size_type, typename...size_types>
         constexpr auto resize([[maybe_unused]] const size_type& size, const size_types&...sizes)
             -> enable_if_t<
@@ -1149,28 +1155,6 @@ namespace nmtools::meta
         }();
     }; // is_index_array
 
-    template <
-          typename buffer_t
-        , typename shape_buffer_t
-        , template <typename...>typename stride_buffer_t
-        , template <typename...>typename offset_compute_t
-        , typename context_t
-        , auto broadcast_enable>
-    struct contiguous_axis<
-        object_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t,context_t,broadcast_enable>
-    > {
-        using array_type  = object_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t,context_t,broadcast_enable>;
-        using offset_type = typename array_type::offset_type;
-        static constexpr auto value = [](){
-            if constexpr (is_row_major_offset_v<offset_type>) {
-                return -1;
-            } else if constexpr (is_column_major_offset_v<offset_type>) {
-                return 0;
-            } else {
-                return error::CONTIGUOUS_AXIS_UNSUPPORTED<array_type>{};
-            }
-        }();
-    };
 } // namespace nmtools::meta
 
 #endif // NMTOOLS_NDARRAY_ARRAY_HPP

@@ -52,6 +52,12 @@ namespace nmtools
         device_array(const device_array& other)
             : device_array(other.accessor_,other.shape_,other.dim_)
         {}
+
+        template <typename indices_t>
+        constexpr decltype(auto) offset(const indices_t& indices) const
+        {
+            return offset_(indices);
+        } // offset
     };
 
     template <typename T, typename shape_t, typename dim_t>
@@ -88,6 +94,12 @@ namespace nmtools
             , strides_(base_type::template compute_strides<stride_type>(shape_))
             , offset_ (shape_,strides_)
         {}
+
+        template <typename indices_t>
+        constexpr decltype(auto) offset(const indices_t& indices) const
+        {
+            return offset_(indices);
+        } // offset
 
         template <typename...access_args_t>
         auto accessor(::sycl::handler& cgh, access_args_t...access_args)
