@@ -7,6 +7,7 @@ Cheatsheet for development build and tests.
     - [Build Unit Tests](#build-unit-tests)
     - [Configuring the tests](#configuring-the-tests)
     - [Run Unit Tests](#run-unit-tests)
+    - [CMake Policy Minimum Version](#cmake-policy-minimum-version)
   - [Build \& Test `web-wasm`](#build--test-web-wasm)
   - [Build \& Test `sycl` OpenMP](#build--test-sycl-openmp)
   - [Build \& Test `sycl` OpenCL](#build--test-sycl-opencl)
@@ -77,6 +78,30 @@ clear && cmake -j16
 After building the tests, run unit tests:
 ```
 ctest
+```
+
+### CMake Policy Minimum Version
+
+If CMake fails with the following error, add `-DCMAKE_POLICY_VERSION_MINIMUM=3.5` or update `cmake_minimum_required(VERSION 3.5)`:
+
+```text
+CMake Error at CMakeLists.txt:1 (cmake_minimum_required):
+  Compatibility with CMake < 3.5 has been removed from CMake.
+
+  Update the VERSION argument <min> value.  Or, use the <min>...<max> syntax
+  to tell CMake that the project requires at least <min> but has been updated
+  to work with policies introduced by <max> only.
+
+  Or, add -DCMAKE_POLICY_VERSION_MINIMUM=3.5 to try configuring anyway.
+```
+
+Example:
+
+```bash
+mkdir -p build/gcc
+cd build/gcc
+cmake -DCMAKE_POLICY_VERSION_MINIMUM=3.5 ../..
+make -j8
 ```
 
 ## Build & Test `web-wasm`
