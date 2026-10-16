@@ -452,14 +452,15 @@ docker exec -it clang-repl zsh
 ```
 
 ## Setup `distcc`
-Build distcc server:
+Build distcc server (base defaults to Ubuntu 26.04, gcc/clang match this machine):
 ```
-docker build --build-arg ubuntu_base=22.04 -t distcc-server -f docker/distcc.dockerfile .
+docker build -t distcc-server -f docker/distcc.dockerfile .
 ```
 Run distcc server (from your build server):
 ```
-docker run -d -p 3632:3632 -p 5201:5201 --name distcc-server1 distcc-server --jobs 24
+docker run -d -p 3632:3632 -p 5201:5201 --name distcc-server1 distcc-server --jobs 24 --allow 172.17.0.0/16
 ```
+Note: `--allow` is required, otherwise `distccd` refuses every job. The net above covers Docker's bridge; widen it for LAN clients.
 From client machine:
 ```
 mkdir -p build/distcc-clang
@@ -474,6 +475,7 @@ export DISTCC_PAUSE_TIME_MSEC=10
 export DISTCC_HOSTS="192.168.1.11/24,lzo localhost/32,lzo"
 clear && make -j56 VERBOSE=1 all
 ```
+Note: the literal `localhost` token compiles locally without contacting any `distccd`; use `127.0.0.1` if you want jobs on the same machine to go through the server container.
 
 ## Build with devcontainer
 Build with devcontainer in terminal, useful when trying some version of environment with specific version of compiler.

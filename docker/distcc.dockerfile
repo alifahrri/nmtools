@@ -1,9 +1,9 @@
 # Or your preferred base image
-ARG ubuntu_base=24.10
+ARG ubuntu_base=26.04
 FROM ubuntu:${ubuntu_base} AS base
 
 RUN apt-get update && apt-get install -y --no-install-recommends build-essential wget iperf3 git \
-  gcc make python3 python3-dev python3-setuptools autoconf autotools-dev automake pkg-config libpopt-dev clang
+  gcc g++ make python3 python3-dev python3-setuptools autoconf autotools-dev automake pkg-config libpopt-dev clang
 
 RUN apt install -y --reinstall ca-certificates
 
@@ -15,7 +15,7 @@ WORKDIR /opt/
 
 RUN git clone https://github.com/distcc/distcc.git \
   && cd distcc \
-  && ./autogen.sh && ./configure \
+  && ./autogen.sh && ./configure --disable-Werror \
   && make -j `nproc` \
   && make install \
   && update-distcc-symlinks
