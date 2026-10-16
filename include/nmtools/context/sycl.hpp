@@ -30,7 +30,6 @@ namespace nmtools
         using accessor_type = ::sycl::accessor<T,accessor_args_t...>;
         using buffer_type = T*;
         using stride_type = resolve_stride_type_t<shape_type>;
-        using offset_type = row_major_offset_t<shape_type,stride_type>;
         using base_type   = base_ndarray_t<device_array>;
 
         accessor_type accessor_;
@@ -38,7 +37,6 @@ namespace nmtools
         shape_type shape_;
         dim_type dim_;
         stride_type strides_;
-        offset_type offset_;
 
         device_array(accessor_type accessor_, const shape_t& shape_, dim_t dim_)
             : accessor_(accessor_)
@@ -46,7 +44,6 @@ namespace nmtools
             , shape_  (shape_)
             , dim_    (dim_)
             , strides_(base_type::template compute_strides<stride_type>(shape_))
-            , offset_ (shape_,strides_)
         {}
 
         device_array(const device_array& other)
@@ -56,7 +53,7 @@ namespace nmtools
         template <typename indices_t>
         constexpr decltype(auto) offset(const indices_t& indices) const
         {
-            return offset_(indices);
+            return index::compute_offset(indices,strides_);
         } // offset
     };
 
@@ -70,21 +67,18 @@ namespace nmtools
 
         using buffer_type = ::sycl::buffer<T>;
         using stride_type = resolve_stride_type_t<shape_type>;
-        using offset_type = row_major_offset_t<shape_type,stride_type>;
         using base_type   = base_ndarray_t<device_array>;
 
         buffer_type data_;
         shape_type shape_;
         dim_type dim_;
         stride_type strides_;
-        offset_type offset_;
 
         device_array(buffer_type data_, const shape_t& shape_, dim_t dim_)
             : data_   (data_)
             , shape_  (shape_)
             , dim_    (dim_)
             , strides_(base_type::template compute_strides<stride_type>(shape_))
-            , offset_ (shape_,strides_)
         {}
 
         device_array(const device_array& other)
@@ -92,13 +86,12 @@ namespace nmtools
             , shape_  (other.shape_)
             , dim_    (other.dim_)
             , strides_(base_type::template compute_strides<stride_type>(shape_))
-            , offset_ (shape_,strides_)
         {}
 
         template <typename indices_t>
         constexpr decltype(auto) offset(const indices_t& indices) const
         {
-            return offset_(indices);
+            return index::compute_offset(indices,strides_);
         } // offset
 
         template <typename...access_args_t>
@@ -343,14 +336,14 @@ namespace nmtools::sycl
     struct context_t
         : base_context_t<context_t>
         , gpu_base_context_t<context_t>
-        , default_context_t<true,false,false,row_major_offset_t>
+        , default_context_t<true,false,false>
     {
         using queue_t  = ::sycl::queue;
         using device_t = ::sycl::device;
 
         using base_type     = base_context_t<context_t>;
         using gpu_base_type = gpu_base_context_t<context_t>;
-        using default_type  = default_context_t<true,false,false,row_major_offset_t>;
+        using default_type  = default_context_t<true,false,false>;
 
         using default_type::create;
         using gpu_base_type::create_buffer;
@@ -360,8 +353,6 @@ namespace nmtools::sycl
         static constexpr auto object_enable    = false;
         static constexpr auto broadcast_enable = true;
         static constexpr auto unroll_enable    = false;
-        template <typename... args_t>
-        using layout_t = row_major_offset_t<args_t...>;
 
         // TODO: share same queue for same context (?)
         // std::shared_ptr<queue_t> queue;

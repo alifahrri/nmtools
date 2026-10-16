@@ -684,8 +684,6 @@ namespace nmtools::utils::impl
             remove_string(graphviz, nmtools_string("array::"));
             remove_string(graphviz, nmtools_string("std::"));
             remove_string(graphviz, nmtools_string("resolve_stride_type_t,"));
-            remove_string(graphviz, nmtools_string("row_major_offset_t,"));
-            remove_string(graphviz, nmtools_string("column_major_offset_t,"));
 
             return graphviz;
         }

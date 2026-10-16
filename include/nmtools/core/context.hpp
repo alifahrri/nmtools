@@ -6,7 +6,6 @@
 #include "nmtools/assert.hpp"
 #include "nmtools/utility.hpp"
 #include "nmtools/index/product.hpp"
-#include "nmtools/core/layout.hpp"
 
 namespace nmtools
 {
@@ -90,8 +89,7 @@ namespace nmtools
     // forward declare here, defined in nmtools/context/default.hpp
     template <auto broadcast_enable=true
         , auto object_enable=false
-        , auto unroll_enable=false
-        , template <typename...>typename layout_t=row_major_offset_t>
+        , auto unroll_enable=false>
     struct default_context_t;
 }
 

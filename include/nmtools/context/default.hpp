@@ -14,10 +14,9 @@ namespace nmtools
 {
     template <auto broadcast_enable
         , auto object_enable
-        , auto unroll_enable
-        , template <typename...>typename layout_t>
+        , auto unroll_enable>
     struct default_context_t
-        : base_context_t<default_context_t<broadcast_enable,object_enable,unroll_enable,layout_t>>
+        : base_context_t<default_context_t<broadcast_enable,object_enable,unroll_enable>>
     {
         // if broadcast is disabled, then object must be enabled
         static_assert(
@@ -26,40 +25,30 @@ namespace nmtools
 
         static constexpr auto broadcasting = broadcast_enable;
 
-        using base_type = base_context_t<default_context_t<broadcast_enable,object_enable,unroll_enable,layout_t>>;
-
-        constexpr auto col_major() const noexcept
-        {
-            return default_context_t<broadcast_enable,object_enable,unroll_enable,column_major_offset_t>{};
-        }
-
-        constexpr auto row_major() const noexcept
-        {
-            return default_context_t<broadcast_enable,object_enable,unroll_enable,row_major_offset_t>{};
-        }
+        using base_type = base_context_t<default_context_t<broadcast_enable,object_enable,unroll_enable>>;
 
         constexpr auto enable_broadcast() const noexcept
         {
-            return default_context_t<true,object_enable,unroll_enable,layout_t>{};
+            return default_context_t<true,object_enable,unroll_enable>{};
         }
 
         constexpr auto disable_broadcast() const noexcept
         {
-            return default_context_t<false,object_enable,unroll_enable,layout_t>{};
+            return default_context_t<false,object_enable,unroll_enable>{};
         }
 
         template <typename new_broadcast_t=true_type>
         constexpr auto broadcast(new_broadcast_t=new_broadcast_t{}) const noexcept
         {
             constexpr auto new_broadcast = new_broadcast_t::value;
-            return default_context_t<new_broadcast,object_enable,unroll_enable,layout_t>{};
+            return default_context_t<new_broadcast,object_enable,unroll_enable>{};
         }
 
         template <typename new_object_t=true_type>
         constexpr auto object(new_object_t=new_object_t{}) const noexcept
         {
             constexpr auto new_object = new_object_t::value;
-            return default_context_t<broadcast_enable,new_object,unroll_enable,layout_t>{};
+            return default_context_t<broadcast_enable,new_object,unroll_enable>{};
         }
 
         template <typename buffer_t, typename shape_t>
@@ -68,7 +57,7 @@ namespace nmtools
             static_assert( is_constant_index_array_v<shape_t> || !unroll_enable );
 
             using result_t = conditional_t<object_enable
-                , object_t<buffer_t,shape_t,resolve_stride_type_t,layout_t,default_context_t,broadcast_enable>
+                , object_t<buffer_t,shape_t,resolve_stride_type_t,default_context_t,broadcast_enable>
                 , ndarray_t<buffer_t,shape_t,none_t>
             >;
 
@@ -82,7 +71,7 @@ namespace nmtools
             static_assert( is_constant_index_array_v<shape_t> || !unroll_enable );
 
             using result_t = conditional_t<object_enable
-                , object_t<buffer_t,shape_t,resolve_stride_type_t,layout_t,default_context_t,broadcast_enable>
+                , object_t<buffer_t,shape_t,resolve_stride_type_t,default_context_t,broadcast_enable>
                 , ndarray_t<buffer_t,shape_t,none_t>
             >;
 
@@ -232,14 +221,12 @@ namespace nmtools
     };
 
     template <auto broadcast_enable=true
-        , auto unroll_enable=false
-        , template <typename...>typename layout_t=row_major_offset_t>
-    using object_context_t = default_context_t<broadcast_enable,true,unroll_enable,layout_t>;
+        , auto unroll_enable=false>
+    using object_context_t = default_context_t<broadcast_enable,true,unroll_enable>;
 
     template <auto broadcast_enable=true
-        , auto object_enable=false
-        , template <typename...>typename layout_t=row_major_offset_t>
-    using unroll_context_t = default_context_t<broadcast_enable,object_enable,true,layout_t>;
+        , auto object_enable=false>
+    using unroll_context_t = default_context_t<broadcast_enable,object_enable,true>;
 
     constexpr inline auto Object  = object_context_t<>{};
     constexpr inline auto Unroll  = unroll_context_t<>{};
