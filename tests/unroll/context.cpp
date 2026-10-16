@@ -96,11 +96,8 @@ TEST_CASE("unroll_context(case7)" * doctest::test_suite("unroll_context"))
 {
     auto ctx = nm::Unroll;
 
-    auto a = ctx.row_major();
-    auto b = ctx.col_major();
-
-    static_assert( nm::is_context_v<decltype(a)> );
-    static_assert( nm::is_context_v<decltype(b)> );
+    // layout is expressed through strides now; contexts no longer carry one
+    static_assert( nm::is_context_v<decltype(ctx)> );
 }
 
 TEST_CASE("unroll_context(case8)" * doctest::test_suite("unroll_context"))

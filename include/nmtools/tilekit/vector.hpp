@@ -41,17 +41,16 @@ namespace nmtools::tilekit::vector
         , typename shape_buffer_t
         , auto bit_width=NMTOOLS_TILEKIT_VECTOR_DEFAULT_BIT_WIDTH
         , template <typename...>typename stride_buffer_t=resolve_stride_type_t
-        , template <typename...>typename compute_offset_t=row_major_offset_t
         , typename=void>
     struct object_t
-        : nmtools::object_t<buffer_t,shape_buffer_t,resolve_stride_type_t,row_major_offset_t,context_t<bit_width>,/*broadcast_enable*/false>
+        : nmtools::object_t<buffer_t,shape_buffer_t,resolve_stride_type_t,context_t<bit_width>,/*broadcast_enable*/false>
     {
         using shape_buffer_type = shape_buffer_t;
         static_assert( is_constant_index_array_v<shape_buffer_type>
             , "unsupported shape buffer type for vector::object_t; expected constant index array"
         );
         // TODO: assert shape buffer and shape is known at compile-time
-        using base_type     = nmtools::object_t<buffer_t,shape_buffer_t,resolve_stride_type_t,row_major_offset_t,context_t<bit_width>,/*broadcast_enable*/false>;
+        using base_type     = nmtools::object_t<buffer_t,shape_buffer_t,resolve_stride_type_t,context_t<bit_width>,/*broadcast_enable*/false>;
         using value_type    = typename base_type::value_type;
         using element_type  = get_element_type_t<buffer_t>;
 
@@ -405,8 +404,6 @@ namespace nmtools::tilekit::vector
     {
         static constexpr auto object_enable = true;
         static constexpr auto unroll_enable = true;
-        template <typename... args_t>
-        using layout_t = row_major_offset_t<args_t...>;
 
         using base_type    = base_context_t<context_t>;
 
@@ -443,7 +440,7 @@ namespace nmtools::tilekit::vector
         {
             static_assert( is_constant_index_array_v<shape_t> || !unroll_enable );
 
-            using result_t = object_t<buffer_t,shape_t,BIT_WIDTH,resolve_stride_type_t,layout_t>;
+            using result_t = object_t<buffer_t,shape_t,BIT_WIDTH,resolve_stride_type_t>;
 
             auto result = result_t {};
             return result;
@@ -454,7 +451,7 @@ namespace nmtools::tilekit::vector
         {
             static_assert( is_constant_index_array_v<shape_t> || !unroll_enable );
 
-            using result_t = object_t<buffer_t,shape_t,BIT_WIDTH,resolve_stride_type_t,layout_t>;
+            using result_t = object_t<buffer_t,shape_t,BIT_WIDTH,resolve_stride_type_t>;
 
             auto result = result_t {};
             if constexpr (!is_constant_index_array_v<shape_t>) {
@@ -670,10 +667,9 @@ namespace nmtools
           typename buffer_t
         , typename shape_buffer_t
         , auto bit_width
-        , template <typename...>typename stride_buffer_t
-        , template <typename...>typename offset_compute_t>
-    struct get_t<I,tilekit::vector::object_t<buffer_t,shape_buffer_t,bit_width,stride_buffer_t,offset_compute_t>>
-        : get_t<I,object_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t>> {};
+        , template <typename...>typename stride_buffer_t>
+    struct get_t<I,tilekit::vector::object_t<buffer_t,shape_buffer_t,bit_width,stride_buffer_t >>
+        : get_t<I,object_t<buffer_t,shape_buffer_t,stride_buffer_t >> {};
     
 }
 
@@ -682,10 +678,9 @@ namespace nmtools::meta
     template <typename buffer_t
         , typename shape_buffer_t
         , auto bit_width
-        , template <typename...>typename stride_buffer_t
-        , template <typename...>typename offset_compute_t>
+        , template <typename...>typename stride_buffer_t>
     struct is_object_ndarray<
-        tilekit::vector::object_t<buffer_t,shape_buffer_t,bit_width,stride_buffer_t,offset_compute_t>
+        tilekit::vector::object_t<buffer_t,shape_buffer_t,bit_width,stride_buffer_t >
     > : true_type {};
 
     namespace error
@@ -776,63 +771,57 @@ namespace nmtools::meta
           typename buffer_t
         , typename shape_buffer_t
         , auto bit_width
-        , template <typename...>typename stride_buffer_t
-        , template <typename...>typename offset_compute_t>
-    struct get_element_type<tilekit::vector::object_t<buffer_t,shape_buffer_t,bit_width,stride_buffer_t,offset_compute_t>>
-        : get_element_type<object_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t>> {};
+        , template <typename...>typename stride_buffer_t>
+    struct get_element_type<tilekit::vector::object_t<buffer_t,shape_buffer_t,bit_width,stride_buffer_t >>
+        : get_element_type<object_t<buffer_t,shape_buffer_t,stride_buffer_t >> {};
     
     template <
           typename buffer_t
         , typename shape_buffer_t
         , auto bit_width
-        , template <typename...>typename stride_buffer_t
-        , template <typename...>typename offset_compute_t>
+        , template <typename...>typename stride_buffer_t>
     struct is_ndarray<
-        tilekit::vector::object_t<buffer_t,shape_buffer_t,bit_width,stride_buffer_t,offset_compute_t>
-    > : is_ndarray<object_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t>> {};
+        tilekit::vector::object_t<buffer_t,shape_buffer_t,bit_width,stride_buffer_t >
+    > : is_ndarray<object_t<buffer_t,shape_buffer_t,stride_buffer_t >> {};
 
     template <
           typename buffer_t
         , typename shape_buffer_t
         , auto bit_width
-        , template <typename...>typename stride_buffer_t
-        , template <typename...>typename offset_compute_t>
+        , template <typename...>typename stride_buffer_t>
     struct fixed_dim<
-        tilekit::vector::object_t<buffer_t,shape_buffer_t,bit_width,stride_buffer_t,offset_compute_t>
-    > : fixed_dim<object_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t>> {};
+        tilekit::vector::object_t<buffer_t,shape_buffer_t,bit_width,stride_buffer_t >
+    > : fixed_dim<object_t<buffer_t,shape_buffer_t,stride_buffer_t >> {};
 
     template <
           typename buffer_t
         , typename shape_buffer_t
         , auto bit_width
-        , template <typename...>typename stride_buffer_t
-        , template <typename...>typename offset_compute_t>
+        , template <typename...>typename stride_buffer_t>
     struct fixed_shape<
-        tilekit::vector::object_t<buffer_t,shape_buffer_t,bit_width,stride_buffer_t,offset_compute_t>
-    > : fixed_shape<object_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t>> {};
+        tilekit::vector::object_t<buffer_t,shape_buffer_t,bit_width,stride_buffer_t >
+    > : fixed_shape<object_t<buffer_t,shape_buffer_t,stride_buffer_t >> {};
 
     template <
           typename buffer_t
         , typename shape_buffer_t
         , auto bit_width
-        , template <typename...>typename stride_buffer_t
-        , template <typename...>typename offset_compute_t>
+        , template <typename...>typename stride_buffer_t>
     struct fixed_size<
-        tilekit::vector::object_t<buffer_t,shape_buffer_t,bit_width,stride_buffer_t,offset_compute_t>
-    > : fixed_size<object_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t>> {};
+        tilekit::vector::object_t<buffer_t,shape_buffer_t,bit_width,stride_buffer_t >
+    > : fixed_size<object_t<buffer_t,shape_buffer_t,stride_buffer_t >> {};
 
         template <typename U
         , typename buffer_t
         , typename shape_buffer_t
         , auto bit_width
-        , template <typename...>typename stride_buffer_t
-        , template <typename...>typename offset_compute_t>
+        , template <typename...>typename stride_buffer_t>
     struct replace_element_type<
-        tilekit::vector::object_t<buffer_t,shape_buffer_t,bit_width,stride_buffer_t,offset_compute_t>, U
+        tilekit::vector::object_t<buffer_t,shape_buffer_t,bit_width,stride_buffer_t >, U
     >
     {
         using buffer_type = replace_element_type_t<buffer_t,U>;
-        using type = tilekit::vector::object_t<buffer_type,shape_buffer_t,bit_width,stride_buffer_t,offset_compute_t>;
+        using type = tilekit::vector::object_t<buffer_type,shape_buffer_t,bit_width,stride_buffer_t >;
     }; // replace_element_type
 }
 

@@ -1,0 +1,109 @@
+#include "nmtools/index/compute_strides.hpp"
+#include "nmtools/testing/data/index/compute_strides.hpp"
+#include "nmtools/utility/isequal.hpp"
+#include "nmtools/testing/doctest.hpp"
+
+using nmtools::utils::isequal;
+using namespace nmtools::literals;
+
+// compute_row_major_strides must behave identically to compute_strides;
+// reuse the compute_strides test data
+#define COMPUTE_ROW_MAJOR_STRIDES_SUBCASE_RESULT(case_name, result, ...) \
+SUBCASE(#case_name) \
+{ \
+    NMTOOLS_TESTING_USE_CASE(compute_strides, case_name); \
+    using namespace args; \
+    auto result = nmtools::index::compute_row_major_strides(__VA_ARGS__); \
+    NMTOOLS_ASSERT_EQUAL_MSG_ATTRIBUTES( result, expect::result, __VA_ARGS__ ); \
+}
+
+#define COMPUTE_ROW_MAJOR_STRIDES_SUBCASE(case_name, ...) \
+SUBCASE(#case_name) \
+{ \
+    NMTOOLS_TESTING_USE_CASE(compute_strides, case_name); \
+    using namespace args; \
+    auto result = nmtools::index::compute_row_major_strides(__VA_ARGS__); \
+    NMTOOLS_ASSERT_EQUAL_MSG_ATTRIBUTES( result, expect::result, __VA_ARGS__ ); \
+}
+
+TEST_CASE("compute_row_major_strides(case1)" * doctest::test_suite("index::compute_row_major_strides"))
+{
+    COMPUTE_ROW_MAJOR_STRIDES_SUBCASE(case1, shape);
+    COMPUTE_ROW_MAJOR_STRIDES_SUBCASE(case1, shape_a);
+    COMPUTE_ROW_MAJOR_STRIDES_SUBCASE(case1, shape_v);
+    COMPUTE_ROW_MAJOR_STRIDES_SUBCASE(case1, shape_f);
+    COMPUTE_ROW_MAJOR_STRIDES_SUBCASE(case1, shape_h);
+
+    COMPUTE_ROW_MAJOR_STRIDES_SUBCASE(case1, m_shape_a);
+    COMPUTE_ROW_MAJOR_STRIDES_SUBCASE(case1, m_shape_v);
+    COMPUTE_ROW_MAJOR_STRIDES_SUBCASE(case1, m_shape_f);
+    COMPUTE_ROW_MAJOR_STRIDES_SUBCASE(case1, m_shape_h);
+
+    COMPUTE_ROW_MAJOR_STRIDES_SUBCASE(case1, shape_ct);
+}
+
+TEST_CASE("compute_row_major_strides(case2)" * doctest::test_suite("index::compute_row_major_strides"))
+{
+    COMPUTE_ROW_MAJOR_STRIDES_SUBCASE(case2, shape);
+    COMPUTE_ROW_MAJOR_STRIDES_SUBCASE(case2, shape_a);
+    COMPUTE_ROW_MAJOR_STRIDES_SUBCASE(case2, shape_v);
+    COMPUTE_ROW_MAJOR_STRIDES_SUBCASE(case2, shape_f);
+    COMPUTE_ROW_MAJOR_STRIDES_SUBCASE(case2, shape_h);
+
+    COMPUTE_ROW_MAJOR_STRIDES_SUBCASE(case2, m_shape_a);
+    COMPUTE_ROW_MAJOR_STRIDES_SUBCASE(case2, m_shape_v);
+    COMPUTE_ROW_MAJOR_STRIDES_SUBCASE(case2, m_shape_f);
+    COMPUTE_ROW_MAJOR_STRIDES_SUBCASE(case2, m_shape_h);
+
+    COMPUTE_ROW_MAJOR_STRIDES_SUBCASE(case2, shape_ct);
+
+    COMPUTE_ROW_MAJOR_STRIDES_SUBCASE_RESULT(case2, result_nl1, shape_nl1);
+    COMPUTE_ROW_MAJOR_STRIDES_SUBCASE_RESULT(case2, result_nl2, shape_nl2);
+
+    COMPUTE_ROW_MAJOR_STRIDES_SUBCASE(case2, shape_mx1);
+    COMPUTE_ROW_MAJOR_STRIDES_SUBCASE(case2, shape_mx2);
+}
+
+TEST_CASE("compute_row_major_strides(case3)" * doctest::test_suite("index::compute_row_major_strides"))
+{
+    COMPUTE_ROW_MAJOR_STRIDES_SUBCASE(case3, shape);
+    COMPUTE_ROW_MAJOR_STRIDES_SUBCASE(case3, shape_a);
+    COMPUTE_ROW_MAJOR_STRIDES_SUBCASE(case3, shape_v);
+    COMPUTE_ROW_MAJOR_STRIDES_SUBCASE(case3, shape_f);
+    COMPUTE_ROW_MAJOR_STRIDES_SUBCASE(case3, shape_h);
+
+    COMPUTE_ROW_MAJOR_STRIDES_SUBCASE(case3, m_shape_a);
+    COMPUTE_ROW_MAJOR_STRIDES_SUBCASE(case3, m_shape_v);
+    COMPUTE_ROW_MAJOR_STRIDES_SUBCASE(case3, m_shape_f);
+    COMPUTE_ROW_MAJOR_STRIDES_SUBCASE(case3, m_shape_h);
+
+    COMPUTE_ROW_MAJOR_STRIDES_SUBCASE(case3, shape_ct);
+
+    COMPUTE_ROW_MAJOR_STRIDES_SUBCASE_RESULT(case3, result_nl1, shape_nl1);
+    COMPUTE_ROW_MAJOR_STRIDES_SUBCASE_RESULT(case3, result_nl2, shape_nl2);
+
+    COMPUTE_ROW_MAJOR_STRIDES_SUBCASE(case3, shape_mx1);
+    COMPUTE_ROW_MAJOR_STRIDES_SUBCASE(case3, shape_mx2);
+}
+
+TEST_CASE("compute_row_major_strides(case4)" * doctest::test_suite("index::compute_row_major_strides"))
+{
+    COMPUTE_ROW_MAJOR_STRIDES_SUBCASE(case4, shape);
+    COMPUTE_ROW_MAJOR_STRIDES_SUBCASE(case4, shape_a);
+    COMPUTE_ROW_MAJOR_STRIDES_SUBCASE(case4, shape_v);
+    COMPUTE_ROW_MAJOR_STRIDES_SUBCASE(case4, shape_f);
+    COMPUTE_ROW_MAJOR_STRIDES_SUBCASE(case4, shape_h);
+
+    COMPUTE_ROW_MAJOR_STRIDES_SUBCASE(case4, m_shape_a);
+    COMPUTE_ROW_MAJOR_STRIDES_SUBCASE(case4, m_shape_v);
+    COMPUTE_ROW_MAJOR_STRIDES_SUBCASE(case4, m_shape_f);
+    COMPUTE_ROW_MAJOR_STRIDES_SUBCASE(case4, m_shape_h);
+
+    COMPUTE_ROW_MAJOR_STRIDES_SUBCASE(case4, shape_ct);
+
+    COMPUTE_ROW_MAJOR_STRIDES_SUBCASE_RESULT(case4, result_nl1, shape_nl1);
+    COMPUTE_ROW_MAJOR_STRIDES_SUBCASE_RESULT(case4, result_nl2, shape_nl2);
+
+    COMPUTE_ROW_MAJOR_STRIDES_SUBCASE(case4, shape_mx1);
+    COMPUTE_ROW_MAJOR_STRIDES_SUBCASE(case4, shape_mx2);
+}
