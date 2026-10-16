@@ -55,10 +55,18 @@ namespace nmtools::runtime
 
     private:
         index_type     shape_;
+        index_type     strides_;
         runtime::DType type_;
         buffer_type    buffer_;
         graph_type     graph_;
         bool           is_scalar_ = false;
+
+    private:
+        // recompute canonical row-major strides from the current shape
+        void refresh_strides()
+        {
+            strides_ = index::cast<index_type>(index::compute_strides(shape_));
+        }
 
     private:
         template <typename T>
@@ -97,10 +105,16 @@ namespace nmtools::runtime
         }
     
     private:
-        ndarray(buffer_type new_buffer, const index_type& shape, DType type)
+        ndarray(buffer_type new_buffer, const index_type& shape, const index_type& strides, DType type)
             : shape_(shape)
+            , strides_(strides)
             , type_(type)
             , buffer_(new_buffer)
+        {}
+
+        // canonical row-major striding of shape, used by reshape and friends
+        ndarray(buffer_type new_buffer, const index_type& shape, DType type)
+            : ndarray(new_buffer, shape, index::cast<index_type>(index::compute_strides(shape)), type)
         {}
 
     public:
@@ -119,6 +133,7 @@ namespace nmtools::runtime
                     resize<buffer_t>(shape_);
                 }
             });
+            refresh_strides();
         }
 
         template <typename shape_t, typename T, enable_if_t<is_index_array_v<shape_t>,int> =0>
@@ -140,6 +155,7 @@ namespace nmtools::runtime
                     resize<buffer_t>(shape_);
                 }
             });
+            refresh_strides();
         }
 
         template <typename rhs_t, enable_if_t<is_ndarray_v<rhs_t>,int> =0>
@@ -228,12 +244,12 @@ namespace nmtools::runtime
             // TODO: do not need ref
             // return unwrap(view::reshape(view::ref(ptr),shape_));
             if constexpr (is_none_v<shape_t>) {
-                return unwrap(view::reshape(ptr,shape_));
+                return unwrap(view::stride(ptr,shape_,strides_));
             } else {
                 nmtools_panic( utils::isequal(shape,shape_)
                     , "invalid shape when getting view"
                 );
-                return unwrap(view::reshape(ptr,shape));
+                return unwrap(view::stride(ptr,shape,strides_));
             }
         }
 
@@ -253,12 +269,12 @@ namespace nmtools::runtime
 
             // TODO: read use count, if > 1, then copy
             if constexpr (is_none_v<shape_t>) {
-                return unwrap(nmtools::view::mutable_reshape(ptr,shape_));
+                return unwrap(nmtools::view::mutable_stride(ptr,shape_,strides_));
             } else {
                 nmtools_panic( utils::isequal(shape,shape_)
                     , "invalid shape when getting mutable view"
                 );
-                return unwrap(nmtools::view::mutable_reshape(ptr,shape));
+                return unwrap(nmtools::view::mutable_stride(ptr,shape,strides_));
             }
         }
 
@@ -284,6 +300,7 @@ namespace nmtools::runtime
                     assign<buffer_t>(rhs);
                 }
             });
+            refresh_strides();
             return *this;
         }
 
@@ -291,6 +308,7 @@ namespace nmtools::runtime
         ndarray(const index_type& shape_, runtime::DType type_);
         ndarray(const graph_type& graph_);
         auto shape() const noexcept -> index_type;
+        auto strides() const noexcept -> index_type;
         auto size() const noexcept -> nm_size_t;
         auto dim() const noexcept -> nm_size_t;
         auto dtype() const noexcept -> DType;
@@ -298,6 +316,11 @@ namespace nmtools::runtime
         void resize(const index_type& shape) noexcept;
         auto is_evaluated() const noexcept -> bool;
         auto reshape(const index_type& dst_shape) const -> ndarray;
+        auto is_row_major() const noexcept -> bool;
+        auto transpose() const -> ndarray;
+        auto transpose(const index_type& axes) const -> ndarray;
+        auto as_strided(const index_type& shape, const index_type& strides) const -> ndarray;
+        auto copy() const -> ndarray;
         auto operator+(const ndarray& rhs) const -> ndarray;
         auto operator*(const ndarray& rhs) const -> ndarray;
         auto operator-(const ndarray& rhs) const -> ndarray;
@@ -407,11 +430,17 @@ namespace nmtools::runtime
         shape_ = nmtools::shape(graph_);
         type_  = nmtools::type(graph_);
         is_scalar_ = nmtools::is_scalar(graph_);
+        refresh_strides();
     }
 
     auto ndarray::shape() const noexcept -> ndarray::index_type
     {
         return shape_;
+    }
+
+    auto ndarray::strides() const noexcept -> ndarray::index_type
+    {
+        return strides_;
     }
 
     auto ndarray::size() const noexcept -> nm_size_t
@@ -443,22 +472,177 @@ namespace nmtools::runtime
     inline
     void ndarray::resize(const IndexType& shape) noexcept
     {
+        // capture the old state so that overlapping elements can be
+        // preserved in logical order across the reallocation
+        auto old_buffer    = buffer_;
+        auto old_shape     = shape_;
+        auto old_strides   = strides_;
+        auto old_scalar    = is_scalar_;
+        auto old_evaluated = !static_cast<bool>(old_buffer.get_if<none_t>());
+
         shape_ = shape;
         is_scalar_ = (len(shape_) == 0);
+        refresh_strides();
         constexpr auto N = len_v<decltype(types)>;
         template_for<N>([&](auto i){
             auto dtype = at(types,i);
             using type = type_t<decltype(dtype)>;
             if (type_ == to_value_v<decltype(dtype)>) {
                 using buffer_t = nmtools_list<type>;
+                using ptr_type = ::std::shared_ptr<buffer_t>;
                 resize<buffer_t>(shape_);
+                // nothing to preserve: fresh array, scalar endpoint, or
+                // a dtype change (old buffer holds a different element type)
+                if (!old_evaluated || old_scalar || is_scalar_) {
+                    return;
+                }
+                auto s = old_buffer.template get_if<ptr_type>();
+                if (!s) {
+                    return;
+                }
+                auto src_ptr = *s;
+                auto d = buffer_.template get_if<ptr_type>();
+                nmtools_panic( d
+                    , "invalid destination buffer in resize"
+                );
+                auto dst_ptr = *d;
+                auto src_n = src_ptr->size();
+                auto dst_n = dst_ptr->size();
+                auto n = (src_n < dst_n) ? src_n : dst_n;
+                if (index::is_row_major(old_shape,old_strides)) {
+                    for (nm_size_t k=0; k<n; k++) {
+                        at(*dst_ptr,k) = at(*src_ptr,k);
+                    }
+                } else {
+                    // copy through the strides so data follows the
+                    // logical order, not the old memory order
+                    auto flat = unwrap(view::flatten(view::stride(src_ptr,old_shape,old_strides)));
+                    for (nm_size_t k=0; k<n; k++) {
+                        at(*dst_ptr,k) = at(flat,k);
+                    }
+                }
             }
         });
     }
 
     auto ndarray::reshape(const IndexType& dst_shape) const -> ndarray
     {
-        return ndarray(this->buffer_,dst_shape,this->type_);
+        nmtools_panic( is_evaluated()
+            , "reshape requires an evaluated array"
+        );
+        if (is_row_major()) {
+            return ndarray(this->buffer_,dst_shape,this->type_);
+        }
+        // strided arrays reinterpret their logical order into a fresh
+        // row-major buffer, mirroring numpy's materializing reshape
+        auto materialized = this->copy();
+        return ndarray(materialized.buffer_,dst_shape,materialized.type_);
+    }
+
+    auto ndarray::is_row_major() const noexcept -> bool
+    {
+        return index::is_row_major(shape_,strides_);
+    }
+
+    auto ndarray::transpose() const -> ndarray
+    {
+        const auto dim = (nm_index_t)len(shape_);
+        index_type axes;
+        for (nm_index_t i=0; i<dim; i++) {
+            axes.push_back(dim - 1 - i);
+        }
+        return transpose(axes);
+    }
+
+    auto ndarray::transpose(const index_type& axes) const -> ndarray
+    {
+        nmtools_panic( is_evaluated()
+            , "transpose requires an evaluated array"
+        );
+        const auto dim = (nm_index_t)len(shape_);
+        nmtools_panic( len(axes) == (nm_size_t)dim
+            , "transpose: number of axes must match array rank"
+        );
+        // normalize negative axes, then check bounds and uniqueness
+        index_type normalized;
+        for (nm_index_t i=0; i<dim; i++) {
+            auto axis = at(axes,i);
+            if (axis < 0) {
+                axis += dim;
+            }
+            nmtools_panic( (axis >= 0) && (axis < dim)
+                , "transpose: axis out of range"
+            );
+            normalized.push_back(axis);
+        }
+        for (nm_index_t i=0; i<dim; i++) {
+            auto count = 0;
+            for (nm_index_t j=0; j<dim; j++) {
+                count += (at(normalized,j) == at(normalized,i));
+            }
+            nmtools_panic( count == 1
+                , "transpose: axes must be a permutation"
+            );
+        }
+        index_type new_shape;
+        index_type new_strides;
+        for (nm_index_t i=0; i<dim; i++) {
+            new_shape.push_back(at(shape_,at(normalized,i)));
+            new_strides.push_back(at(strides_,at(normalized,i)));
+        }
+        return ndarray(buffer_,new_shape,new_strides,type_);
+    }
+
+    auto ndarray::as_strided(const IndexType& shape, const IndexType& strides) const -> ndarray
+    {
+        nmtools_panic( is_evaluated()
+            , "as_strided requires an evaluated array"
+        );
+        nmtools_panic( len(shape) == len(strides)
+            , "as_strided: shape and strides must have the same rank"
+        );
+        // NOTE: no out-of-bounds check, matching numpy semantics
+        return ndarray(buffer_,shape,strides,type_);
+    }
+
+    auto ndarray::copy() const -> ndarray
+    {
+        nmtools_panic( is_evaluated()
+            , "copy requires an evaluated array"
+        );
+        auto result = ndarray(shape_,type_);
+        constexpr auto N = len_v<decltype(types)>;
+        template_for<N>([&](auto i){
+            auto dtype = at(types,i);
+            using type = type_t<decltype(dtype)>;
+            if (type_ == to_value_v<decltype(dtype)>) {
+                using buffer_t = nmtools_list<type>;
+                using ptr_type = ::std::shared_ptr<buffer_t>;
+                auto s = buffer_.template get_if<ptr_type>();
+                nmtools_panic( s
+                    , "invalid buffer in copy"
+                );
+                auto d = result.buffer_.template get_if<ptr_type>();
+                nmtools_panic( d
+                    , "invalid destination buffer in copy"
+                );
+                auto src_ptr = *s;
+                auto dst_ptr = *d;
+                auto n = dst_ptr->size();
+                if (is_row_major()) {
+                    for (nm_size_t k=0; k<n; k++) {
+                        at(*dst_ptr,k) = at(*src_ptr,k);
+                    }
+                } else {
+                    // read the logical order through the strides
+                    auto flat = unwrap(view::flatten(view::stride(src_ptr,shape_,strides_)));
+                    for (nm_size_t k=0; k<n; k++) {
+                        at(*dst_ptr,k) = at(flat,k);
+                    }
+                }
+            }
+        });
+        return result;
     }
 
     auto ndarray::operator+(const ndarray& rhs) const -> ndarray
@@ -491,6 +675,8 @@ auto op(const runtime::ndarray& lhs, const runtime::ndarray& rhs) -> runtime::nd
     namespace fn = functional; \
     namespace rt = runtime; \
     using runtime::ndarray; \
+    nmtools_panic( lhs.is_row_major() , "graph builder requires row-major operands; materialize strided arrays with .copy()" ); \
+    nmtools_panic( rhs.is_row_major() , "graph builder requires row-major operands; materialize strided arrays with .copy()" ); \
     auto result = rt::ndarray(lhs.shape(),lhs.dtype()); \
     constexpr auto N = len_v<decltype(ndarray::lhs_types)>; \
     template_for<N>([&](auto i){ \
@@ -524,6 +710,8 @@ auto op(const runtime::ndarray& lhs, const runtime::ndarray& rhs) -> runtime::nd
     namespace fn = functional; \
     namespace rt = runtime; \
     using runtime::ndarray; \
+    nmtools_panic( lhs.is_row_major() , "graph builder requires row-major operands; materialize strided arrays with .copy()" ); \
+    nmtools_panic( rhs.is_row_major() , "graph builder requires row-major operands; materialize strided arrays with .copy()" ); \
     auto result = rt::ndarray(lhs.shape(),lhs.dtype()); \
     static constexpr auto select_types = ndarray::types; \
     constexpr auto N = len_v<decltype(select_types)>; \
@@ -596,6 +784,8 @@ namespace nmtools
         namespace fn = functional;
         namespace rt = runtime;
         using runtime::ndarray;
+        nmtools_panic( lhs.is_row_major() , "graph builder requires row-major operands; materialize strided arrays with .copy()" );
+        nmtools_panic( rhs.is_row_major() , "graph builder requires row-major operands; materialize strided arrays with .copy()" );
 
         // NOTE: only the same dtype pairs registered for cpu_hypot are handled here
         auto result = rt::ndarray(lhs.shape(),lhs.dtype());
@@ -638,6 +828,8 @@ namespace nmtools
         namespace fn = functional;
         namespace rt = runtime;
         using runtime::ndarray;
+        nmtools_panic( lhs.is_row_major() , "graph builder requires row-major operands; materialize strided arrays with .copy()" );
+        nmtools_panic( rhs.is_row_major() , "graph builder requires row-major operands; materialize strided arrays with .copy()" );
 
         // NOTE: std::ldexp takes an integer exponent,
         // so unlike fmax/fmin only float32/int32 is handled here
@@ -784,6 +976,7 @@ namespace nmtools
         namespace fn = functional;
         namespace rt = runtime;
 
+        nmtools_panic( array.is_row_major() , "graph builder requires row-major operands; materialize strided arrays with .copy()" );
         // TODO: support default constructor for ndarray
         // auto result = rt::ndarray();
         auto result = rt::ndarray(array.shape(),array.dtype());
@@ -819,6 +1012,7 @@ namespace nmtools
         namespace rt = runtime;
         using runtime::ndarray;
 
+        nmtools_panic( array.is_row_major() , "graph builder requires row-major operands; materialize strided arrays with .copy()" );
         // TODO: support default constructor for ndarray
         // auto result = rt::ndarray();
         auto result = rt::ndarray(array.shape(),array.dtype());
@@ -871,6 +1065,7 @@ namespace nmtools
         namespace rt = runtime;
         using runtime::ndarray;
 
+        nmtools_panic( array.is_row_major() , "graph builder requires row-major operands; materialize strided arrays with .copy()" );
         // TODO: support default constructor for ndarray
         // auto result = rt::ndarray();
         auto result = rt::ndarray(array.shape(),array.dtype());
@@ -918,6 +1113,7 @@ namespace nmtools \
         namespace fn = functional; \
         namespace rt = runtime; \
         using runtime::ndarray; \
+        nmtools_panic( array.is_row_major() , "graph builder requires row-major operands; materialize strided arrays with .copy()" ); \
         auto result = rt::ndarray(array.shape(),array.dtype()); \
         constexpr auto N = len_v<decltype(ndarray::types)>; \
         template_for<N>([&](auto i){ \
