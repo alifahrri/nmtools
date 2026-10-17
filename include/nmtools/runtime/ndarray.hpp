@@ -317,6 +317,7 @@ namespace nmtools::runtime
         auto is_evaluated() const noexcept -> bool;
         auto reshape(const index_type& dst_shape) const -> ndarray;
         auto is_row_major() const noexcept -> bool;
+        auto is_col_major() const noexcept -> bool;
         auto transpose() const -> ndarray;
         auto transpose(const index_type& axes) const -> ndarray;
         auto as_strided(const index_type& shape, const index_type& strides) const -> ndarray;
@@ -527,6 +528,7 @@ namespace nmtools::runtime
 
     auto ndarray::reshape(const IndexType& dst_shape) const -> ndarray
     {
+        // TODO: use compute graph
         nmtools_panic( is_evaluated()
             , "reshape requires an evaluated array"
         );
@@ -544,8 +546,14 @@ namespace nmtools::runtime
         return index::is_row_major(shape_,strides_);
     }
 
+    auto ndarray::is_col_major() const noexcept -> bool
+    {
+        return index::is_col_major(shape_,strides_);
+    }
+
     auto ndarray::transpose() const -> ndarray
     {
+        // TODO: use compute graph
         const auto dim = (nm_index_t)len(shape_);
         index_type axes;
         for (nm_index_t i=0; i<dim; i++) {
@@ -564,17 +572,7 @@ namespace nmtools::runtime
             , "transpose: number of axes must match array rank"
         );
         // normalize negative axes, then check bounds and uniqueness
-        index_type normalized;
-        for (nm_index_t i=0; i<dim; i++) {
-            auto axis = at(axes,i);
-            if (axis < 0) {
-                axis += dim;
-            }
-            nmtools_panic( (axis >= 0) && (axis < dim)
-                , "transpose: axis out of range"
-            );
-            normalized.push_back(axis);
-        }
+        auto normalized = unwrap(index::normalize_axis(axes,dim));
         for (nm_index_t i=0; i<dim; i++) {
             auto count = 0;
             for (nm_index_t j=0; j<dim; j++) {
@@ -584,12 +582,8 @@ namespace nmtools::runtime
                 , "transpose: axes must be a permutation"
             );
         }
-        index_type new_shape;
-        index_type new_strides;
-        for (nm_index_t i=0; i<dim; i++) {
-            new_shape.push_back(at(shape_,at(normalized,i)));
-            new_strides.push_back(at(strides_,at(normalized,i)));
-        }
+        auto new_shape   = index::gather(shape_,normalized);
+        auto new_strides = index::gather(strides_,normalized);
         return ndarray(buffer_,new_shape,new_strides,type_);
     }
 
@@ -675,8 +669,6 @@ auto op(const runtime::ndarray& lhs, const runtime::ndarray& rhs) -> runtime::nd
     namespace fn = functional; \
     namespace rt = runtime; \
     using runtime::ndarray; \
-    nmtools_panic( lhs.is_row_major() , "graph builder requires row-major operands; materialize strided arrays with .copy()" ); \
-    nmtools_panic( rhs.is_row_major() , "graph builder requires row-major operands; materialize strided arrays with .copy()" ); \
     auto result = rt::ndarray(lhs.shape(),lhs.dtype()); \
     constexpr auto N = len_v<decltype(ndarray::lhs_types)>; \
     template_for<N>([&](auto i){ \
@@ -710,8 +702,6 @@ auto op(const runtime::ndarray& lhs, const runtime::ndarray& rhs) -> runtime::nd
     namespace fn = functional; \
     namespace rt = runtime; \
     using runtime::ndarray; \
-    nmtools_panic( lhs.is_row_major() , "graph builder requires row-major operands; materialize strided arrays with .copy()" ); \
-    nmtools_panic( rhs.is_row_major() , "graph builder requires row-major operands; materialize strided arrays with .copy()" ); \
     auto result = rt::ndarray(lhs.shape(),lhs.dtype()); \
     static constexpr auto select_types = ndarray::types; \
     constexpr auto N = len_v<decltype(select_types)>; \
@@ -784,8 +774,6 @@ namespace nmtools
         namespace fn = functional;
         namespace rt = runtime;
         using runtime::ndarray;
-        nmtools_panic( lhs.is_row_major() , "graph builder requires row-major operands; materialize strided arrays with .copy()" );
-        nmtools_panic( rhs.is_row_major() , "graph builder requires row-major operands; materialize strided arrays with .copy()" );
 
         // NOTE: only the same dtype pairs registered for cpu_hypot are handled here
         auto result = rt::ndarray(lhs.shape(),lhs.dtype());
@@ -828,8 +816,6 @@ namespace nmtools
         namespace fn = functional;
         namespace rt = runtime;
         using runtime::ndarray;
-        nmtools_panic( lhs.is_row_major() , "graph builder requires row-major operands; materialize strided arrays with .copy()" );
-        nmtools_panic( rhs.is_row_major() , "graph builder requires row-major operands; materialize strided arrays with .copy()" );
 
         // NOTE: std::ldexp takes an integer exponent,
         // so unlike fmax/fmin only float32/int32 is handled here
@@ -976,7 +962,6 @@ namespace nmtools
         namespace fn = functional;
         namespace rt = runtime;
 
-        nmtools_panic( array.is_row_major() , "graph builder requires row-major operands; materialize strided arrays with .copy()" );
         // TODO: support default constructor for ndarray
         // auto result = rt::ndarray();
         auto result = rt::ndarray(array.shape(),array.dtype());
@@ -1012,7 +997,6 @@ namespace nmtools
         namespace rt = runtime;
         using runtime::ndarray;
 
-        nmtools_panic( array.is_row_major() , "graph builder requires row-major operands; materialize strided arrays with .copy()" );
         // TODO: support default constructor for ndarray
         // auto result = rt::ndarray();
         auto result = rt::ndarray(array.shape(),array.dtype());
@@ -1065,7 +1049,6 @@ namespace nmtools
         namespace rt = runtime;
         using runtime::ndarray;
 
-        nmtools_panic( array.is_row_major() , "graph builder requires row-major operands; materialize strided arrays with .copy()" );
         // TODO: support default constructor for ndarray
         // auto result = rt::ndarray();
         auto result = rt::ndarray(array.shape(),array.dtype());
@@ -1113,7 +1096,6 @@ namespace nmtools \
         namespace fn = functional; \
         namespace rt = runtime; \
         using runtime::ndarray; \
-        nmtools_panic( array.is_row_major() , "graph builder requires row-major operands; materialize strided arrays with .copy()" ); \
         auto result = rt::ndarray(array.shape(),array.dtype()); \
         constexpr auto N = len_v<decltype(ndarray::types)>; \
         template_for<N>([&](auto i){ \
