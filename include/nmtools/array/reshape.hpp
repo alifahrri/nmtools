@@ -34,7 +34,15 @@ namespace nmtools
 {
     /**
      * @brief Eagerly reshape an array. Note that this will copy array by default.
-     * 
+     *
+     * The result follows numpy's default C-order semantics: elements are
+     * reread from the source in logical row-major order and materialized
+     * with canonical row-major striding. There is deliberately no order
+     * parameter; other layouts are expressed through explicit strides,
+     * which compose with every kind of striding (column-major, blocked,
+     * transposed), for example an F-order view over the same buffer:
+     * `view::stride(x, shape, index::compute_col_major_strides(shape))`.
+     *
      * @tparam output_t 
      * @tparam context_t 
      * @tparam array_t 

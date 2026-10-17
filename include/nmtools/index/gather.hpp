@@ -99,15 +99,18 @@ namespace nmtools::meta
                 constexpr auto vector  = to_value_v<vector_t>;
                 constexpr auto indices = to_value_v<indices_t>;
                 constexpr auto result  = index::gather(vector,indices);
-                // assuming len(result) > 0
-                // transform back to type
-                using init_type = nmtools_tuple<ct<at(result,0)>>;
-                return template_reduce<nmtools::len(result)-1>([&](auto init, auto index){
-                    using init_t   = type_t<decltype(init)>;
-                    using result_i = ct<at(result,index+1)>;
-                    using result_t = append_type_t<init_t,result_i>;
-                    return as_value_v<result_t>;
-                }, as_value_v<init_type>);
+                if constexpr (nmtools::len(result) > 0) {
+                    // transform back to type
+                    using init_type = nmtools_tuple<ct<at(result,0)>>;
+                    return template_reduce<nmtools::len(result)-1>([&](auto init, auto index){
+                        using init_t   = type_t<decltype(init)>;
+                        using result_i = ct<at(result,index+1)>;
+                        using result_t = append_type_t<init_t,result_i>;
+                        return as_value_v<result_t>;
+                    }, as_value_v<init_type>);
+                } else {
+                    return as_value_v<nmtools_tuple<>>;
+                }
             } else if constexpr (is_clipped_index_array_v<vector_t>
                 && is_constant_index_array_v<indices_t>
             ) {

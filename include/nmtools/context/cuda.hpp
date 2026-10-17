@@ -84,11 +84,11 @@ namespace nmtools::cuda
     struct context_t
         : base_context_t<context_t>
         , gpu_base_context_t<context_t>
-        , default_context_t<true,false,false,row_major_offset_t>
+        , default_context_t<true,false,false>
     {
         using base_type     = base_context_t<context_t>;
         using gpu_base_type = gpu_base_context_t<context_t>;
-        using default_type  = default_context_t<true,false,false,row_major_offset_t>;
+        using default_type  = default_context_t<true,false,false>;
 
         using default_type::create;
         using gpu_base_type::create_buffer;
@@ -98,9 +98,6 @@ namespace nmtools::cuda
         static constexpr auto object_enable    = false;
         static constexpr auto broadcast_enable = true;
         static constexpr auto unroll_enable    = false;
-        template <typename... args_t>
-        using layout_t = row_major_offset_t<args_t...>;
-
         // TODO: use cuda stream?
         context_t([[maybe_unused]] size_t gpu_id=0) {}
 

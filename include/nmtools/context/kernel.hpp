@@ -64,7 +64,6 @@ namespace nmtools
         using shape_type  = shape_t;
         using buffer_type = data_t*;
         using stride_type = resolve_stride_type_t<shape_type>;
-        using offset_type = row_major_offset_t<shape_type,stride_type>;
         using base_type   = base_ndarray_t<device_array>;
 
         // TODO: make buffer not a pointer, wrap the pointer instead
@@ -72,7 +71,6 @@ namespace nmtools
         shape_t shape_;
         dim_t dim_;
         stride_type strides_;
-        offset_type offset_;
 
         nmtools_func_attribute
         device_array(data_t* data_, const shape_t& shape_, dim_t dim_)
@@ -80,7 +78,6 @@ namespace nmtools
             , shape_  (shape_)
             , dim_    (dim_)
             , strides_(base_type::template compute_strides<stride_type>(shape_))
-            , offset_ (shape_,strides_)
         {}
 
         nmtools_func_attribute
@@ -89,14 +86,13 @@ namespace nmtools
             , shape_  (other.shape_)
             , dim_    (other.dim_)
             , strides_(base_type::template compute_strides<stride_type>(shape_))
-            , offset_ (shape_,strides_)
         {}
 
         template <typename indices_t>
         nmtools_func_attribute
         constexpr decltype(auto) offset(const indices_t& indices) const
         {
-            return offset_(indices);
+            return index::compute_offset(indices,strides_);
         } // offset
     };
 

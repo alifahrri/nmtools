@@ -5,6 +5,7 @@
 #include "nmtools/core/eval.hpp"
 #include "nmtools/core/ufunc.hpp"
 #include "nmtools/core/functor.hpp"
+#include "nmtools/core/mutable_stride.hpp"
 #include "nmtools/core/mutable_reshape.hpp"
 #include "nmtools/core/mutable_indexing.hpp"
 #include "nmtools/core/broadcast_arrays.hpp"

@@ -56,6 +56,11 @@ if (NMTOOLS_INDEX_TEST_ALL)
         src/compute_range.cpp
         src/compute_step.cpp
         src/compute_strides.cpp
+        src/compute_row_major_strides.cpp
+        src/compute_col_major_strides.cpp
+        src/compute_transposed_strides.cpp
+        src/compute_blocked_strides.cpp
+        src/is_row_major.cpp
         src/concatenate.cpp
         src/convnd.cpp
         src/diagonal.cpp

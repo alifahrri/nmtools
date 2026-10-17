@@ -418,11 +418,10 @@ namespace nmtools
           typename buffer_t
         , typename shape_buffer_t
         , template <typename...>typename stride_buffer_t=resolve_stride_type_t
-        , template <typename...>typename compute_offset_t=row_major_offset_t
         , typename context_t=none_t
         , auto broadcast_enable=true
         , typename=void>
-    struct object_t : base_ndarray_t<object_t<buffer_t,shape_buffer_t,stride_buffer_t,compute_offset_t,context_t>>
+    struct object_t : base_ndarray_t<object_t<buffer_t,shape_buffer_t,stride_buffer_t,context_t>>
     {
         static constexpr auto unroll = false;
         static constexpr auto broadcasting = broadcast_enable;
@@ -433,10 +432,9 @@ namespace nmtools
         using shape_type   = shape_buffer_t;
         using index_type   = get_element_or_common_type_t<shape_type>;
         using stride_type  = stride_buffer_t<shape_type>;
-        using offset_type  = compute_offset_t<shape_type,stride_type>;
         using context_type = conditional_t<
             is_none_v<context_t>
-            , default_context_t<broadcasting,/*object=*/true,unroll,compute_offset_t>
+            , default_context_t<broadcasting,/*object=*/true,unroll>
             , context_t>;
 
         static_assert( is_index_array_v<shape_type>, "unsupported shape_type for ndarray" );
@@ -445,14 +443,12 @@ namespace nmtools
         buffer_type  data_;
         shape_type   shape_;
         stride_type  strides_;
-        offset_type  offset_;
         context_type context_;
 
         constexpr object_t()
             : data_     (base_type::template initialize_data<buffer_type>())
             , shape_    (base_type::template initialize_shape<shape_type>(data_))
             , strides_  (base_type::template compute_strides<stride_type>(shape_))
-            , offset_   (shape_,strides_)
         {
             if constexpr (is_resizable_v<buffer_type>) {
                 auto numel = index::product(shape_);
@@ -470,14 +466,12 @@ namespace nmtools
             buffer_t
             , shape_buffer_t
             , stride_buffer_t
-            , compute_offset_t
             , other_context_t
             , other_broadcast>& other
         )
             : data_(other.data_)
             , shape_(other.shape_)
             , strides_(other.strides_)
-            , offset_(other.offset_)
         {}
 
         constexpr auto data() const noexcept
@@ -493,7 +487,7 @@ namespace nmtools
         template <typename indices_t>
         constexpr decltype(auto) offset(const indices_t& indices) const
         {
-            return offset_(indices);
+            return index::compute_offset(indices,strides_);
         } // offset
 
         template <typename size_type, typename...size_types>
@@ -508,6 +502,31 @@ namespace nmtools
             const auto numel   = index::product(sizes_);
             // since size may be packed, the proper way to read dim is using len instead of sizes..+1
             auto new_dim = len(sizes_);
+
+            // fixed-size strides cannot be re-strided to another rank, so the
+            // destination dim must match the current one; checked before any
+            // mutation so a rejected resize leaves the array untouched
+            if constexpr (!is_resizable_v<stride_type>) {
+                if ((size_t)new_dim != (size_t)len(strides_)) {
+                    return false;
+                }
+            }
+
+            // detect the layout from the old shape and strides before they
+            // are overwritten: strides belong to the old shape, so that is
+            // what is_row_major/is_col_major must compare against. arrays
+            // are only re-strided when they follow a canonical row-major or
+            // column-major striding; anything else (broadcast, padded,
+            // sliced strides) cannot be mapped onto a canonical layout for
+            // the new shape, so it is rejected. when both match (degenerate
+            // shapes) row-major is preferred
+            auto may_be_row_major = index::is_row_major(shape_, strides_);
+            auto may_be_col_major = index::is_col_major(shape_, strides_);
+            if (!may_be_row_major && !may_be_col_major) {
+                return false;
+            }
+            auto src_is_col_major = may_be_col_major && !may_be_row_major;
+
             if constexpr (is_resizable_v<shape_type>) {
                 shape_.resize(new_dim);
             }
@@ -567,7 +586,12 @@ namespace nmtools
             }
             // NOTE: using operator= directly may cause unusable for constexpr, (e.g. std::tuple)
             // quick workaround just use assignment of the elements
-            auto m_strides_ = base_type::template compute_strides<stride_type>(shape_);
+            auto m_strides_ = [&](){
+                if (src_is_col_major) {
+                    return base_type::template compute_col_strides<stride_type>(shape_);
+                }
+                return base_type::template compute_strides<stride_type>(shape_);
+            }();
             if constexpr (is_tuple_v<stride_type>) {
                 constexpr auto N = len_v<stride_type>;
                 template_for<N>([&](auto I){
@@ -581,7 +605,6 @@ namespace nmtools
                     at(strides_,i) = at(m_strides_,i);
                 }
             }
-            offset_ = offset_type(shape_,strides_);
             return true;
         } // resize
 
@@ -686,14 +709,12 @@ namespace nmtools
         template <
             typename other_shape_buffer_t
             , template <typename...>typename other_stride_buffer_t
-            , template <typename...>typename other_compute_offset_t
             , typename other_context_t
             , auto other_broadcast>
         constexpr auto operator=(const object_t<
             buffer_t
             , other_shape_buffer_t
             , other_stride_buffer_t
-            , other_compute_offset_t
             , other_context_t
             , other_broadcast>& other)
         {
@@ -701,7 +722,6 @@ namespace nmtools
             this->data_    = other.data_;
             this->shape_   = other.shape_;
             this->strides_ = other.strides_;
-            this->offset_  = other.offset_;
             return *this;
         }
 
@@ -887,11 +907,10 @@ namespace nmtools::meta
           typename buffer_t
         , typename shape_buffer_t
         , template <typename...>typename stride_buffer_t
-        , template <typename...>typename compute_offset_t
         , typename context_t
         , auto broadcast_enable>
     struct is_object_ndarray<
-        object_t<buffer_t,shape_buffer_t,stride_buffer_t,compute_offset_t,context_t,broadcast_enable>
+        object_t<buffer_t,shape_buffer_t,stride_buffer_t,context_t,broadcast_enable>
     > : true_type {};
 }
 
@@ -912,12 +931,11 @@ namespace nmtools
           typename buffer_t
         , typename shape_buffer_t
         , template <typename...>typename stride_buffer_t
-        , template <typename...>typename offset_compute_t
         , typename context_t
         , auto broadcast_enable>
-    struct get_t<I,object_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t,context_t,broadcast_enable>>
+    struct get_t<I,object_t<buffer_t,shape_buffer_t,stride_buffer_t,context_t,broadcast_enable>>
     {
-        using array_type = object_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t,context_t,broadcast_enable>;
+        using array_type = object_t<buffer_t,shape_buffer_t,stride_buffer_t,context_t,broadcast_enable>;
 
         static constexpr auto vtype = [](){
             constexpr auto dim = len_v<shape_buffer_t>;
@@ -958,12 +976,11 @@ namespace nmtools::meta
           typename buffer_t
         , typename shape_buffer_t
         , template <typename...>typename stride_buffer_t
-        , template <typename...>typename offset_compute_t
         , typename context_t
         , auto broadcast_enable>
-    struct get_element_type<object_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t,context_t,broadcast_enable>>
+    struct get_element_type<object_t<buffer_t,shape_buffer_t,stride_buffer_t,context_t,broadcast_enable>>
     {
-        using array_type = object_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t,context_t,broadcast_enable>;
+        using array_type = object_t<buffer_t,shape_buffer_t,stride_buffer_t,context_t,broadcast_enable>;
         static constexpr auto vtype = [](){
             using T = typename array_type::value_type;
             if constexpr (is_num_v<T>) {
@@ -979,14 +996,13 @@ namespace nmtools::meta
           typename buffer_t
         , typename shape_buffer_t
         , template <typename...>typename stride_buffer_t
-        , template <typename...>typename offset_compute_t
         , typename context_t
         , auto broadcast_enable>
     struct is_ndarray<
-        object_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t,context_t,broadcast_enable>
+        object_t<buffer_t,shape_buffer_t,stride_buffer_t,context_t,broadcast_enable>
     >
     {
-        using array_type = object_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t,context_t,broadcast_enable>;
+        using array_type = object_t<buffer_t,shape_buffer_t,stride_buffer_t,context_t,broadcast_enable>;
         using element_type = typename array_type::value_type;
         static constexpr auto value = is_num_v<element_type>;
     }; // is_ndarray
@@ -995,14 +1011,13 @@ namespace nmtools::meta
           typename buffer_t
         , typename shape_buffer_t
         , template <typename...>typename stride_buffer_t
-        , template <typename...>typename offset_compute_t
         , typename context_t
         , auto broadcast_enable>
     struct fixed_dim<
-        object_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t,context_t,broadcast_enable>
+        object_t<buffer_t,shape_buffer_t,stride_buffer_t,context_t,broadcast_enable>
     >
     {
-        using array_type = object_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t,context_t,broadcast_enable>;
+        using array_type = object_t<buffer_t,shape_buffer_t,stride_buffer_t,context_t,broadcast_enable>;
         using shape_type = typename array_type::shape_type;
 
         static constexpr auto value = [](){
@@ -1019,14 +1034,13 @@ namespace nmtools::meta
           typename buffer_t
         , typename shape_buffer_t
         , template <typename...>typename stride_buffer_t
-        , template <typename...>typename offset_compute_t
         , typename context_t
         , auto broadcast_enable>
     struct fixed_shape<
-        object_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t,context_t,broadcast_enable>
+        object_t<buffer_t,shape_buffer_t,stride_buffer_t,context_t,broadcast_enable>
     >
     {
-        using array_type = object_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t,context_t,broadcast_enable>;
+        using array_type = object_t<buffer_t,shape_buffer_t,stride_buffer_t,context_t,broadcast_enable>;
         using shape_type = typename array_type::shape_type;
 
         static constexpr auto value = [](){
@@ -1043,14 +1057,13 @@ namespace nmtools::meta
           typename buffer_t
         , typename shape_buffer_t
         , template <typename...>typename stride_buffer_t
-        , template <typename...>typename offset_compute_t
         , typename context_t
         , auto broadcast_enable>
     struct fixed_size<
-        object_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t,context_t,broadcast_enable>
+        object_t<buffer_t,shape_buffer_t,stride_buffer_t,context_t,broadcast_enable>
     >
     {
-        using array_type  = object_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t,context_t,broadcast_enable>;
+        using array_type  = object_t<buffer_t,shape_buffer_t,stride_buffer_t,context_t,broadcast_enable>;
         using shape_type  = typename array_type::shape_type;
         using buffer_type = typename array_type::buffer_type;
 
@@ -1070,14 +1083,13 @@ namespace nmtools::meta
           typename buffer_t
         , typename shape_buffer_t
         , template <typename...>typename stride_buffer_t
-        , template <typename...>typename offset_compute_t
         , typename context_t
         , auto broadcast_enable>
     struct bounded_dim<
-        object_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t,context_t,broadcast_enable>
+        object_t<buffer_t,shape_buffer_t,stride_buffer_t,context_t,broadcast_enable>
     >
     {
-        using array_type  = object_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t,context_t,broadcast_enable>;
+        using array_type  = object_t<buffer_t,shape_buffer_t,stride_buffer_t,context_t,broadcast_enable>;
         using shape_type  = typename array_type::shape_type;
         using buffer_type = typename array_type::buffer_type;
 
@@ -1098,14 +1110,13 @@ namespace nmtools::meta
           typename buffer_t
         , typename shape_buffer_t
         , template <typename...>typename stride_buffer_t
-        , template <typename...>typename offset_compute_t
         , typename context_t
         , auto broadcast_enable>
     struct bounded_size<
-        object_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t,context_t,broadcast_enable>
+        object_t<buffer_t,shape_buffer_t,stride_buffer_t,context_t,broadcast_enable>
     >
     {
-        using array_type  = object_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t,context_t,broadcast_enable>;
+        using array_type  = object_t<buffer_t,shape_buffer_t,stride_buffer_t,context_t,broadcast_enable>;
         using shape_type  = typename array_type::shape_type;
         using buffer_type = typename array_type::buffer_type;
 
@@ -1125,26 +1136,24 @@ namespace nmtools::meta
         , typename buffer_t
         , typename shape_buffer_t
         , template <typename...>typename stride_buffer_t
-        , template <typename...>typename offset_compute_t
         , typename context_t
         , auto broadcast_enable>
     struct replace_element_type<
-        object_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t,context_t,broadcast_enable>, U
+        object_t<buffer_t,shape_buffer_t,stride_buffer_t,context_t,broadcast_enable>, U
     >
     {
         using buffer_type = replace_element_type_t<buffer_t,U>;
-        using type = object_t<buffer_type,shape_buffer_t,stride_buffer_t,offset_compute_t,context_t,broadcast_enable>;
+        using type = object_t<buffer_type,shape_buffer_t,stride_buffer_t,context_t,broadcast_enable>;
     }; // replace_element_type
 
     template <
           typename buffer_t
         , typename shape_buffer_t
         , template <typename...>typename stride_buffer_t
-        , template <typename...>typename offset_compute_t
         , typename context_t
         , auto broadcast_enable>
     struct is_index_array<
-        object_t<buffer_t,shape_buffer_t,stride_buffer_t,offset_compute_t,context_t,broadcast_enable>
+        object_t<buffer_t,shape_buffer_t,stride_buffer_t,context_t,broadcast_enable>
     >
     {
         static constexpr auto value = [](){

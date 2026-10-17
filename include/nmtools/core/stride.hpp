@@ -238,7 +238,14 @@ namespace nmtools::view
         // TODO: check if array is 1D
         // TODO: validate shape w/ striding
         auto f = [](const auto& array, const auto& shape, const auto& striding, const auto bsize){
-            const auto src_shape = nmtools::shape<true>(array);
+            const auto src_shape = [&](){
+                using array_type = remove_cvref_t<decltype(array)>;
+                if constexpr (is_pointer_v<array_type>) {
+                    return nmtools::shape<true>(*array);
+                } else {
+                    return nmtools::shape<true>(array);
+                }
+            }();
             auto indexer = strider(src_shape,shape,striding,bsize);
             return indexing(array,indexer);
         };

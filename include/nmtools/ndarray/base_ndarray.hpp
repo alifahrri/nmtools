@@ -10,48 +10,6 @@
 #include "nmtools/utility/shape.hpp"
 #include "nmtools/utility/at.hpp"
 #include "nmtools/utility/get.hpp"
-#include "nmtools/core/layout.hpp"
-
-namespace nmtools::meta
-{
-    template <typename T, typename=void>
-    struct is_row_major_offset : false_type {};
-
-    template <typename T, typename=void>
-    struct is_column_major_offset : false_type {};
-
-    template <typename T>
-    struct is_row_major_offset<const T> : is_row_major_offset<T> {};
-
-    template <typename T>
-    struct is_row_major_offset<T&> : is_row_major_offset<T> {};
-
-    template <typename T>
-    struct is_column_major_offset<const T> : is_column_major_offset<T> {};
-
-    template <typename T>
-    struct is_column_major_offset<T&> : is_column_major_offset<T> {};
-
-    template <typename shape_t, typename strides_t>
-    struct is_row_major_offset<
-        row_major_offset_t<shape_t,strides_t>
-    > {
-        static constexpr auto value = is_index_array_v<shape_t> && is_index_array_v<strides_t>;
-    };
-
-    template <typename shape_t, typename strides_t>
-    struct is_column_major_offset<
-        column_major_offset_t<shape_t,strides_t>
-    > {
-        static constexpr auto value = is_index_array_v<shape_t> && is_index_array_v<strides_t>;
-    };
-
-    template <typename T>
-    constexpr inline auto is_row_major_offset_v = is_row_major_offset<T>::value;
-
-    template <typename T>
-    constexpr inline auto is_column_major_offset_v = is_column_major_offset<T>::value;
-} // namespace nmtools::meta
 
 namespace nmtools
 {
@@ -117,7 +75,44 @@ namespace nmtools
                 if constexpr (is_resizable_v<strides_type>) {
                     strides.resize(dim);
                 }
-                if constexpr (!is_constant_index_array_v<strides_type>) {
+                if constexpr (is_tuple_v<strides_type>) {
+                    // tuples only support compile-time indices
+                    constexpr auto N = len_v<strides_type>;
+                    template_for<N>([&](auto I){
+                        at(strides,I) = at(result,I);
+                    });
+                } else if constexpr (!is_constant_index_array_v<strides_type>) {
+                    for (size_t i=0; i<dim; i++) {
+                        at(strides,i) = at(result,i);
+                    }
+                }
+                return strides;
+            }
+        }
+
+        // column-major counterpart of compute_strides
+        template <typename strides_type, typename shape_type>
+        static constexpr auto compute_col_strides(const shape_type& shape)
+        {
+            auto result  = index::compute_col_major_strides(shape);
+            if constexpr (is_same_v<strides_type,decltype(result)>) {
+                return result;
+            } else {
+                auto strides = strides_type{};
+                [[maybe_unused]] auto dim = len(result);
+                if constexpr (is_resizable_v<strides_type>) {
+                    strides.resize(dim);
+                }
+                if constexpr (is_tuple_v<strides_type>) {
+                    // tuples only support compile-time indices; needed e.g.
+                    // for clipped strides whose maxima differ per mode, so
+                    // the col-major result is a different type than the
+                    // row-major one and cannot take the is_same_v shortcut
+                    constexpr auto N = len_v<strides_type>;
+                    template_for<N>([&](auto I){
+                        at(strides,I) = at(result,I);
+                    });
+                } else if constexpr (!is_constant_index_array_v<strides_type>) {
                     for (size_t i=0; i<dim; i++) {
                         at(strides,i) = at(result,i);
                     }

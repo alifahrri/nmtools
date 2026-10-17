@@ -645,3 +645,99 @@ TEST_CASE("array.zeros" * doctest::test_suite("object"))
     auto expect = nm::zeros(shape,dtype);
     NMTOOLS_ASSERT_CLOSE( result, expect );
 }
+
+// member resize on materialized arrays: reshape keeps numel and
+// recomputes canonical row-major strides; this object has fixed-size
+// strides and buffer, so rank changes and size changes are rejected
+#if 1
+TEST_CASE("array.resize(reshape)" * doctest::test_suite("object"))
+{
+    int buffer[12] = {0,1,2,3,4,5,6,7,8,9,10,11};
+    int shape[2]   = {3,4};
+    auto a = nm::array(buffer, shape);
+
+    NMTOOLS_REQUIRE_EQUAL( a.strides(), (nmtools_array{4,1}) );
+
+    // same rank, same numel
+    NMTOOLS_REQUIRE_EQUAL( a.resize(4,3), true );
+    NMTOOLS_REQUIRE_EQUAL( a.shape(), (nmtools_array{4,3}) );
+    NMTOOLS_REQUIRE_EQUAL( a.strides(), (nmtools_array{3,1}) );
+    int expect_reshape[4][3] = {
+        {0,1,2},
+        {3,4,5},
+        {6,7,8},
+        {9,10,11},
+    };
+    NMTOOLS_ASSERT_CLOSE( a, expect_reshape );
+
+    // new rank: rejected for fixed-size strides, array untouched
+    NMTOOLS_REQUIRE_EQUAL( a.resize(2,2,3), false );
+    NMTOOLS_REQUIRE_EQUAL( a.shape(), (nmtools_array{4,3}) );
+    NMTOOLS_REQUIRE_EQUAL( a.strides(), (nmtools_array{3,1}) );
+
+    // back to the original shape
+    NMTOOLS_REQUIRE_EQUAL( a.resize(3,4), true );
+    int expect_back[3][4] = {
+        {0,1,2,3},
+        {4,5,6,7},
+        {8,9,10,11},
+    };
+    NMTOOLS_ASSERT_CLOSE( a, expect_back );
+}
+#endif
+
+// member resize on a dynamic-strided array: rank changes re-stride,
+// shrinking truncates and growing zero-fills, strides stay canonical
+// row-major
+#if 1
+TEST_CASE("array.resize(dynamic)" * doctest::test_suite("object"))
+{
+    using obj_t = nm::object_t<nmtools_list<int>,nmtools_list<int32_t>>;
+    auto a = obj_t{};
+
+    NMTOOLS_REQUIRE_EQUAL( a.resize(3,4), true );
+    NMTOOLS_REQUIRE_EQUAL( a.shape(), (nmtools_array{3,4}) );
+    NMTOOLS_REQUIRE_EQUAL( a.size(), 12 );
+    NMTOOLS_REQUIRE_EQUAL( a.strides(), (nmtools_array{4,1}) );
+    for (int i=0; i<12; i++) {
+        a.data_[i] = i;
+    }
+
+    // across ranks, same numel
+    NMTOOLS_REQUIRE_EQUAL( a.resize(2,2,3), true );
+    NMTOOLS_REQUIRE_EQUAL( a.strides(), (nmtools_array{6,3,1}) );
+    int expect_rank[2][2][3] = {
+        {
+            {0,1,2},
+            {3,4,5},
+        },
+        {
+            {6,7,8},
+            {9,10,11},
+        },
+    };
+    NMTOOLS_ASSERT_CLOSE( a, expect_rank );
+
+    // shrink
+    NMTOOLS_REQUIRE_EQUAL( a.resize(2,3), true );
+    NMTOOLS_REQUIRE_EQUAL( a.size(), 6 );
+    NMTOOLS_REQUIRE_EQUAL( a.strides(), (nmtools_array{3,1}) );
+    int expect_shrink[2][3] = {
+        {0,1,2},
+        {3,4,5},
+    };
+    NMTOOLS_ASSERT_CLOSE( a, expect_shrink );
+
+    // grow: new elements are zero-filled
+    NMTOOLS_REQUIRE_EQUAL( a.resize(4,4), true );
+    NMTOOLS_REQUIRE_EQUAL( a.size(), 16 );
+    NMTOOLS_REQUIRE_EQUAL( a.strides(), (nmtools_array{4,1}) );
+    int expect_grow[4][4] = {
+        {0,1,2,3},
+        {4,5,0,0},
+        {0,0,0,0},
+        {0,0,0,0},
+    };
+    NMTOOLS_ASSERT_CLOSE( a, expect_grow );
+}
+#endif

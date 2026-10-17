@@ -65,13 +65,40 @@ namespace nmtools
                    (is_index_v<size_type> || is_index_array_v<size_type>)
                 && (is_index_v<size_types> && ...)
                 && (!is_constant_index_array_v<shape_type>)
-                && (is_none_v<stride_buffer_t>) // only works for row major, we don't know how to recompute strides
             , bool>
         {
             const auto sizes_  = index::pack_indices(size,sizes...);
             const auto numel   = index::product(sizes_);
             // since size may be packed, the proper way to read dim is using len instead of sizes..+1
             auto new_dim = len(sizes_);
+
+            // fixed-size strides cannot be re-strided to another rank, so the
+            // destination dim must match the current one; checked before any
+            // mutation so a rejected resize leaves the array untouched
+            if constexpr (!is_none_v<stride_buffer_t> && !is_resizable_v<stride_type>) {
+                if ((size_t)new_dim != (size_t)len(strides_)) {
+                    return false;
+                }
+            }
+
+            // detect the layout from the old shape and strides before they
+            // are overwritten: strides belong to the old shape, so that is
+            // what is_row_major/is_col_major must compare against. explicit
+            // strided arrays are only re-strided when they follow a canonical
+            // row-major or column-major striding; anything else (broadcast,
+            // padded, sliced strides) cannot be mapped onto a canonical
+            // layout for the new shape, so it is rejected. when both match
+            // (degenerate shapes) row-major is preferred
+            [[maybe_unused]] auto src_is_col_major = false;
+            if constexpr (!is_none_v<stride_buffer_t>) {
+                auto may_be_row_major = index::is_row_major(shape_, strides_);
+                auto may_be_col_major = index::is_col_major(shape_, strides_);
+                if (!may_be_row_major && !may_be_col_major) {
+                    return false;
+                }
+                src_is_col_major = may_be_col_major && !may_be_row_major;
+            }
+
             if constexpr (is_resizable_v<shape_type>) {
                 shape_.resize(new_dim);
             }
@@ -131,7 +158,14 @@ namespace nmtools
             }
             // NOTE: using operator= directly may cause unusable for constexpr, (e.g. std::tuple)
             // quick workaround just use assignment of the elements
-            auto m_strides_ = base_type::template compute_strides<stride_type>(shape_);
+            auto m_strides_ = [&](){
+                if constexpr (!is_none_v<stride_buffer_t>) {
+                    if (src_is_col_major) {
+                        return base_type::template compute_col_strides<stride_type>(shape_);
+                    }
+                }
+                return base_type::template compute_strides<stride_type>(shape_);
+            }();
             if constexpr (is_tuple_v<stride_type>) {
                 constexpr auto N = len_v<stride_type>;
                 template_for<N>([&](auto I){
@@ -145,10 +179,6 @@ namespace nmtools
                     at(strides_,i) = at(m_strides_,i);
                 }
             }
-            // on column major offset this strides is unused
-            // calculated there from the shapes
-            // TODO: fix
-            // offset_.reset(shape_,strides_);
             return true;
         } // resize
 
