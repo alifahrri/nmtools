@@ -12,6 +12,7 @@
 #include "nmtools/utl.hpp"
 #include "nmtools/testing/doctest.hpp"
 #include "nmtools/utility/cast.hpp"
+#include "nmtools/utility/get.hpp"
 
 namespace nm = nmtools;
 namespace na = nmtools;
@@ -674,10 +675,10 @@ TEST_CASE("ndarray(case29)" * doctest::test_suite("array::ndarray"))
     constexpr auto strides = ix::compute_blocked_strides(shape_ct, block_ct, grid_order, inner_order);
 
     // ((32,1),(8,4)), matches index::compute_blocked_strides case1
-    static_assert(std::get<0>(std::get<0>(strides)) == 32);
-    static_assert(std::get<1>(std::get<0>(strides)) == 1);
-    static_assert(std::get<0>(std::get<1>(strides)) == 8);
-    static_assert(std::get<1>(std::get<1>(strides)) == 4);
+    static_assert(nmtools::get<0>(nmtools::get<0>(strides)) == 32);
+    static_assert(nmtools::get<1>(nmtools::get<0>(strides)) == 1);
+    static_assert(nmtools::get<0>(nmtools::get<1>(strides)) == 8);
+    static_assert(nmtools::get<1>(nmtools::get<1>(strides)) == 4);
 
     int buffer[64];
     for (int i=0; i<64; i++) buffer[i] = i;
@@ -698,10 +699,10 @@ TEST_CASE("ndarray(case29)" * doctest::test_suite("array::ndarray"))
         int g0 = m/4, t0 = m%4;
         for (int n=0; n<8; n++) {
             int g1 = n/2, t1 = n%2;
-            auto offset = g0*std::get<0>(std::get<0>(strides))
-                        + t0*std::get<1>(std::get<0>(strides))
-                        + g1*std::get<0>(std::get<1>(strides))
-                        + t1*std::get<1>(std::get<1>(strides));
+            auto offset = g0*nmtools::get<0>(nmtools::get<0>(strides))
+                        + t0*nmtools::get<1>(nmtools::get<0>(strides))
+                        + g1*nmtools::get<0>(nmtools::get<1>(strides))
+                        + t1*nmtools::get<1>(nmtools::get<1>(strides));
             NMTOOLS_ASSERT_EQUAL( buffer[offset], expect[m][n] );
         }
     }
