@@ -30,27 +30,6 @@
 
 namespace nmtools::meta
 {
-    namespace error
-    {
-        template <typename...>
-        struct LAYOUT_KIND_UNSUPPORTED : detail::fail_t {};
-    }
-
-    template <typename T>
-    struct layout_kind
-    {
-        static constexpr auto value = error::LAYOUT_KIND_UNSUPPORTED<T>{};
-    };
-
-    template <typename T>
-    struct layout_kind<const T> : layout_kind<T> {};
-
-    template <typename T>
-    struct layout_kind<T&> : layout_kind<T> {};
-
-    template <typename T>
-    constexpr inline auto layout_kind_v = layout_kind<T>::value;
-
     // TODO: move to meta/bits or functor
     template <typename T>
     struct is_binary_ufunc_functor : false_type {};
@@ -95,7 +74,6 @@ namespace nmtools::meta
 namespace nmtools
 {
     using meta::is_functor_composition_v;
-    using meta::layout_kind_v;
     using meta::is_binary_ufunc_functor_v;
 }
 
@@ -113,14 +91,6 @@ namespace nmtools::functional
     };
 
     using Type = nmtools::DType;
-
-    // only valid for buffer, obviously
-    enum class Layout : int
-    {
-        UNKNOWN   = -1,
-        RowMajor = 0,
-        ColMajor = 1,
-    };
 
     enum class Combinator : int
     {
@@ -381,27 +351,6 @@ namespace nmtools::functional
     }
 
     template <typename string_type>
-    constexpr string_type layout_to_string(Layout layout)
-    {
-        auto layout_str = string_type();
-
-        switch (layout) {
-            case Layout::UNKNOWN:
-            layout_str += "UNKNOWN";
-            break;
-            case Layout::RowMajor:
-            layout_str += "RowMajor";
-            break;
-            case Layout::ColMajor:
-            layout_str += "ColMajor";
-            break;
-            default:
-            break;
-        };
-        return layout_str;
-    }
-
-    template <typename string_type>
     constexpr string_type combinator_to_string(Combinator combinator_type)
     {
         auto str = string_type();
@@ -474,20 +423,6 @@ namespace nmtools::functional
         }
 
         return type;
-    }
-
-    template <typename string_type>
-    constexpr Layout string_to_layout(const string_type& layout_str)
-    {
-        Layout layout = Layout::UNKNOWN;
-
-        if (layout_str == "RowMajor") {
-            layout = Layout::RowMajor;
-        } else if (layout_str == "ColMajor") {
-            layout = Layout::ColMajor;
-        }
-
-        return layout;
     }
 
     template <typename string_type>
@@ -570,11 +505,6 @@ namespace nmtools::functional
             return functional::type_to_string<string_type>(type);
         }
 
-        static constexpr string_type layout_to_string(Layout layout)
-        {
-            return functional::layout_to_string<string_type>(layout);
-        }
-
         static constexpr string_type combinator_to_string(Combinator combinator_type)
         {
             return functional::combinator_to_string<string_type>(combinator_type);
@@ -588,11 +518,6 @@ namespace nmtools::functional
         static constexpr Type string_to_type(const string_type& dtype_str)
         {
             return functional::string_to_type(dtype_str);
-        }
-
-        static constexpr Layout string_to_layout(const string_type& layout_str)
-        {
-            return functional::string_to_layout(layout_str);
         }
 
         static constexpr Combinator string_to_combinator(const string_type& str)
@@ -610,7 +535,6 @@ namespace nmtools::functional
             , Kind kind
             , Type dtype
             , composition_type composition
-            , Layout layout=Layout::UNKNOWN
             , Combinator combinator=Combinator::INVALID
             , nm_index_t combinator_args=-1
             , input_type input=input_type{})
@@ -622,7 +546,6 @@ namespace nmtools::functional
                 attrs["is_num"]  = is_num;
                 attrs["kind"]    = kind_to_string(kind);
                 attrs["dtype"]   = type_to_string(dtype);
-                attrs["layout"]  = layout_to_string(layout);
                 attrs["combinator_type"] = combinator_to_string(combinator);
                 attrs["combinator_args"] = combinator_args;
                 return attrs;
@@ -685,9 +608,6 @@ namespace nmtools::functional
             }
             if (other.attributes_.count("dtype")) {
                 attributes_["dtype"] = type_to_string(other.dtype());
-            }
-            if (other.attributes_.count("layout")) {
-                attributes_["layout"] = layout_to_string(other.layout());
             }
             if (other.attributes_.count("combinator_type")) {
                 attributes_["combinator_type"] = combinator_to_string(other.combinator_type());
@@ -757,11 +677,6 @@ namespace nmtools::functional
             return composition_;
         }
 
-        constexpr decltype(auto) layout() const
-        {
-            return string_to_layout(attributes_.at("layout").string);
-        }
-
         constexpr decltype(auto) combinator_type() const
         {
             auto type = Combinator::INVALID;
@@ -789,7 +704,6 @@ namespace nmtools::functional
             , dim_type dim
             , max_dim_type max_dim
             , Type dtype
-            , Layout layout
             , input_type input=input_type{})
         {
             composition_type composition = {};
@@ -797,12 +711,11 @@ namespace nmtools::functional
             auto is_num = false;
             Combinator combinator = Combinator::INVALID;
             nm_index_t combinator_args=-1;
-            return Node{shape,dim,max_dim,is_num,kind,dtype,composition,layout,combinator,combinator_args,input};
+            return Node{shape,dim,max_dim,is_num,kind,dtype,composition,combinator,combinator_args,input};
         }
 
         static constexpr auto buffer(const shape_type& shape
             , Type dtype
-            , Layout layout
             , input_type input=input_type{})
         {
             composition_type composition = {};
@@ -812,13 +725,12 @@ namespace nmtools::functional
             nm_index_t combinator_args=-1;
             dim_type dim = shape.size();
             max_dim_type max_dim = shape.size();
-            return Node{shape,dim,max_dim,is_num,kind,dtype,composition,layout,combinator,combinator_args,input};
+            return Node{shape,dim,max_dim,is_num,kind,dtype,composition,combinator,combinator_args,input};
         }
 
         template <typename shape_t>
         static constexpr auto buffer(const shape_t& shape
             , Type dtype
-            , Layout layout
             , input_type input=input_type{})
         {
             static_assert( is_index_array_v<shape_t>
@@ -832,7 +744,7 @@ namespace nmtools::functional
             for (nm_size_t i=0; i<(nm_size_t)n; i++) {
                 at(m_shape,i) = at(shape,i);
             }
-            return buffer(m_shape,dtype,layout,input);
+            return buffer(m_shape,dtype,input);
         }
 
         static constexpr auto buffer(none_t
@@ -844,8 +756,7 @@ namespace nmtools::functional
             auto is_num  = true;
             auto dim     = -1;
             auto max_dim = -1;
-            auto layout  = Layout::UNKNOWN;
-            return Node{shape,dim,max_dim,is_num,kind,dtype,composition,layout};
+            return Node{shape,dim,max_dim,is_num,kind,dtype,composition};
         }
 
         static constexpr auto compute(Kind kind
@@ -853,30 +764,27 @@ namespace nmtools::functional
             , dim_type dim
             , max_dim_type max_dim
             , is_num_type is_num
-            , Type dtype
-            , Layout layout=Layout::UNKNOWN)
+            , Type dtype)
         {
             composition_type composition = {};
-            return Node{shape,dim,max_dim,is_num,kind,dtype,composition,layout};
+            return Node{shape,dim,max_dim,is_num,kind,dtype,composition};
         }
 
         static constexpr auto compute(Kind kind
             , const shape_type& shape
-            , Type dtype
-            , Layout layout=Layout::UNKNOWN)
+            , Type dtype)
         {
             composition_type composition = {};
             dim_type dim     = shape.size();
             max_dim_type max_dim = shape.size();
             auto is_num  = false;
-            return Node{shape,dim,max_dim,is_num,kind,dtype,composition,layout};
+            return Node{shape,dim,max_dim,is_num,kind,dtype,composition};
         }
 
         template <typename shape_t>
         static constexpr auto compute(Kind kind
             , const shape_t& shape
-            , Type dtype
-            , Layout layout=Layout::UNKNOWN)
+            , Type dtype)
         {
             static_assert( is_index_array_v<shape_t>
                 , "expected index array but got unsupported type for buffer" );
@@ -889,89 +797,81 @@ namespace nmtools::functional
             for (nm_size_t i=0; i<(nm_size_t)n; i++) {
                 at(m_shape,i) = at(shape,i);
             }
-            return compute(kind,m_shape,dtype,layout);
+            return compute(kind,m_shape,dtype);
         }
 
         static constexpr auto functor(Kind kind)
         {
             // functor is similar to compute but no real info
             auto shape   = shape_type {};
-            auto layout  = Layout::UNKNOWN;
             auto dtype   = Type::UNKNOWN;
             auto is_num  = false;
             auto dim     = -1;
             auto max_dim = -1;
             composition_type composition = {};
-            return Node{shape,dim,max_dim,is_num,kind,dtype,composition,layout};
+            return Node{shape,dim,max_dim,is_num,kind,dtype,composition};
         }
 
         static constexpr auto combinator(Combinator combinator, nm_index_t args=-1)
         {
             auto shape   = shape_type {};
-            auto layout  = Layout::UNKNOWN;
             auto dtype   = Type::UNKNOWN;
             auto kind    = Kind::UNKNOWN;
             auto is_num  = false;
             auto dim     = -1;
             auto max_dim = -1;
             auto composition = composition_type {};
-            return Node{shape,dim,max_dim,is_num,kind,dtype,composition,layout,combinator,args};
+            return Node{shape,dim,max_dim,is_num,kind,dtype,composition,combinator,args};
         }
 
         template <typename shape_t>
         static constexpr auto indexing(const shape_t& shape
-            , Type dtype
-            , Layout layout=Layout::UNKNOWN)
+            , Type dtype)
         {
-            return compute(Kind::INDEXING,shape,dtype,layout);
+            return compute(Kind::INDEXING,shape,dtype);
         }
 
         template <typename shape_t>
         static constexpr auto binary_ufunc(const string_type& op
             , const shape_t& shape
-            , Type dtype
-            , Layout layout=Layout::UNKNOWN)
+            , Type dtype)
         {
-            auto node = compute(Kind::BINARY_UFUNC,shape,dtype,layout);
+            auto node = compute(Kind::BINARY_UFUNC,shape,dtype);
             node.attributes()["op"] = op;
             return node;
         }
 
         template <typename shape_t>
         static constexpr auto binary_ufunc(const shape_t& shape
-            , Type dtype
-            , Layout layout=Layout::UNKNOWN)
+            , Type dtype)
         {
-            return compute(Kind::BINARY_UFUNC,shape,dtype,layout);
+            return compute(Kind::BINARY_UFUNC,shape,dtype);
         }
 
         template <typename shape_t>
         static constexpr auto unary_ufunc(const string_type& op
             , const shape_t& shape
-            , Type dtype
-            , Layout layout=Layout::UNKNOWN)
+            , Type dtype)
         {
-            auto node = compute(Kind::UNARY_UFUNC,shape,dtype,layout);
+            auto node = compute(Kind::UNARY_UFUNC,shape,dtype);
             node.attributes()["op"] = op;
             return node;
         }
 
         template <typename shape_t>
         static constexpr auto unary_ufunc(const shape_t& shape
-            , Type dtype
-            , Layout layout=Layout::UNKNOWN)
+            , Type dtype)
         {
-            return compute(Kind::UNARY_UFUNC,shape,dtype,layout);
+            return compute(Kind::UNARY_UFUNC,shape,dtype);
         }
 
         template <typename shape_t, typename axis_t>
         static constexpr auto reduce(const string_type& op
             , const axis_t& axis
             , const shape_t& shape
-            , Type dtype
-            , Layout layout=Layout::UNKNOWN)
+            , Type dtype)
         {
-            auto node = compute(Kind::REDUCE,shape,dtype,layout);
+            auto node = compute(Kind::REDUCE,shape,dtype);
             node.attributes()["op"]   = op;
             node.attributes()["axis"] = axis;
             return node;
@@ -979,10 +879,9 @@ namespace nmtools::functional
 
         template <typename shape_t>
         static constexpr auto reduce(const shape_t& shape
-            , Type dtype
-            , Layout layout=Layout::UNKNOWN)
+            , Type dtype)
         {
-            return compute(Kind::REDUCE,shape,dtype,layout);
+            return compute(Kind::REDUCE,shape,dtype);
         }
 
         /******************************************************************* */
@@ -1049,9 +948,6 @@ namespace nmtools::functional
                 }
                 if (other.attributes_.count("dtype")) {
                     this->attributes_["dtype"] = type_to_string(other.dtype());
-                }
-                if (other.attributes_.count("layout")) {
-                    this->attributes_["layout"] = layout_to_string(other.layout());
                 }
                 if (other.attributes_.count("combinator_type")) {
                     this->attributes_["combinator_type"] = combinator_to_string(other.combinator_type());
@@ -1210,10 +1106,6 @@ namespace nmtools::functional
                     case Kind::BUFFERED:
                     kind_str += "BUFFERED";
                     kind_str += "{";
-                    if (attributes_.count("layout")) {
-                        kind_str += "layout=";
-                        kind_str += attributes_.at("layout").string.c_str();
-                    }
                     if (attributes_.count("input_type")) {
                         kind_str += ",input_type=";
                         kind_str += attributes_.at("input_type").string.c_str();
@@ -1729,25 +1621,6 @@ namespace nmtools::functional
 
 namespace nmtools::meta
 {
-    template <
-          typename buffer_t
-        , typename shape_buffer_t
-        , typename stride_buffer_t>
-    struct layout_kind<
-        ndarray_t<buffer_t,shape_buffer_t,stride_buffer_t>
-    > {
-        using array_type  = ndarray_t<buffer_t,shape_buffer_t,stride_buffer_t>;
-        // derived strides (none_t) are always row major
-        // explicit strides are values, layout cannot be deduced at compile time
-        static constexpr auto value = [](){
-            if constexpr (is_none_v<stride_buffer_t>) {
-                return functional::Layout::RowMajor;
-            } else {
-                return error::LAYOUT_KIND_UNSUPPORTED<array_type>{};
-            }
-        }();
-    };
-
     template <typename input_t, typename shape_t, typename element_t, typename node_t>
     struct to_value<
         functional::buffer_node_t<input_t,shape_t,element_t>
@@ -1756,18 +1629,11 @@ namespace nmtools::meta
         static constexpr auto value = [](){
             using Node = functional::Node<>;
             using Type = functional::Type;
-            using Layout = functional::Layout;
 
             Type dtype    = Type::UNKNOWN;
-            Layout layout = Layout::UNKNOWN;
 
             if constexpr (!is_none_v<element_t>) {
                 dtype = to_value_v<dtype_t<element_t>>;
-            }
-
-            auto layout_kind = layout_kind_v<input_t>;
-            if constexpr (!is_fail_v<decltype(layout_kind)>) {
-                layout = layout_kind;
             }
 
             using shape_type = typename Node::shape_type;
@@ -1797,7 +1663,7 @@ namespace nmtools::meta
                 node.attributes()["input_type"] = type_name_v<input_t>;
                 return node;
             } else {
-                auto node = Node::buffer(shape,dim,max_dim,dtype,layout);
+                auto node = Node::buffer(shape,dim,max_dim,dtype);
                 node.attributes()["input_type"] = type_name_v<input_t>;
                 return node;
             }

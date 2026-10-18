@@ -21,7 +21,6 @@ namespace nmtools::runtime
 
     using functional::Kind;
     using functional::Type;
-    using functional::Layout;
     using functional::Combinator;
 
     // TODO: use small vector
