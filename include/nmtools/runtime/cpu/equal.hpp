@@ -104,6 +104,8 @@ namespace nmtools::runtime
 
                 // equal always result in bool, use uint8 (avoid vector of bool)
                 auto rtype  = uint8;
+                const auto [bcasted_lhs, bcasted_rhs] = functional::get_operands(v);
+
                 auto result = ndarray(shape(v),rtype);
 
                 auto ctx        = tilekit::Scalar;
@@ -111,7 +113,7 @@ namespace nmtools::runtime
                 auto tile_shape = nmtools_tuple{1_ct,4_ct};
                 auto output     = result.mutable_view(rtype);
 
-                equal(ctx,output,lhs.view(lhs_dtype),rhs.view(rhs_dtype),tile_shape,padding);
+                equal(ctx,output,bcasted_lhs,bcasted_rhs,tile_shape,padding);
                 array = result;
             }
         });

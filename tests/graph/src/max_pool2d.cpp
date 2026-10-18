@@ -16,7 +16,6 @@ using namespace nm::literals;
 using Node = fn::Node<>;
 using Kind = fn::Kind;
 using Type = fn::Type;
-using Layout = fn::Layout;
 
 using nmtools_array, nmtools_tuple, nmtools::unwrap;
 
@@ -60,7 +59,7 @@ TEST_CASE("max_pool2d(case1)" * doctest::test_suite("computational_graph"))
     };
     constexpr auto node_ids = nmtools_tuple{0_ct,1_ct,200_ct,300_ct,400_ct,500_ct};
     constexpr auto node_attributes = nmtools_array{
-        Node::buffer(array{1,1,7,7},Type::Float32,Layout::RowMajor),
+        Node::buffer(array{1,1,7,7},Type::Float32),
         Node::buffer(nm::None,Type::Float32),
         Node::compute(Kind::INDEXING,array{1,1,7,7},Type::Float32),
         Node::compute(Kind::INDEXING,array{1,1,5,5,3,3},Type::Float32),

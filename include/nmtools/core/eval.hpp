@@ -19,17 +19,6 @@
 
 namespace nmtools
 {
-    // TODO: move
-    enum LayoutKind : int
-    {
-        UNKNOWN_LAYOUT=-999,
-        RowMajor=-1,
-        ColumnMajor=0,
-    };
-}
-
-namespace nmtools
-{
     // TODO: remove, should use get_operands
     template <typename array_t>
     decltype(auto) get_array(const array_t& array);

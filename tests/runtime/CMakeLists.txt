@@ -35,6 +35,7 @@ add_executable(${PROJECT_NAME}-doctest tests.cpp
     src/reshape.cpp
 
     src/add.cpp
+    src/broadcast_binary.cpp
     src/multiply.cpp
     src/subtract.cpp
     src/divide.cpp

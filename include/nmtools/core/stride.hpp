@@ -290,7 +290,7 @@ namespace nmtools::utils::impl
             str += "stride";
             str += "{";
             str += ".src_shape=";   str += to_string(kwargs.src_shape,Compact);
-            str += ",.shape=";      str += to_string(kwargs.shape,Compact);
+            str += ",.shape=";      str += to_string(kwargs.m_shape,Compact);
             str += ",.striding=";   str += to_string(kwargs.striding,Compact);
             str += ",.bsize=";      str += to_string(kwargs.dst_size,Compact);
             str += "}";

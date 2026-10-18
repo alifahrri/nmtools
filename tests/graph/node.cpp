@@ -39,7 +39,6 @@ static auto join(const nmtools_list<nmtools_string>& strs)
 
 using Kind = fn::Kind;
 using Type = fn::Type;
-using Layout = fn::Layout;
 using Combinator = fn::Combinator;
 
 /* ======================================================================================================== */
@@ -222,8 +221,8 @@ TEST_CASE("node" * doctest::test_suite("graph"))
 {
     // buffer
     {
-        auto node = Node::buffer(array{3,4},Type::Float32,Layout::RowMajor);
-        CHECK_MESSAGE( node.attributes().size() == 9, node.to_string().front() ); // 9
+        auto node = Node::buffer(array{3,4},Type::Float32);
+        CHECK_MESSAGE( node.attributes().size() == 8, node.to_string().front() ); // 8
     }
     // indexing
     {
@@ -234,7 +233,7 @@ TEST_CASE("node" * doctest::test_suite("graph"))
         node.attributes()["indexer.args.1"] = array{3,4};
         node.attributes()["indexer.args.2"] = array{1};
         node.attributes()["indexer.args.3"] = 12;
-        CHECK( node.attributes().size() == 15 ); // 9+6
+        CHECK( node.attributes().size() == 14 ); // 8+6
         CHECK( node.attributes().count("indexer") );
         CHECK( node.attributes().count("indexer.n_args") );
         CHECK( node.attributes().count("indexer.args.0") );
@@ -262,13 +261,13 @@ TEST_CASE("node" * doctest::test_suite("graph"))
             node.attributes()["indexer.args.3.name"] = "bsize";
             return node;
         }();
-        CHECK_MESSAGE( node.attributes().size() == 19, node.to_string().front() ); // 9+10
+        CHECK_MESSAGE( node.attributes().size() == 18, node.to_string().front() ); // 8+10
     }
     // binary ufunc
     {
         auto node = Node::binary_ufunc(array{3,4},Type::Float32);
         node.attributes()["op"] = "add";
-        CHECK_MESSAGE( node.attributes().size() == 10, node.to_string().front() );
+        CHECK_MESSAGE( node.attributes().size() == 9, node.to_string().front() );
     }
     {
         constexpr auto node = [](){
@@ -276,7 +275,7 @@ TEST_CASE("node" * doctest::test_suite("graph"))
             node.attributes()["op"] = "add";
             return node;
         }();
-        CHECK_MESSAGE( node.attributes().size() == 10, node.to_string().front() );
+        CHECK_MESSAGE( node.attributes().size() == 9, node.to_string().front() );
     }
     // reduce
     {
@@ -286,7 +285,7 @@ TEST_CASE("node" * doctest::test_suite("graph"))
         node.attributes()["dtype"]    = nm::None;
         node.attributes()["initial"]  = nm::None;
         node.attributes()["keepdims"] = 1;
-        CHECK_MESSAGE( node.attributes().size() == 13, node.to_string().front() );
+        CHECK_MESSAGE( node.attributes().size() == 12, node.to_string().front() );
     }
     {
         constexpr auto node = [](){
@@ -298,7 +297,7 @@ TEST_CASE("node" * doctest::test_suite("graph"))
             node.attributes()["keepdims"] = 1;
             return node;
         }();
-        CHECK_MESSAGE( node.attributes().size() == 13, node.to_string().front() );
+        CHECK_MESSAGE( node.attributes().size() == 12, node.to_string().front() );
     }
 }
 

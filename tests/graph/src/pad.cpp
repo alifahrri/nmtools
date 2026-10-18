@@ -16,7 +16,6 @@ using namespace nm::literals;
 using Node = fn::Node<>;
 using Kind = fn::Kind;
 using Type = fn::Type;
-using Layout = fn::Layout;
 
 using nmtools_array, nmtools_tuple, nmtools::unwrap;
 
@@ -58,7 +57,7 @@ TEST_CASE("pad(case1)" * doctest::test_suite("computational_graph"))
     };
     constexpr auto node_ids = nmtools_tuple{1_ct,2_ct,3_ct};
     constexpr auto node_attributes = nmtools_array{
-        Node::buffer(array{2,3,2},Type::Float32,Layout::RowMajor),
+        Node::buffer(array{2,3,2},Type::Float32),
         Node::buffer(nm::None,Type::Float32),
         Node::compute(Kind::INDEXING,array{3,8,11},Type::Float32),
     };
@@ -79,7 +78,7 @@ TEST_CASE("pad(case2)" * doctest::test_suite("computational_graph"))
     };
     auto node_ids = array{1,2,3};
     auto node_attributes = nmtools_array{
-        Node::buffer(array{2,3,2},Type::Float32,Layout::RowMajor),
+        Node::buffer(array{2,3,2},Type::Float32),
         Node::buffer(nm::None,Type::Float32),
         Node::compute(Kind::INDEXING,array{3,8,11},Type::Float32),
     };
@@ -105,7 +104,7 @@ TEST_CASE("pad(case3)" * doctest::test_suite("computational_graph"))
 
     auto node_ids = array{1,2,3};
     auto node_attributes = nmtools_array{
-        Node::buffer(array{2,3,2},Type::Float32,Layout::RowMajor),
+        Node::buffer(array{2,3,2},Type::Float32),
         Node::buffer(nm::None,Type::Float32),
         Node::compute(Kind::INDEXING,array{3,8,11},Type::Float32),
     };

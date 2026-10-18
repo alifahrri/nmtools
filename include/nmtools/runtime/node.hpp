@@ -14,15 +14,9 @@ namespace nmtools::runtime
         using Node = runtime::Node<>;
 
         Type dtype = Type::UNKNOWN;
-        Layout layout = Layout::UNKNOWN;
 
         if constexpr (!is_none_v<element_t>) {
             dtype = to_value_v<dtype_t<element_t>>;
-        }
-
-        auto layout_kind = layout_kind_v<input_t>;
-        if constexpr (!is_fail_v<decltype(layout_kind)>) {
-            layout = layout_kind;
         }
 
         constexpr auto MAX_DIM = max_len_v<shape_t>;
@@ -51,11 +45,11 @@ namespace nmtools::runtime
         } else if constexpr (is_shared_ptr_v<input_t>) {
             // TODO: assuming runtime node input type is variant, make sure input_t is acceptable type
             auto buffer = node.input;
-            auto node = Node::buffer(shape,dim,MAX_DIM,dtype,layout,buffer);
+            auto node = Node::buffer(shape,dim,MAX_DIM,dtype,buffer);
             node.attributes()["input_type"] = type_name_v<input_t>.data();
             return node;
         } else {
-            auto node = Node::buffer(shape,dim,MAX_DIM,dtype,layout);
+            auto node = Node::buffer(shape,dim,MAX_DIM,dtype);
             node.attributes()["input_type"] = type_name_v<input_t>.data();
             return node;
         }
