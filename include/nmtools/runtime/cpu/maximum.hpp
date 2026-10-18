@@ -106,6 +106,8 @@ namespace nmtools::runtime
                 using namespace literals;
                 auto v = unwrap(view::maximum(lhs.view(lhs_dtype),rhs.view(rhs_dtype)));
 
+                const auto [bcasted_lhs, bcasted_rhs] = functional::get_operands(v);
+
                 auto rtype  = type(v);
                 auto result = ndarray(shape(v),rtype);
 
@@ -116,8 +118,7 @@ namespace nmtools::runtime
                 auto tile_shape = nmtools_tuple{1_ct,4_ct};
                 auto output     = result.mutable_view(rtype);
 
-                // TODO: handle broadcast
-                maximum(ctx,output,lhs.view(lhs_dtype),rhs.view(rhs_dtype),tile_shape,padding);
+                maximum(ctx,output,bcasted_lhs,bcasted_rhs,tile_shape,padding);
                 array = result;
             }
         });

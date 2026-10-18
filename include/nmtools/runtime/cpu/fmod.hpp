@@ -108,6 +108,8 @@ namespace nmtools::runtime
                 using namespace literals;
                 auto v = unwrap(view::fmod(lhs.view(lhs_dtype),rhs.view(rhs_dtype)));
 
+                const auto [bcasted_lhs, bcasted_rhs] = functional::get_operands(v);
+
                 auto rtype  = type(v);
                 auto result = ndarray(shape(v),rtype);
 
@@ -118,8 +120,7 @@ namespace nmtools::runtime
                 auto tile_shape = nmtools_tuple{1_ct,4_ct};
                 auto output     = result.mutable_view(rtype);
 
-                // TODO: handle broadcast
-                fmod(ctx,output,lhs.view(lhs_dtype),rhs.view(rhs_dtype),tile_shape,pfmoding);
+                fmod(ctx,output,bcasted_lhs,bcasted_rhs,tile_shape,pfmoding);
                 array = result;
             }
         });
