@@ -16,7 +16,6 @@ using namespace nm::literals;
 using Node = fn::Node<>;
 using Kind = fn::Kind;
 using Type = fn::Type;
-using Layout = fn::Layout;
 
 using nmtools_array, nmtools_tuple, nmtools::unwrap;
 
@@ -55,7 +54,7 @@ TEST_CASE("broadcast_to(case1)" * doctest::test_suite("computational_graph"))
     };
     constexpr auto node_ids = nmtools_tuple{1_ct,100_ct};
     constexpr auto node_attributes = nmtools_array{
-        Node::buffer(array{4},Type::Float32,Layout::RowMajor),
+        Node::buffer(array{4},Type::Float32),
         Node::compute(Kind::INDEXING,array{3,4},Type::Float32),
     };
 

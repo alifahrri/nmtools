@@ -11,7 +11,6 @@ NMTOOLS_TESTING_DECLARE_CASE(functional, transform_binary_fusion)
     using Node = nmtools::functional::Node<>;
     using Kind = nmtools::functional::Kind;
     using Type = nmtools::functional::Type;
-    using Layout = nmtools::functional::Layout;
     using Combinator = nmtools::functional::Combinator;
 
     using nmtools_array;
@@ -29,7 +28,7 @@ NMTOOLS_TESTING_DECLARE_CASE(functional, transform_binary_fusion)
         };
         constexpr inline auto node_ids = nmtools_tuple{0_ct,101_ct,102_ct,103_ct,104_ct,105_ct};
         constexpr inline auto node_attributes = nmtools_array{
-            Node::buffer(array{2,3,2},Type::Float32,Layout::RowMajor),
+            Node::buffer(array{2,3,2},Type::Float32),
             Node::buffer(None,Type::Float32),
             Node::compute(Kind::REDUCE,array{2,2},Type::Float32),
             Node::compute(Kind::INDEXING,array{2,2},Type::Float32),
@@ -52,7 +51,7 @@ NMTOOLS_TESTING_DECLARE_CASE(functional, transform_binary_fusion)
         };
         constexpr inline auto node_ids = nmtools_tuple{0_ct,101_ct,102_ct,105_ct};
         constexpr inline auto node_attributes = nmtools_array{
-            Node::buffer(array{2,3,2},Type::Float32,Layout::RowMajor),
+            Node::buffer(array{2,3,2},Type::Float32),
             Node::buffer(None,Type::Float32),
             Node::compute(Kind::REDUCE,array{2,2},Type::Float32),
             Node::compute(Kind::BINARY_UFUNC,array{2,2},Type::Float32)
@@ -73,7 +72,7 @@ NMTOOLS_TESTING_DECLARE_CASE(functional, transform_binary_fusion)
         };
         constexpr inline auto node_ids = nmtools_tuple{0_ct,101_ct,102_ct,105_ct};
         constexpr inline auto node_attributes = nmtools_array{
-            Node::buffer(array{2,3,2},Type::Float32,Layout::RowMajor),
+            Node::buffer(array{2,3,2},Type::Float32),
             Node::buffer(None,Type::Float32),
             Node::compute(Kind::REDUCE,array{2,2},Type::Float32),
             Node::compute(Kind::BINARY_UFUNC,array{2,2},Type::Float32)
@@ -97,7 +96,7 @@ NMTOOLS_TESTING_DECLARE_CASE(functional, transform_binary_fusion)
         };
         constexpr inline auto node_ids = nmtools_tuple{0_ct,101_ct,105_ct};
         constexpr inline auto node_attributes = nmtools_array{
-            Node::buffer(array{2,3,2},Type::Float32,Layout::RowMajor),
+            Node::buffer(array{2,3,2},Type::Float32),
             Node::buffer(None,Type::Float32),
             Node::compute(Kind::BINARY_UFUNC,array{2,2},Type::Float32)
             * Node::combinator(Combinator::SWAP)
@@ -124,7 +123,7 @@ NMTOOLS_TESTING_DECLARE_CASE(functional, transform_binary_fusion)
         };
         constexpr inline auto node_ids = nmtools_tuple{0_ct,101_ct,102_ct,103_ct,104_ct,105_ct};
         constexpr inline auto node_attributes = nmtools_array{
-            Node::buffer(array{2,3,2},Type::Float32,Layout::RowMajor),
+            Node::buffer(array{2,3,2},Type::Float32),
             Node::buffer(None,Type::Float32),
             Node::compute(Kind::REDUCE,array{2,2},Type::Float32),
             Node::compute(Kind::INDEXING,array{2,2},Type::Float32),
@@ -146,7 +145,7 @@ NMTOOLS_TESTING_DECLARE_CASE(functional, transform_binary_fusion)
         };
         constexpr inline auto node_ids = nmtools_tuple{0_ct,101_ct,105_ct};
         constexpr inline auto node_attributes = nmtools_array{
-            Node::buffer(array{2,3,2},Type::Float32,Layout::RowMajor),
+            Node::buffer(array{2,3,2},Type::Float32),
             Node::buffer(None,Type::Float32),
             Node::compute(Kind::BINARY_UFUNC,array{2,2},Type::Float32)
             * Node::combinator(Combinator::SWAP)
@@ -172,8 +171,8 @@ NMTOOLS_TESTING_DECLARE_CASE(functional, transform_binary_fusion)
         };
         constexpr inline auto node_ids = nmtools_tuple{0_ct,1_ct,1002_ct,1003_ct,1004_ct};
         constexpr inline auto node_attributes = nmtools_array{
-            Node::buffer(array{-1,-1},Type::Float32,Layout::RowMajor),
-            Node::buffer(array{-1},Type::Float32,Layout::RowMajor),
+            Node::buffer(array{-1,-1},Type::Float32),
+            Node::buffer(array{-1},Type::Float32),
             Node::compute(Kind::INDEXING,array{-1,-1},Type::Float32),
             Node::compute(Kind::INDEXING,array{-1,-1},Type::Float32),
             Node::compute(Kind::BINARY_UFUNC,array{-1,-1},Type::Float32),
@@ -193,8 +192,8 @@ NMTOOLS_TESTING_DECLARE_CASE(functional, transform_binary_fusion)
         };
         constexpr inline auto node_ids = nmtools_tuple{0_ct,1_ct,1004_ct};
         constexpr inline auto node_attributes = nmtools_array{
-            Node::buffer(array{-1,-1},Type::Float32,Layout::RowMajor),
-            Node::buffer(array{-1},Type::Float32,Layout::RowMajor),
+            Node::buffer(array{-1,-1},Type::Float32),
+            Node::buffer(array{-1},Type::Float32),
             Node::compute(Kind::BINARY_UFUNC,array{-1,-1},Type::Float32)
             * Node::combinator(Combinator::SWAP)
             * Node::compute(Kind::INDEXING,array{-1,-1},Type::Float32)
@@ -220,7 +219,7 @@ NMTOOLS_TESTING_DECLARE_CASE(functional, transform_binary_fusion)
         };
         constexpr inline auto node_ids = nmtools_tuple{0_ct,1001_ct,2002_ct,3003_ct,4004_ct,5005_ct,6006_ct,7007_ct,8008_ct,9009_ct};
         constexpr inline auto node_attributes = nmtools_array{
-            Node::buffer(array{3,4},Type::Float32,Layout::RowMajor),
+            Node::buffer(array{3,4},Type::Float32),
             Node::compute(Kind::REDUCE,array{3,1},Type::Float32),
             Node::compute(Kind::INDEXING,array{3,4},Type::Float32),
             Node::compute(Kind::INDEXING,array{3,4},Type::Float32),
@@ -251,7 +250,7 @@ NMTOOLS_TESTING_DECLARE_CASE(functional, transform_binary_fusion)
         };
         constexpr inline auto node_ids = nmtools_tuple{0_ct,1001_ct,4004_ct,5005_ct,6006_ct,7007_ct,8008_ct,9009_ct};
         constexpr inline auto node_attributes = nmtools_array{
-            Node::buffer(array{3,4},Type::Float32,Layout::RowMajor),
+            Node::buffer(array{3,4},Type::Float32),
             Node::compute(Kind::REDUCE,array{3,1},Type::Float32),
             Node::compute(Kind::INDEXING,array{3,4},Type::Float32)
             | Node::combinator(Combinator::SWAP)
@@ -280,7 +279,7 @@ NMTOOLS_TESTING_DECLARE_CASE(functional, transform_binary_fusion)
             nmtools_tuple{}
         };
         constexpr inline auto node_attributes = nmtools_array{
-            Node::buffer(array{3,4},Type::Float32,Layout::RowMajor),
+            Node::buffer(array{3,4},Type::Float32),
             Node::compute(Kind::REDUCE,array{3,1},Type::Float32),
             Node::compute(Kind::INDEXING,array{3,4},Type::Float32)
             | Node::combinator(Combinator::SWAP)
@@ -311,7 +310,7 @@ NMTOOLS_TESTING_DECLARE_CASE(functional, transform_binary_fusion)
         };
         constexpr inline auto node_ids = nmtools_tuple{0_ct,4004_ct,5005_ct,6006_ct,9009_ct};
         constexpr inline auto node_attributes = nmtools_array{
-            Node::buffer(array{3,4},Type::Float32,Layout::RowMajor),
+            Node::buffer(array{3,4},Type::Float32),
             Node::combinator(Combinator::DUP)
             | Node::compute(Kind::REDUCE,array{3,1},Type::Float32)
             | Node::combinator(Combinator::SWAP)
@@ -344,7 +343,7 @@ NMTOOLS_TESTING_DECLARE_CASE(functional, transform_binary_fusion)
         };
         constexpr inline auto node_ids = nmtools_tuple{0_ct,2002_ct,3003_ct,5005_ct,7007_ct,8008_ct,9009_ct};
         constexpr inline auto node_attributes = nmtools_array{
-            Node::buffer(array{3,4},Type::Float32,Layout::RowMajor),
+            Node::buffer(array{3,4},Type::Float32),
             Node::compute(Kind::INDEXING,array{3,4},Type::Float32),
             Node::compute(Kind::INDEXING,array{3,4},Type::Float32)
             * Node::compute(Kind::REDUCE,array{3,1},Type::Float32),
@@ -372,7 +371,7 @@ NMTOOLS_TESTING_DECLARE_CASE(functional, transform_binary_fusion)
         };
         constexpr inline auto node_ids = nmtools_tuple{0_ct,5005_ct,7007_ct,8008_ct,9009_ct};
         constexpr inline auto node_attributes = nmtools_array{
-            Node::buffer(array{3,4},Type::Float32,Layout::RowMajor),
+            Node::buffer(array{3,4},Type::Float32),
             Node::compute(Kind::INDEXING,array{3,4},Type::Float32)
             | Node::combinator(Combinator::SWAP)
             | Node::compute(Kind::REDUCE,array{3,1},Type::Float32)
@@ -400,7 +399,7 @@ NMTOOLS_TESTING_DECLARE_CASE(functional, transform_binary_fusion)
         };
         constexpr inline auto node_ids = nmtools_tuple{0_ct,2002_ct,3003_ct,5005_ct,7007_ct,8008_ct,9009_ct};
         constexpr inline auto node_attributes = nmtools_array{
-            Node::buffer(array{3,4},Type::Float32,Layout::RowMajor),
+            Node::buffer(array{3,4},Type::Float32),
             Node::compute(Kind::INDEXING,array{3,4},Type::Float32),
             Node::compute(Kind::INDEXING,array{3,4},Type::Float32)
             * Node::compute(Kind::REDUCE,array{3,1},Type::Float32),
@@ -428,7 +427,7 @@ NMTOOLS_TESTING_DECLARE_CASE(functional, transform_binary_fusion)
         };
         constexpr inline auto node_ids = nmtools_tuple{0_ct,5005_ct,7007_ct,8008_ct,9009_ct};
         constexpr inline auto node_attributes = nmtools_array{
-            Node::buffer(array{3,4},Type::Float32,Layout::RowMajor),
+            Node::buffer(array{3,4},Type::Float32),
             Node::combinator(Combinator::DUP)
             | Node::compute(Kind::INDEXING,array{3,4},Type::Float32)
             | Node::combinator(Combinator::SWAP)
@@ -454,7 +453,7 @@ NMTOOLS_TESTING_DECLARE_CASE(functional, transform_binary_fusion)
         };
         constexpr inline auto node_ids = nmtools_tuple{0_ct,5005_ct,9009_ct};
         constexpr inline auto node_attributes = nmtools_array{
-            Node::buffer(array{3,4},Type::Float32,Layout::RowMajor),
+            Node::buffer(array{3,4},Type::Float32),
             Node::compute(Kind::INDEXING,array{3,4},Type::Float32)
             | Node::combinator(Combinator::SWAP)
             | Node::compute(Kind::REDUCE,array{3,1},Type::Float32)
@@ -482,7 +481,7 @@ NMTOOLS_TESTING_DECLARE_CASE(functional, transform_binary_fusion)
         };
         constexpr inline auto node_ids = nmtools_tuple{0_ct,9009_ct};
         constexpr inline auto node_attributes = nmtools_array{
-            Node::buffer(array{3,4},Type::Float32,Layout::RowMajor),
+            Node::buffer(array{3,4},Type::Float32),
             Node::combinator(Combinator::DUP)
             | Node::compute(Kind::INDEXING,array{3,4},Type::Float32)
             | Node::combinator(Combinator::SWAP)
