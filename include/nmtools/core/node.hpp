@@ -1595,6 +1595,385 @@ namespace nmtools::functional
 
     /*********************************************************************** */
 
+    template <typename node_t, typename input_t, typename shape_t, typename element_t>
+    auto to_value(const buffer_node_t<input_t,shape_t,element_t>& node)
+    {
+        using Node = node_t;
+        using string_type = typename Node::string_type;
+
+        Type dtype = Type::UNKNOWN;
+
+        if constexpr (!is_none_v<element_t>) {
+            dtype = to_value_v<dtype_t<element_t>>;
+        }
+
+        constexpr auto MAX_DIM = max_len_v<shape_t>;
+
+        using shape_type = typename Node::shape_type;
+        auto shape = shape_type{};
+        const auto src_shape = node.shape;
+        const auto dim = len(src_shape);
+        shape.resize(dim);
+
+        auto is_num = false;
+        using nmtools::at, nmtools::len;
+        if constexpr (is_none_v<shape_t>) {
+            is_num = true;
+        } else if constexpr (!is_fail_v<shape_t>) {
+            for (nm_size_t i=0; i<(nm_size_t)len(src_shape); i++) {
+                at(shape,i) = at(src_shape,i);
+            }
+        }
+
+        if (is_num) {
+            auto node = Node::buffer(None,dtype);
+            // NOTE: type names can be arbitrarily long; this attribute is
+            // display-only, so truncate instead of panicking
+            node.attributes()["input_type"] = utl::string_cast<string_type>(type_name_v<input_t>, True);
+            return node;
+        } else if constexpr (is_shared_ptr_v<input_t>) {
+            // TODO: assuming runtime node input type is variant, make sure input_t is acceptable type
+            auto buffer = node.input;
+            auto node = Node::buffer(shape,dim,MAX_DIM,dtype,buffer);
+            // NOTE: type names can be arbitrarily long; this attribute is
+            // display-only, so truncate instead of panicking
+            node.attributes()["input_type"] = utl::string_cast<string_type>(type_name_v<input_t>, True);
+            return node;
+        } else {
+            auto node = Node::buffer(shape,dim,MAX_DIM,dtype);
+            // NOTE: type names can be arbitrarily long; this attribute is
+            // display-only, so truncate instead of panicking
+            node.attributes()["input_type"] = utl::string_cast<string_type>(type_name_v<input_t>, True);
+            return node;
+        }
+    } // to_value
+
+    template <typename node_t, typename functor_t, typename operands_t, typename output_shape_t, typename output_element_t>
+    auto to_value(const functional::compute_node_t<functor_t,operands_t,output_shape_t,output_element_t>& node)
+    {
+        using Node = node_t;
+        using string_type = typename Node::string_type;
+
+        /*********************************************************** */
+        using shape_t   = output_shape_t;
+        using element_t = get_dtype_t<output_element_t>;
+
+        Kind kind  = Kind::UNKNOWN;
+        Type dtype = Type::UNKNOWN;
+
+        if constexpr (!is_none_v<element_t>) {
+            // promote bool -> uint8
+            using element_type = conditional_t<is_same_v<bool,element_t>,uint8_t,element_t>;
+            dtype = to_value_v<dtype_t<element_type>>;
+        }
+        /*********************************************************** */
+
+        // the following differ from meta::to_value since we have the actual value at runtime
+        /*********************************************************** */
+        constexpr auto MAX_DIM = max_len_v<shape_t>;
+
+        using shape_type = typename Node::shape_type;
+        auto shape = shape_type{};
+        auto src_shape = node.output_shape;
+        auto dim = len(src_shape);
+        shape.resize(dim);
+
+        auto is_num = false;
+        using nmtools::at, nmtools::len;
+        if constexpr (is_none_v<shape_t>) {
+            is_num = true;
+        } else if constexpr (is_constant_index_array_v<shape_t>) {
+            constexpr auto N = len_v<shape_t>;
+            template_for<N>([&](auto i){
+                at(shape,i) = at(src_shape,i);
+            });
+        } else if constexpr (!is_fail_v<shape_t>) {
+            for (nm_size_t i=0; i<(nm_size_t)len(src_shape); i++) {
+                at(shape,i) = at(src_shape,i);
+            }
+        }
+        /*********************************************************** */
+
+        using composition_type = typename Node::composition_type;
+        auto composition = composition_type{};
+
+        using attributes_type = Attributes<>;
+        [[maybe_unused]]
+        auto attributes = attributes_type{};
+
+        if constexpr (is_functor_composition_v<remove_cvref_t<functor_t>>) {
+            /*********************************************************** */
+            using functors_t = remove_cvref_t<typename remove_cvref_t<functor_t>::functors_type>;
+            kind = Kind::COMPOSITION;
+            constexpr auto num_functors = len_v<functors_t>;
+            composition.resize(num_functors);
+            using ComposeNode = remove_cvref_t<decltype(at(composition,0))>;
+            template_for<num_functors>([&](auto init){
+                auto node = ComposeNode{};
+                constexpr auto I = decltype(init)::value;
+                using functor_type = at_t<functors_t,I>;
+                using fmap_type = remove_cvref_t<typename functor_type::fmap_type>;
+                if constexpr (is_combinator_v<fmap_type>) {
+                    auto args = get_combinator_args_v<fmap_type>;
+                    if (is_same_combinator_v<combinator::dig_t,fmap_type>) {
+                        node = ComposeNode::combinator(Combinator::DIG,args);
+                    } else if (is_same_combinator_v<combinator::dup_t,fmap_type>) {
+                        node = ComposeNode::combinator(Combinator::DUP,args);
+                    } else if (is_same_combinator_v<combinator::bury_t,fmap_type>) {
+                        node = ComposeNode::combinator(Combinator::BURY,args);
+                    } else {
+                        node = ComposeNode::combinator(Combinator::SWAP,args);
+                    }
+                } else {
+                    Kind kind = {};
+                    if (is_same_functor_v<functional::unary_fmap_t<functional::fun::indexing>,functor_type>) {
+                        kind = Kind::INDEXING;
+                    } else if (is_same_functor_v<functional::unary_fmap_t<functional::fun::reduce<>>,functor_type>) {
+                        // TODO: propagate op
+                        kind = Kind::REDUCE;
+                    } else if (is_binary_ufunc_functor_v<functor_type>) {
+                        kind = Kind::BINARY_UFUNC;
+                    } else if (is_same_functor_v<functional::unary_fmap_t<functional::fun::unary_ufunc<>>,functor_type>) {
+                        kind = Kind::UNARY_UFUNC;
+                    }
+                    node = ComposeNode::functor(kind);
+                }
+                at(composition,I) = node;
+            });
+            /*********************************************************** */
+        } else {
+            // same with meta::to_value
+            /*********************************************************** */
+            using functor_type = functor_t;
+            using fmap_type = remove_cvref_t<typename functor_type::fmap_type>;
+            if constexpr (is_combinator_v<fmap_type>) {
+                auto args = get_combinator_args_v<fmap_type>;
+                if (is_same_combinator_v<combinator::dig_t,fmap_type>) {
+                    return Node::combinator(Combinator::DIG,args);
+                } else if (is_same_combinator_v<combinator::dup_t,fmap_type>) {
+                    return Node::combinator(Combinator::DUP,args);
+                } else if (is_same_combinator_v<combinator::bury_t,fmap_type>) {
+                    return Node::combinator(Combinator::BURY,args);
+                } else {
+                    return Node::combinator(Combinator::SWAP,args);
+                }
+            } else if (is_same_functor_v<functional::unary_fmap_t<functional::fun::indexing>,functor_type>) {
+                kind = Kind::INDEXING;
+            } else if (is_same_functor_v<functional::unary_fmap_t<functional::fun::reduce<>>,functor_type>) {
+                // TODO: propagate op
+                kind = Kind::REDUCE;
+            } else if (is_binary_ufunc_functor_v<functor_type>) {
+                kind = Kind::BINARY_UFUNC;
+            } else if (is_same_functor_v<functional::unary_fmap_t<functional::fun::unary_ufunc<>>,functor_type>) {
+                kind = Kind::UNARY_UFUNC;
+            }
+            /*********************************************************** */
+
+            if constexpr (is_same_functor_v<functional::unary_fmap_t<functional::fun::indexing>,functor_type>) {
+                // same with meta::to_value
+                /*********************************************************** */
+                using attributes_t = remove_cvref_t<typename functor_type::attributes_type>;
+                using attribute_t  = remove_cvref_t<at_t<attributes_t,0>>;
+                using indexer_type = typename attribute_t::indexer_type;
+
+                auto indexer_name = type_name_v<indexer_type>;
+
+                using key_type = typename attributes_type::key_type;
+                attributes["indexer"] = utl::string_cast<key_type>(indexer_name);
+                /*********************************************************** */
+            }
+
+            if constexpr (
+                (is_binary_ufunc_functor_v<functor_type>)
+                || (is_same_functor_v<functional::unary_fmap_t<functional::fun::unary_ufunc<>>,functor_type>)
+            ) {
+                // same with meta::to_value
+                /*********************************************************** */
+                utl::static_string str = {};
+                auto n = str.capacity; 
+                using op_type = typename fmap_type::f_type::op_type;
+                using attributes_t = remove_cvref_t<typename functor_type::attributes_type>;
+                using attribute_t  = remove_cvref_t<at_t<attributes_t,0>>;
+                // if op_type is none, check first attribute
+                auto op_name = type_name_v<conditional_t<!is_none_v<op_type>,op_type,attribute_t>>;
+                if (op_name.size() < n) {
+                    n = op_name.size();
+                }
+                str.resize(n);
+                for (nm_size_t i=0; i<(nm_size_t)n; i++) {
+                    str[i] = op_name[i];
+                }
+                /*********************************************************** */
+                // TODO: better conversion operator
+
+                using key_type = typename attributes_type::key_type;
+                attributes["op"] = utl::string_cast<key_type>(str);
+            }
+
+            if constexpr (is_same_functor_v<functional::unary_fmap_t<functional::fun::reduce<>>,functor_type>)
+            {
+                // same with meta::to_value
+                /*********************************************************** */
+                utl::static_string str = {};
+                auto n = str.capacity; 
+                using attributes_t = remove_cvref_t<typename functor_type::attributes_type>;
+                using attribute_t  = remove_cvref_t<at_t<attributes_t,0>>;
+
+                // nmtools::args::reduce::op_type
+                using op_type = typename attribute_t::op_type;
+                auto op_name = type_name_v<op_type>;
+
+                if (op_name.size() < n) {
+                    n = op_name.size();
+                }
+                str.resize(n);
+                for (nm_size_t i=0; i<(nm_size_t)n; i++) {
+                    str[i] = op_name[i];
+                }
+                /*********************************************************** */
+                // TODO: better conversion operator
+
+                using key_type = typename attributes_type::key_type;
+                attributes["op"] = utl::string_cast<key_type>(str);
+
+                // The following part differ from meta::to_value since we have actual value at runtime
+                /*********************************************************** */
+                auto make_value = [](const auto& value){
+                    using type = remove_cvref_t<decltype(value)>;
+                    if constexpr (is_index_array_v<type>) {
+                        auto dim = len(value);
+                        // TODO: deduce from Node index_array_t
+                        using result_t = nmtools_list<nm_index_t>;
+                        auto result = result_t {};
+                        if constexpr (is_resizable_v<result_t>) {
+                            result.resize(dim);
+                        }
+                        for (nm_size_t i=0; i<(nm_size_t)dim; i++) {
+                            // only known at runtime
+                            at(result,i) = at(value,i);
+                        }
+                        return result;
+                    } else if constexpr (is_index_v<type>) {
+                        return (nm_index_t)value;
+                    } else if constexpr (is_none_v<type>) {
+                        return None;
+                    } else {
+                        return utl::string_cast<string_type>(type_name_v<type>);
+                    }
+                    // TODO: handle float?
+                };
+                const auto& attr = nmtools::get<0>(node.functor.attributes);
+                attributes["axis"]     = make_value(attr.axis);
+                attributes["initial"]  = make_value(attr.initial);
+                attributes["keepdims"] = make_value(attr.keepdims);
+                /*********************************************************** */
+            }
+        }
+
+        auto result = Node{shape,(nm_index_t)dim,MAX_DIM,is_num,kind,dtype,composition};
+        if (attributes.count("indexer")) {
+            // indexer always string
+            // TODO: better conversion for Attribute
+            result.attributes()["indexer"] = utl::string_cast<string_type>(attributes["indexer"].string);
+        }
+        if (attributes.count("op")) {
+            // op always string
+            // TODO: better conversion for Attribute
+            result.attributes()["op"] = utl::string_cast<string_type>(attributes["op"].string);
+        }
+        if (attributes.count("axis")) {
+            // axis can be None, index, index array
+            // TODO: better conversion for Attribute
+            if (attributes["axis"].is_none()) {
+                result.attributes()["axis"] = attributes["axis"].none;
+            } else if (attributes["axis"].is_integer()) {
+                result.attributes()["axis"] = attributes["axis"].integer;
+            } else if (attributes["axis"].is_index_array()) {
+                result.attributes()["axis"] = attributes["axis"].index_array;
+            }
+        }
+        if (attributes.count("initial")) {
+            // initial can be None, index, index array
+            // TODO: better conversion for Attribute
+            if (attributes["initial"].is_none()) {
+                result.attributes()["initial"] = attributes["initial"].none;
+            } else if (attributes["initial"].is_integer()) {
+                result.attributes()["initial"] = attributes["initial"].integer;
+            } else if (attributes["initial"].is_index_array()) {
+                result.attributes()["initial"] = attributes["initial"].index_array;
+            }
+        }
+        if (attributes.count("keepdims")) {
+            // keepdims can be None, index
+            // TODO: better conversion for Attribute
+            if (attributes["keepdims"].is_none()) {
+                result.attributes()["keepdims"] = attributes["keepdims"].none;
+            } else if (attributes["keepdims"].is_integer()) {
+                result.attributes()["keepdims"] = attributes["keepdims"].integer;
+            }
+        }
+        return result;
+    } // to_value
+
+    /*********************************************************************** */
+
+    template <typename hash_shape_t=meta::true_type, typename hash_address_t=meta::true_type, typename input_t, typename shape_t, typename element_t>
+    constexpr auto hash([[maybe_unused]] const buffer_node_t<input_t,shape_t,element_t>& node
+            , [[maybe_unused]] hash_shape_t hash_shape=hash_shape_t{}
+            , [[maybe_unused]] hash_address_t hash_address=hash_address_t{}
+    ) {
+        // TODO: hash runtime shape
+        using node_t = buffer_node_t<input_t,shape_t,element_t>;
+        if constexpr (is_constant_index_v<hash_shape_t> && is_constant_index_v<hash_address_t>) {
+            // to use valid to_value_v here, must not hash address, as for the shape we don't care if a) shape_t is known at compile time; or b) shape is not hashed
+            if constexpr (!hash_address_t::value && (is_constant_index_array_v<shape_t> || !hash_shape_t::value)) {
+                constexpr auto v_node = to_value_v<node_t>;
+
+                return hash(v_node,hash_shape,hash_address);
+            } else {
+                using node_t = Node<>;
+                auto v_node = to_value<node_t>(node);
+
+                return hash(v_node,hash_shape,hash_address);
+            }
+        } else {
+            using node_t = Node<>;
+            auto v_node = to_value<node_t>(node);
+
+            return hash(v_node,hash_shape,hash_address);
+        }
+    }
+
+    template <typename hash_shape_t=meta::true_type, typename hash_address_t=meta::true_type, typename functor_t, typename operands_t, typename output_shape_t, typename output_element_t>
+    constexpr auto hash([[maybe_unused]] const compute_node_t<functor_t,operands_t,output_shape_t,output_element_t>& node
+        , [[maybe_unused]] hash_shape_t hash_shape=hash_shape_t{}
+        , [[maybe_unused]] hash_address_t hash_address=hash_address_t{}
+    ) {
+        // TODO: hash address doesn't make sense for compute node
+        // TODO: hash runtime shape
+        
+        using node_t = compute_node_t<functor_t,operands_t,output_shape_t,output_element_t>;
+        if constexpr (is_constant_index_v<hash_shape_t> && is_constant_index_v<hash_address_t>) {
+            if constexpr (hash_shape_t::value && !hash_address_t::value) {
+                constexpr auto v_node = to_value_v<node_t>;
+
+                return hash(v_node,hash_shape,hash_address);
+            } else {
+                using node_t = Node<>;
+                auto v_node = to_value<node_t>(node);
+
+                return hash(v_node,hash_shape,hash_address);
+            }
+        } else {
+            using node_t = Node<>;
+            auto v_node = to_value<node_t>(node);
+
+            return hash(v_node,hash_shape,hash_address);
+        }
+    }
+
+    /*********************************************************************** */
+
     template <typename input_t>
     constexpr auto node(const input_t& input)
     {
@@ -1851,9 +2230,12 @@ namespace nmtools::meta
                         using type = type_t<decltype(vtype)>;
                         [[maybe_unused]]
                         constexpr auto DIM = len_v<type>;
-                        if constexpr (is_constant_index_v<type>
-                            || is_constant_index_array_v<type>
-                        ) {
+                        if constexpr (is_constant_index_v<type>) {
+                            // cast to integer type, to_value_v may yield
+                            // a wider type (e.g. unsigned long) which would
+                            // be ambiguous for the attribute assignment
+                            return (nm_index_t)to_value_v<type>;
+                        } else if constexpr (is_constant_index_array_v<type>) {
                             return to_value_v<type>;
                         } else if constexpr (DIM > 0) {
                             using result_t = nmtools_array<nm_index_t,DIM>;
@@ -1872,6 +2254,9 @@ namespace nmtools::meta
                     using axis_type     = typename attribute_t::axis_type;
                     using initial_type  = typename attribute_t::initial_type;
                     using keepdims_type = typename attribute_t::keepdims_type;
+                    // NOTE: cast compile-time scalar to integer type: to_value_v
+                    // of an integral constant yields unsigned long which is
+                    // ambiguous between the integer/float attribute assignments
                     attributes["axis"]     = make_value(as_value_v<axis_type>);
                     attributes["initial"]  = make_value(as_value_v<initial_type>);
                     attributes["keepdims"] = make_value(as_value_v<keepdims_type>);
@@ -1897,6 +2282,45 @@ namespace nmtools::meta
             return node;
         }();
     };
+}
+
+namespace nmtools::meta
+{
+    template <typename T>
+    struct is_buffer_node : false_type {};
+
+    template <typename T>
+    struct is_compute_node : false_type {};
+
+    template <typename T>
+    struct is_buffer_node<const T> : is_buffer_node<T> {};
+
+    template <typename T>
+    struct is_buffer_node<T&> : is_buffer_node<T> {};
+
+    template <typename T>
+    struct is_compute_node<const T> : is_compute_node<T> {};
+
+    template <typename T>
+    struct is_compute_node<T&> : is_compute_node<T> {};
+
+    template <typename...args_t>
+    struct is_buffer_node<functional::buffer_node_t<args_t...>> : true_type {};
+
+    template <typename...args_t>
+    struct is_compute_node<functional::compute_node_t<args_t...>> : true_type {};
+
+    template <typename T>
+    constexpr inline auto is_buffer_node_v = is_buffer_node<T>::value;
+
+    template <typename T>
+    constexpr inline auto is_compute_node_v = is_compute_node<T>::value;
+}
+
+namespace nmtools
+{
+    using meta::is_buffer_node_v;
+    using meta::is_compute_node_v;
 }
 
 #endif // NMTOOLS_CORE_NODE_HPP
