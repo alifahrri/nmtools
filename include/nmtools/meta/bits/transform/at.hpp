@@ -17,11 +17,17 @@ namespace nmtools::meta
      * @tparam T type list
      * @tparam I index to get the type
      */
-    template <typename T, size_t I>
+    template <typename T, nm_size_t I>
     struct type_at
     {
         using type = error::TYPE_AT_UNSUPPORTED<T>;
     }; // at
+
+    template <typename T, nm_size_t I>
+    struct type_at<const T,I> : type_at<T,I> {};
+
+    template <typename T, nm_size_t I>
+    struct type_at<T&,I> : type_at<T,I> {};
 
     /**
      * @brief Helper alias template to type_at.

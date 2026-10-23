@@ -7,6 +7,7 @@
 #include "nmtools/utl/common.hpp"
 #include "nmtools/utl/array.hpp"
 #include "nmtools/utl/static_vector.hpp"
+#include "nmtools/utl/string.hpp"
 #include "nmtools/meta/common.hpp"
 #include "nmtools/meta/bits/traits/has_size.hpp"
 #include "nmtools/meta/bits/traits/is_integer.hpp"
@@ -20,7 +21,7 @@
 #include "nmtools/utl/math.hpp"
 
 #ifndef NMTOOLS_DEFAULT_STATIC_STRING_MAX_SIZE
-#define NMTOOLS_DEFAULT_STATIC_STRING_MAX_SIZE (128)
+#define NMTOOLS_DEFAULT_STATIC_STRING_MAX_SIZE (256)
 #endif // NMTOOLS_DEFAULT_STATIC_STRING_MAX_SIZE
 
 namespace nmtools::utl
@@ -57,7 +58,6 @@ namespace nmtools::utl
             }
             if (num == 0) {
                 result.push_back('0');
-                result.push_back('\0');
                 return result;
             }
             auto is_negative = (num < 0);
@@ -75,11 +75,11 @@ namespace nmtools::utl
             }
             auto n_digits = tmp.size();
             auto offset = is_negative ? 1 : 0;
-            result.resize(result.size()+n_digits);
+            // resize is content-based (terminator maintained automatically)
+            result.resize(offset+n_digits);
             for (nm_size_t i=0; i<n_digits; i++) {
                 result[i+offset] = tmp[n_digits-i-1];
             }
-            result.push_back('\0');
             return result;
         }
 
@@ -120,22 +120,40 @@ namespace nmtools::utl
         constexpr static_string_base(const static_string_base<OtherCapacity,T>& other)
             : base_type([&](){
                 base_type base;
-                auto N = (Capacity < other.size() ? Capacity : other.size());
-                if (Capacity < other.size()) {
-                    nmtools_panic( (Capacity < other.size())
-                        , "invalid construction of static_string from another static string" );
+                auto N = other.size();
+                // truncate but always keep the terminating 0
+                if (Capacity <= N) {
+                    N = Capacity - 1;
                 }
-                base.resize(N);
+                base.resize(N+1);
                 for (nm_size_t i=0; i<N; i++) {
                     base[i] = other[i];
                 }
+                base[N] = '\0';
                 return base;
             }())
         {}
 
         template <nm_size_t OtherCapacity>
         constexpr static_string_base(const static_vector<T,OtherCapacity>& other)
-            : base_type(other)
+            : base_type([&](){
+                base_type base;
+                auto n = other.size();
+                // treat a trailing 0 as terminator, not as content
+                if ((n > 0) && (other[n-1] == '\0')) {
+                    n = n - 1;
+                }
+                // truncate but always keep the terminating 0
+                if (n > (Capacity-1)) {
+                    n = Capacity-1;
+                }
+                base.resize(n+1);
+                for (nm_size_t i=0; i<n; i++) {
+                    base[i] = other[i];
+                }
+                base[n] = '\0';
+                return base;
+            }())
         {}
 
         template <typename...Ts>
@@ -185,7 +203,7 @@ namespace nmtools::utl
             static_string_base result;
 
             auto insert_str = [&](const auto& str){
-                for (nm_size_t i=0; i<str.size()-1; i++) {
+                for (nm_size_t i=0; i<str.size(); i++) {
                     result.push_back(str.at(i));
                 }
             };
@@ -198,7 +216,6 @@ namespace nmtools::utl
                     insert_str(*this);
                     insert_str(str_list.at(i));
                 }
-                result.push_back('\0');
                 return result;
             }
         }
@@ -207,7 +224,7 @@ namespace nmtools::utl
         constexpr decltype(auto) operator=(const T (&other)[N])
         {
             // TODO: error handling, parametrize should assert or truncate
-            this->resize(N);
+            base_type::resize(N);
             for (nm_size_t i=0; i<(nm_size_t)N; i++) {
                 this->at(i) = other[i];
             }
@@ -217,8 +234,9 @@ namespace nmtools::utl
         template <auto N>
         constexpr auto operator==(const T (&other)[N]) const
         {
-            auto init = this->size() == N;
-            for (nm_size_t i=0; (i<(nm_size_t)N) && (init); i++) {
+            // other is a literal including the terminating '\0'
+            auto init = this->size() == (N-1);
+            for (nm_size_t i=0; ((i < (nm_size_t)(N-1)) && (init)); i++) {
                 init = init && (this->at(i) == other[i]);
             }
             return init;
@@ -242,12 +260,14 @@ namespace nmtools::utl
 
             auto result = result_t {};
 
-            nm_index_t size = this->size();
+            nm_index_t size = base_type::size();
             size = (size == 0 ? 0 : size - 1);
             for (nm_size_t i=0; i<(nm_size_t)size; i++) {
                 result.push_back(this->at(i));
             }
-            for (nm_size_t i=0; i<N; i++) {
+            // exclude the literal's terminating '\0', the auto-terminating
+            // push_back maintains it
+            for (nm_size_t i=0; i<N-1; i++) {
                 result.push_back(other[i]);
             }
 
@@ -261,7 +281,7 @@ namespace nmtools::utl
 
             auto result = result_t {};
 
-            nm_index_t size = this->size();
+            nm_index_t size = base_type::size();
             size = (size == 0 ? 0 : size - 1);
             for (nm_size_t i=0; i<(nm_size_t)size; i++) {
                 result.push_back(this->at(i));
@@ -277,9 +297,9 @@ namespace nmtools::utl
         template <auto N>
         constexpr decltype(auto) operator+=(const T (&other)[N])
         {
-            nm_index_t init = this->size();
+            nm_index_t init = base_type::size();
             init = (init == 0 ? 0 : init - 1);
-            this->resize(init + N);
+            base_type::resize(init + N);
             for (nm_size_t i=0; i<N; i++) {
                 this->at(init++) = other[i];
             }
@@ -288,17 +308,7 @@ namespace nmtools::utl
 
         constexpr decltype(auto) operator+=(const T &other)
         {
-            if (this->size() <= 1) {
-                this->resize(2);
-                this->at(0) = other;
-                this->at(1) = 0;
-            } else {
-                auto size = this->size();
-                auto init = size - 1;
-                this->resize(size+1);
-                this->at(init) = other;
-                this->at(init+1) = 0;
-            }
+            this->push_back(other);
             return *this;
         }
 
@@ -306,19 +316,24 @@ namespace nmtools::utl
         constexpr auto operator+=(const static_string_base<OtherCapacity,T>& other)
         {
             auto N = other.size();
-            nm_index_t init = this->size();
+            nm_index_t init = base_type::size();
             init = (init == 0 ? 0 : init - 1);
-            this->resize(init + N);
+            base_type::resize(init + N + 1);
             for (nm_size_t i=0; i<N; i++) {
                 this->at(init++) = other[i];
             }
+            this->at(init) = '\0';
             return *this;
         }
 
         constexpr auto substr(size_type pos, size_type count=npos) const
         {
             auto substring = static_string_base{};
-            count = (count == npos ? this->size() - pos : count);
+            auto n   = this->size();
+            auto avail = (pos <= n ? n - pos : 0);
+            if ((count == npos) || (count > avail)) {
+                count = avail;
+            }
             substring.resize(count);
             for (nm_size_t i=0; i<(nm_size_t)count; i++) {
                 substring[i] = this->at(pos+i);
@@ -330,38 +345,36 @@ namespace nmtools::utl
         constexpr decltype(auto) insert(size_type index, const T (&other)[N])
         {
             auto substr = this->substr(index);
-            this->resize(this->size()+(N-1));
+            base_type::resize(base_type::size()+(N-1));
             for (nm_size_t i=0; i<N; i++) {
                 this->at(index++) = other[i];
             }
             for (nm_size_t i=0; i<substr.size(); i++) {
                 this->at((index-1)+i) = substr[i];
             }
+            this->at((index-1)+substr.size()) = '\0';
             return *this;
         }
 
         template <auto N>
         constexpr auto find(const T (&other)[N], size_type start=0) const
         {
+            // other is a literal including the terminating '\0'
+            constexpr auto n_needle = (N > 0 ? N - 1 : 0);
             auto result = npos;
-
-            auto idx = size_type{0};
-            T to_find = other[idx++];
-            for (nm_size_t i=start; i<this->size(); i++) {
-                auto chr = this->at(i);
-                if ((chr == to_find) && (result == npos)) {
-                    result = i;
-                    to_find = other[idx++];
-                } else if (chr == to_find) {
-                    to_find = other[idx++];
-                } else {
-                    result = npos;
+            if (n_needle == 0) {
+                // empty needle matches at the search position
+                return (start <= this->size() ? start : npos);
+            }
+            for (nm_size_t i=start; (i < this->size()) && (result == npos); i++) {
+                auto init = true;
+                for (nm_size_t k=0; (k<(nm_size_t)n_needle) && (init); k++) {
+                    init = ((k+i) < this->size()) && (this->at(i+k) == other[k]);
                 }
-                if (idx == N) {
-                    break;
+                if (init) {
+                    result = i;
                 }
             }
-
             return result;
         }
 
@@ -370,49 +383,46 @@ namespace nmtools::utl
         {
             auto result = npos;
 
-            auto N = other.size();
-            auto idx = size_type{0};
-            T to_find = other[idx++];
-            for (nm_size_t i=start; i<this->size(); i++) {
-                auto chr = this->at(i);
-                if ((chr == to_find) && (result == npos)) {
-                    result = i;
-                    to_find = other[idx++];
-                } else if (chr == to_find) {
-                    to_find = other[idx++];
-                } else {
-                    result = npos;
+            auto n_needle = other.size();
+            if (n_needle == 0) {
+                // empty needle matches at the search position
+                return (start <= this->size() ? start : npos);
+            }
+            for (nm_size_t i=start; (i < this->size()) && (result == npos); i++) {
+                auto init = true;
+                for (nm_size_t k=0; (k<(nm_size_t)n_needle) && (init); k++) {
+                    init = ((k+i) < this->size()) && (this->at(i+k) == other.at(k));
                 }
-                if (idx == N) {
-                    break;
+                if (init) {
+                    result = i;
                 }
             }
-
             return result;
         }
 
         template <auto N>
         constexpr auto rfind(const T (&other)[N]) const
         {
+            // other is a literal including the terminating '\0'
+            constexpr auto n_needle = (N > 0 ? N - 1 : 0);
             auto result = npos;
-
-            auto idx = size_type{0};
-            T to_find = other[idx++];
-            for (nm_index_t i=this->size()-1; i>=0; i--) {
-                auto chr = this->at(i);
-                if ((chr == to_find) && (result == npos)) {
-                    result = i;
-                    to_find = other[idx++];
-                } else if (chr == to_find) {
-                    to_find = other[idx++];
-                } else {
-                    result = npos;
+            if (n_needle == 0) {
+                // empty needle matches at the end position
+                return this->size();
+            }
+            if (n_needle > this->size()) {
+                return npos;
+            }
+            for (nm_index_t i=this->size()-n_needle; i>=0; i--) {
+                auto init = true;
+                for (nm_size_t k=0; (k<(nm_size_t)n_needle) && (init); k++) {
+                    init = this->at(i+k) == other[k];
                 }
-                if (idx == N) {
+                if (init) {
+                    result = i;
                     break;
                 }
             }
-
             return result;
         }
 
@@ -436,10 +446,12 @@ namespace nmtools::utl
 
             auto r_idx = 0;
             result.push_back(static_string_base{});
+            // iterate content (size() excludes the trailing '\0'); each
+            // segment maintains its own terminator via terminator-aware
+            // push_back
             for (nm_size_t i=0; i<this->size(); i++) {
                 auto chr = this->at(i);
                 if (chr == separator) {
-                    result[r_idx].push_back('\0');
                     result.push_back(static_string_base{});
                     r_idx++;
                     continue;
@@ -448,6 +460,35 @@ namespace nmtools::utl
             }
 
             return result;
+        }
+
+        constexpr auto size() const noexcept
+        {
+            // do not count the last 0
+            auto n = base_type::size();
+            return (n == 0 ? n : n - 1);
+        }
+
+        constexpr auto resize(nm_size_t count)
+        {
+            base_type::resize(count+1);
+            base_type::at(count) = '\0';
+        }
+
+        constexpr auto push_back(const T& t)
+        {
+            // terminator-aware append: overwrite the trailing '\0' (if any)
+            // with the new content char, then re-add the terminator at the raw
+            // end. don't use this on a buffer without a terminator, such as
+            // a freshly variadic-ctor-built string (see constants.hpp).
+            auto n = base_type::size();
+            if (n > 0) {
+                base_type::at(n-1) = t;
+                base_type::push_back('\0');
+            } else {
+                base_type::push_back(t);
+                base_type::push_back('\0');
+            }
         }
     };
 
@@ -700,7 +741,6 @@ namespace nmtools::utl
                 result.push_back('0'+(num/b));
             }
             result.push_back('0'+(num%b));
-            result.push_back('\0');
         } else {
             nmtools_panic( false
                 , "invalid to_string" );
@@ -768,22 +808,25 @@ namespace nmtools::utl
         }
         // extract digits of int_part, reversed
         T rev_digits;
+        nm_size_t n_total = 0;
         if (int_part == 0) {
             rev_digits.push_back('0');
+            n_total = 1;
         } else if (int_part < (U)9.2233720368547758e18) {
             auto m = (int64_t)int_part;
             while (m > 0) {
                 rev_digits.push_back((char)('0' + (m % 10)));
                 m /= 10;
+                n_total++;
             }
         } else {
             while (int_part > 0) {
                 auto digit = utl::fmod(int_part, U(10));
                 rev_digits.push_back((char)('0' + (nm_index_t)digit));
                 int_part = (int_part - digit) / U(10);
+                n_total++;
             }
         }
-        auto n_total = rev_digits.size();
         // number of integer digits
         auto n_int = (nm_index_t)n_total - num_frac_digits;
         if (negative) {
@@ -815,7 +858,6 @@ namespace nmtools::utl
                 result.push_back('0');
             }
         }
-        result.push_back('\0');
         return result;
     }
 
