@@ -40,7 +40,7 @@ TEST_CASE("static_string" * doctest::test_suite("utl"))
     {
         utl::static_string str;
         str = "hello";
-        NMTOOLS_ASSERT_EQUAL( str.size(), 6 );
+        NMTOOLS_ASSERT_EQUAL( str.size(), 5 );
         #if !DISABLE_CHECK
         {
             auto isequal = ( str == "hello" );
@@ -53,7 +53,7 @@ TEST_CASE("static_string" * doctest::test_suite("utl"))
         str = "hello";
         [[maybe_unused]]
         utl::static_string other = str;
-        NMTOOLS_ASSERT_EQUAL( other.size(), 6 );
+        NMTOOLS_ASSERT_EQUAL( other.size(), 5 );
         #if !DISABLE_CHECK
         {
             auto isequal = ( other == "hello" );
@@ -110,7 +110,7 @@ TEST_CASE("static_string" * doctest::test_suite("utl"))
         utl::static_string str;
         str = "xmplr";
         str.insert(0,"E");
-        NMTOOLS_ASSERT_EQUAL( str.size(), 7 );
+        NMTOOLS_ASSERT_EQUAL( str.size(), 6 );
         #if !DISABLE_CHECK
         {
             auto isequal = ( str == "Exmplr" );
@@ -185,7 +185,7 @@ TEST_CASE("static_string" * doctest::test_suite("utl"))
         str += utl::static_string("hello");
         str += utl::static_string(" ");
         str += utl::static_string("world");
-        NMTOOLS_ASSERT_EQUAL( str.size(), 12 );
+        NMTOOLS_ASSERT_EQUAL( str.size(), 11 );
         #if !DISABLE_CHECK
         {
             auto isequal = ( str == "hello world" );
@@ -196,15 +196,15 @@ TEST_CASE("static_string" * doctest::test_suite("utl"))
     {
         utl::static_string str;
         str += 'h';
-        NMTOOLS_ASSERT_EQUAL( str.size(), 2 );
+        NMTOOLS_ASSERT_EQUAL( str.size(), 1 );
         str += 'e';
+        NMTOOLS_ASSERT_EQUAL( str.size(), 2 );
+        str += 'l';
         NMTOOLS_ASSERT_EQUAL( str.size(), 3 );
         str += 'l';
         NMTOOLS_ASSERT_EQUAL( str.size(), 4 );
-        str += 'l';
-        NMTOOLS_ASSERT_EQUAL( str.size(), 5 );
         str += 'o';
-        NMTOOLS_ASSERT_EQUAL( str.size(), 6 );
+        NMTOOLS_ASSERT_EQUAL( str.size(), 5 );
         #if !DISABLE_CHECK
         {
             auto isequal = ( str == "hello" );
@@ -218,7 +218,7 @@ TEST_CASE("static_string" * doctest::test_suite("utl"))
         utl::static_string other;
         other = " world";
         auto concat = str + other;
-        NMTOOLS_ASSERT_EQUAL( concat.size(), 12 );
+        NMTOOLS_ASSERT_EQUAL( concat.size(), 11 );
         #if !DISABLE_CHECK
         {
             auto isequal = ( concat == "hello world" );
@@ -248,7 +248,7 @@ TEST_CASE("static_string" * doctest::test_suite("utl"))
         {
             auto splits = str.split(':');
             NMTOOLS_ASSERT_EQUAL( splits.size(), 1 );
-            NMTOOLS_ASSERT_EQUAL( splits[0].size(), 12 );
+            NMTOOLS_ASSERT_EQUAL( splits[0].size(), 11 );
         }
     }
     {
@@ -292,7 +292,7 @@ TEST_CASE("static_string" * doctest::test_suite("utl"))
         utl::static_string_base<8> str;
         str = "hello";
         utl::static_string_base<16> other = str;
-        NMTOOLS_ASSERT_EQUAL( other.size(), 6 );
+        NMTOOLS_ASSERT_EQUAL( other.size(), 5 );
         #if !DISABLE_CHECK
         {
             auto isequal = ( other == "hello" );
@@ -349,7 +349,7 @@ TEST_CASE("constexpr_static_string" * doctest::test_suite("utl"))
             str = "hello";
             return str;
         }();
-        NMTOOLS_ASSERT_EQUAL( str.size(), 6 );
+        NMTOOLS_ASSERT_EQUAL( str.size(), 5 );
         #if !DISABLE_CHECK
         {
             auto isequal = ( str == "hello" );
@@ -364,7 +364,7 @@ TEST_CASE("constexpr_static_string" * doctest::test_suite("utl"))
             utl::static_string other = str;
             return other;
         }();
-        NMTOOLS_ASSERT_EQUAL( other.size(), 6 );
+        NMTOOLS_ASSERT_EQUAL( other.size(), 5 );
         #if !DISABLE_CHECK
         {
             auto isequal = ( other == "hello" );
@@ -931,7 +931,7 @@ TEST_CASE("static_string::join" * doctest::test_suite("utl"))
     {
         auto strs = nmtools_array<static_string,3>{static_string::to_string(1), static_string::to_string(3), static_string::to_string(5)};
         auto str = static_string(",").join(strs);
-        CHECK( str.size() == 6 );
+        CHECK( str.size() == 5 );
         #if !DISABLE_CHECK
         {
             auto isequal = ( str == "1,3,5" );
@@ -942,7 +942,7 @@ TEST_CASE("static_string::join" * doctest::test_suite("utl"))
     {
         constexpr auto strs = nmtools_array<static_string,3>{static_string::to_string(1), static_string::to_string(3), static_string::to_string(5)};
         constexpr auto str = static_string(",").join(strs);
-        CHECK( str.size() == 6 );
+        CHECK( str.size() == 5 );
         #if !DISABLE_CHECK
         {
             auto isequal = ( str == "1,3,5" );
@@ -1200,8 +1200,10 @@ TEST_CASE("static_string::stoi" * doctest::test_suite("utl"))
     {
         auto str = utl::static_string("1e308");
         auto result = utl::stod(str);
-        auto is_in_range = (result > 1e307) && (result < 1.7e308);
-        NMTOOLS_CHECK_MESSAGE( is_in_range, "stod large value" );
+        // NOTE: splitting the bounds avoids a clang false positive
+        // (-Wtautological-overlap-compare) on the combined && expression
+        NMTOOLS_CHECK_MESSAGE( result > 1e307, "stod large value (lower bound)" );
+        NMTOOLS_CHECK_MESSAGE( result < 1.7e308, "stod large value (upper bound)" );
     }
     // large values (float overflows to inf)
     {

@@ -40,7 +40,7 @@ TEST_CASE("string" * doctest::test_suite("utl"))
     {
         utl::string str;
         str = "hello";
-        NMTOOLS_ASSERT_EQUAL( str.size(), 6 );
+        NMTOOLS_ASSERT_EQUAL( str.size(), 5 );
         auto isequal = str == "hello";
         CHECK( isequal );
     }
@@ -49,7 +49,7 @@ TEST_CASE("string" * doctest::test_suite("utl"))
         str = "hello";
         [[maybe_unused]]
         utl::string other = str;
-        NMTOOLS_ASSERT_EQUAL( other.size(), 6 );
+        NMTOOLS_ASSERT_EQUAL( other.size(), 5 );
         auto isequal = other == "hello";
         CHECK( isequal );
     }
@@ -57,7 +57,7 @@ TEST_CASE("string" * doctest::test_suite("utl"))
         utl::string str;
         str = "hello";
         auto other = str + " " + "world";
-        NMTOOLS_ASSERT_EQUAL( other.size(), 12 );
+        NMTOOLS_ASSERT_EQUAL( other.size(), 11 );
         auto isequal = other == "hello world";
         CHECK( isequal );
     }
@@ -65,7 +65,7 @@ TEST_CASE("string" * doctest::test_suite("utl"))
         utl::string str;
         str = "Lorem";
         auto other = str + " " + "ipsum" + " " + "dolor" + " " + "sit amet," + " " + "consectetur adipiscing elit,";
-        NMTOOLS_ASSERT_EQUAL( other.size(), 57 );
+        NMTOOLS_ASSERT_EQUAL( other.size(), 56 );
         auto isequal ( other == "Lorem ipsum dolor sit amet, consectetur adipiscing elit," );
         CHECK( isequal );
     }
@@ -108,15 +108,15 @@ TEST_CASE("string" * doctest::test_suite("utl"))
     {
         utl::string str;
         str += 'h';
-        CHECK( str.size() == 2 );
+        CHECK( str.size() == 1 );
         str += 'e';
+        CHECK( str.size() == 2 );
+        str += 'l';
         CHECK( str.size() == 3 );
         str += 'l';
         CHECK( str.size() == 4 );
-        str += 'l';
-        CHECK( str.size() == 5 );
         str += 'o';
-        CHECK( str.size() == 6 );
+        CHECK( str.size() == 5 );
         auto expected = utl::string("hello");
         for (nm_size_t i=0; i<str.size() && i<expected.size(); i++) {
             CHECK( str[i] == expected[i] );
@@ -131,15 +131,15 @@ TEST_CASE("string" * doctest::test_suite("utl"))
     {
         utl::string str;
         str += utl::string("h");
-        CHECK( str.size() == 2 );
+        CHECK( str.size() == 1 );
         str += utl::string("e");
+        CHECK( str.size() == 2 );
+        str += utl::string("l");
         CHECK( str.size() == 3 );
         str += utl::string("l");
         CHECK( str.size() == 4 );
-        str += utl::string("l");
-        CHECK( str.size() == 5 );
         str += utl::string("o");
-        CHECK( str.size() == 6 );
+        CHECK( str.size() == 5 );
         auto expected = utl::string("hello");
         for (nm_size_t i=0; i<str.size() && i<expected.size(); i++) {
             CHECK( str[i] == expected[i] );
@@ -153,7 +153,7 @@ TEST_CASE("string" * doctest::test_suite("utl"))
     }
     {
         auto str = utl::to_string<utl::string>(3);
-        CHECK( str.size() == 2 );
+        CHECK( str.size() == 1 );
         auto is_same = (str == "3");
         CHECK( is_same );
     }
@@ -183,7 +183,7 @@ TEST_CASE("string" * doctest::test_suite("utl"))
         utl::string str;
         str = "xmplr";
         str.insert(0,"E");
-        NMTOOLS_ASSERT_EQUAL( str.size(), 7 );
+        NMTOOLS_ASSERT_EQUAL( str.size(), 6 );
         auto isequal = ( str == "Exmplr" );
         CHECK( isequal );
         str.insert(2,"e");
@@ -249,14 +249,14 @@ TEST_CASE("string" * doctest::test_suite("utl"))
         utl::string str;
         CHECK( str.is_static() );
         str.push_back('a');
-        str.push_back('\0');
+        // note: the trailing '\0' is maintained automatically
         auto isequal = ( str == "a" );
         CHECK( isequal );
         // grow beyond default static capacity
         for (int i=0; i<20; i++) {
             str.push_back('x');
         }
-        NMTOOLS_ASSERT_EQUAL( str.size(), 22 );
+        NMTOOLS_ASSERT_EQUAL( str.size(), 21 );
         CHECK( !str.is_static() );
     }
     {
@@ -347,7 +347,7 @@ TEST_CASE("string" * doctest::test_suite("utl"))
         {
             auto splits = str.split('x');
             NMTOOLS_ASSERT_EQUAL( splits.size(), 1 );
-            NMTOOLS_ASSERT_EQUAL( splits[0].size(), 6 );
+            NMTOOLS_ASSERT_EQUAL( splits[0].size(), 5 );
         }
     }
     {
@@ -555,7 +555,7 @@ TEST_CASE("string::join" * doctest::test_suite("utl"))
     {
         auto strs = nmtools_array<string,3>{string::to_string(1), string::to_string(3), string::to_string(5)};
         auto str = string(",").join(strs);
-        CHECK( str.size() == 6 );
+        CHECK( str.size() == 5 );
         auto isequal = ( str == "1,3,5" );
         CHECK( isequal );
     }
@@ -805,8 +805,10 @@ TEST_CASE("string::stoi" * doctest::test_suite("utl"))
     {
         utl::string str = "1e308";
         auto result = utl::stod(str);
-        auto is_in_range = (result > 1e307) && (result < 1.7e308);
-        NMTOOLS_CHECK_MESSAGE( is_in_range, "stod large value" );
+        // NOTE: splitting the bounds avoids a clang false positive
+        // (-Wtautological-overlap-compare) on the combined && expression
+        NMTOOLS_CHECK_MESSAGE( result > 1e307, "stod large value (lower bound)" );
+        NMTOOLS_CHECK_MESSAGE( result < 1.7e308, "stod large value (upper bound)" );
     }
     // large values (float overflows to inf)
     {

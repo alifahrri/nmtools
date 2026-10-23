@@ -1,4 +1,5 @@
 #include "nmtools/core/computational_graph.hpp"
+#include "nmtools/core/computational_tree.hpp"
 #include "nmtools/array/var.hpp"
 #include "nmtools/array/random.hpp"
 #include "nmtools/context/default.hpp"
@@ -37,3 +38,22 @@ TEST_CASE("get_computational_graph(var)" * doctest::test_suite("transform"))
     CHECK_MESSAGE( true, graphviz_v );
     NMTOOLS_ASSERT_EQUAL( nk::is_directed_acyclic_graph(graph_v), true );
 }
+
+TEST_CASE("get_computational_tree(var)" * doctest::test_suite("transform"))
+{
+    auto gen = nm::random_engine();
+
+    auto input = nm::random(array{3,4},nm::float32,gen);
+    auto axis  = -1;
+    auto res   = view::var(input,axis);
+
+    auto graph = fn::get_computational_tree(res);
+
+    auto graphviz = utils::to_string(unwrap(graph),utils::Graphviz);
+
+    CHECK_MESSAGE( true, graphviz );
+    NMTOOLS_ASSERT_EQUAL( nk::is_directed_acyclic_graph(graph), true );
+    NMTOOLS_ASSERT_EQUAL( nm::meta::is_constant_adjacency_list_v<decltype(unwrap(graph).adjacency_list)>, true );
+
+}
+

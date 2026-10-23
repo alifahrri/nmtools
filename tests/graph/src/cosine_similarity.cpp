@@ -1,4 +1,5 @@
 #include "nmtools/core/computational_graph.hpp"
+#include "nmtools/core/computational_tree.hpp"
 #include "nmtools/array/cosine_similarity.hpp"
 #include "nmtools/array/random.hpp"
 #include "nmtools/context/default.hpp"
@@ -41,3 +42,26 @@ TEST_CASE("get_computational_graph(cosine_similarity)" * doctest::test_suite("tr
     CHECK_MESSAGE( true, graphviz_v );
     NMTOOLS_ASSERT_EQUAL( nk::is_directed_acyclic_graph(graph_v), true );
 }
+
+TEST_CASE("get_computational_tree(cosine_similarity)" * doctest::test_suite("transform"))
+{
+    auto gen = nm::random_engine();
+    auto dtype = nm::float32;
+
+    auto lhs = nm::random(array{2,3,2},dtype,gen);
+    auto rhs = nm::random(array{2,3,2},dtype,gen);
+
+    auto axis = 1;
+
+    auto res = view::cosine_similarity(lhs,rhs,axis);
+
+    auto graph = fn::get_computational_tree(res);
+
+    auto graphviz = utils::to_string(unwrap(graph),utils::Graphviz);
+
+    CHECK_MESSAGE( true, graphviz );
+    NMTOOLS_ASSERT_EQUAL( nk::is_directed_acyclic_graph(graph), true );
+    NMTOOLS_ASSERT_EQUAL( nm::meta::is_constant_adjacency_list_v<decltype(unwrap(graph).adjacency_list)>, true );
+
+}
+
