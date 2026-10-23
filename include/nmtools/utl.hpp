@@ -21,6 +21,7 @@
 #include "nmtools/utl/static_string.hpp"
 #include "nmtools/utl/static_vector.hpp"
 #include "nmtools/utl/string.hpp"
+#include "nmtools/utl/string_cast.hpp"
 #include "nmtools/utl/variant.hpp"
 #include "nmtools/utl/vector.hpp"
 #include "nmtools/utl/math.hpp"
