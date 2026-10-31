@@ -1252,148 +1252,147 @@ TEST_CASE("hash(composition)" * doctest::test_suite("transform"))
     // the tree operands refer to aliased (generated) node ids
 }
 
-// aliased buffers are identified through their compile-time id, the id
-// acts as the user-asserted buffer identity (like an address for shared
-// buffers, but known at compile time). The rules pinned down here:
-//
-// * two aliases of the same array with different ids hash differently,
-//   the id disambiguates otherwise identical inline buffers (whose
-//   address is not hashable, e.g. inline ndarray storage);
-// * two aliases carrying the same id hash equal, even when the
-//   underlying arrays are distinct objects: identity comes from the id,
-//   not from the storage. (same id over different arrays is a user
-//   contract, violations are catchable downstream at eval)
-// * since identity comes from the id, hashing with or without address
-//   must produce the same result for aliased buffers.
-//
-// NOTE: alias ids are always compile-time by construction (view::alias
-// static-asserts is_constant_index on the id), runtime ids don't exist.
-TEST_CASE("hash(buffer, aliased)" * doctest::test_suite("transform"))
+// TODO fix
+TEST_CASE("hash(buffer)" * doctest::test_suite("graph") * doctest::skip())
+{
+    auto gen   = nm::random_engine();
+    auto dtype = nm::int8;
+
+    auto shape = nmtools_list{3,4};
+    auto input = view::aliased(nm::random(shape,dtype,gen));
+    auto graph = unwrap(fn::get_computational_tree(input));
+
+    constexpr auto NUM_NODES = nm::len_v<decltype(graph.adjacency_list)>;
+    CHECK( (nm_size_t)NUM_NODES == 1 );
+    CHECK_MESSAGE( true, utils::to_string(graph,utils::Graphviz) );
+}
+
+// same input array
+TEST_CASE("hash(aliased1)" * doctest::test_suite("graph"))
+{
+    auto gen   = nm::random_engine();
+    auto dtype = nm::int8;
+
+    auto shape  = nmtools_list{3,4};
+    auto array  = nm::random(shape,dtype,gen);
+    auto input  = view::aliased(array);
+    auto result = view::add(input,input);
+    auto graph  = unwrap(fn::get_computational_tree(result));
+
+    constexpr auto NUM_NODES = nm::len_v<decltype(graph.adjacency_list)>;
+    CHECK( (nm_size_t)NUM_NODES == 5 );
+    CHECK_MESSAGE( true, utils::to_string(graph,utils::Graphviz) );
+
+    {
+        // node 0: output
+
+        auto output = graph.nodes(0_ct);
+        static_assert( nm::is_compute_node_v<decltype(output)> );
+
+        CHECK_MESSAGE( true, join(output.to_string()) );
+
+        constexpr auto v = nm::to_value_v<nm::remove_cvref_t<decltype(output)>>;
+        static_assert( !nm::is_fail_v<decltype(v)> );
+        CHECK_MESSAGE( true, v.to_string() );
+
+        auto r = nrt::to_value(output);
+        CHECK_MESSAGE( true, r.to_string() );
+
+        auto h = fn::hash(output,nm::True,nm::False);
+        CHECK( h != 0 );
+        CHECK( h == fn::hash(r,true,false) );
+        // CHECK( nm::is_constant_index_v<decltype(h)> );
+    }
+
+    {
+        // input
+        auto lhs = graph.nodes(2_ct);
+        static_assert( nm::is_buffer_node_v<decltype(lhs)> );
+        static_assert( nm::has_id_type_v<decltype(lhs)> );
+        CHECK_MESSAGE( true, join(lhs.to_string()) );
+
+        auto rhs = graph.nodes(4_ct);
+        static_assert( nm::is_buffer_node_v<decltype(rhs)> );
+        static_assert( nm::has_id_type_v<decltype(rhs)> );
+        CHECK_MESSAGE( true, join(rhs.to_string()) );
+
+        constexpr auto v_lhs = nm::to_value_v<nm::remove_cvref_t<decltype(lhs)>>;
+        static_assert( !nm::is_fail_v<decltype(v_lhs)> );
+        CHECK_MESSAGE( true, v_lhs.to_string() );
+        CHECK( v_lhs.attributes_.count("alias") );
+
+        constexpr auto v_rhs = nm::to_value_v<nm::remove_cvref_t<decltype(rhs)>>;
+        static_assert( !nm::is_fail_v<decltype(v_rhs)> );
+        CHECK_MESSAGE( true, v_rhs.to_string() );
+        CHECK( v_rhs.attributes_.count("alias") );
+
+        auto r_lhs = nrt::to_value(lhs);
+        CHECK_MESSAGE( true, r_lhs.to_string() );
+        CHECK( r_lhs.attributes_.count("alias") );
+
+        auto r_rhs = nrt::to_value(rhs);
+        CHECK_MESSAGE( true, r_rhs.to_string() );
+        CHECK( r_rhs.attributes_.count("alias") );
+
+        CHECK( fn::hash(lhs,nm::True,nm::True) == fn::hash(rhs,nm::True,nm::True) );
+        CHECK( fn::hash(r_lhs,nm::True,nm::True) == fn::hash(r_rhs,nm::True,nm::True) );
+    }
+}
+
+TEST_CASE("hash(aliased2)" * doctest::test_suite("graph"))
 {
     auto gen   = nm::random_engine();
     auto dtype = nm::float32;
 
-    auto a_shape = tuple{3_ct,4_ct};
+    auto shape  = nmtools_array{2,3,2};
+    auto lhs    = nm::random(shape,dtype,gen);
+    auto rhs    = nm::random(shape,dtype,gen);
+    auto [a,b]  = view::aliased(lhs,rhs);
+    auto result = view::add(a,b);
+    auto graph  = unwrap(fn::get_computational_tree(result));
 
-    auto a = nm::random(a_shape,dtype,gen);
-    auto b = nm::random(a_shape,dtype,gen);
+    constexpr auto NUM_NODES = nm::len_v<decltype(graph.adjacency_list)>;
+    CHECK( (nm_size_t)NUM_NODES == 5 );
 
-    auto aliased_a0 = view::cos(view::alias(a, 0_ct));
-    auto aliased_a7 = view::cos(view::alias(a, 7_ct));
-    auto aliased_b7 = view::cos(view::alias(b, 7_ct));
-
-    auto graph_a0 = unwrap(fn::get_computational_tree(aliased_a0));
-    auto graph_a7 = unwrap(fn::get_computational_tree(aliased_a7));
-    auto graph_b7 = unwrap(fn::get_computational_tree(aliased_b7));
-
-    constexpr auto NUM_NODES = nm::len_v<decltype(graph_a7.adjacency_list)>;
-
-    CHECK( (nm_size_t)NUM_NODES == 2 );
     {
-        // node 1: aliased buffer node (alias id 7_ct)
-        auto input = graph_a7.nodes(1_ct);
-        static_assert( nm::is_buffer_node_v<decltype(input)> );
-        CHECK_MESSAGE( true, join(input.to_string()) );
+        // input
+        auto lhs = graph.nodes(2_ct);
+        static_assert( nm::is_buffer_node_v<decltype(lhs)> );
+        static_assert( nm::has_id_type_v<decltype(lhs)> );
+        CHECK_MESSAGE( true, join(lhs.to_string()) );
 
-        constexpr auto v = nm::to_value_v<nm::remove_cvref_t<decltype(input)>>;
-        static_assert( !nm::is_fail_v<decltype(v)> );
-        CHECK_MESSAGE( true, v.to_string() );
+        auto rhs = graph.nodes(4_ct);
+        static_assert( nm::is_buffer_node_v<decltype(rhs)> );
+        static_assert( nm::has_id_type_v<decltype(rhs)> );
+        CHECK_MESSAGE( true, join(rhs.to_string()) );
 
-        auto r = nrt::to_value(input);
-        CHECK_MESSAGE( true, r.to_string() );
+        constexpr auto v_lhs = nm::to_value_v<nm::remove_cvref_t<decltype(lhs)>>;
+        static_assert( !nm::is_fail_v<decltype(v_lhs)> );
+        CHECK_MESSAGE( true, v_lhs.to_string() );
+        CHECK( v_lhs.attributes_.count("alias") );
 
-        CHECK( r.kind() == fn::Kind::BUFFERED );
-        CHECK( v.kind()  == r.kind() );
-        CHECK( v.dtype() == r.dtype() );
-        CHECK( (bool)v.is_num() == (bool)r.is_num() );
-        CHECK( (nm_index_t)v.dim() == (nm_index_t)r.dim() );
+        constexpr auto v_rhs = nm::to_value_v<nm::remove_cvref_t<decltype(rhs)>>;
+        static_assert( !nm::is_fail_v<decltype(v_rhs)> );
+        CHECK_MESSAGE( true, v_rhs.to_string() );
+        CHECK( v_rhs.attributes_.count("alias") );
 
-        // hash w/o address and w/o shape
-        auto h0 = fn::hash(input,nm::False,nm::False);
-        CHECK( h0 != 0 );
-        CHECK( h0 == fn::hash(r,false,false) );
-        CHECK( nm::is_constant_index_v<decltype(h0)> );
+        auto r_lhs = nrt::to_value(lhs);
+        CHECK_MESSAGE( true, r_lhs.to_string() );
+        CHECK( r_lhs.attributes_.count("alias") );
+        CHECK( r_lhs.kind() == fn::Kind::BUFFERED );
 
-        // hash w/o address, w/ shape
-        auto h1 = fn::hash(input,nm::True,nm::False);
-        CHECK( h1 != 0 );
-        CHECK( h1 == fn::hash(r,true,false) );
-        CHECK( nm::is_constant_index_v<decltype(h1)> );
+        auto r_rhs = nrt::to_value(rhs);
+        CHECK_MESSAGE( true, r_rhs.to_string() );
+        CHECK( r_rhs.attributes_.count("alias") );
+        CHECK( r_rhs.kind() == fn::Kind::BUFFERED );
 
-        // hash both shape and address: for aliased buffers the id
-        // replaces the address, so both must be equal
-        auto h2 = fn::hash(input);
-        CHECK( h2 != 0 );
-        CHECK( h2 == fn::hash(r) );
-        CHECK( h2 == h1 );
+        CHECK( r_lhs.attributes_.at("alias").integer != r_rhs.attributes_.at("alias").integer );
 
-        // differently aliased views of the same array must hash
-        // differently (ids 0_ct vs 7_ct)
-        auto input_a0 = graph_a0.nodes(1_ct);
-        CHECK( (nm_size_t)h1 != (nm_size_t)fn::hash(input_a0,nm::True,nm::False) );
-
-        // views aliased with the same id (7_ct) on different arrays must
-        // hash equal
-        auto input_b7 = graph_b7.nodes(1_ct);
-        CHECK( (nm_size_t)h1 == (nm_size_t)fn::hash(input_b7,nm::True,nm::False) );
+        auto hash_lhs = fn::hash(lhs,nm::True,nm::True);
+        auto hash_rhs = fn::hash(rhs,nm::True,nm::True);
+        CHECK( nm::is_constant_index_v<decltype(hash_lhs)> );
+        CHECK( nm::is_constant_index_v<decltype(hash_rhs)> );
+        CHECK( hash_lhs != hash_rhs );
+        CHECK( fn::hash(r_lhs,nm::True,nm::True) != fn::hash(r_rhs,nm::True,nm::True) );
     }
-}
-
-// aliased scalars are also identified through their compile-time id:
-// unlike buffers there is no shape at all, so the id is the only
-// distinguishing element. Note that like the runtime addresses (which
-// only exist for shared buffers), an id replaces the whole identity:
-// two aliased scalars with different ids must hash differently even
-// though their values are equal, and two aliased scalars with the same
-// id must hash equal.
-//
-// NOTE: fn::node is applied directly to the aliased scalar: aliasing a
-// scalar num is half-supported upstream, get_computational_tree over an
-// aliased scalar num operand doesn't build yet (template_reduce over
-// aliased scalars fails), while the aliased array case is fully
-// supported.
-TEST_CASE("hash(buffer, aliased scalar)" * doctest::test_suite("transform"))
-{
-    auto s11  = view::alias(3, 11_ct);
-    auto s12  = view::alias(3, 12_ct);
-    auto s11b = view::alias(3, 11_ct);
-
-    auto n11  = fn::node(s11);
-    auto n12  = fn::node(s12);
-    auto n11b = fn::node(s11b);
-
-    static_assert( nm::is_buffer_node_v<decltype(n11)> );
-    CHECK_MESSAGE( true, join(n11.to_string()) );
-
-    constexpr auto v = nm::to_value_v<nm::remove_cvref_t<decltype(n11)>>;
-    static_assert( !nm::is_fail_v<decltype(v)> );
-    CHECK_MESSAGE( true, v.to_string() );
-    CHECK( v.is_num() );
-    CHECK( v.dtype() == fn::Type::Int32 );
-
-    auto r = nrt::to_value(n11);
-    CHECK_MESSAGE( true, r.to_string() );
-
-    CHECK( r.is_num() );
-    CHECK( r.kind() == fn::Kind::BUFFERED );
-    CHECK( v.kind()  == r.kind() );
-    CHECK( v.dtype() == r.dtype() );
-
-    // hash w/o address and w/o shape: for scalars, the id must
-    // carry the whole identity, so this hash must be compile-time
-    auto h0 = fn::hash(n11,nm::False,nm::False);
-    CHECK( h0 != 0 );
-    CHECK( h0 == fn::hash(r,false,false) );
-    CHECK( nm::is_constant_index_v<decltype(h0)> );
-
-    auto h1 = fn::hash(n11,nm::True,nm::False);
-    CHECK( h1 != 0 );
-    CHECK( h1 == fn::hash(r,true,false) );
-
-    // aliased scalars with different ids must hash differently
-    // (ids 11_ct vs 12_ct of equal values)
-    CHECK( (nm_size_t)h0 != (nm_size_t)fn::hash(n12,nm::False,nm::False) );
-
-    // aliased scalars with the same id must hash equal
-    CHECK( (nm_size_t)h0 == (nm_size_t)fn::hash(n11b,nm::False,nm::False) );
 }

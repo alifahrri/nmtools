@@ -36,7 +36,7 @@ TEST_CASE("get_computational_graph(mean)" * doctest::test_suite("transform"))
 
     CHECK_MESSAGE( true, graphviz );
     NMTOOLS_ASSERT_EQUAL( nk::is_directed_acyclic_graph(graph), true );
-    NMTOOLS_ASSERT_EQUAL( nm::meta::is_constant_adjacency_list_v<decltype(unwrap(graph).adjacency_list)>, true );
+    NMTOOLS_ASSERT_EQUAL( nm::is_constant_adjacency_list_v<decltype(unwrap(graph).adjacency_list)>, true );
 
 
     constexpr auto graph_v = nm::meta::to_value_v<decltype(unwrap(graph))>;
@@ -60,7 +60,7 @@ TEST_CASE("get_computational_tree(mean)" * doctest::test_suite("transform"))
 
     CHECK_MESSAGE( true, graphviz );
     NMTOOLS_ASSERT_EQUAL( nk::is_directed_acyclic_graph(graph), true );
-    NMTOOLS_ASSERT_EQUAL( nm::meta::is_constant_adjacency_list_v<decltype(unwrap(graph).adjacency_list)>, true );
+    NMTOOLS_ASSERT_EQUAL( nm::is_constant_adjacency_list_v<decltype(unwrap(graph).adjacency_list)>, true );
 
 
 }

@@ -371,6 +371,35 @@ TEST_CASE("to_value(Node)" * doctest::test_suite("graph"))
     CHECK_MESSAGE( true, join(NODE.to_string()) );
 }
 
+TEST_CASE("to_value(alias)" * doctest::test_suite("graph"))
+{
+    auto gen   = nm::random_engine();
+    auto dtype = nm::int8;
+
+    auto shape = nmtools_list{3,4};
+    auto input = view::aliased(nm::random(shape,dtype,gen));
+    auto node  = fn::node(input);
+
+    CHECK( !nm::is_none_v<decltype(input.id)> );
+    CHECK( nm::is_same_view_v<view::alias_t,decltype(input)> );
+    CHECK( !nm::is_none_v<decltype(node.id)> );
+
+    using Node = fn::Node<>;
+
+    constexpr auto NODE = nm::to_value_v<decltype(node),Node>;
+    // NMTOOLS_ASSERT_EQUAL( (nm::is_same_v<nm::remove_cvref_t<decltype(NODE)>,Node>), true );
+    NMTOOLS_STATIC_CHECK_IS_SAME( nm::remove_cvref_t<decltype(NODE)>, Node );
+    NMTOOLS_ASSERT_EQUAL( NODE.is_buffer(), true );
+    NMTOOLS_ASSERT_EQUAL( NODE.dim(), -1 );
+    NMTOOLS_ASSERT_EQUAL( NODE.max_dim(), -1 );
+    NMTOOLS_ASSERT_EQUAL( NODE.is_num(), 0 );
+    CHECK( NODE.kind() == fn::Kind::BUFFERED );
+    CHECK( NODE.dtype() == fn::Type::Int8 );
+    CHECK( NODE.attributes_.count("alias") );
+    CHECK( NODE.attributes_.at("alias").integer == 0 );
+    CHECK_MESSAGE( true, join(NODE.to_string()) );
+}
+
 TEST_CASE("to_value(Node)" * doctest::test_suite("graph"))
 {
     auto gen = nm::random_engine();
