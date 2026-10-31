@@ -1,5 +1,6 @@
 #include "nmtools/network/digraph.hpp"
 #include "nmtools/core/computational_graph.hpp"
+#include "nmtools/core/computational_tree.hpp"
 #include "nmtools/array/pad.hpp"
 #include "nmtools/array/random.hpp"
 #include "nmtools/context/default.hpp"
@@ -39,7 +40,7 @@ TEST_CASE("get_computational_graph(pad)" * doctest::test_suite("transform"))
 
     CHECK_MESSAGE( true, graphviz );
     NMTOOLS_ASSERT_EQUAL( nk::is_directed_acyclic_graph(graph), true );
-    NMTOOLS_ASSERT_EQUAL( nm::meta::is_constant_adjacency_list_v<decltype(unwrap(graph).adjacency_list)>, true );
+    NMTOOLS_ASSERT_EQUAL( nm::is_constant_adjacency_list_v<decltype(unwrap(graph).adjacency_list)>, true );
 
     constexpr auto graph_v = nm::meta::to_value_v<decltype(unwrap(graph))>;
     auto graphviz_v = utils::to_string(unwrap(graph_v),utils::Graphviz);
@@ -47,6 +48,31 @@ TEST_CASE("get_computational_graph(pad)" * doctest::test_suite("transform"))
     CHECK_MESSAGE( true, graphviz_v );
     NMTOOLS_ASSERT_EQUAL( nk::is_directed_acyclic_graph(graph_v), true );
 }
+
+TEST_CASE("get_computational_tree(pad)" * doctest::test_suite("transform"))
+{
+    auto gen   = nm::random_engine();
+    auto dtype = nm::float32;
+
+    auto a = nm::random(array{2,3,2},dtype,gen);
+    int pad_width[3][2] = {
+        {0,1},
+        {2,3},
+        {4,5},
+    };
+
+    auto res = view::pad(a,pad_width);
+
+    auto graph = fn::get_computational_tree(res);
+
+    auto graphviz = utils::to_string(unwrap(graph),utils::Graphviz);
+
+    CHECK_MESSAGE( true, graphviz );
+    NMTOOLS_ASSERT_EQUAL( nk::is_directed_acyclic_graph(graph), true );
+    NMTOOLS_ASSERT_EQUAL( nm::is_constant_adjacency_list_v<decltype(unwrap(graph).adjacency_list)>, true );
+
+}
+
 
 TEST_CASE("pad(case1)" * doctest::test_suite("computational_graph"))
 {

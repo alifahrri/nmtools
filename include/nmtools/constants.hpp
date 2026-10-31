@@ -41,7 +41,10 @@ namespace nmtools::detail
         {
             constexpr auto str = [&](){
                 auto str = utl::static_string(Ts...);
-                str.push_back('\0');
+                // NOTE: variadic ctor builds a raw buffer without the
+                // trailing terminator; restore the invariant (content +
+                // terminating '\0') with content-based resize
+                str.resize(sizeof...(Ts));
                 return str;
             }();
             if constexpr (str == "...") {
@@ -183,7 +186,7 @@ namespace nmtools::literals
         }
         nm_size_t i=0;
         result = result && (((str[i] >= '0') && (str[i] <= '9')) || str[i] == '-');
-        for (i=1; result && i<str.size()-1; i++) {
+        for (i=1; result && i<str.size(); i++) {
             result = result && (str[i] >= '0') && (str[i] <= '9');
         }
         return result;

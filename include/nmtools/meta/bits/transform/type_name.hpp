@@ -4,6 +4,7 @@
 #include "nmtools/meta/common.hpp"
 #include "nmtools/utl/array.hpp"
 #include "nmtools/utl/static_vector.hpp"
+#include "nmtools/utl/static_string.hpp"
 
 // clang and gcc constexpr evaluation limit to 512 calls
 // note: constexpr evaluation exceeded maximum depth of 512 calls
@@ -32,12 +33,12 @@ constexpr auto nm_get_function_name()
     #endif
 
     constexpr auto max_type_name = NMTOOLS_DEFAULT_TYPE_NAME_MAX_BUFFER_SIZE;
-    using type = nmtools::utl::static_vector<char,max_type_name>;
+    using type = nmtools::utl::static_string_base<max_type_name>;
     auto result = type{};
     for (size_t i=start; i<max_type_name; i++) {
         auto s = str[i];
         if (s == ']') {
-            result.push_back('\0');
+            // terminator-aware push_back maintains the trailing '\0'
             break;
         } else if (s) {
             result.push_back(s);

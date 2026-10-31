@@ -99,11 +99,15 @@ namespace nmtools::meta
                 return template_reduce<len(result)>([&](auto init, auto index){
                     using init_t = type_t<decltype(init)>;
                     constexpr auto I = decltype(index)::value;
-                    constexpr auto neighbors = at(result,I);
-                    auto inner_vtype = template_reduce<len(neighbors)>([&](auto init, auto index){
+                    // NOTE: read `result` directly instead of storing it to an
+                    // intermediate constexpr variable; older gcc (<= 11) fails
+                    // with "modification of 'result' is not a constant expression"
+                    // when a constexpr local initialized from a reference-captured
+                    // variable is then captured again by the inner lambda
+                    auto inner_vtype = template_reduce<len(at(result,I))>([&](auto init, auto index){
                         using init_t = type_t<decltype(init)>;
                         constexpr auto J = decltype(index)::value;
-                        using type = append_type_t<init_t,ct<at(neighbors,J)>>;
+                        using type = append_type_t<init_t,ct<at(at(result,I),J)>>;
                         return as_value_v<type>;
                     }, as_value_v<nmtools_tuple<>>);
                     using inner_t = type_t<decltype(inner_vtype)>;

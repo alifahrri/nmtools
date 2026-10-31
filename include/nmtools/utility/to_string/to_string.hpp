@@ -32,7 +32,9 @@
 #endif
 
 #if defined(__clang__)
-  #if __has_feature(cxx_rtti)
+  // NOTE: android ndk (libc++) does not provide typeinfo for _Float16;
+  // typeid on it fails to link (see also nmtools/testing/string.hpp)
+  #if __has_feature(cxx_rtti) && !defined(__ANDROID__)
     #define NMTOOLS_HAS_RTTI
   #endif
 #elif defined(__GNUG__)

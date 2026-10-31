@@ -1,5 +1,6 @@
 #include "nmtools/network/digraph.hpp"
 #include "nmtools/core/computational_graph.hpp"
+#include "nmtools/core/computational_tree.hpp"
 #include "nmtools/core/broadcast_to.hpp"
 #include "nmtools/array/random.hpp"
 #include "nmtools/context/default.hpp"
@@ -45,6 +46,29 @@ TEST_CASE("get_computational_graph(broadcast_to)" * doctest::test_suite("transfo
     CHECK_MESSAGE( true, graphviz_v );
     NMTOOLS_ASSERT_EQUAL( nk::is_directed_acyclic_graph(graph_v), true );
 }
+
+TEST_CASE("get_computational_tree(broadcast_to)" * doctest::test_suite("transform"))
+{
+    auto gen = nm::random_engine();
+    auto dtype = nm::float32;
+
+    auto inp_shape = array{4};
+    auto dst_shape = array{3,4};
+
+    auto input = nm::random(inp_shape,dtype,gen);
+
+    auto res = view::broadcast_to(input,dst_shape);
+
+    auto graph = fn::get_computational_tree(res);
+
+    auto graphviz = utils::to_string(unwrap(graph),utils::Graphviz);
+
+    CHECK_MESSAGE( true, graphviz );
+    NMTOOLS_ASSERT_EQUAL( nk::is_directed_acyclic_graph(graph), true );
+    NMTOOLS_ASSERT_EQUAL( nm::is_constant_adjacency_list_v<decltype(unwrap(graph).adjacency_list)>, true );
+
+}
+
 
 TEST_CASE("broadcast_to(case1)" * doctest::test_suite("computational_graph"))
 {

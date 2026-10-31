@@ -82,6 +82,7 @@ set(GRAPH_TEST_GRAPH_SOURCES
 set(GRAPH_TEST_TRANSFORM_SOURCES
     transform/unary.cpp
     transform/binary.cpp
+    transform/gvn.cpp
 )
 
 if (NMTOOLS_COMPUTE_GRAPH_TEST_ALL)
@@ -100,6 +101,7 @@ endif()
 add_executable(${PROJECT_NAME}-doctest
     tests.cpp 
     node.cpp
+    hash.cpp
     ## functional
     ${GRAPH_TEST_GRAPH_SOURCES}
     ${GRAPH_TEST_TRANSFORM_SOURCES}

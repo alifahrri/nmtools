@@ -293,7 +293,7 @@ TEST_CASE("to_value(sum)" * doctest::test_suite("runtime"))
     NMTOOLS_ASSERT_EQUAL( (nm::is_same_v<nm::remove_cvref_t<decltype(NODE)>,Node>), true );
     NMTOOLS_ASSERT_EQUAL( NODE.is_compute(), true );
     NMTOOLS_ASSERT_EQUAL( NODE.dim(), 0 );
-    NMTOOLS_ASSERT_EQUAL( NODE.max_dim(), -1 );
+    NMTOOLS_ASSERT_EQUAL( NODE.max_dim(), 0 ); // default for max dim of num is 0
     NMTOOLS_ASSERT_EQUAL( NODE.is_num(), 1 );
     CHECK( NODE.kind() == fn::Kind::REDUCE );
     CHECK( NODE.dtype() == fn::Type::Float32 );

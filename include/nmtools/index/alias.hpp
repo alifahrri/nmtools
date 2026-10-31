@@ -146,7 +146,7 @@ namespace nmtools::meta
     > {
         static constexpr auto vtype = [](){
             if constexpr (
-                !is_index_array_v<aliases_t>
+                !(is_index_array_v<aliases_t> || is_string_v<aliases_t>)
                 || !is_index_v<base_t>
                 || !is_index_v<prime_t>
             ) {

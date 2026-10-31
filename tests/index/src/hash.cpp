@@ -130,6 +130,10 @@ TEST_CASE("hash")
     auto index_str = nmtools_string("indexing");
 
     static_assert( nm::is_string_v<decltype(ufunc_str)> );
+    static_assert( nm::is_string_v<decltype(index_str)> );
+
+    CHECK( ufunc_str.size() == 5 );
+    CHECK( index_str.size() == 8 );
 
     auto ufunc_hash = ix::hash(ufunc_str);
     auto index_hash = ix::hash(index_str);
@@ -137,4 +141,18 @@ TEST_CASE("hash")
     CHECK( ufunc_hash != 0 );
     CHECK( index_hash != 0 );
     CHECK( ufunc_hash != index_hash );
+
+    {
+        auto ufunc_str = nmtools_static_string("ufunc");
+        auto index_str = nmtools_static_string("indexing");
+
+        static_assert( nm::is_string_v<decltype(ufunc_str)> );
+        static_assert( nm::is_string_v<decltype(index_str)> );
+
+        CHECK( ufunc_str.size() == 5 );
+        CHECK( index_str.size() == 8 );
+
+        CHECK( ufunc_hash == ix::hash(ufunc_str) );
+        CHECK( index_hash == ix::hash(index_str) );
+    }
 }

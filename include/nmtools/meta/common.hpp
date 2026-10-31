@@ -289,6 +289,7 @@ namespace nmtools
     using meta::index_sequence;
     using meta::make_index_sequence_v;
     using meta::as_type;
+    using meta::is_vtype_v;
 }
 
 namespace nmtools::meta

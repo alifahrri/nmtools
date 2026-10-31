@@ -1,4 +1,5 @@
 #include "nmtools/core/computational_graph.hpp"
+#include "nmtools/core/computational_tree.hpp"
 #include "nmtools/array/matmul.hpp"
 #include "nmtools/array/random.hpp"
 #include "nmtools/context/default.hpp"
@@ -45,6 +46,30 @@ TEST_CASE("get_computational_graph(matmul)" * doctest::test_suite("transform"))
     // NMTOOLS_ASSERT_EQUAL( nk::is_directed_acyclic_graph(graph_v), true );
 }
 
+TEST_CASE("get_computational_tree(matmul)" * doctest::test_suite("transform"))
+{
+    auto gen = nm::random_engine();
+    auto dtype = nm::float32;
+
+    auto lhs_shape = array{3,4};
+    auto rhs_shape = array{4,3};
+
+    auto lhs = nm::random(lhs_shape,dtype,gen);
+    auto rhs = nm::random(rhs_shape,dtype,gen);
+
+    auto res = view::matmulv3(lhs,rhs);
+
+    auto graph = fn::get_computational_tree(res);
+
+    auto graphviz = utils::to_string(unwrap(graph),utils::Graphviz);
+    CHECK_MESSAGE( true, graphviz );
+    NMTOOLS_ASSERT_EQUAL( nk::is_directed_acyclic_graph(graph), true );
+    // NMTOOLS_ASSERT_EQUAL( nm::is_constant_adjacency_list_v<decltype(nm::get_left(unwrap(graph))->adjacency_list)>, true );
+    // NMTOOLS_ASSERT_EQUAL( nm::is_constant_adjacency_list_v<decltype(nm::get_right(unwrap(graph))->adjacency_list)>, true );
+
+}
+
+
 TEST_CASE("get_computational_graph(matmul-2)" * doctest::test_suite("transform"))
 {
     auto gen = nm::random_engine();
@@ -72,4 +97,28 @@ TEST_CASE("get_computational_graph(matmul-2)" * doctest::test_suite("transform")
     // CHECK_MESSAGE( true, graphviz_v );
     // NMTOOLS_ASSERT_EQUAL( nk::is_directed_acyclic_graph(graph_v), true );
 }
+
+TEST_CASE("get_computational_tree(matmul-2)" * doctest::test_suite("transform"))
+{
+    auto gen = nm::random_engine();
+    auto dtype = nm::float32;
+
+    auto lhs_shape = array{4};
+    auto rhs_shape = array{4};
+
+    auto lhs = nm::random(lhs_shape,dtype,gen);
+    auto rhs = nm::random(rhs_shape,dtype,gen);
+
+    auto res = view::matmulv3(lhs,rhs);
+
+    auto graph = fn::get_computational_tree(res);
+
+    auto graphviz = utils::to_string(unwrap(graph),utils::Graphviz);
+    CHECK_MESSAGE( true, graphviz );
+    NMTOOLS_ASSERT_EQUAL( nk::is_directed_acyclic_graph(graph), true );
+    // NMTOOLS_ASSERT_EQUAL( nm::is_constant_adjacency_list_v<decltype(nm::get_left(unwrap(graph))->adjacency_list)>, true );
+    // NMTOOLS_ASSERT_EQUAL( nm::is_constant_adjacency_list_v<decltype(nm::get_right(unwrap(graph))->adjacency_list)>, true );
+
+}
+
 #endif // __clang__

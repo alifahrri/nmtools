@@ -26,6 +26,7 @@ add_executable(${PROJECT_NAME} tests.cpp
     src/static_stack.cpp
     src/static_string.cpp
     src/string.cpp
+    src/string_cast.cpp
     src/tuple.cpp
     src/variant.cpp
 )

@@ -36,5 +36,10 @@ namespace nmtools::meta
     
 } // namespace nmtools::meta
 
+namespace nmtools
+{
+    using meta::has_id_type_v;
+}
+
 
 #endif // NMTOOLS_META_BITS_TRAITS_HAS_ID_TYPE_HPP
