@@ -240,6 +240,8 @@ namespace nmtools::functional
             return *this;
         }
 
+        // TODO: add generic oveload operator= that check inside if none, integer, floating, string, index array
+
         template <typename T, enable_if_t<is_index_array_v<T>
             && !is_same_v<get_element_type_t<T>,char>
             , int> = 0>
@@ -490,6 +492,7 @@ namespace nmtools::functional
         // TODO: make sure attributes is map
         using attributes_type = attributes_t;
         using string_type = string_t;
+        using integer_type = integer_t;
 
         using attribute_type = typename attributes_type::mapped_type;
         using index_array_type = typename attribute_type::index_array_type;
@@ -1340,7 +1343,11 @@ namespace nmtools::functional
                 result = index::hash(to_hash);
             }
         } else if (kind == Kind::BUFFERED) {
-            nm_size_t addr = hash_address ? address_for_hash(node.input_) : 0;
+            nm_size_t addr = hash_address ?
+                (node.attributes_.count("alias") ?
+                    node.attributes_.at("alias").integer : address_for_hash(node.input_))
+                : -1
+            ;
             auto to_hash = nmtools_array{kind_hash,addr,type_hash,shape_hash};
             result = index::hash(to_hash);
         }
@@ -1350,7 +1357,7 @@ namespace nmtools::functional
 
     /*********************************************************************** */
 
-    template <typename input_t, typename shape_t, typename element_t=none_t>
+    template <typename input_t, typename shape_t, typename element_t=none_t, typename id_t=none_t>
     struct buffer_node_t
     {
         // TODO: input must be buffered array or num
@@ -1358,10 +1365,16 @@ namespace nmtools::functional
         using shape_type = const shape_t;
         using element_type = element_t;
         using dtype_type   = dtype_t<element_type>;
+        using id_type      = id_t;
+
+        static_assert( is_none_v<id_t> || is_constant_index_v<id_t>
+            , "unexpected type for id_t, expected none or constant index"
+        );
 
         input_type input;
         shape_type shape;
         dtype_type dtype = {};
+        id_type    id = {};
 
         #if NMTOOLS_HAS_STRING
         auto to_string() const noexcept
@@ -1382,8 +1395,8 @@ namespace nmtools::functional
         #endif
     };
 
-    template <typename input_t>
-    constexpr auto buffer_node(const input_t& input)
+    template <typename id_t=none_t, typename input_t>
+    constexpr auto buffer_node(const input_t& input, id_t=id_t{})
     {
         if constexpr (is_maybe_v<input_t>) {
             using result_t = decltype(buffer_node(unwrap(input)));
@@ -1400,13 +1413,22 @@ namespace nmtools::functional
             auto shape = nmtools::shape<true>(*input);
             using element_t = get_element_type_t<remove_pointer_t<input_t>>;
             using shape_t   = remove_cvref_t<decltype(shape)>;
-            using node_t    = buffer_node_t<input_t,shape_t,element_t>;
+            using node_t    = buffer_node_t<input_t,shape_t,element_t,id_t>;
             return node_t{input,shape};
         } else {
+            auto id_vtype = [](){
+                if constexpr (has_id_type_v<input_t>) {
+                    using type = typename input_t::id_type;
+                    return as_value_v<type>;
+                } else {
+                    return as_value_v<id_t>;
+                }
+            }();
+            using id_type = type_t<decltype(id_vtype)>;
             auto shape = nmtools::shape<true>(input);
             using element_t = get_element_type_t<remove_pointer_t<input_t>>;
             using shape_t   = remove_cvref_t<decltype(shape)>;
-            using node_t    = buffer_node_t<input_t,shape_t,element_t>;
+            using node_t    = buffer_node_t<input_t,shape_t,element_t,id_type>;
             if constexpr (is_num_v<input_t>) {
                 return node_t{input,shape};
             } else {
@@ -1662,7 +1684,7 @@ namespace nmtools::functional
             // src_shape is a runtime shape value, copy as-is
             constexpr auto MAX_LEN = max_len_v<shape_type_t>;
             dim = (nm_index_t)len(src_shape);
-            max_dim = MAX_LEN > 0 ? MAX_LEN : max_dim;
+            max_dim = (nm_index_t)MAX_LEN;
             if constexpr (is_resizable_v<shape_type>) {
                 shape.resize(dim);
             }
@@ -1674,10 +1696,11 @@ namespace nmtools::functional
         return nmtools_tuple{is_num,dim,max_dim,shape};
     }
 
-    template <typename node_t, typename input_t, typename shape_t, typename element_t>
-    auto to_value(const buffer_node_t<input_t,shape_t,element_t>& node)
+    template <typename node_t, typename input_t, typename shape_t, typename element_t, typename id_t>
+    auto to_value(const buffer_node_t<input_t,shape_t,element_t,id_t>& node)
     {
         using Node = node_t;
+        using Index = typename Node::integer_type;
         using string_type = typename Node::string_type;
 
         Type dtype = Type::UNKNOWN;
@@ -1693,6 +1716,9 @@ namespace nmtools::functional
             // NOTE: type names can be arbitrarily long; this attribute is
             // display-only, so truncate instead of panicking
             node.attributes()["input_type"] = make_attr_string<string_type>(type_name_v<input_t>);
+            if constexpr (!is_none_v<id_t>) {
+                node.attributes()["alias"] = static_cast<Index>(to_value_v<id_t>);
+            }
             return node;
         } else if constexpr (is_shared_ptr_v<input_t>) {
             // TODO: assuming runtime node input type is variant, make sure input_t is acceptable type
@@ -1701,12 +1727,18 @@ namespace nmtools::functional
             // NOTE: type names can be arbitrarily long; this attribute is
             // display-only, so truncate instead of panicking
             node.attributes()["input_type"] = make_attr_string<string_type>(type_name_v<input_t>);
+            if constexpr (!is_none_v<id_t>) {
+                node.attributes()["alias"] = static_cast<Index>(to_value_v<id_t>);
+            }
             return node;
         } else {
             auto node = Node::buffer(shape,dim,MAX_DIM,dtype);
             // NOTE: type names can be arbitrarily long; this attribute is
             // display-only, so truncate instead of panicking
             node.attributes()["input_type"] = make_attr_string<string_type>(type_name_v<input_t>);
+            if constexpr (!is_none_v<id_t>) {
+                node.attributes()["alias"] = static_cast<Index>(to_value_v<id_t>);
+            }
             return node;
         }
     } // to_value
@@ -2033,14 +2065,14 @@ namespace nmtools::functional
 
     /*********************************************************************** */
 
-    template <typename hash_shape_t=meta::true_type, typename hash_address_t=meta::true_type, typename input_t, typename shape_t, typename element_t>
-    constexpr auto hash([[maybe_unused]] const buffer_node_t<input_t,shape_t,element_t>& node
+    template <typename hash_shape_t=meta::true_type, typename hash_address_t=meta::true_type, typename input_t, typename shape_t, typename element_t, typename id_t>
+    constexpr auto hash([[maybe_unused]] const buffer_node_t<input_t,shape_t,element_t,id_t>& node
             , [[maybe_unused]] hash_shape_t hash_shape=hash_shape_t{}
             , [[maybe_unused]] hash_address_t hash_address=hash_address_t{}
     ) {
-        using node_t = buffer_node_t<input_t,shape_t,element_t>;
+        using node_t = buffer_node_t<input_t,shape_t,element_t,id_t>;
         if constexpr (is_constant_index_v<hash_shape_t> && is_constant_index_v<hash_address_t>) {
-            if constexpr (!hash_address_t::value && (is_constant_index_array_v<shape_t> || !hash_shape_t::value)) {
+            if constexpr (!is_none_v<id_t> || (!hash_address_t::value && (is_constant_index_array_v<shape_t> || !hash_shape_t::value))) {
                 constexpr auto v_node = to_value_v<node_t>;
                 constexpr auto h = hash(v_node,hash_shape,hash_address);
                 return ct_v<h>;
@@ -2096,9 +2128,9 @@ namespace nmtools::functional
             );
         } else if constexpr (is_same_view_v<view::alias_t,input_t>) {
             if constexpr (is_pointer_v<decltype(input.array)>) {
-                return buffer_node(*(input.array));
+                return buffer_node(*(input.array),input.id);
             } else {
-                return buffer_node(input.array);
+                return buffer_node(input.array,input.id);
             }
         } else if constexpr (is_view_v<input_t>) {
             return compute_node(input);
@@ -2110,14 +2142,15 @@ namespace nmtools::functional
 
 namespace nmtools::meta
 {
-    template <typename input_t, typename shape_t, typename element_t, typename node_t>
+    template <typename input_t, typename shape_t, typename element_t, typename node_t, typename id_t>
     struct to_value<
-        functional::buffer_node_t<input_t,shape_t,element_t>
+        functional::buffer_node_t<input_t,shape_t,element_t,id_t>
         , node_t
     > {
         static constexpr auto value = [](){
             using Node = functional::Node<>;
             using Type = functional::Type;
+            using Index = typename Node::integer_type;
 
             Type dtype    = Type::UNKNOWN;
 
@@ -2130,10 +2163,16 @@ namespace nmtools::meta
             if (is_num) {
                 auto node = Node::buffer(None,dtype);
                 node.attributes()["input_type"] = functional::make_attr_string<typename Node::string_type>(type_name_v<input_t>);
+                if constexpr (!is_none_v<id_t>) {
+                    node.attributes()["alias"] = static_cast<Index>(to_value_v<id_t>);
+                }
                 return node;
             } else {
                 auto node = Node::buffer(shape,dim,max_dim,dtype);
                 node.attributes()["input_type"] = functional::make_attr_string<typename Node::string_type>(type_name_v<input_t>);
+                if constexpr (!is_none_v<id_t>) {
+                    node.attributes()["alias"] = static_cast<Index>(to_value_v<id_t>);
+                }
                 return node;
             }
         }();

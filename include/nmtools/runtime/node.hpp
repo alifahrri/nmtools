@@ -8,8 +8,8 @@
 
 namespace nmtools::runtime
 {
-    template <typename input_t, typename shape_t, typename element_t>
-    auto to_value(const functional::buffer_node_t<input_t,shape_t,element_t>& node)
+    template <typename input_t, typename shape_t, typename element_t, typename id_t>
+    auto to_value(const functional::buffer_node_t<input_t,shape_t,element_t,id_t>& node)
     {
         using Node = runtime::Node<>;
         return functional::to_value<Node>(node);

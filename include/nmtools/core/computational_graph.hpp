@@ -6,6 +6,8 @@
 #include "nmtools/core/functor.hpp"
 #include "nmtools/core/node.hpp"
 #include "nmtools/network/digraph.hpp"
+#include "nmtools/core/computational_tree.hpp"
+#include "nmtools/core/transform/cse.hpp"
 
 #if 0
 #include <iostream>
@@ -136,6 +138,7 @@ namespace nmtools::functional
 
 namespace nmtools::meta
 {
+    // TODO: move somehere else?
     template <typename adjacency_list_t
         , typename node_ids_t
         , typename node_attributes_t

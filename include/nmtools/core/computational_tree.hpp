@@ -104,8 +104,9 @@ namespace nmtools::functional
                     .add_edge(operand_id,node_id)
                 ;
                 using operand_t = remove_cvref_t<decltype(operand)>;
+                // alias view is skipped because it finished
                 if constexpr (is_view_v<operand_t>
-                    && !meta::is_same_view_v<view::alias_t,operand_t>
+                    && !is_same_view_v<view::alias_t,operand_t>
                 ) {
                     auto subgraph = get_computational_tree(operand,operand_id);
                     auto composed = network::compose(graph,subgraph);
