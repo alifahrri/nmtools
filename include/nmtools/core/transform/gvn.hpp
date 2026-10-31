@@ -17,11 +17,13 @@ namespace nmtools::functional
     template <typename adjacency_list_t
         , typename node_ids_t
         , typename node_attributes_t
-        , typename edge_attributes_t>
+        , typename edge_attributes_t
+        , typename hash_shape_t=true_type
+        , typename hash_address_t=true_type>
     constexpr auto gvn(
         const network::digraph_t<adjacency_list_t,node_ids_t,node_attributes_t,edge_attributes_t>& digraph
-        , bool hash_shape=true
-        , bool hash_address=true
+        , hash_shape_t hash_shape=hash_shape_t{}
+        , hash_address_t hash_address=hash_address_t{}
     ) {
         // TODO: deduce type
         using result_t = resolve_optype_t<gvn_t,adjacency_list_t,node_ids_t,node_attributes_t,edge_attributes_t>;
@@ -35,14 +37,14 @@ namespace nmtools::functional
             , "invalid graph for gvn, can't be sorted"
         );
 
-        auto sorted_ids = unwrap(m_sorted_ids);
+        const auto sorted_ids = unwrap(m_sorted_ids);
 
-        for (nm_size_t i=0; i<(nm_size_t)len(sorted_ids); i++) {
-            auto id = at(sorted_ids,i);
+        auto loop = [&](auto i){
+            const auto id = at(sorted_ids,i);
 
             auto& node = m_digraph.nodes(id);
 
-            auto preds = unwrap(network::predecessors(m_digraph,id));
+            const auto preds = unwrap(network::predecessors(m_digraph,id));
             using preds_t = decltype(preds);
 
             auto pred_hashes_vtype = [](){
@@ -66,10 +68,20 @@ namespace nmtools::functional
             // NOTE: combine preds hashes in sorted order so the result
             // does not depend on node ordering in the graph
             auto pred_hashes = pred_hashes_t{};
-            for (nm_size_t j=0; j<(nm_size_t)len(preds); j++) {
-                auto pred_id = at(preds,j);
-                if (result.count(pred_id)) {
-                    pred_hashes.push_back(result.at(pred_id));
+            constexpr auto NUM_PREDS = meta::len_v<preds_t>;
+            if constexpr (NUM_PREDS > 0) {
+                template_for<NUM_PREDS>([&](auto J){
+                    const nm_size_t pred_id = at(preds,J);
+                    if (result.count(pred_id)) {
+                        pred_hashes.push_back(result.at(pred_id));
+                    }
+                });
+            } else if constexpr (NUM_PREDS < 0) {
+                for (nm_size_t j=0; j<(nm_size_t)len(preds); j++) {
+                    const nm_size_t pred_id = at(preds,j);
+                    if (result.count(pred_id)) {
+                        pred_hashes.push_back(result.at(pred_id));
+                    }
                 }
             }
             // insertion sort (preds are few)
@@ -83,13 +95,26 @@ namespace nmtools::functional
                 pred_hashes.at(k) = key;
             }
 
-            auto hash = functional::hash(node,hash_shape,hash_address);
+            // NOTE: hash may be a constant index (e.g. aliased buffers);
+            // normalize it so pred_hashes & result keep plain nm_size_t
+            nm_size_t hash = functional::hash(node,hash_shape,hash_address);
             for (nm_size_t j=0; j<pred_hashes.size(); j++) {
                 auto to_hash = nmtools_array{pred_hashes.at(j),hash};
                 hash = index::hash(to_hash);
             }
 
-            result[id] = hash;
+            result[static_cast<nm_size_t>(id)] = hash;
+        };
+
+        constexpr auto NUM_IDS = len_v<decltype(sorted_ids)>;
+        if constexpr (NUM_IDS > 0) {
+            template_for<NUM_IDS>(
+                loop
+            );
+        } else {
+            for (nm_size_t i=0; i<(nm_size_t)len(sorted_ids); i++) {
+                loop(i);
+            }
         }
 
         return result;
