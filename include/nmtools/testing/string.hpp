@@ -24,7 +24,10 @@
 
 // allow to test on platform without RTTI support,
 #if defined(__clang__)
-#if __has_feature(cxx_rtti)
+// NOTE: android ndk (libc++) does not provide typeinfo for _Float16;
+// taking typeid of it (through make_func_args below) fails to link in
+// utl tests (fmath float16 cases), so use the no-RTTI path there
+#if __has_feature(cxx_rtti) && !defined(__ANDROID__)
 #define NMTOOLS_RTTI_ENABLED
 #endif
 #elif defined(__GNUC__)
