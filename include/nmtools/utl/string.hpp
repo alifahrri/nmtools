@@ -928,12 +928,19 @@ namespace nmtools::meta
 #if __has_include(<iostream>)
 #include <iostream>
 
-template <nm_size_t Capacity, typename T>
-std::ostream& operator << (std::ostream& os, const nmtools::utl::string_base<Capacity,T>& string)
+// NOTE: must live in namespace nmtools::utl so that ADL finds it (e.g.
+// doctest's has_insertion_operator probe, whose plain unqualified lookup
+// stops at doctest's own operator<< declarations); a global-namespace
+// operator is invisible there and hard-errors on libstdc++ 11
+namespace nmtools::utl
 {
-    os << string.c_str();
-    return os;
-}
+    template <nm_size_t Capacity, typename T>
+    std::ostream& operator << (std::ostream& os, const string_base<Capacity,T>& string)
+    {
+        os << string.c_str();
+        return os;
+    }
+} // namespace nmtools::utl
 
 #endif // <iostream>
 

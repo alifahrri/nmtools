@@ -877,12 +877,16 @@ namespace nmtools::meta
 #if __has_include(<iostream>)
 #include <iostream>
 
-template <nm_size_t Capacity, typename T>
-std::ostream& operator << (std::ostream& os, const nmtools::utl::static_string_base<Capacity,T>& string)
+// NOTE: keep in namespace nmtools::utl for ADL (see string.hpp)
+namespace nmtools::utl
 {
-    os << string.c_str();
-    return os;
-}
+    template <nm_size_t Capacity, typename T>
+    std::ostream& operator << (std::ostream& os, const static_string_base<Capacity,T>& string)
+    {
+        os << string.c_str();
+        return os;
+    }
+} // namespace nmtools::utl
 
 #endif // <iostream>
 
