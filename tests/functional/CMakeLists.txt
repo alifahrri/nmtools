@@ -148,6 +148,8 @@ set(FUNCTIONAL_TEST_INDEXING_SOURCES
 )
 
 set(FUNCTIONAL_TEST_GRAPH_SOURCES
+    src/fold.cpp
+
     src/composition/add_add.cpp
     src/composition/add_flatten.cpp
     src/composition/flatten_add.cpp

@@ -581,6 +581,102 @@ namespace nmtools::meta
     {};
 }
 
+/*=================================================================================*/
+
+#include "nmtools/utility/to_string/to_string.hpp"
+#include "nmtools/utility/to_string/common_types.hpp"
+
+#if NMTOOLS_HAS_STRING
+
+namespace nmtools::utils::impl
+{
+    template <typename F, nm_size_t Arity
+        , typename formatter_t
+    >
+    struct to_string_t<
+        functional::fmap_t<F,Arity>
+        , formatter_t
+    > {
+        using fmap_type = functional::fmap_t<F,Arity>;
+        using formatter_type = formatter_t;
+
+        inline auto operator()(const fmap_type& fmap) const noexcept
+        {
+            auto fmap_str = nmtools_string("");
+            fmap_str = NMTOOLS_TYPENAME_TO_STRING(F);
+
+            using mapper_type = to_string_t<remove_cvref_t<decltype(fmap.fn)>,formatter_type>;
+            if constexpr (has_result_type_v<mapper_type>) {
+                if constexpr (!is_fail_v<typename mapper_type::result_type>) {
+                    fmap_str = to_string(fmap.fn);
+                }
+            }
+
+            auto str = nmtools_string("");
+
+            str += "fmap(";
+            str += fmap_str;
+            str += ",";
+            str += to_string(Arity);
+            str += "_ct)";
+
+            return str;
+        }
+    };
+
+    template <typename F, typename operands_t, typename attributes_t
+        , typename formatter_t
+    >
+    struct to_string_t<functional::functor_t<F,operands_t,attributes_t>
+        , formatter_t
+    > {
+        using functor_type = functional::functor_t<F,operands_t,attributes_t>;
+        using formatter_type = formatter_t;
+
+        inline auto operator()(const functor_type& functor) const noexcept
+        {
+            auto fmap_str = to_string(functor.fmap,formatter_type{});
+
+            auto attr_str = nmtools_string("");
+            attr_str += "[{";
+            constexpr auto N = len_v<attributes_t>;
+            template_for<N>([&](auto index){
+                attr_str += to_string(nmtools::at(functor.attributes,index),formatter_type{});
+                if (index < (N-1)) {
+                    attr_str += ",";
+                }
+            });
+            attr_str += "}]";
+
+            return fmap_str + attr_str;
+        }
+    };
+
+    template <template<typename...>typename tuple, typename...functors_t, typename operands_t, auto...fmt_args>
+    struct to_string_t<
+        functional::functor_composition_t<tuple<functors_t...>,operands_t>, fmt_string_t<fmt_args...>, void
+    > {
+        using composition_type = functional::functor_composition_t<tuple<functors_t...>,operands_t>;
+        using formatter_type = fmt_string_t<fmt_args...>;
+        using result_type = nmtools_string;
+
+        inline auto operator()(const composition_type& composition) const noexcept
+        {
+            auto composition_str = nmtools_string("");
+            constexpr auto N = sizeof...(functors_t);
+            template_for<N>([&](auto index){
+                composition_str += to_string(at(composition.functors,index),formatter_type{});
+                if (index < (N-1)) {
+                    composition_str += " * ";
+                }
+            });
+            return composition_str;
+        }
+    };
+} // namespace nmtools::utils::impl
+
+#endif // NMTOOLS_HAS_STRING
+
 #endif // NMTOOLS_ARRAY_FUNCTIONAL_FUNCTOR_HPP
 
 #include "nmtools/core/compute_graph.hpp"
