@@ -15,8 +15,7 @@ namespace nmtools::functional
      *
      * The returned tuple `{function, operands}` is the typed execution capture:
      * - `function`  : `functor_t`/`functor_composition_t`, the whole expression as a
-     *   single point-free program (same shape of product as
-     *   `get_function(linearize(get_compute_graph(view)))`, without building a graph);
+     *   single point-free program;
      * - `operands`  : tuple of leaf operands, arrays by-ref (or by-pointer when they
      *   come wrapped, e.g. aliased) and numbers by-value.
      *
@@ -67,7 +66,7 @@ namespace nmtools::functional
         constexpr auto fold_operand(state_t state, const operand_t& operand)
         {
             // normalize pointer-wrapped operands to the pointee for type inspection
-            const auto& entity = [&]() -> decltype(auto) {
+            const auto& m_operand = [&]() -> decltype(auto) {
                 using operand_raw_t = remove_cvref_t<operand_t>;
                 if constexpr (is_pointer_v<operand_raw_t>) {
                     return (*operand);
@@ -75,18 +74,18 @@ namespace nmtools::functional
                     return (operand);
                 }
             }();
-            using entity_t = remove_cvref_t<decltype(entity)>;
+            using m_operand_t = remove_cvref_t<decltype(m_operand)>;
 
-            if constexpr (is_same_view_v<view::alias_t,entity_t>) {
+            if constexpr (is_same_view_v<view::alias_t,m_operand_t>) {
                 // alias is transparent, continue with the aliased operand
                 // (arrays stay wrapped as pointer, matching the device operand contract)
-                return fold_operand(state, entity.array);
-            } else if constexpr (is_broadcast_view_v<entity_t>) {
+                return fold_operand(state, m_operand.array);
+            } else if constexpr (is_broadcast_view_v<m_operand_t>) {
                 // broadcast wrapper is transparent, ufunc fmaps broadcast internally
-                return fold_operand(state, nmtools::at(get_operands(entity),ct_v<0>));
-            } else if constexpr (is_view_v<entity_t>) {
+                return fold_operand(state, nmtools::at(get_operands(m_operand),ct_v<0>));
+            } else if constexpr (is_view_v<m_operand_t>) {
                 // view operand: fold its subtree
-                auto sub              = fold_view(entity);
+                auto sub              = fold_view(m_operand);
                 auto sub_composition  = nmtools::at(sub,ct_v<0>);
                 auto sub_leaves       = nmtools::at(sub,ct_v<1>);
 

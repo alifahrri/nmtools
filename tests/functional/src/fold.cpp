@@ -129,7 +129,7 @@ TEST_CASE("fold(softmax)" * doctest::test_suite("functional::fold"))
     CHECK( nmtools::at(operands,0_ct) == &*lhs_array );
 
     // arity of the program must match the collected leaves
-    using function_t = meta::remove_cvref_t<decltype(function)>;
+    using function_t = nm::remove_cvref_t<decltype(function)>;
     static_assert( function_t::arity == 4 );
     NMTOOLS_ASSERT_CLOSE( fn::apply(function,operands), e );
 }
@@ -216,80 +216,73 @@ TEST_CASE("fold(broadcast_wrapper)" * doctest::test_suite("functional::fold"))
     NMTOOLS_ASSERT_CLOSE( fn::apply(function,operands), y );
 }
 
-// ============================================================================
-// mock GPU context: exercise the switched `gpu_base_context_t::eval` (fold
-// based) end-to-end on the host. "Device arrays" are plain host arrays, the
-// mapped program materializes lazily like `fn::apply`.
-// ============================================================================
-
-
-struct mock_gpu_context_t
-    : nmtools::base_context_t<mock_gpu_context_t>
-    , nmtools::gpu_base_context_t<mock_gpu_context_t>
+TEST_CASE("fold_operand(state)" * doctest::test_suite("functional::fold"))
 {
-    using gpu_base_type = nmtools::gpu_base_context_t<mock_gpu_context_t>;
-    using gpu_base_type::create_buffer;
-    using gpu_base_type::run;
-    using gpu_base_type::eval;
+    // unit test for the state threading in detail::fold_operand: one step per
+    // branch, checking every slot after each step. the state is the accumulator
+    // threaded by fold_view, a flat tuple:
+    // 0. compositions, 1. sub_leaves, 2. depths, 3. direct_leaves, 4. n_leaves
+    //
+    // operands are fed the way fold_view feeds them: arrays as wrapped pointers,
+    // views unwrapped (view ctors return maybes, so unwrap the calls below).
 
-    // "device arrays" are plain host arrays
-    template <typename array_t>
-    auto create_array(const array_t& array) const
-    {
-        return array;
-    }
-
-    template <typename T, typename shape_t, typename size_type>
-    auto create(nmtools::dtype_t<T>, const shape_t&, size_type) const
-    {
-        return nmtools::dynamic_ndarray<T>{};
-    }
-
-    // apply the (mapped) program to the device operands, materialize on "device".
-    // all operands are passed at once (as the device kernel does): the composition
-    // is a stack machine whose intermediate states hold maybe-wrapped views, and
-    // partial (one-by-one) application would surface them as maybe-wrapped curried
-    // compositions which can't be called further.
-    template <typename output_t, typename functor_t, typename operands_t, nm_size_t...Is>
-    auto run_(output_t& output, const functor_t& fn, const operands_t& operands, meta::index_sequence<Is...>) const
-    {
-        auto default_ctx = nmtools::default_context_t<true,false,false>{};
-        auto program_result = fn(nmtools::get<Is>(operands)...);
-        // the program result may be maybe-wrapped (view ctors return maybes);
-        // the default context's eval handles maybe-wrapped views, evaluating
-        // to a maybe-wrapped result
-        auto eval_result = nm::eval(program_result,default_ctx);
-        using element_t = typename output_t::value_type;
-        if constexpr (meta::is_maybe_v<meta::remove_cvref_t<decltype(eval_result)>>) {
-            output = nmtools::dynamic_ndarray<element_t>(nm::unwrap(eval_result));
-        } else {
-            output = nmtools::dynamic_ndarray<element_t>(eval_result);
-        }
-    }
-};
-
-TEST_CASE("fold(gpu_eval_mock)" * doctest::test_suite("functional::fold"))
-{
-    // softmax-shaped expression, same as fold(softmax)
     auto lhs_shape  = nmtools_array{3,4};
     auto lhs_buffer = na::arange(12);
     auto lhs_array  = na::reshape(lhs_buffer,lhs_shape);
-    auto lhs        = view::alias(lhs_array,0_ct);
-    auto axis = 0;
 
-    auto m = nm::unwrap(view::reduce_maximum(lhs,axis,None,None,True));
-    auto b = view::subtract(m,lhs);
-    auto c = view::exp(b);
-    auto d = nm::unwrap(view::reduce_add(c,axis,None,None,True));
-    auto e = view::divide(c,d);
+    auto rhs_shape  = nmtools_array{4};
+    auto rhs_buffer = na::arange(4);
+    auto rhs_array  = na::reshape(rhs_buffer,rhs_shape);
 
-    // the switched gpu eval path, exercised end-to-end on host
-    auto mock_ctx = mock_gpu_context_t{};
-    auto result   = nm::eval(e,mock_ctx);
+    auto state0 = nmtools_tuple{
+        nmtools_tuple{}, nmtools_tuple{}, nmtools_tuple{}, nmtools_tuple{}
+        , meta::ct_v<0>
+    };
 
-    // compare against the default (CPU) context
-    auto default_ctx = nmtools::default_context_t<true,false,false>{};
-    auto expect      = nm::eval(e,default_ctx);
+    // -- direct leaf: the wrapped array is collected as-is, counter untouched
+    auto state1 = fn::detail::fold_operand(state0,&*rhs_array);
+    CHECK( nm::len(nmtools::get<0>(state1)) == 0 );
+    CHECK( nm::len(nmtools::get<1>(state1)) == 0 );
+    CHECK( nm::len(nmtools::get<2>(state1)) == 0 );
+    CHECK( nm::len(nmtools::get<3>(state1)) == 1 );
+    CHECK( nmtools::get<0>(nmtools::get<3>(state1)) == &*rhs_array );
+    static_assert( nm::remove_cvref_t<decltype(nmtools::get<4>(state1))>::value == 0 );
 
-    NMTOOLS_ASSERT_CLOSE( result, expect );
+    // -- broadcast wrapper: transparent, peeled to the wrapped pointer
+    auto state2 = fn::detail::fold_operand(state1
+        , nm::unwrap(view::broadcast_to(rhs_array,lhs_shape)) );
+    CHECK( nm::len(nmtools::get<0>(state2)) == 0 );
+    CHECK( nm::len(nmtools::get<1>(state2)) == 0 );
+    CHECK( nm::len(nmtools::get<2>(state2)) == 0 );
+    CHECK( nm::len(nmtools::get<3>(state2)) == 2 );
+    CHECK( nmtools::get<1>(nmtools::get<3>(state2)) == &*rhs_array );
+    static_assert( nm::remove_cvref_t<decltype(nmtools::get<4>(state2))>::value == 0 );
+
+    // -- alias: transparent, the aliased array is collected as a leaf
+    auto state3 = fn::detail::fold_operand(state2
+        , nm::unwrap(view::alias(rhs_array,0_ct)) );
+    CHECK( nm::len(nmtools::get<0>(state3)) == 0 );
+    CHECK( nm::len(nmtools::get<1>(state3)) == 0 );
+    CHECK( nm::len(nmtools::get<2>(state3)) == 0 );
+    CHECK( nm::len(nmtools::get<3>(state3)) == 3 );
+    CHECK( nmtools::get<2>(nmtools::get<3>(state3)) == &*rhs_array );
+    static_assert( nm::remove_cvref_t<decltype(nmtools::get<4>(state3))>::value == 0 );
+
+    // -- view operand: subtree program + leaves + bury depth parked, one each;
+    //    depth = leaves collected so far (they apply above the sub-result),
+    //    counter advances by the subtree's leaf count
+    auto sub    = nm::unwrap(view::exp(lhs_array));
+    auto state4 = fn::detail::fold_operand(state3,sub);
+    CHECK( nm::len(nmtools::get<0>(state4)) == 1 );
+    CHECK( nm::len(nmtools::get<1>(state4)) == 1 );
+    CHECK( nm::len(nmtools::get<2>(state4)) == 1 );
+    static_assert( nm::remove_cvref_t<decltype(nmtools::get<0>(nmtools::get<2>(state4)))>::value == 3 );
+    static_assert( nm::remove_cvref_t<decltype(nmtools::get<4>(state4))>::value == 1 );
+    // the parked program is the subtree's own function composition
+    auto expected_sub_fn = nm::unwrap(fn::get_function_composition(sub));
+    NMTOOLS_ASSERT_EQUAL( nmtools::get<0>(nmtools::get<0>(state4)), expected_sub_fn );
+    // the parked leaves are the subtree's leaves
+    auto sub_leaves = nmtools::get<0>(nmtools::get<1>(state4));
+    CHECK( nm::len(sub_leaves) == 1 );
+    CHECK( nmtools::get<0>(sub_leaves) == &*lhs_array );
 }

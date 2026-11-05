@@ -21,5 +21,4 @@
 #include "nmtools/core/fmap.hpp"
 #include "nmtools/core/indexing.hpp"
 #include "nmtools/core/reshape.hpp"
-#include "nmtools/core/transform.hpp"
 #include "nmtools/core/function_composition.hpp"

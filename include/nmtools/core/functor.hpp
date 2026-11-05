@@ -5,8 +5,6 @@
 #include "nmtools/core/fmap.hpp"
 #include "nmtools/core/decorator.hpp"
 #include "nmtools/core/alias.hpp"
-#include "nmtools/utility/ct_map.hpp"
-#include "nmtools/utility/ct_digraph.hpp"
 #include "nmtools/utility/tuple_slice.hpp"
 #include "nmtools/utility/isequal/isequal.hpp"
 #include "nmtools/utility/isclose/isclose.hpp"
@@ -679,7 +677,6 @@ namespace nmtools::utils::impl
 
 #endif // NMTOOLS_ARRAY_FUNCTIONAL_FUNCTOR_HPP
 
-#include "nmtools/core/compute_graph.hpp"
 #include "nmtools/core/function_composition.hpp"
 
 // some definition in apply relies on some struct in functor
