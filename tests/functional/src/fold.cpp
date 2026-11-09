@@ -240,7 +240,7 @@ TEST_CASE("fold_operand(state)" * doctest::test_suite("functional::fold"))
     };
 
     // -- direct leaf: the wrapped array is collected as-is, counter untouched
-    auto state1 = fn::detail::fold_operand(state0,&*rhs_array);
+    auto state1 = fn::fold_operand(state0,&*rhs_array);
     CHECK( nm::len(nmtools::get<0>(state1)) == 0 );
     CHECK( nm::len(nmtools::get<1>(state1)) == 0 );
     CHECK( nm::len(nmtools::get<2>(state1)) == 0 );
@@ -249,7 +249,7 @@ TEST_CASE("fold_operand(state)" * doctest::test_suite("functional::fold"))
     static_assert( nm::remove_cvref_t<decltype(nmtools::get<4>(state1))>::value == 0 );
 
     // -- broadcast wrapper: transparent, peeled to the wrapped pointer
-    auto state2 = fn::detail::fold_operand(state1
+    auto state2 = fn::fold_operand(state1
         , nm::unwrap(view::broadcast_to(rhs_array,lhs_shape)) );
     CHECK( nm::len(nmtools::get<0>(state2)) == 0 );
     CHECK( nm::len(nmtools::get<1>(state2)) == 0 );
@@ -259,7 +259,7 @@ TEST_CASE("fold_operand(state)" * doctest::test_suite("functional::fold"))
     static_assert( nm::remove_cvref_t<decltype(nmtools::get<4>(state2))>::value == 0 );
 
     // -- alias: transparent, the aliased array is collected as a leaf
-    auto state3 = fn::detail::fold_operand(state2
+    auto state3 = fn::fold_operand(state2
         , nm::unwrap(view::alias(rhs_array,0_ct)) );
     CHECK( nm::len(nmtools::get<0>(state3)) == 0 );
     CHECK( nm::len(nmtools::get<1>(state3)) == 0 );
@@ -272,7 +272,7 @@ TEST_CASE("fold_operand(state)" * doctest::test_suite("functional::fold"))
     //    depth = leaves collected so far (they apply above the sub-result),
     //    counter advances by the subtree's leaf count
     auto sub    = nm::unwrap(view::exp(lhs_array));
-    auto state4 = fn::detail::fold_operand(state3,sub);
+    auto state4 = fn::fold_operand(state3,sub);
     CHECK( nm::len(nmtools::get<0>(state4)) == 1 );
     CHECK( nm::len(nmtools::get<1>(state4)) == 1 );
     CHECK( nm::len(nmtools::get<2>(state4)) == 1 );
