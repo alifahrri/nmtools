@@ -4,7 +4,6 @@
 #include "nmtools/meta.hpp"
 #include "nmtools/ndarray.hpp"
 #include "nmtools/core/functor.hpp"
-#include "nmtools/core/transform/linearize.hpp"
 #include "nmtools/context/kernel.hpp"
 #include "nmtools/context/default.hpp"
 #include "nmtools/context/gpu.hpp"

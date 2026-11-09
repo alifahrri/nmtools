@@ -142,10 +142,7 @@ if (NMTOOLS_BUILD_TILEKIT_TESTS)
     add_subdirectory(tilekit)
 endif (NMTOOLS_BUILD_TILEKIT_TESTS)
 
-option(NMTOOLS_BUILD_TRANSFORM_TESTS "build transform test programs" OFF)
-if (NMTOOLS_BUILD_TRANSFORM_TESTS)
-    add_subdirectory(transform)
-endif (NMTOOLS_BUILD_TRANSFORM_TESTS)
+
 
 option(NMTOOLS_BUILD_VIEW_TESTS "build view test programs" OFF)
 if (NMTOOLS_BUILD_VIEW_TESTS)

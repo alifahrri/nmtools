@@ -30,16 +30,6 @@ namespace nmtools::combinator
         }
     }; // dup_t
 
-    template <typename functor_t, typename operands_t, typename output_shape_t, typename output_element_t, auto N>
-    constexpr auto operator*(const functional::node_t<functor_t,operands_t,output_shape_t,output_element_t>& node, dup_t<N> cb)
-    {
-        auto composition = node.functor * cb;
-        // TODO: better handling arity
-        using result_t = functional::node_t<decltype(composition),operands_t,output_shape_t,output_element_t>;
-        // TODO: do not discard intermediate shape/type
-        return result_t{composition,node.operands,node.output_shape,node.output_element};
-    }
-
     template <auto N>
     struct dig_t
     {

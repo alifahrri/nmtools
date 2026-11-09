@@ -44,8 +44,7 @@
 #include "nmtools/utility/as_static.hpp"
 #include "nmtools/utility/at.hpp"
 // #include "nmtools/utility/cast.hpp"
-#include "nmtools/utility/ct_digraph.hpp"
-#include "nmtools/utility/ct_map.hpp"
+
 #include "nmtools/utility/data.hpp"
 #include "nmtools/utility/flatten_either.hpp"
 #include "nmtools/utility/forward.hpp"

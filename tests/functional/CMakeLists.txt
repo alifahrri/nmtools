@@ -148,30 +148,11 @@ set(FUNCTIONAL_TEST_INDEXING_SOURCES
 )
 
 set(FUNCTIONAL_TEST_GRAPH_SOURCES
+    src/fold.cpp
+
     src/composition/add_add.cpp
     src/composition/add_flatten.cpp
     src/composition/flatten_add.cpp
-
-    src/graph/transpose.cpp
-    src/graph/reshape.cpp
-    src/graph/batch_norm.cpp
-    src/graph/broadcast_to.cpp
-    src/graph/group_norm.cpp
-    src/graph/instance_norm.cpp
-    src/graph/layer_norm.cpp
-    src/graph/tanh.cpp
-    src/graph/multiply.cpp
-    src/graph/matmul.cpp
-    src/graph/reduce_add_tanh.cpp
-    src/graph/multiply_tanh.cpp
-    src/graph/multiply_add_tanh.cpp
-    src/graph/mean.cpp
-    src/graph/var.cpp
-    src/graph/stddev.cpp
-    src/graph/softmax.cpp
-    src/graph/softmin.cpp
-    src/graph/conv1d.cpp
-    src/graph/conv2d.cpp
 
     src/composition/reduce_add_tanh.cpp
     src/composition/multiply_tanh.cpp
@@ -199,9 +180,7 @@ set(FUNCTIONAL_TEST_GRAPH_SOURCES
 )
 
 set(FUNCTIONAL_TEST_MISC_SOURCES
-    src/misc/ct_map.cpp
-    src/misc/ct_digraph.cpp
-    src/misc/has_path.cpp
+
 )
 
 if (NMTOOLS_FUNCTIONAL_TEST_ALL)

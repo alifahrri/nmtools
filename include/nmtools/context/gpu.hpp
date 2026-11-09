@@ -2,7 +2,7 @@
 #define NMTOOLS_CONTEXT_GPU_HPP
 
 #include "nmtools/core/context.hpp"
-#include "nmtools/core/transform/linearize.hpp"
+#include "nmtools/core/fold.hpp"
 #include "nmtools/context/kernel.hpp"
 
 namespace nmtools
@@ -131,10 +131,11 @@ namespace nmtools
                     : return_type{meta::Nothing}
                 );
             } else {
-                auto graph = functional::linearize(functional::get_compute_graph(unwrap(view)));
-                auto operands = functional::get_operands(graph);
-                auto function = functional::get_function(graph);
-                auto functor  = function.functor;
+                // fold the view expression directly into
+                // {point-free function composition, operands tuple}
+                auto folded = functional::fold(unwrap(view));
+                auto functor  = nmtools::at(folded,meta::ct_v<0>);
+                auto operands = nmtools::at(folded,meta::ct_v<1>);
 
                 auto shape = nmtools::shape<true>(unwrap(view));
                 auto size  = nmtools::size<true>(unwrap(view));

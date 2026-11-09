@@ -1,7 +1,6 @@
 #pragma once
 #include "nmtools/array/matmul.hpp"
 #include "nmtools/array/ufuncs.hpp"
-#include "nmtools/core/compute_graph.hpp"
 #include "nmtools/array/where.hpp"
 #include "nmtools/array/compress.hpp"
 #include "nmtools/array/activations.hpp"

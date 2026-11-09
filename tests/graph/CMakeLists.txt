@@ -80,9 +80,8 @@ set(GRAPH_TEST_GRAPH_SOURCES
 )
 
 set(GRAPH_TEST_TRANSFORM_SOURCES
-    transform/unary.cpp
-    transform/binary.cpp
     transform/gvn.cpp
+    transform/cse.cpp
 )
 
 if (NMTOOLS_COMPUTE_GRAPH_TEST_ALL)

@@ -5,7 +5,6 @@
 #include "nmtools/meta.hpp"
 #include "nmtools/core/functor.hpp"
 #include "nmtools/core/context.hpp"
-#include "nmtools/core/transform/linearize.hpp"
 #include "nmtools/context/default.hpp"
 #include "nmtools/context/gpu.hpp"
 #include "nmtools/utility/tuple_cat.hpp"
