@@ -6,26 +6,10 @@
 // The main objective is to cover some stl-like feature (array, tuple,...) in a way
 // they are used in nmtools library.
 
-#include "nmtools/utl/array.hpp"
-#include "nmtools/utl/tuple.hpp"
-#include "nmtools/utl/either.hpp"
-#include "nmtools/utl/expected.hpp"
-#include "nmtools/utl/flat_map.hpp"
-#include "nmtools/utl/maybe.hpp"
-#include "nmtools/utl/queue.hpp"
-#include "nmtools/utl/stack.hpp"
-#include "nmtools/utl/small_vector.hpp"
-#include "nmtools/utl/static_map.hpp"
-#include "nmtools/utl/static_queue.hpp"
-#include "nmtools/utl/static_stack.hpp"
-#include "nmtools/utl/static_string.hpp"
-#include "nmtools/utl/static_vector.hpp"
-#include "nmtools/utl/string.hpp"
-#include "nmtools/utl/string_cast.hpp"
-#include "nmtools/utl/variant.hpp"
-#include "nmtools/utl/vector.hpp"
-#include "nmtools/utl/math.hpp"
-
+// NOTE: define the default type macros before the includes so headers
+// re-entered mid-parse from this include list (e.g. utl/constant_map ->
+// utility/at -> meta) can already use them; macro expansion is deferred
+// to the use site, the types don't need to exist yet.
 #ifndef nmtools_list
 #define nmtools_list ::nmtools::utl::vector
 #endif // nmtools_list
@@ -36,10 +20,6 @@
 
 #ifndef nmtools_expected
 #define nmtools_expected ::nmtools::utl::expected
-namespace nmtools
-{
-    using utl::unexpected;
-}
 #endif // nmtools_expected
 
 #ifndef nmtools_tuple
@@ -91,4 +71,29 @@ namespace nmtools
 #define nmtools_default_map ::nmtools::utl::flat_map
 #endif // nmtools_default_map
 
+#include "nmtools/utl/array.hpp"
+#include "nmtools/utl/tuple.hpp"
+#include "nmtools/utl/either.hpp"
+#include "nmtools/utl/expected.hpp"
+#include "nmtools/utl/flat_map.hpp"
+#include "nmtools/utl/maybe.hpp"
+#include "nmtools/utl/queue.hpp"
+#include "nmtools/utl/stack.hpp"
+#include "nmtools/utl/small_vector.hpp"
+#include "nmtools/utl/static_map.hpp"
+#include "nmtools/utl/static_queue.hpp"
+#include "nmtools/utl/static_stack.hpp"
+#include "nmtools/utl/static_string.hpp"
+#include "nmtools/utl/static_vector.hpp"
+#include "nmtools/utl/string.hpp"
+#include "nmtools/utl/string_cast.hpp"
+#include "nmtools/utl/variant.hpp"
+#include "nmtools/utl/vector.hpp"
+#include "nmtools/utl/math.hpp"
+#include "nmtools/utl/constant_map.hpp"
+
+namespace nmtools
+{
+    using utl::unexpected;
+}
 #endif // NMTOOLS_UTL_HPP

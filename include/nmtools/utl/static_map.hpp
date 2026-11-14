@@ -7,6 +7,8 @@
 #include "nmtools/utl/common.hpp"
 #include "nmtools/utl/static_vector.hpp"
 #include "nmtools/utl/tuple.hpp"
+#include "nmtools/meta/bits/traits/is_map.hpp"
+#include "nmtools/meta/bits/transform/max_len.hpp"
 
 #ifndef NMTOOLS_DEFAULT_STATIC_MAP_MAX_SIZE
 #define NMTOOLS_DEFAULT_STATIC_MAP_MAX_SIZE (32)
@@ -41,6 +43,11 @@ namespace nmtools::utl
             return Capacity;
         }
 
+        constexpr auto keys() const
+        {
+            return keys_;
+        }
+
         constexpr auto find_index(const key_type& key) const
         {
             static_vector<nm_index_t> key_indices;
@@ -56,6 +63,12 @@ namespace nmtools::utl
         {
             auto key_indices = find_index(key);
             return key_indices.size();
+        }
+
+        template <typename key_like_t>
+        constexpr auto count(const key_like_t& key_like) const
+        {
+            return count(static_cast<key_type>(key_like));
         }
 
         constexpr auto erase(const key_type& key)
@@ -84,6 +97,12 @@ namespace nmtools::utl
             return n;
         }
 
+        template <typename key_like_t>
+        constexpr auto erase(const key_like_t& key_like)
+        {
+            return erase(static_cast<key_type>(key_like));
+        }
+
         constexpr decltype(auto) operator[](const key_type& key)
         {
             auto key_indices = find_index(key);
@@ -96,6 +115,12 @@ namespace nmtools::utl
                 auto idx = key_indices[0];
                 return values_[idx];
             }
+        }
+
+        template <typename key_like_t>
+        constexpr decltype(auto) operator[](const key_like_t& key_like)
+        {
+            return operator[](static_cast<key_type>(key_like));
         }
 
         // TODO: change return to pair<iterator,bool>
@@ -113,11 +138,23 @@ namespace nmtools::utl
             }
         }
 
+        template <typename key_like_t, typename...args_t>
+        constexpr decltype(auto) emplace(const key_like_t& key_like, args_t&&...args)
+        {
+            return emplace(static_cast<key_type>(key_like), nmtools::forward<args_t>(args)...);
+        }
+
         constexpr decltype(auto) operator[](const key_type& key) const
         {
             auto key_indices = find_index(key);
             auto idx = key_indices[0];
             return values_[idx];
+        }
+
+        template <typename key_like_t>
+        constexpr decltype(auto) operator[](const key_like_t& key_like) const
+        {
+            return operator[](static_cast<key_type>(key_like));
         }
 
         constexpr decltype(auto) at(const key_type& key)
@@ -130,6 +167,12 @@ namespace nmtools::utl
             return values_[idx];
         }
 
+        template <typename key_like_t>
+        constexpr decltype(auto) at(const key_like_t& key_like)
+        {
+            return at(static_cast<key_type>(key_like));
+        }
+
         constexpr decltype(auto) at(const key_type& key) const
         {
             auto key_indices = find_index(key);
@@ -138,6 +181,12 @@ namespace nmtools::utl
             }
             auto idx = key_indices[0];
             return values_[idx];
+        }
+
+        template <typename key_like_t>
+        constexpr decltype(auto) at(const key_like_t& key_like) const
+        {
+            return at(static_cast<key_type>(key_like));
         }
 
         struct iter_t
@@ -194,5 +243,17 @@ namespace nmtools::utl
         return map.end();
     }
 }
+
+namespace nmtools::meta
+{
+    template <typename key_t, typename T, auto Capacity>
+    struct is_map<utl::static_map<key_t,T,Capacity>> : true_type {};
+
+    template <typename key_t, typename T, auto Capacity>
+    struct max_len<utl::static_map<key_t,T,Capacity>>
+    {
+        static constexpr auto value = Capacity;
+    };
+} // namespace nmtools::meta
 
 #endif // NMTOOLS_UTL_STATIC_MAP
