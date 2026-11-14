@@ -3,6 +3,7 @@
 
 #include "nmtools/meta.hpp"
 #include "nmtools/utility.hpp"
+#include "nmtools/index/invert_map.hpp"
 #include "nmtools/core/functor.hpp"
 #include "nmtools/core/node.hpp"
 #include "nmtools/core/transform/gvn.hpp"
@@ -23,23 +24,7 @@ namespace nmtools::functional
         // (id) -> hash
         // convert to (hash) -> id
 
-        // assuming node_ids_t is not none_t
-        auto value_ids_vtype = [](){
-            constexpr auto MAX_LEN = max_len_v<node_ids_t>;
-            if constexpr (MAX_LEN > 0) {
-                using type = utl::static_map<nm_size_t,nm_size_t,MAX_LEN>;
-                return as_value_v<type>;
-            } else {
-                using type = nmtools_default_map<nm_size_t,nm_size_t>;
-                return as_value_v<type>;
-            }
-        }();
-        using value_ids_t = type_t<decltype(value_ids_vtype)>;
-
-        auto value_ids = value_ids_t{};
-        for (const auto& [key,value] : id_values) {
-            value_ids[value] = key;
-        }
+        auto value_ids = index::invert_map(id_values);
 
         // nodes subgraph
         auto nodes_vtype = [](){

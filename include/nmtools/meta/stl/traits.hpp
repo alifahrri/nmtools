@@ -8,6 +8,8 @@
 #include <variant>
 #include <tuple>
 #include <optional>
+#include <map>
+#include <unordered_map>
 // assume has string
 #include <string>
 // TODO: remove, no need to check for include
@@ -105,6 +107,12 @@ namespace nmtools::meta
 
     template <>
     struct is_string<std::string> : true_type {};
+
+    template <typename K, typename V, typename...rest_t>
+    struct is_map<std::map<K,V,rest_t...>> : true_type {};
+
+    template <typename K, typename V, typename...rest_t>
+    struct is_map<std::unordered_map<K,V,rest_t...>> : true_type {};
 } // namespace nmtools::meta
 
 #endif // NMTOOLS_META_STL_TRAITS_HPP

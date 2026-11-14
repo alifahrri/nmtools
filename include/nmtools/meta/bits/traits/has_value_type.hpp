@@ -34,4 +34,9 @@ namespace nmtools::meta
     inline constexpr bool has_value_type_v = has_value_type<T>::value;
 } // namespace nmtools::meta
 
+namespace nmtools
+{
+    using meta::has_value_type_v;
+}
+
 #endif // NMTOOLS_META_BITS_TRAITS_HAS_VALUE_TYPE_HPP

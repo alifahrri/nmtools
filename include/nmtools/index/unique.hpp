@@ -2,7 +2,8 @@
 #define NMTOOLS_INDEX_UNIQUE_HPP
 
 #include "nmtools/meta.hpp"
-#include "nmtools/utility.hpp"
+#include "nmtools/utility/at.hpp"
+#include "nmtools/utility/shape.hpp"
 #include "nmtools/index/index_of.hpp"
 
 namespace nmtools::index

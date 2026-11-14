@@ -2,7 +2,6 @@
 #define NMTOOLS_INDEX_SORTED_HPP
 
 #include "nmtools/meta.hpp"
-#include "nmtools/utility.hpp"
 #include "nmtools/index/argsort.hpp"
 
 namespace nmtools::index

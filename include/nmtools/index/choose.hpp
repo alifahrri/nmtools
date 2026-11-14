@@ -1,12 +1,9 @@
 #ifndef NMTOOLS_ARRAY_INDEX_EXTRACT_HPP
 #define NMTOOLS_ARRAY_INDEX_EXTRACT_HPP
 
+#include "nmtools/meta.hpp"
 #include "nmtools/utility/at.hpp"
 #include "nmtools/utility/shape.hpp"
-#include "nmtools/stl.hpp"
-#include "nmtools/ndarray/fixed.hpp"
-#include "nmtools/index/tuple_at.hpp"
-#include "nmtools/meta.hpp"
 
 namespace nmtools::index
 {
