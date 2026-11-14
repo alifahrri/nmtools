@@ -14,9 +14,6 @@
 #endif // NMTOOLS_DISABLE_STL
 
 // TODO: prioritize boost as default
-#include "nmtools/meta/utl.hpp"
-
-// TODO: prioritize boost as default
 #ifdef NMTOOLS_ENABLE_BOOST
 #include "nmtools/meta/boost.hpp"
 #endif
@@ -24,6 +21,11 @@
 #include "nmtools/meta/traits.hpp"
 #include "nmtools/meta/transform.hpp"
 #include "nmtools/meta/array.hpp"
+
+// NOTE: include last, pulls nmtools/utl.hpp whose headers (e.g. utl/constant_map)
+// may pull utility/at.hpp which re-enters this header mid-parse; by the time
+// utl headers are parsed all meta bits above are complete.
+#include "nmtools/meta/utl.hpp"
 
 namespace nmtools::meta
 {

@@ -1,11 +1,11 @@
 #ifndef NMTOOLS_ARRAY_INDEX_REVERSE_HPP
 #define NMTOOLS_ARRAY_INDEX_REVERSE_HPP
 
+#include "nmtools/meta.hpp"
 #include "nmtools/utility/at.hpp"
 #include "nmtools/utility/shape.hpp"
 #include "nmtools/utility/has_value.hpp"
 #include "nmtools/utility/unwrap.hpp"
-#include "nmtools/meta.hpp"
 
 namespace nmtools::index
 {

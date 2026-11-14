@@ -54,28 +54,45 @@ namespace nmtools::network
                     result.resize(n);
                 }
 
-                // TODO: handle invalid input
-                for (nm_size_t i=0; i<(nm_size_t)n; i++) {
-                    const auto& src = at(input,i);
-                    auto& dst = at(result,i);
-                    using dst_t = meta::remove_cvref_t<decltype(dst)>;
-                    auto map_id = [&](auto src){
-                        if constexpr (!is_none_v<node_ids_t>) {
-                            return at(node_ids,src);
+                if constexpr (meta::is_constant_adjacency_list_v<input_t>) {
+                    // constant adjacency list input (indexed with runtime node
+                    // ids): walk the constant structure with constant indices,
+                    // resolving the mapped runtime ids per element.
+                    // TODO: handle invalid input
+                    meta::template_for<meta::len_v<input_t>>([&](auto I){
+                        const auto& src = at(input,I);
+                        auto& dst = at(result,(nm_size_t)decltype(I)::value);
+                        if constexpr (meta::is_resizable_v<decltype(dst)>) {
+                            dst.resize(meta::len_v<remove_cvref_t<decltype(src)>>);
+                        }
+                        meta::template_for<meta::len_v<remove_cvref_t<decltype(src)>>>([&](auto J){
+                            at(dst,(nm_size_t)decltype(J)::value) = at(node_ids,(nm_size_t)at(src,J));
+                        });
+                    });
+                } else {
+                    // TODO: handle invalid input
+                    for (nm_size_t i=0; i<(nm_size_t)n; i++) {
+                        const auto& src = at(input,i);
+                        auto& dst = at(result,i);
+                        using dst_t = meta::remove_cvref_t<decltype(dst)>;
+                        auto map_id = [&](auto src){
+                            if constexpr (!is_none_v<node_ids_t>) {
+                                return at(node_ids,src);
+                            } else {
+                                return src;
+                            }
+                        };
+                        if constexpr (meta::is_index_array_v<dst_t>) {
+                            auto m = len(src);
+                            if constexpr (meta::is_resizable_v<dst_t>) {
+                                dst.resize(m);
+                            }
+                            for (nm_size_t j=0; j<(nm_size_t)m; j++) {
+                                at(dst,j) = map_id(at(src,j));
+                            }
                         } else {
-                            return src;
+                            dst = map_id(src);
                         }
-                    };
-                    if constexpr (meta::is_index_array_v<dst_t>) {
-                        auto m = len(src);
-                        if constexpr (meta::is_resizable_v<dst_t>) {
-                            dst.resize(m);
-                        }
-                        for (nm_size_t j=0; j<(nm_size_t)m; j++) {
-                            at(dst,j) = map_id(at(src,j));
-                        }
-                    } else {
-                        dst = map_id(src);
                     }
                 }
                 return result;
@@ -140,6 +157,23 @@ namespace nmtools::meta
                         return as_value_v<type>;
                     }
                 }, as_value_v<nmtools_tuple<>>);
+            } else if constexpr (is_constant_adjacency_list_v<input_t>
+                && is_index_array_v<node_ids_t>
+                && !is_constant_index_array_v<node_ids_t>
+            ) {
+                // constant adjacency list with runtime node ids: walk the
+                // constant structure at compile time, the mapped values
+                // (runtime ids) are resolved at runtime. The result type
+                // mirrors the runtime adjacency list resolve result type.
+                constexpr auto NUM_NODES = len_v<input_t>;
+                if constexpr (NUM_NODES >= 0) {
+                    using index_t = nm_index_t;
+                    using inner_t = nmtools_static_vector<index_t,NUM_NODES>;
+                    using type = nmtools_array<inner_t,NUM_NODES>;
+                    return as_value_v<type>;
+                } else {
+                    return as_value_v<input_t>;
+                }
             } else {
                 // TODO: handle constant adjacency list/index array with constant node ids
                 return as_value_v<input_t>;

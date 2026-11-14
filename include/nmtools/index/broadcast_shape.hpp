@@ -3,10 +3,8 @@
 
 #include "nmtools/constants.hpp"
 #include "nmtools/meta.hpp"
-#include "nmtools/stl.hpp"
-#include "nmtools/utility/at.hpp"
+#include "nmtools/utility/get.hpp"
 #include "nmtools/utility/shape.hpp"
-#include "nmtools/utility/unwrap.hpp"
 #include "nmtools/index/ref.hpp"
 #include "nmtools/index/max.hpp"
 #include "nmtools/index/product.hpp"

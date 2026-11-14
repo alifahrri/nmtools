@@ -1,12 +1,15 @@
 #ifndef NMTOOLS_META_BITS_ARRAY_FIXED_NUM_EDGES_HPP
 #define NMTOOLS_META_BITS_ARRAY_FIXED_NUM_EDGES_HPP
 
-#include "nmtools/meta.hpp"
+#include "nmtools/meta/common.hpp"
+#include "nmtools/meta/loop.hpp"
 #include "nmtools/meta/bits/traits/is_adjacency_list.hpp"
 #include "nmtools/meta/bits/traits/is_tuple.hpp"
+#include "nmtools/meta/bits/traits/is_fail.hpp"
 #include "nmtools/meta/bits/array/fixed_num_nodes.hpp"
 #include "nmtools/meta/bits/transform/get_value_type.hpp"
 #include "nmtools/meta/bits/transform/len.hpp"
+#include "nmtools/meta/bits/transform/at.hpp"
 
 namespace nmtools::meta
 {

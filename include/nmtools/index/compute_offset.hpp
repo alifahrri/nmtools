@@ -3,9 +3,6 @@
 
 #include "nmtools/def.hpp"
 #include "nmtools/meta.hpp"
-#include "nmtools/utility/at.hpp"
-#include "nmtools/utility/unwrap.hpp"
-#include "nmtools/utility/has_value.hpp"
 #include "nmtools/index/tuple_at.hpp"
 #include "nmtools/index/compute_indices.hpp"
 #include "nmtools/assert.hpp"
