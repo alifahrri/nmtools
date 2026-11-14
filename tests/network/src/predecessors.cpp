@@ -61,6 +61,9 @@ TEST_CASE("constexpr_predecessors(case1)" * doctest::test_suite("network::predec
 {
     CONSTEXPR_PREDECESSORS_SUBCASE( case1, list_a_sv_ct, node_idx );
     CONSTEXPR_PREDECESSORS_SUBCASE( case1, list_sv_sv_ct, node_idx );
+
+    // constant adjacency list + constant node index
+    CONSTEXPR_PREDECESSORS_SUBCASE( case1, list, node_idx_ct );
 }
 
 TEST_CASE("digraph_predecessors(case1)" * doctest::test_suite("network::predecessors"))
@@ -103,6 +106,9 @@ TEST_CASE("constexpr_predecessors(case2)" * doctest::test_suite("network::predec
 {
     CONSTEXPR_PREDECESSORS_SUBCASE( case2, list_a_sv_ct, node_idx );
     CONSTEXPR_PREDECESSORS_SUBCASE( case2, list_sv_sv_ct, node_idx );
+
+    // constant adjacency list + constant node index
+    CONSTEXPR_PREDECESSORS_SUBCASE( case2, list, node_idx_ct );
 }
 
 TEST_CASE("digraph_predecessors(case2)" * doctest::test_suite("network::predecessors"))
@@ -145,6 +151,9 @@ TEST_CASE("constexpr_predecessors(case3)" * doctest::test_suite("network::predec
 {
     CONSTEXPR_PREDECESSORS_SUBCASE( case3, list_a_sv_ct, node_idx );
     CONSTEXPR_PREDECESSORS_SUBCASE( case3, list_sv_sv_ct, node_idx );
+
+    // constant adjacency list + constant node index
+    CONSTEXPR_PREDECESSORS_SUBCASE( case3, list, node_idx_ct );
 }
 
 TEST_CASE("digraph_predecessors(case3)" * doctest::test_suite("network::predecessors"))
@@ -187,6 +196,9 @@ TEST_CASE("constexpr_predecessors(case4)" * doctest::test_suite("network::predec
 {
     CONSTEXPR_PREDECESSORS_SUBCASE( case4, list_a_sv_ct, node_idx );
     CONSTEXPR_PREDECESSORS_SUBCASE( case4, list_sv_sv_ct, node_idx );
+
+    // constant adjacency list + constant node index
+    CONSTEXPR_PREDECESSORS_SUBCASE( case4, list, node_idx_ct );
 }
 
 TEST_CASE("digraph_predecessors(case4)" * doctest::test_suite("network::predecessors"))
@@ -229,6 +241,9 @@ TEST_CASE("constexpr_predecessors(case5)" * doctest::test_suite("network::predec
 {
     CONSTEXPR_PREDECESSORS_SUBCASE( case5, list_a_sv_ct, node_idx );
     CONSTEXPR_PREDECESSORS_SUBCASE( case5, list_sv_sv_ct, node_idx );
+
+    // constant adjacency list + constant node index
+    CONSTEXPR_PREDECESSORS_SUBCASE( case5, list, node_idx_ct );
 }
 
 TEST_CASE("digraph_predecessors(case5)" * doctest::test_suite("network::predecessors"))

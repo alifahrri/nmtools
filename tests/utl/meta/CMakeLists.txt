@@ -30,6 +30,7 @@ add_executable(${PROJECT_NAME} tests.cpp
     src/has_square_bracket.cpp
     src/has_size.cpp
     src/has_value_type.cpp
+    src/is_map.cpp
     ## meta view
     src/broadcast_to.cpp
 )

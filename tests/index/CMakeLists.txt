@@ -74,6 +74,7 @@ if (NMTOOLS_INDEX_TEST_ALL)
         src/hash.cpp
         src/kron.cpp
         src/insert_index.cpp
+        src/invert_map.cpp
         src/logical_not.cpp
         src/matmul.cpp
         src/moveaxis.cpp
