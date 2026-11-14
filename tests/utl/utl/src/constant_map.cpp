@@ -168,7 +168,11 @@ TEST_CASE("constant_map.to_value" * doctest::test_suite("utl"))
         constexpr auto map = nmtools::to_value_v<ct_map_t>;
 
         using map_t = nmtools::meta::remove_cvref_t<decltype(map)>;
-        static_assert( nmtools::meta::is_same_v<map_t,utl::static_map<int,int,3ul>> );
+        // NOTE: static_map's capacity is an `auto` NTTP, so its underlying
+        // type is part of the type identity. Derive it from the same
+        // expression to_value() uses instead of hardcoding 3ul, which only
+        // matches on platforms where size_t is unsigned long.
+        static_assert( nmtools::meta::is_same_v<map_t,utl::static_map<int,int,nmtools::meta::len_v<keys_t>>> );
         static_assert( nmtools::meta::is_map_v<map_t> );
         static_assert( !nmtools::meta::is_constant_map_v<map_t> );
 
@@ -202,7 +206,7 @@ TEST_CASE("constant_map.to_value" * doctest::test_suite("utl"))
         constexpr auto map = nmtools::to_value_v<mixed_map_t>;
 
         using map_t = nmtools::meta::remove_cvref_t<decltype(map)>;
-        static_assert( nmtools::meta::is_same_v<map_t,utl::static_map<int,nmtools::nullable_num<int>,3ul>> );
+        static_assert( nmtools::meta::is_same_v<map_t,utl::static_map<int,nmtools::nullable_num<int>,nmtools::meta::len_v<keys_t>>> );
 
         NMTOOLS_ASSERT_EQUAL( map.size(), 3 );
         NMTOOLS_ASSERT_EQUAL( map.count(2), 1 );
