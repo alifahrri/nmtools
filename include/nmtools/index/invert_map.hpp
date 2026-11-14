@@ -4,6 +4,7 @@
 #include "nmtools/meta.hpp"
 #include "nmtools/utility/at.hpp"
 #include "nmtools/utility/has_value.hpp"
+#include "nmtools/utl/constant_map.hpp"
 
 namespace nmtools::index
 {

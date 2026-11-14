@@ -90,7 +90,11 @@
 #include "nmtools/utl/variant.hpp"
 #include "nmtools/utl/vector.hpp"
 #include "nmtools/utl/math.hpp"
-#include "nmtools/utl/constant_map.hpp"
+// NOTE: constant_map.hpp is intentionally excluded from this aggregator.
+// It depends on nmtools::at (utility layer). Including it here can parse it
+// while utility/at.hpp is still mid-parse (utility/at.hpp -> meta/transform.hpp
+// -> stl.hpp -> utl.hpp -> constant_map), before nmtools::at is declared.
+// Consumers must include nmtools/utl/constant_map.hpp directly.
 
 namespace nmtools
 {
