@@ -173,7 +173,7 @@ namespace nmtools::utl
         // in a constant map, so there's no non-const form like flat_map's),
         // provided for map-like familiarity.
         template <typename key>
-        constexpr decltype(auto) at(const key k)
+        constexpr decltype(auto) at([[maybe_unused]] const key k)
         {
             if constexpr (has_value_type_v<values_type>) {
                 // runtime keys & runtime values
@@ -207,7 +207,7 @@ namespace nmtools::utl
         }
 
         template <typename key>
-        constexpr decltype(auto) at(const key k) const
+        constexpr decltype(auto) at([[maybe_unused]] const key k) const
         {
             if constexpr (has_value_type_v<values_type>) {
                 // runtime keys & runtime values
