@@ -2,10 +2,11 @@
 #define NMTOOLS_ARRAY_INDEX_DYNAMIC_SLICE_HPP
 
 #include "nmtools/meta.hpp"
-#include "nmtools/utility.hpp"
-#include "nmtools/constants.hpp"
+#include "nmtools/utility/at.hpp"
+#include "nmtools/utility/has_value.hpp"
+#include "nmtools/utility/get.hpp"
+#include "nmtools/utility/shape.hpp"
 #include "nmtools/math.hpp"
-#include "nmtools/stl.hpp"
 #include "nmtools/utility/flatten_either.hpp"
 #include "nmtools/platform/math/constexpr.hpp"
 

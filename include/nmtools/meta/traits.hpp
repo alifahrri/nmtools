@@ -100,6 +100,7 @@
 #include "nmtools/meta/bits/traits/is_slice_index.hpp"
 #include "nmtools/meta/bits/traits/is_specialization.hpp"
 #include "nmtools/meta/bits/traits/is_string.hpp"
+#include "nmtools/meta/bits/traits/is_map.hpp"
 #include "nmtools/meta/bits/traits/is_unsigned.hpp"
 #include "nmtools/meta/bits/traits/is_trivially_constructible.hpp"
 #include "nmtools/meta/bits/traits/is_trivially_copy_constructible.hpp"

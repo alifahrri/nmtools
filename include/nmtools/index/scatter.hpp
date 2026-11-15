@@ -2,7 +2,10 @@
 #define NMTOOLS_ARRAY_INDEX_SCATTER_HPP
 
 #include "nmtools/meta.hpp"
-#include "nmtools/utility.hpp"
+#include "nmtools/utility/at.hpp"
+#include "nmtools/utility/shape.hpp"
+#include "nmtools/utility/has_value.hpp"
+#include "nmtools/utility/unwrap.hpp"
 #include "nmtools/assert.hpp"
 
 namespace nmtools::index

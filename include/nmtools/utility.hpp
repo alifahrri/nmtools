@@ -31,13 +31,12 @@
 #include "nmtools/utility/random_engine.hpp"
 #include "nmtools/error.hpp"
 
-#endif // NMTOOLS_UTILITY_HPP
-
-// TODO: move to include guard above
-
+// NOTE: everything below must be inside the include guard: several of these
+// headers (e.g. utility/isequal -> index/ndindex -> index/compute_strides)
+// include this file back; a re-entry must not re-run the include list,
+// otherwise the sub-headers parse before the utility functions they use.
 #include "nmtools/utility/isequal.hpp"
 #include "nmtools/utility/isclose.hpp"
-#include "nmtools/utility/apply_isequal.hpp"
 #include "nmtools/utility/apply_isequal.hpp"
 #include "nmtools/utility/apply_resize.hpp"
 
@@ -58,3 +57,5 @@
 #include "nmtools/utility/tuple_cat.hpp"
 #include "nmtools/utility/tuple_slice.hpp"
 #include "nmtools/utility/unwrap.hpp"
+
+#endif // NMTOOLS_UTILITY_HPP

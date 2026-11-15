@@ -532,6 +532,47 @@ namespace nmtools
     using null_uint64_t = nullable_num<uint64_t>;
 }
 
+#ifndef NMTOOLS_DISABLE_STL
+#if __has_include(<functional>)
+
+#include <functional>
+
+// NOTE: nullable_num implicitly converts to its underlying value type, so
+// adding operator== would silently change overload resolution of existing
+// comparisons library-wide. Specialize std::equal_to and std::hash instead,
+// so nullable_num can be used as key of nmtools_default_map (std::unordered_map)
+// with tag-aware semantics, without affecting unqualified `a == b` expressions.
+namespace std
+{
+    template <typename T>
+    struct equal_to<nmtools::nullable_num<T>>
+    {
+        constexpr bool operator()(const nmtools::nullable_num<T>& lhs,
+                                  const nmtools::nullable_num<T>& rhs) const noexcept
+        {
+            if (lhs.tag != rhs.tag) {
+                return false;
+            }
+            return lhs.is_num() ? lhs.num == rhs.num : true;
+        }
+    };
+
+    template <typename T>
+    struct hash<nmtools::nullable_num<T>>
+    {
+        size_t operator()(const nmtools::nullable_num<T>& num) const noexcept
+        {
+            if (!num.is_num()) {
+                return static_cast<size_t>(-1);
+            }
+            return std::hash<T>{}(num.num);
+        }
+    };
+} // namespace std
+
+#endif // __has_include(<functional>)
+#endif // NMTOOLS_DISABLE_STL
+
 // NOTE: to make it consistent for separate host device compilation
 #ifndef nm_size_t
 #define nm_size_t ::nmtools::size_t

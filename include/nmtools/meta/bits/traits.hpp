@@ -89,3 +89,5 @@
 #include "nmtools/meta/bits/traits/is_clipped_index.hpp"
 #include "nmtools/meta/bits/traits/is_default_constructible.hpp"
 #include "nmtools/meta/bits/traits/is_clipped_index_array.hpp"
+#include "nmtools/meta/bits/traits/is_map.hpp"
+

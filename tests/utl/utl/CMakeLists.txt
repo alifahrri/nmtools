@@ -29,6 +29,8 @@ add_executable(${PROJECT_NAME} tests.cpp
     src/string_cast.cpp
     src/tuple.cpp
     src/variant.cpp
+
+    src/constant_map.cpp
 )
 add_test(
     NAME ${PROJECT_NAME}

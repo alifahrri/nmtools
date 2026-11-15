@@ -21,4 +21,9 @@ namespace nmtools::meta
     constexpr inline auto is_clipped_integer_v = is_clipped_integer<T>::value;
 } // namespace nmtools::meta
 
+namespace nmtools
+{
+    using meta::is_clipped_integer_v;
+} // namespace nmtools
+
 #endif // NMTOOLS_META_BITS_TRAITS_IS_CLIPPED_INTEGER_HPP

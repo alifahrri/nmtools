@@ -122,3 +122,15 @@ TEST_CASE("constexpr_static_map" * doctest::test_suite("utl"))
         }
     }
 }
+TEST_CASE("static_map.max_len" * doctest::test_suite("utl"))
+{
+    // max_len reflects the hard capacity
+    {
+        using map_t = utl::static_map<nm_index_t,nm_index_t,4>;
+        static_assert( nmtools::max_len_v<map_t> == 4 );
+    }
+    {
+        using map_t = utl::static_map<nm_index_t,nm_index_t,7ul>;
+        static_assert( nmtools::max_len_v<map_t> == 7 );
+    }
+}

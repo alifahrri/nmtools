@@ -14,24 +14,24 @@ namespace nmtools::network
     template <typename adjacency_list_t>
     constexpr auto predecessors(const adjacency_list_t& adj_list)
     {
-        if constexpr (meta::is_maybe_v<adjacency_list_t>) {
+        if constexpr (is_maybe_v<adjacency_list_t>) {
             using result_t = decltype(predecessors(unwrap(adj_list)));
-            using return_t = meta::conditional_t<meta::is_maybe_v<result_t>,result_t,nmtools_maybe<result_t>>;
+            using return_t = conditional_t<is_maybe_v<result_t>,result_t,nmtools_maybe<result_t>>;
             return (has_value(adj_list)
                 ? return_t{predecessors(unwrap(adj_list))}
                 : return_t{meta::Nothing}
             );
         } else {
-            using result_t = meta::resolve_optype_t<tag::predecessors_t,adjacency_list_t>;
+            using result_t = resolve_optype_t<tag::predecessors_t,adjacency_list_t>;
 
             auto result = result_t {};
 
-            if constexpr (!meta::is_fail_v<result_t>
-                && !meta::is_constant_adjacency_list_v<result_t>
+            if constexpr (!is_fail_v<result_t>
+                && !is_constant_adjacency_list_v<result_t>
             ) {
                 [[maybe_unused]]
                 auto num_nodes = len(adj_list);
-                if constexpr (meta::is_resizable_v<result_t>) {
+                if constexpr (is_resizable_v<result_t>) {
                     result.resize(num_nodes);
                 }
 
@@ -51,22 +51,48 @@ namespace nmtools::network
     template <typename adjacency_list_t, typename node_idx_t>
     constexpr auto predecessors(const adjacency_list_t& adj_list, node_idx_t node_idx)
     {
-        if constexpr (meta::is_maybe_v<adjacency_list_t>
-            || meta::is_maybe_v<node_idx_t>
+        if constexpr (is_maybe_v<adjacency_list_t>
+            || is_maybe_v<node_idx_t>
         ) {
             using result_t = decltype(predecessors(unwrap(adj_list),unwrap(node_idx)));
-            using return_t = meta::conditional_t<meta::is_maybe_v<result_t>,result_t,nmtools_maybe<result_t>>;
+            using return_t = conditional_t<is_maybe_v<result_t>,result_t,nmtools_maybe<result_t>>;
             return (has_value(adj_list) && has_value(node_idx)
                 ? return_t{predecessors(unwrap(adj_list),unwrap(node_idx))}
                 : return_t{meta::Nothing}
             );
         } else {
             auto num_nodes = len(adj_list);
-            
-            auto all_nodes = predecessors(adj_list);
-            using result_t = meta::remove_cvref_t<decltype(at(all_nodes,node_idx))>;
+
+            auto all_nodes = [&](){
+                if constexpr (is_constant_adjacency_list_v<adjacency_list_t>
+                    && !is_constant_index_v<node_idx_t>)
+                {
+                    // constant adjacency list with runtime node index: demote
+                    // the constant predecessors table into runtime rows so
+                    // that the runtime node index (and any downstream
+                    // consumer, e.g. map_ids) works. The container types
+                    // mirror the runtime adjacency list resolve result type.
+                    auto ct_table = predecessors(adj_list);
+                    constexpr auto NUM_NODES = meta::len_v<adjacency_list_t>;
+                    using inner_t = nmtools_static_vector<nm_index_t,NUM_NODES>;
+                    using outer_t = nmtools_array<inner_t,NUM_NODES>;
+                    auto table = outer_t {};
+                    meta::template_for<NUM_NODES>([&](auto I){
+                        const auto& row = nmtools::at(ct_table,I);
+                        auto& dst = nmtools::at(table,(nm_size_t)decltype(I)::value);
+                        constexpr auto NUM_PREDECESSORS = meta::len_v<remove_cvref_t<decltype(row)>>;
+                        meta::template_for<NUM_PREDECESSORS>([&](auto J){
+                            dst.push_back((nm_size_t)nmtools::at(row,J));
+                        });
+                    });
+                    return table;
+                } else {
+                    return predecessors(adj_list);
+                }
+            }();
+            using result_t = remove_cvref_t<decltype(at(all_nodes,node_idx))>;
             // TODO: check if NUM_NODES is constant & node_idx is constant index
-            using return_t = meta::conditional_t<meta::is_maybe_v<result_t>,result_t,nmtools_maybe<result_t>>;
+            using return_t = conditional_t<is_maybe_v<result_t>,result_t,nmtools_maybe<result_t>>;
 
             return (((nm_size_t)node_idx < (nm_size_t)num_nodes)
                 ? return_t{at(all_nodes,node_idx)}

@@ -1,8 +1,10 @@
 #ifndef NMTOOLS_ARRAY_AT_HPP
 #define NMTOOLS_ARRAY_AT_HPP
 
-#include "nmtools/meta.hpp"
-#include "nmtools/constants.hpp"
+#include "nmtools/meta/common.hpp"
+#include "nmtools/meta/traits.hpp"
+#include "nmtools/meta/transform.hpp"
+#include "nmtools/meta/array.hpp"
 #include "nmtools/utility/forward.hpp"
 
 // TODO: move to nmtools/utility/

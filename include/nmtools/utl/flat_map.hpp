@@ -8,6 +8,7 @@
 #include "nmtools/utl/small_vector.hpp"
 #include "nmtools/utl/static_vector.hpp"
 #include "nmtools/utl/tuple.hpp"
+#include "nmtools/meta/bits/traits/is_map.hpp"
 
 #ifndef NMTOOLS_SMALL_FLAT_MAP_DEFAULT_DIM
 #define NMTOOLS_SMALL_FLAT_MAP_DEFAULT_DIM 8
@@ -184,5 +185,11 @@ namespace nmtools::utl
         return map.end();
     }
 }
+
+namespace nmtools::meta
+{
+    template <typename key_t, typename T, auto DIM>
+    struct is_map<utl::flat_map<key_t,T,DIM>> : true_type {};
+} // namespace nmtools::meta
 
 #endif // NMTOOLS_UTL_FLAT_MAP_HPP

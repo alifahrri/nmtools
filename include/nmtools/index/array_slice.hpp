@@ -2,7 +2,6 @@
 #define NMTOOLS_ARRAY_INDEX_ARRAY_SLICE_HPP
 
 #include "nmtools/meta.hpp"
-#include "nmtools/utility/shape.hpp"
 #include "nmtools/index/ref.hpp"
 #include "nmtools/index/broadcast_shape.hpp"
 

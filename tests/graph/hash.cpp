@@ -1396,3 +1396,41 @@ TEST_CASE("hash(aliased2)" * doctest::test_suite("graph"))
         CHECK( fn::hash(r_lhs,nm::True,nm::True) != fn::hash(r_rhs,nm::True,nm::True) );
     }
 }
+
+TEST_CASE("hash(aliased3)" * doctest::test_suite("graph"))
+{
+    auto gen   = nm::random_engine();
+    auto dtype = nm::float32;
+
+    auto shape  = nmtools_tuple{2_ct,3_ct,2_ct};
+    auto lhs    = nm::random(shape,dtype,gen);
+    auto rhs    = nm::random(shape,dtype,gen);
+    auto [a,b]  = view::aliased(lhs,rhs);
+    auto result = view::add(a,b);
+    auto graph  = unwrap(fn::get_computational_tree(result));
+
+    constexpr auto NUM_NODES = nm::len_v<decltype(graph.adjacency_list)>;
+    CHECK( (nm_size_t)NUM_NODES == 5 );
+
+    {
+        // broadcast_to
+
+        auto b0 = graph.nodes(1_ct);
+        static_assert( nm::is_compute_node_v<decltype(b0)> );
+        static_assert( !nm::has_id_type_v<decltype(b0)> );
+        CHECK_MESSAGE( true, join(b0.to_string()) );
+
+        auto hash_b0 = fn::hash(b0,nm::True);
+        CHECK( nm::is_constant_index_v<decltype(hash_b0)> );
+        CHECK( hash_b0 != 0 );
+
+        auto b1 = graph.nodes(3_ct);
+        static_assert( nm::is_compute_node_v<decltype(b1)> );
+        static_assert( !nm::has_id_type_v<decltype(b1)> );
+        CHECK_MESSAGE( true, join(b1.to_string()) );
+
+        auto hash_b1 = fn::hash(b1,nm::True);
+        CHECK( nm::is_constant_index_v<decltype(hash_b0)> );
+        CHECK( hash_b1 != 0 );
+    }
+}

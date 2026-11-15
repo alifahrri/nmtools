@@ -4,6 +4,7 @@
 #include "nmtools/meta.hpp"
 #include "nmtools/dtypes.hpp"
 #include "nmtools/utility.hpp"
+#include "nmtools/meta/bits/traits/is_clipped_integer.hpp"
 #include "nmtools/core/functor.hpp"
 #include "nmtools/core/combinator.hpp"
 #include "nmtools/index/hash.hpp"
@@ -1659,6 +1660,20 @@ namespace nmtools::functional
             constexpr auto v_shape = to_value_v<type>;
             using v_shape_t = remove_cvref_t<decltype(v_shape)>;
 
+            // whether any shape element is a clipped integer: its to_value
+            // only carries the upper bound (see meta/bits/transform/to_value.hpp),
+            // which is not the actual runtime value
+            constexpr auto any_clipped = [&](){
+                auto clipped = false;
+                template_for<LEN>([&](auto index){
+                    using elem_t = at_t<type,decltype(index)::value>;
+                    if constexpr (is_clipped_integer_v<elem_t>) {
+                        clipped = true;
+                    }
+                });
+                return clipped;
+            }();
+
             dim = (nm_index_t)LEN;
             max_dim = (nm_index_t)MAX_LEN;
             if constexpr (is_none_v<v_shape_t>) {
@@ -1669,6 +1684,23 @@ namespace nmtools::functional
                     for (nm_size_t i=0; i<(nm_size_t)LEN; i++) {
                         at(shape,i) = -1;
                     }
+                } else if constexpr (any_clipped) {
+                    // meta::to_value of a clipped integer only carries its
+                    // upper bound (see meta/bits/transform/to_value.hpp),
+                    // which is not the actual runtime value: such a shape
+                    // element is unknown at compile time, mark it as -1.
+                    // NOTE: this is the node-value form; other to_value
+                    // users may still rely on the upper-bound convention.
+                    template_for<LEN>([&](auto index){
+                        constexpr auto I = decltype(index)::value;
+                        using elem_t = at_t<type,I>;
+                        if constexpr (is_constant_index_v<elem_t>) {
+                            at(shape,I) = (nm_index_t)elem_t::value;
+                        } else {
+                            // TODO: return maybe shape instead?
+                            at(shape,I) = -1;
+                        }
+                    });
                 } else {
                     for (nm_size_t i=0; i<(nm_size_t)len(v_shape); i++) {
                         at(shape,i) = has_value(at(v_shape,i))
@@ -2091,14 +2123,17 @@ namespace nmtools::functional
     template <typename hash_shape_t=meta::true_type, typename hash_address_t=meta::true_type, typename functor_t, typename operands_t, typename output_shape_t, typename output_element_t>
     constexpr auto hash([[maybe_unused]] const compute_node_t<functor_t,operands_t,output_shape_t,output_element_t>& node
         , [[maybe_unused]] hash_shape_t hash_shape=hash_shape_t{}
-        , [[maybe_unused]] hash_address_t hash_address=hash_address_t{}
+        , [[maybe_unused]] hash_address_t=hash_address_t{}
     ) {
-        // TODO: hash address doesn't make sense for compute node
+        // address hashing for compute node doesn't make sense
+        constexpr auto hash_address = False;
         
         using node_t = compute_node_t<functor_t,operands_t,output_shape_t,output_element_t>;
         if constexpr (is_constant_index_v<hash_shape_t> && is_constant_index_v<hash_address_t>) {
             // TODO: check if attributes of functors is also known at compile time
-            if constexpr (hash_shape_t::value && !hash_address_t::value && is_constant_index_array_v<output_shape_t>) {
+            if constexpr (hash_shape_t::value
+                && is_constant_index_array_v<output_shape_t>
+            ) {
                 constexpr auto v_node = to_value_v<node_t>;
                 constexpr auto h = hash(v_node,hash_shape,hash_address);
                 return ct_v<h>;
@@ -2240,6 +2275,9 @@ namespace nmtools::meta
     struct is_compute_node : false_type {};
 
     template <typename T>
+    struct is_value_node : false_type {};
+
+    template <typename T>
     struct is_buffer_node<const T> : is_buffer_node<T> {};
 
     template <typename T>
@@ -2251,23 +2289,36 @@ namespace nmtools::meta
     template <typename T>
     struct is_compute_node<T&> : is_compute_node<T> {};
 
+    template <typename T>
+    struct is_value_node<const T> : is_value_node<T> {};
+
+    template <typename T>
+    struct is_value_node<T&> : is_value_node<T> {};
+
     template <typename...args_t>
     struct is_buffer_node<functional::buffer_node_t<args_t...>> : true_type {};
 
     template <typename...args_t>
     struct is_compute_node<functional::compute_node_t<args_t...>> : true_type {};
 
+    template <auto MAX_DIM, auto MAX_COMPOSITION, typename...args_t>
+    struct is_value_node<functional::Node<MAX_DIM,MAX_COMPOSITION,args_t...>> : true_type {};
+
     template <typename T>
     constexpr inline auto is_buffer_node_v = is_buffer_node<T>::value;
 
     template <typename T>
     constexpr inline auto is_compute_node_v = is_compute_node<T>::value;
+
+    template <typename T>
+    constexpr inline auto is_value_node_v = is_value_node<T>::value;
 }
 
 namespace nmtools
 {
     using meta::is_buffer_node_v;
     using meta::is_compute_node_v;
+    using meta::is_value_node_v;
 }
 
 #endif // NMTOOLS_CORE_NODE_HPP

@@ -4,7 +4,6 @@
 #include "nmtools/meta.hpp"
 #include "nmtools/index/count.hpp"
 #include "nmtools/utility/shape.hpp"
-#include "nmtools/utility.hpp"
 
 namespace nmtools::index
 {
