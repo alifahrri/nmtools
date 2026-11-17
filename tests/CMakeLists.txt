@@ -119,6 +119,13 @@ endif (NMTOOLS_BUILD_FUNCTIONAL_TESTS)
 
 option(NMTOOLS_BUILD_COMPUTE_GRAPH_TESTS "build computational graph test programs" OFF)
 if (NMTOOLS_BUILD_COMPUTE_GRAPH_TESTS)
+    # constexpr evaluation of compile-time graph transforms (e.g. cse on
+    # static computational graph) may exceed the default step limit
+    if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+        add_compile_options(-fconstexpr-ops-limit=100000000)
+    elseif (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+        add_compile_options(-fconstexpr-steps=100000000)
+    endif ()
     add_subdirectory(graph)
 endif (NMTOOLS_BUILD_COMPUTE_GRAPH_TESTS)
 

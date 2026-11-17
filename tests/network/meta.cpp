@@ -2,6 +2,8 @@
 #include "nmtools/context/default.hpp"
 #include "nmtools/testing/doctest.hpp"
 #include "nmtools/network/cast.hpp"
+#include "nmtools/network/digraph.hpp"
+#include "nmtools/network/multi_digraph.hpp"
 
 namespace meta = nmtools::meta;
 namespace tag  = nmtools::tag;
@@ -451,4 +453,61 @@ TEST_CASE("cast(case3)" * doctest::test_suite("meta"))
         nmtools_array<int,0>(),
     };
     NMTOOLS_ASSERT_EQUAL( adjacency_list, expected )
+}
+TEST_CASE("is_digraph" * doctest::test_suite("meta"))
+{
+    using digraph_t   = network::digraph_t<nmtools_list<nmtools_list<int>>>;
+    using m_digraph_t = network::multi_digraph_t<nmtools_list<nmtools_list<int>>>;
+
+    NMTOOLS_STATIC_CHECK_TRAIT( meta::is_digraph, digraph_t );
+    NMTOOLS_STATIC_CHECK_TRAIT( meta::is_digraph, m_digraph_t );
+
+    // non digraph types
+    {
+        using type [[maybe_unused]] = nmtools_list<nmtools_list<int>>;
+        static_assert( !meta::is_digraph_v<type> );
+    }
+
+    // digraph is a multi digraph, simple digraph is not
+    NMTOOLS_STATIC_CHECK_TRAIT_FALSE( meta::is_multi_digraph, digraph_t );
+    NMTOOLS_STATIC_CHECK_TRAIT( meta::is_multi_digraph, m_digraph_t );
+
+    // cv/ref forwarding
+    {
+        static_assert( meta::is_digraph_v<const digraph_t&> );
+        static_assert( meta::is_multi_digraph_v<const m_digraph_t&> );
+    }
+}
+
+TEST_CASE("get_adjacency_list" * doctest::test_suite("meta"))
+{
+    using adjacency_list_t = nmtools_list<nmtools_list<nm_index_t>>;
+    using node_ids_t       = nmtools_list<nm_index_t>;
+
+    // digraph with explicit node ids
+    using digraph_t = network::digraph_t<adjacency_list_t,node_ids_t>;
+    NMTOOLS_STATIC_CHECK_IS_SAME( meta::get_adjacency_list_t<digraph_t>, adjacency_list_t );
+    NMTOOLS_STATIC_CHECK_IS_SAME( meta::get_node_ids_t<digraph_t>, node_ids_t );
+
+    // default node/edge attributes resolve to none
+    NMTOOLS_STATIC_CHECK_IS_SAME( meta::get_node_attributes_t<digraph_t>, nmtools::none_t );
+    NMTOOLS_STATIC_CHECK_IS_SAME( meta::get_edge_attributes_t<digraph_t>, nmtools::none_t );
+
+    // cv/ref forwarding
+    {
+        static_assert( meta::is_same_v<meta::get_adjacency_list_t<const digraph_t&>,adjacency_list_t> );
+        static_assert( meta::is_same_v<meta::get_node_ids_t<digraph_t&>,node_ids_t> );
+    }
+
+    // non digraph types resolve to unique error types
+    {
+        using err_t [[maybe_unused]] = meta::error::GET_ADJACENCY_LIST_UNSUPPORTED<adjacency_list_t>;
+        static_assert( meta::is_same_v<meta::get_adjacency_list_t<adjacency_list_t>,err_t> );
+        using err2_t [[maybe_unused]] = meta::error::GET_NODE_IDS_UNSUPPORTED<int>;
+        static_assert( meta::is_same_v<meta::get_node_ids_t<int>,err2_t> );
+        using err3_t [[maybe_unused]] = meta::error::GET_NODE_ATTRIBUTES_UNSUPPORTED<int>;
+        static_assert( meta::is_same_v<meta::get_node_attributes_t<int>,err3_t> );
+        using err4_t [[maybe_unused]] = meta::error::GET_EDGE_ATTRIBUTES_UNSUPPORTED<int>;
+        static_assert( meta::is_same_v<meta::get_edge_attributes_t<int>,err4_t> );
+    }
 }
