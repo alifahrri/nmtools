@@ -988,6 +988,202 @@ namespace nmtools::meta
     };
 } // namespace nmtools::meta
 
+namespace nmtools::meta
+{
+    /**
+     * @brief Trait to check if a type is a (simple) digraph, i.e. an
+     * instantiation of network::base_digraph_t.
+     *
+     * The specialization mirrors base_digraph_t's non-type/type parameters
+     * (adjacency_list, node_ids, node_attributes, edge_attributes, multi).
+     *
+     */
+    template <typename>
+    struct is_digraph : false_type {};
+
+    template <typename adjacency_list_t, typename node_ids_t
+        , typename node_attributes_t, typename edge_attributes_t, typename multi_t>
+    struct is_digraph<network::base_digraph_t<adjacency_list_t,node_ids_t
+        , node_attributes_t, edge_attributes_t, multi_t>> : true_type {};
+
+    template <typename T>
+    struct is_digraph<const T> : is_digraph<T> {};
+
+    template <typename T>
+    struct is_digraph<T&> : is_digraph<T> {};
+
+    template <typename T>
+    inline constexpr auto is_digraph_v = is_digraph<T>::value;
+
+    /**
+     * @brief Trait to check if a type is a multi digraph, i.e. an
+     * instantiation of network::base_digraph_t with truthy multi_t.
+     *
+     */
+    template <typename>
+    struct is_multi_digraph : false_type {};
+
+    template <typename adjacency_list_t, typename node_ids_t
+        , typename node_attributes_t, typename edge_attributes_t, typename multi_t>
+    struct is_multi_digraph<network::base_digraph_t<adjacency_list_t,node_ids_t
+        , node_attributes_t, edge_attributes_t, multi_t>>
+    {
+        static constexpr auto value = multi_t::value;
+    };
+
+    template <typename T>
+    struct is_multi_digraph<const T> : is_multi_digraph<T> {};
+
+    template <typename T>
+    struct is_multi_digraph<T&> : is_multi_digraph<T> {};
+
+    template <typename T>
+    inline constexpr auto is_multi_digraph_v = is_multi_digraph<T>::value;
+} // namespace nmtools::meta
+
+namespace nmtools::meta
+{
+    namespace error
+    {
+        template <typename...>
+        struct GET_ADJACENCY_LIST_UNSUPPORTED : detail::fail_t {};
+        template <typename...>
+        struct GET_NODE_IDS_UNSUPPORTED : detail::fail_t {};
+        template <typename...>
+        struct GET_NODE_ATTRIBUTES_UNSUPPORTED : detail::fail_t {};
+        template <typename...>
+        struct GET_EDGE_ATTRIBUTES_UNSUPPORTED : detail::fail_t {};
+    }
+
+    /**
+     * @brief Get the adjacency list type of a digraph.
+     *
+     */
+    template <typename T, typename=void>
+    struct get_adjacency_list
+    {
+        using type = error::GET_ADJACENCY_LIST_UNSUPPORTED<T>;
+    };
+
+    template <typename T>
+    struct get_adjacency_list<const T> : get_adjacency_list<T> {};
+
+    template <typename T>
+    struct get_adjacency_list<T&> : get_adjacency_list<T> {};
+
+    template <typename adjacency_list_t, typename node_ids_t
+        , typename node_attributes_t, typename edge_attributes_t, typename multi_t>
+    struct get_adjacency_list<network::base_digraph_t<adjacency_list_t,node_ids_t
+        , node_attributes_t, edge_attributes_t, multi_t>>
+    {
+        using digraph_t = network::base_digraph_t<adjacency_list_t,node_ids_t
+            , node_attributes_t, edge_attributes_t, multi_t>;
+        using type = typename digraph_t::adjacency_list_type;
+    };
+
+    template <typename T>
+    using get_adjacency_list_t = type_t<get_adjacency_list<T>>;
+
+    /**
+     * @brief Get the node ids type of a digraph.
+     *
+     */
+    template <typename T, typename=void>
+    struct get_node_ids
+    {
+        using type = error::GET_NODE_IDS_UNSUPPORTED<T>;
+    };
+
+    template <typename T>
+    struct get_node_ids<const T> : get_node_ids<T> {};
+
+    template <typename T>
+    struct get_node_ids<T&> : get_node_ids<T> {};
+
+    template <typename adjacency_list_t, typename node_ids_t
+        , typename node_attributes_t, typename edge_attributes_t, typename multi_t>
+    struct get_node_ids<network::base_digraph_t<adjacency_list_t,node_ids_t
+        , node_attributes_t, edge_attributes_t, multi_t>>
+    {
+        using digraph_t = network::base_digraph_t<adjacency_list_t,node_ids_t
+            , node_attributes_t, edge_attributes_t, multi_t>;
+        using type = typename digraph_t::node_ids_type;
+    };
+
+    template <typename T>
+    using get_node_ids_t = type_t<get_node_ids<T>>;
+
+    /**
+     * @brief Get the node attributes type of a digraph, e.g. resolved
+     * from vtype attribute spec.
+     *
+     */
+    template <typename T, typename=void>
+    struct get_node_attributes
+    {
+        using type = error::GET_NODE_ATTRIBUTES_UNSUPPORTED<T>;
+    };
+
+    template <typename T>
+    struct get_node_attributes<const T> : get_node_attributes<T> {};
+
+    template <typename T>
+    struct get_node_attributes<T&> : get_node_attributes<T> {};
+
+    template <typename adjacency_list_t, typename node_ids_t
+        , typename node_attributes_t, typename edge_attributes_t, typename multi_t>
+    struct get_node_attributes<network::base_digraph_t<adjacency_list_t,node_ids_t
+        , node_attributes_t, edge_attributes_t, multi_t>>
+    {
+        using digraph_t = network::base_digraph_t<adjacency_list_t,node_ids_t
+            , node_attributes_t, edge_attributes_t, multi_t>;
+        using type = typename digraph_t::node_attributes_type;
+    };
+
+    template <typename T>
+    using get_node_attributes_t = type_t<get_node_attributes<T>>;
+
+    /**
+     * @brief Get the edge attributes type of a digraph, e.g. resolved
+     * from vtype attribute spec.
+     *
+     */
+    template <typename T, typename=void>
+    struct get_edge_attributes
+    {
+        using type = error::GET_EDGE_ATTRIBUTES_UNSUPPORTED<T>;
+    };
+
+    template <typename T>
+    struct get_edge_attributes<const T> : get_edge_attributes<T> {};
+
+    template <typename T>
+    struct get_edge_attributes<T&> : get_edge_attributes<T> {};
+
+    template <typename adjacency_list_t, typename node_ids_t
+        , typename node_attributes_t, typename edge_attributes_t, typename multi_t>
+    struct get_edge_attributes<network::base_digraph_t<adjacency_list_t,node_ids_t
+        , node_attributes_t, edge_attributes_t, multi_t>>
+    {
+        using digraph_t = network::base_digraph_t<adjacency_list_t,node_ids_t
+            , node_attributes_t, edge_attributes_t, multi_t>;
+        using type = typename digraph_t::edge_attributes_type;
+    };
+
+    template <typename T>
+    using get_edge_attributes_t = type_t<get_edge_attributes<T>>;
+} // namespace nmtools::meta
+
+namespace nmtools
+{
+    using meta::is_digraph_v;
+    using meta::is_multi_digraph_v;
+    using meta::get_adjacency_list_t;
+    using meta::get_node_ids_t;
+    using meta::get_node_attributes_t;
+    using meta::get_edge_attributes_t;
+}
+
 #if NMTOOLS_HAS_STRING
 namespace nmtools::utils::impl
 {

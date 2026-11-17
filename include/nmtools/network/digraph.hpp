@@ -23,8 +23,9 @@ namespace nmtools::network
     template <typename adjacency_list_t
         , typename node_ids_t=none_t
         , typename node_attributes_t=none_t
-        , typename edge_attributes_t=none_t>
-    using digraph_t = base_digraph_t<adjacency_list_t,node_ids_t,node_attributes_t,edge_attributes_t,meta::false_type>;
+        , typename edge_attributes_t=none_t
+        , typename multi_t=meta::false_type>
+    using digraph_t = base_digraph_t<adjacency_list_t,node_ids_t,node_attributes_t,edge_attributes_t,multi_t>;
 
     template <typename edge_attributes_t=none_t
         , typename node_attributes_t=none_t
