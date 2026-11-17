@@ -6,12 +6,10 @@
 #include "nmtools/core/functor.hpp"
 #include "nmtools/core/node.hpp"
 #include "nmtools/network/digraph.hpp"
+#include "nmtools/network/multi_digraph.hpp"
 #include "nmtools/core/computational_tree.hpp"
 #include "nmtools/core/transform/cse.hpp"
 
-#if 0
-#include <iostream>
-#endif
 
 namespace nmtools::functional
 {
@@ -39,101 +37,11 @@ namespace nmtools::functional
                 return return_t{get_computational_graph(*r_ptr)};
             }
         } else if constexpr (is_view_v<view_t>) {
-            using view_type = view_t;
-            auto getter = get_computational_graph_t<view_type>();
-            return getter(view);
+            auto tree  = get_computational_tree(view);
+            auto graph = cse(tree);
+            return graph;
         }
     }
-
-    template <template<typename...> typename view_t, typename...args_t>
-    struct get_computational_graph_t<view::decorator_t<view_t,args_t...>>
-    {
-        using view_type = view::decorator_t<view_t,args_t...>;
-        using view_id_type = typename view_type::id_type;
-
-        constexpr auto operator()(const view_type& view) const noexcept
-        {
-            auto compute_node = node(view);
-            auto node_id = view_id_type{};
-            auto digraph = network::digraph(
-                nmtools_tuple<nmtools_tuple<>>{}
-                , nmtools_tuple{node_id}
-                , nmtools_tuple{unwrap(compute_node)}
-            );
-
-            #if 0
-            [[maybe_unused]]
-            auto digraph_viz = utils::to_string(digraph,utils::Graphviz);
-            std::cout << "-------------------------" << std::endl;
-            std::cout << digraph_viz << std::endl;
-            #endif
-
-            auto operands = get_operands(view);
-            constexpr auto operands_ids = view_type::operands_ids;
-
-            constexpr auto N = len_v<decltype(operands)>;
-            auto m_digraph = template_reduce<N>([&](auto init, auto I){
-                const auto& operand = at(operands,I);
-                const auto& operand_node = [&](){
-                    if constexpr (is_pointer_v<remove_cvref_t<decltype(operand)>>) {
-                        return node(*operand);
-                    } else {
-                        return node(operand);
-                    }
-                }();
-                auto operand_id = at(operands_ids,I);
-                return init
-                    .add_node(operand_id,operand_node)
-                    .add_edge(operand_id,node_id)
-                ;
-            }, digraph);
-
-            #if 0
-            [[maybe_unused]]
-            auto m_digraph_viz = utils::to_string(m_digraph,utils::Graphviz);
-            std::cout << "=========================" << std::endl;
-            std::cout << m_digraph_viz << std::endl;
-            #endif
-
-            auto merged_graph = template_reduce<N>([&](auto init, auto I){
-                const auto& operand = at(operands,I);
-                using operand_t = remove_cvref_t<decltype(operand)>;
-                if constexpr (is_view_v<operand_t>
-                    && !meta::is_same_view_v<view::alias_t,operand_t>
-                ) {
-                    auto subgraph = get_computational_graph(operand);
-                    auto composed = network::compose(init,subgraph);
-
-                    #if 0
-                    auto init_viz = utils::to_string(init,utils::Graphviz);
-                    std::cout << "init+++++++++++++++++++++" << std::endl;
-                    std::cout << init_viz << std::endl;
-
-                    auto subgraph_viz = utils::to_string(subgraph,utils::Graphviz);
-                    std::cout << "subgraph+++++++++++++++++" << std::endl;
-                    std::cout << subgraph_viz << std::endl;
-
-                    auto composed_viz = utils::to_string(composed,utils::Graphviz);
-                    std::cout << "composed+++++++++++++++++" << std::endl;
-                    std::cout << composed_viz << std::endl;
-                    #endif
-
-                    return composed;
-                } else {
-                    return init;
-                }
-            }, m_digraph);
-
-            #if 0
-            [[maybe_unused]]
-            auto merged_digraph_viz = utils::to_string(merged_graph,utils::Graphviz);
-            std::cout << "#########################" << std::endl;
-            std::cout << merged_digraph_viz << std::endl;
-            #endif
-
-            return merged_graph;
-        }
-    };
 } // nmtools::functional
 
 namespace nmtools::meta
@@ -142,11 +50,12 @@ namespace nmtools::meta
     template <typename adjacency_list_t
         , typename node_ids_t
         , typename node_attributes_t
-        , typename edge_attributes_t>
+        , typename edge_attributes_t
+        , typename multi_t>
     struct to_value<
-        network::digraph_t<adjacency_list_t,node_ids_t,node_attributes_t,edge_attributes_t>
+        network::base_digraph_t<adjacency_list_t,node_ids_t,node_attributes_t,edge_attributes_t,multi_t>
     > {
-        using digraph_type = network::digraph_t<adjacency_list_t,node_ids_t,node_attributes_t,edge_attributes_t>;
+        using digraph_type = network::base_digraph_t<adjacency_list_t,node_ids_t,node_attributes_t,edge_attributes_t,multi_t>;
 
         static constexpr auto value = [](){
             if constexpr (!is_constant_adjacency_list_v<adjacency_list_t>
@@ -171,7 +80,11 @@ namespace nmtools::meta
                     auto node = to_value_v<type_i>;
                     at(attributes,I) = node;
                 });
-                return network::digraph(adjacency_list,node_ids,attributes);
+                if constexpr (multi_t::value) {
+                    return network::multi_digraph(adjacency_list,node_ids,attributes);
+                } else {
+                    return network::digraph(adjacency_list,node_ids,attributes);
+                }
             }
         }();
     };

@@ -7,6 +7,7 @@
 #include "nmtools/core/functor.hpp"
 #include "nmtools/core/node.hpp"
 #include "nmtools/network/digraph.hpp"
+#include "nmtools/network/multi_digraph.hpp"
 #include "nmtools/index/alias.hpp"
 #include "nmtools/array/ref.hpp"
 
@@ -47,7 +48,6 @@ namespace nmtools::functional
     struct get_computational_tree_t<view::decorator_t<view_t,args_t...>>
     {
         using view_type = view::decorator_t<view_t,args_t...>;
-        using view_id_type = typename view_type::id_type;
 
         template <typename node_id_t>
         constexpr auto operator()(const view_type& view, node_id_t) const
@@ -58,7 +58,6 @@ namespace nmtools::functional
                     return node_id_t{};
                 } else {
                     return ct_v<0>;
-                    // return view_id_type{};
                 }
             }();
 
@@ -68,7 +67,7 @@ namespace nmtools::functional
             //     );
             // }
 
-            auto digraph = network::digraph(
+            auto digraph = network::multi_digraph(
                 nmtools_tuple<nmtools_tuple<>>{}
                 , nmtools_tuple{node_id}
                 , nmtools_tuple{unwrap(compute_node)}
