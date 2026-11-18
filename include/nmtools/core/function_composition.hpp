@@ -73,7 +73,6 @@ namespace nmtools::functional
         >
     > {
         using view_type = view::decorator_t<view::ufunc_t, args_t...>;
-        using view_id_type = typename view_type::id_type;
         view_type view;
 
         constexpr auto operator()() const noexcept 

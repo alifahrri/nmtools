@@ -8,7 +8,6 @@
 #include "nmtools/core/node.hpp"
 #include "nmtools/network/digraph.hpp"
 #include "nmtools/network/multi_digraph.hpp"
-#include "nmtools/index/alias.hpp"
 #include "nmtools/array/ref.hpp"
 
 namespace nmtools::functional
@@ -88,8 +87,6 @@ namespace nmtools::functional
                 }();
 
                 // id unique to the graph
-                // auto operand_id = index::generate_alias(G.node_ids,ct_v<256>,ct_v<57885161>);
-
                 auto operand_id = at(G.node_ids,ct_v<-1>) + ct_v<1>;
                 
                 if (operand_id == node_id) {
