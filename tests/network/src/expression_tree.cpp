@@ -240,7 +240,8 @@ TEST_CASE("expression_tree(reshape6)" * doctest::test_suite("network::digraph"))
 
     constexpr auto operands_ids = decltype(unwrap(view))::operands_ids;
     [[maybe_unused]] auto compute_node = fn::node(view);
-    auto node_id = view_type::id_type{};
+    // NOTE: decorator no longer generates id, supply explicit node id
+    auto node_id = nm::meta::ct<1>{};
     auto digraph = network::digraph(
         nmtools_tuple<nmtools_tuple<>>{}
         , nmtools_tuple{node_id}

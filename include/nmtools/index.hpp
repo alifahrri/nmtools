@@ -20,7 +20,6 @@
 #include "nmtools/index/expand_dims.hpp"
 #include "nmtools/index/broadcast_shape.hpp"
 #include "nmtools/index/product.hpp"
-#include "nmtools/index/alias.hpp"
 #include "nmtools/index/transpose.hpp"
 #include "nmtools/index/cast.hpp"
 #include "nmtools/index/pad.hpp"
