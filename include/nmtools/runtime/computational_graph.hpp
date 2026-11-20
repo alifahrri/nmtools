@@ -11,8 +11,12 @@
 namespace nmtools::runtime
 {
     // TODO: add is_digraph metafunction, then handle variant for this
-    template <typename adjacency_list_t, typename node_ids_t, typename node_attributes_t, typename edge_attributes_t>
-    auto to_value(const network::digraph_t<adjacency_list_t,node_ids_t,node_attributes_t,edge_attributes_t>& digraph)
+    // NOTE: accepts multi graphs too; get_computational_tree() produces a
+    // multi graph (aliased leaves may share nodes), while cse() output is a
+    // plain digraph. The runtime representation is dynamic either way, so
+    // the multi flag only affects the source type pattern here.
+    template <typename adjacency_list_t, typename node_ids_t, typename node_attributes_t, typename edge_attributes_t, typename multi_t>
+    auto to_value(const network::base_digraph_t<adjacency_list_t,node_ids_t,node_attributes_t,edge_attributes_t,multi_t>& digraph)
     {
         // TODO: support edge attributes
         static_assert( is_none_v<edge_attributes_t> );

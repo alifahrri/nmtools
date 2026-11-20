@@ -1465,18 +1465,6 @@ namespace nmtools::functional
             if constexpr (is_functor_composition_v<functor_type>) {
                 auto strs = nmtools_list<nmtools_string>{};
 
-                {
-                    auto operands_str = nmtools_string("operands: ");
-                    constexpr auto N = len_v<operands_type>;
-                    template_for<N>([&](auto I){
-                        operands_str += utils::to_string(at(operands,I),utils::Compact);
-                        if (I < (N-1)) {
-                            operands_str += ", ";
-                        }
-                    });
-                    strs.push_back(operands_str);
-                }
-
                 constexpr auto N = len_v<typename functor_type::functors_type>;
                 template_for<N>([&](auto I){
                     auto str = nmtools_string("");
@@ -1516,18 +1504,6 @@ namespace nmtools::functional
             } else {
                 #if 1
                 auto strs = nmtools_list<nmtools_string>{};
-
-                {
-                    auto operands_str = nmtools_string("operands: ");
-                    constexpr auto N = len_v<operands_type>;
-                    template_for<N>([&](auto I){
-                        operands_str += utils::to_string(at(operands,I),utils::Compact);
-                        if (I < (N-1)) {
-                            operands_str += ", ";
-                        }
-                    });
-                    strs.push_back(operands_str);
-                }
                 {
                     auto str = nmtools_string("");
                     using attributes_t = remove_cvref_t<decltype(functor.attributes)>;

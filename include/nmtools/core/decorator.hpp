@@ -10,7 +10,6 @@
 #include "nmtools/utility/at.hpp"
 #include "nmtools/index/ref.hpp"
 #include "nmtools/index/product.hpp"
-#include "nmtools/index/alias.hpp"
 #include "nmtools/index/append.hpp"
 
 // TODO: move to shape.hpp
@@ -127,33 +126,6 @@ namespace nmtools::meta
     template <template<typename...>typename lhs_t, typename rhs_t>
     constexpr inline auto is_same_view_v = is_same_view<lhs_t,rhs_t>::value;
 
-    template <typename T>
-    struct get_type_id
-    {
-        static constexpr auto value = index::generate_alias(meta::type_name_v<T>);
-    };
-
-    template <typename T>
-    constexpr inline auto get_type_id_v = get_type_id<T>::value;
-
-    template <typename operands_ids_t, typename view_type>
-    constexpr auto generate_view_id(const operands_ids_t&, as_value<view_type>)
-    {
-        // avoid calling to_value_v<tuple<>>
-        constexpr auto id_sequence  = [](){
-            constexpr auto type_id = get_type_id_v<view_type>;
-            constexpr auto B_SIZE  = bounded_size_v<operands_ids_t>;
-            static_assert( !is_fail_v<decltype(B_SIZE)> );
-            if constexpr (B_SIZE == 0) {
-                return nmtools_array{type_id};
-            } else {
-                constexpr auto operands_ids = to_value_v<operands_ids_t>;
-                return index::append(operands_ids,type_id);   
-            }
-        }();
-        constexpr auto node_id = index::generate_alias(id_sequence);
-        return meta::ct_v<node_id>;
-    }
 } // namespace nmtools::meta
 
 namespace nmtools::view
@@ -328,29 +300,16 @@ namespace nmtools::view
             }, nmtools_tuple{});
         }();
 
-        static constexpr auto id_vtype = [](){
+        static constexpr auto id_type_vtype = [](){
             if constexpr (meta::has_id_type_v<view_type>) {
-                using type = typename view_type::id_type;
-                if constexpr (is_none_v<type>) {
-                    constexpr auto id = meta::generate_view_id(operands_ids,meta::as_value_v<view_type>);
-                    using type = meta::ct<meta::remove_cvref_pointer_t<decltype(id)>::value>;
-                    return meta::as_value_v<type>;
-                } else {
-                    return meta::as_value_v<type>;
-                }
+                return meta::as_value_v<typename view_type::id_type>;
             } else {
-                // constexpr auto type_id = meta::get_type_id_v<view_type>;
-                // constexpr auto id_sequence = index::append(operands_ids,type_id);
-                // constexpr auto id = index::generate_alias(id_sequence);
-                constexpr auto id = meta::generate_view_id(operands_ids,meta::as_value_v<view_type>);
-                using type = meta::ct<meta::remove_cvref_pointer_t<decltype(id)>::value>;
-                return meta::as_value_v<type>;
+                return meta::as_value_v<none_t>;
             }
         }();
+        using id_type = meta::type_t<decltype(id_type_vtype)>;
 
-        using id_type = meta::type_t<decltype(id_vtype)>;
-
-        static_assert( meta::is_constant_index_v<id_type>
+        static_assert( is_none_v<id_type> || meta::is_constant_index_v<id_type>
             , "invalid identifier for view type" );
 
         /**
@@ -571,7 +530,14 @@ namespace nmtools::view
     struct get_id<
         decorator_t<view_t,Ts...>
     > {
-        static constexpr auto value = decorator_t<view_t,Ts...>::id_type::value;
+        static constexpr auto value = [](){
+            using decorator_type = decorator_t<view_t,Ts...>;
+            if constexpr (is_none_v<typename decorator_type::id_type>) {
+                return -1;
+            } else {
+                return decorator_type::id_type::value;
+            }
+        }();
     };
 
     template <typename T>

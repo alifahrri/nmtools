@@ -19,10 +19,11 @@ namespace nmtools::functional
         , typename node_ids_t
         , typename node_attributes_t
         , typename edge_attributes_t
+        , typename multi_t
         , typename hash_shape_t=true_type
         , typename hash_address_t=true_type>
     constexpr auto gvn(
-        const network::digraph_t<adjacency_list_t,node_ids_t,node_attributes_t,edge_attributes_t>& digraph
+        const network::base_digraph_t<adjacency_list_t,node_ids_t,node_attributes_t,edge_attributes_t,multi_t>& digraph
         , hash_shape_t hash_shape=hash_shape_t{}
         , hash_address_t hash_address=hash_address_t{}
         , [[maybe_unused]] bool partial=false
@@ -32,7 +33,7 @@ namespace nmtools::functional
         // are left as NONE slots: the compile-time resolve harvests them as
         // runtime slots. Otherwise every node must get a hash, either
         // computed here or by the caller's runtime loop.
-        using result_t = resolve_optype_t<gvn_t,adjacency_list_t,node_ids_t,node_attributes_t,edge_attributes_t,hash_shape_t,hash_address_t>;
+        using result_t = resolve_optype_t<gvn_t,adjacency_list_t,node_ids_t,node_attributes_t,edge_attributes_t,multi_t,hash_shape_t,hash_address_t>;
         auto m_digraph = digraph;
 
         const auto all_preds = unwrap(network::predecessors(m_digraph));
@@ -194,10 +195,11 @@ namespace nmtools::meta
         , typename node_ids_t
         , typename node_attributes_t
         , typename edge_attributes_t
+        , typename multi_t
         , typename hash_shape_t
         , typename hash_address_t>
     struct resolve_optype<
-        void, functional::gvn_t, adjacency_list_t, node_ids_t, node_attributes_t, edge_attributes_t, hash_shape_t, hash_address_t
+        void, functional::gvn_t, adjacency_list_t, node_ids_t, node_attributes_t, edge_attributes_t, multi_t, hash_shape_t, hash_address_t
     > {
         static constexpr auto vtype = [](){
             if constexpr (!is_adjacency_list_v<adjacency_list_t>
@@ -212,12 +214,7 @@ namespace nmtools::meta
                 && is_constant_index_v<hash_address_t>
             ) {
                 constexpr auto LEN = len_v<node_ids_t>;
-                #if 0
-                // TODO: compute at compile-time with to value
-                using type = utl::constant_map<node_ids_t,nmtools_array<nm_size_t,LEN>>;
-                return as_value_v<type>;
-                #else
-                using graph_t = network::digraph_t<adjacency_list_t,node_ids_t,node_attributes_t,edge_attributes_t>;
+                using graph_t = network::base_digraph_t<adjacency_list_t,node_ids_t,node_attributes_t,edge_attributes_t,multi_t>;
                 constexpr auto g = to_value_v<graph_t>;
                 // NOTE: partial: nodes that cannot be identified at compile
                 // time are left as NONE slots, harvested below as runtime
@@ -240,7 +237,6 @@ namespace nmtools::meta
                 using values_t = type_t<decltype(values_vtype)>;
                 using type = utl::constant_map<node_ids_t,values_t>;
                 return as_value_v<type>;
-                #endif
             } else {
                 constexpr auto MAX_LEN = max_len_v<node_ids_t>;
                 using node_id_t = get_index_element_type_t<node_ids_t>;

@@ -190,7 +190,9 @@ namespace nmtools::view
             }
         } else if constexpr (meta::is_view_v<array_t>) {
             // view is already aliased
-            static_assert( array_t::id_type::value == id_t::value );
+            if constexpr (has_id_type_v<array_t> && !is_none_v<typename array_t::id_type>) {
+                static_assert( array_t::id_type::value == id_t::value );
+            }
             return array;
         } else {
             return decorator_t<alias_t,array_t,id_t>{{array,id}};

@@ -38,9 +38,10 @@ TEST_CASE("get_computational_graph(cos)" * doctest::test_suite("transform"))
     constexpr auto graph_v = nm::meta::to_value_v<decltype(unwrap(graph))>;
     auto graphviz_v = utils::to_string(unwrap(graph_v),utils::Graphviz);
 
-    auto keys = graph_v.nodes();
+    // NOTE: cse result node id order follows gvn's invert_map (hash order),
+    // not creation order; the cos root keeps its tree id 0, pick by id.
     [[maybe_unused]]
-    auto cos  = graph_v.nodes(nm::at(keys,0_ct));
+    auto cos  = graph_v.nodes(0);
     CHECK_MESSAGE( true, cos.to_string().at(0) );
     CHECK_MESSAGE( true, cos.to_string().at(1) );
     CHECK( cos.is_compute() );
