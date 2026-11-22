@@ -4,6 +4,8 @@
 #include "nmtools/meta/common.hpp"
 #include "nmtools/meta/bits/traits/is_num.hpp"
 
+// TODO: remove
+
 namespace nmtools::meta
 {
     /**
@@ -163,6 +165,11 @@ namespace nmtools::meta
     template <typename T, typename U>
     using replace_element_type_t = typename replace_element_type<T,U>::type;
 } // namespace nmtools::meta
+
+namespace nmtools
+{
+    using meta::replace_element_type_t;
+}
 
 
 #endif // NMTOOLS_META_BITS_TRANSFORM_REPLACE_ELEMENT_TYPE_HPP
