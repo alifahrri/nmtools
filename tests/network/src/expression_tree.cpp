@@ -236,8 +236,6 @@ TEST_CASE("expression_tree(reshape6)" * doctest::test_suite("network::digraph"))
     auto operands = unwrap(view).operands();
     NMTOOLS_ASSERT_EQUAL( nm::len(operands), 1 );
 
-    using view_type = decltype(unwrap(view));
-
     constexpr auto operands_ids = decltype(unwrap(view))::operands_ids;
     [[maybe_unused]] auto compute_node = fn::node(view);
     // NOTE: decorator no longer generates id, supply explicit node id

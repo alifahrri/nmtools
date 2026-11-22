@@ -35,5 +35,9 @@ namespace nmtools::meta
     using replace_value_type_t = type_t<replace_value_type<list_t,value_t>>;
 } // namespace nmtools::meta
 
+namespace nmtools
+{
+    using meta::replace_value_type_t;
+}
 
 #endif // NMTOOLS_META_BITS_TRANSFORM_REPLACE_VALUE_TYPE_HPP

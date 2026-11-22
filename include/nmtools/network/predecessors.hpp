@@ -27,7 +27,7 @@ namespace nmtools::network
             auto result = result_t {};
 
             if constexpr (!is_fail_v<result_t>
-                && !is_constant_adjacency_list_v<result_t>
+                && !is_constant_adjacency_list_v<result_t> // basically list of list
             ) {
                 [[maybe_unused]]
                 auto num_nodes = len(adj_list);

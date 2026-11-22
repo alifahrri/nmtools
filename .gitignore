@@ -37,3 +37,5 @@ amdgpu-*
 *.md
 *.tracy
 logs*
+# Python
+.venv/

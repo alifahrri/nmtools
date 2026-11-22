@@ -7,6 +7,7 @@
 #include "nmtools/index/index_of.hpp"
 #include "nmtools/index/gather.hpp"
 #include "nmtools/network/add_edge.hpp"
+#include "nmtools/network/ancestors.hpp"
 #include "nmtools/network/cast.hpp"
 #include "nmtools/network/compose.hpp"
 #include "nmtools/network/contracted_edge.hpp"
@@ -920,6 +921,21 @@ namespace nmtools::network
         }();
         return network::map_ids(predecessor,digraph.node_ids);
     } // predcessors
+
+    template <typename adjacency_list_t
+        , typename node_ids_t
+        , typename node_attributes_t
+        , typename edge_attribute_t
+        , typename multi_t
+        , typename source_t>
+    constexpr auto ancestors(
+        const base_digraph_t<adjacency_list_t,node_ids_t,node_attributes_t,edge_attribute_t,multi_t>& digraph
+        , source_t source)
+    {
+        auto source_indices = index::index_of(digraph.node_ids,source);
+        auto m_ancestors    = network::ancestors(digraph.adjacency_list,source_indices);
+        return network::map_ids(m_ancestors,digraph.node_ids);
+    } // ancestors
 
     template <typename adjacency_list_t
         , typename node_ids_t
