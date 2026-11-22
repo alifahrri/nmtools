@@ -45,6 +45,8 @@ set(NETWORK_TEST_META_SOURCES
 
 set(NETWORK_TEST_DIGRAPH_SOURCES
     src/add_edge.cpp
+    src/ancestors.cpp
+    src/bfs_edges.cpp
     src/compose.cpp
     src/contracted_edge.cpp
     src/filter_node_arity.cpp
