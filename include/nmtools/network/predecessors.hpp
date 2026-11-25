@@ -35,16 +35,28 @@ namespace nmtools::network
                     result.resize(num_nodes);
                 }
 
-                for (nm_size_t i=0; i<(nm_size_t)num_nodes; i++) {
+                auto valid = true;
+                for (nm_size_t i=0; (i<(nm_size_t)num_nodes) && valid; i++) {
                     const auto& edges = at(adj_list,i);
                     for (nm_size_t j=0; j<(nm_size_t)len(edges); j++) {
                         auto edge = at(edges,j);
+                        if ((nm_size_t)edge >= (nm_size_t)num_nodes) {
+                            valid = false;
+                            break;
+                        }
                         at(result,edge).push_back(i);
                     }
                 }
-            }
 
-            return result;
+                using return_t = nmtools_maybe<result_t>;
+                if (valid) {
+                    return return_t{result};
+                } else {
+                    return return_t{meta::Nothing};
+                }
+            } else {
+                return result;
+            }
         }
     } // predecessors
 
@@ -63,6 +75,7 @@ namespace nmtools::network
         } else {
             auto num_nodes = len(adj_list);
 
+            // TODO: simplify
             auto all_nodes = [&](){
                 if constexpr (is_constant_adjacency_list_v<adjacency_list_t>
                     && !is_constant_index_v<node_idx_t>)
@@ -77,11 +90,11 @@ namespace nmtools::network
                     using inner_t = nmtools_static_vector<nm_index_t,NUM_NODES>;
                     using outer_t = nmtools_array<inner_t,NUM_NODES>;
                     auto table = outer_t {};
-                    meta::template_for<NUM_NODES>([&](auto I){
+                    template_for<NUM_NODES>([&](auto I){
                         const auto& row = nmtools::at(ct_table,I);
                         auto& dst = nmtools::at(table,(nm_size_t)decltype(I)::value);
                         constexpr auto NUM_PREDECESSORS = meta::len_v<remove_cvref_t<decltype(row)>>;
-                        meta::template_for<NUM_PREDECESSORS>([&](auto J){
+                        template_for<NUM_PREDECESSORS>([&](auto J){
                             dst.push_back((nm_size_t)nmtools::at(row,J));
                         });
                     });
@@ -90,12 +103,12 @@ namespace nmtools::network
                     return predecessors(adj_list);
                 }
             }();
-            using result_t = remove_cvref_t<decltype(at(all_nodes,node_idx))>;
+            using result_t = remove_cvref_t<decltype(at(unwrap(all_nodes),node_idx))>;
             // TODO: check if NUM_NODES is constant & node_idx is constant index
             using return_t = conditional_t<is_maybe_v<result_t>,result_t,nmtools_maybe<result_t>>;
 
-            return (((nm_size_t)node_idx < (nm_size_t)num_nodes)
-                ? return_t{at(all_nodes,node_idx)}
+            return (((nm_size_t)node_idx < (nm_size_t)num_nodes) && has_value(all_nodes)
+                ? return_t{at(unwrap(all_nodes),node_idx)}
                 : return_t{meta::Nothing}
             );
         }
@@ -120,7 +133,7 @@ namespace nmtools::meta
                 return as_value_v<type>;
             } else if constexpr (is_constant_adjacency_list_v<adjacency_list_t>) {
                 constexpr auto adjacency_list = to_value_v<adjacency_list_t>;
-                constexpr auto result = network::predecessors(adjacency_list);
+                constexpr auto result = unwrap(network::predecessors(adjacency_list));
                 using nmtools::at, nmtools::len;
                 return template_reduce<len(result)>([&](auto init, auto index){
                     using init_t = type_t<decltype(init)>;

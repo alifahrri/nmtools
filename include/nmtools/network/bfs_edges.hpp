@@ -52,6 +52,7 @@ namespace nmtools::network
                     }
                 }();
                 using id_list_t = type_t<decltype(id_list_vtype)>;
+                using return_t = nmtools_maybe<result_t>;
 
                 auto visited  = id_list_t{};
                 auto frontier = id_list_t{};
@@ -69,7 +70,13 @@ namespace nmtools::network
                     }
                 }();
                 [[maybe_unused]]
-                const auto preds = predecessors(adj_list);
+                const auto m_preds = predecessors(adj_list);
+                auto valid = has_value(m_preds);
+
+                if (!valid) {
+                    return return_t{meta::Nothing};
+                }
+                auto preds = unwrap(m_preds);
 
                 auto neighbors = [&](auto u) -> id_list_t {
                     if (reverse) {
@@ -81,7 +88,7 @@ namespace nmtools::network
 
                 auto num_nodes = len(adj_list);
 
-                auto valid = (index_t)source_idx < (index_t)num_nodes;
+                valid &= (index_t)source_idx < (index_t)num_nodes;
 
                 while (frontier.size() && valid) {
                     auto next = id_list_t {};
@@ -99,12 +106,10 @@ namespace nmtools::network
                     frontier = next;
                 }
 
-                using result_t = nmtools_maybe<result_t>;
-
                 if (valid) {
-                    return result_t{result};
+                    return return_t{result};
                 } else {
-                    return result_t{meta::Nothing};
+                    return return_t{meta::Nothing};
                 }
             } else {
                 auto result = result_t {};

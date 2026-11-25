@@ -15,26 +15,26 @@ namespace nmtools::network
     constexpr auto map_ids(const input_t& input
         , [[maybe_unused]] const node_ids_t& node_ids)
     {
-        if constexpr (meta::is_nothing_v<input_t>) {
+        if constexpr (is_nothing_v<input_t>) {
             return input;
-        } else if constexpr (meta::is_maybe_v<input_t>
-            || meta::is_maybe_v<node_ids_t>
+        } else if constexpr (is_maybe_v<input_t>
+            || is_maybe_v<node_ids_t>
         ) {
             using result_t = decltype(map_ids(unwrap(input),unwrap(node_ids)));
-            using return_t = meta::conditional_t<meta::is_maybe_v<result_t>,result_t,nmtools_maybe<result_t>>;
+            using return_t = conditional_t<is_maybe_v<result_t>,result_t,nmtools_maybe<result_t>>;
             return (has_value(input) && has_value(node_ids)
                 ? return_t{map_ids(unwrap(input),unwrap(node_ids))}
                 : return_t{meta::Nothing}
             );
         } else {
-            using result_t = meta::resolve_optype_t<tag::map_ids_t,input_t,node_ids_t>;
+            using result_t = resolve_optype_t<tag::map_ids_t,input_t,node_ids_t>;
 
             auto result = result_t {};
 
             if constexpr (!is_none_v<result_t>
-                && !meta::is_fail_v<result_t>
-                && !meta::is_constant_index_v<result_t>
-                && meta::is_index_v<result_t>)
+                && !is_fail_v<result_t>
+                && !is_constant_index_v<result_t>
+                && is_index_v<result_t>)
             {
                 using return_t = nmtools_maybe<result_t>;
                 if ((nm_size_t)input >= (nm_size_t)len(node_ids)) {
@@ -44,37 +44,41 @@ namespace nmtools::network
                     return return_t{result};
                 }
             } else if constexpr (!is_none_v<result_t>
-                && !meta::is_fail_v<result_t>
-                && !meta::is_constant_index_array_v<result_t>
-                && !meta::is_constant_adjacency_list_v<result_t>
-                && !meta::is_constant_index_v<result_t>
+                && !is_fail_v<result_t>
+                && !is_constant_index_array_v<result_t>
+                && !is_constant_adjacency_list_v<result_t>
+                && !is_constant_index_v<result_t>
             ) {
                 auto n = len(input);
-                if constexpr (meta::is_resizable_v<result_t>) {
+                if constexpr (is_resizable_v<result_t>) {
                     result.resize(n);
                 }
 
-                if constexpr (meta::is_constant_adjacency_list_v<input_t>) {
+                if constexpr (is_constant_adjacency_list_v<input_t>) {
                     // constant adjacency list input (indexed with runtime node
                     // ids): walk the constant structure with constant indices,
                     // resolving the mapped runtime ids per element.
-                    // TODO: handle invalid input
-                    meta::template_for<meta::len_v<input_t>>([&](auto I){
+                    // TODO: handle invalid input, at(node_ids,...) throws when
+                    // an index is out of range; it should propagate meta::Nothing
+                    // like the scalar branch above does
+                    template_for<len_v<input_t>>([&](auto I){
                         const auto& src = at(input,I);
                         auto& dst = at(result,(nm_size_t)decltype(I)::value);
-                        if constexpr (meta::is_resizable_v<decltype(dst)>) {
-                            dst.resize(meta::len_v<remove_cvref_t<decltype(src)>>);
+                        if constexpr (is_resizable_v<decltype(dst)>) {
+                            dst.resize(len_v<remove_cvref_t<decltype(src)>>);
                         }
-                        meta::template_for<meta::len_v<remove_cvref_t<decltype(src)>>>([&](auto J){
+                        template_for<len_v<remove_cvref_t<decltype(src)>>>([&](auto J){
                             at(dst,(nm_size_t)decltype(J)::value) = at(node_ids,(nm_size_t)at(src,J));
                         });
                     });
                 } else {
-                    // TODO: handle invalid input
+                    // TODO: handle invalid input, at(node_ids,...) throws when
+                    // an index is out of range; it should propagate meta::Nothing
+                    // like the scalar branch above does
                     for (nm_size_t i=0; i<(nm_size_t)n; i++) {
                         const auto& src = at(input,i);
                         auto& dst = at(result,i);
-                        using dst_t = meta::remove_cvref_t<decltype(dst)>;
+                        using dst_t = remove_cvref_t<decltype(dst)>;
                         auto map_id = [&](auto src){
                             if constexpr (!is_none_v<node_ids_t>) {
                                 return at(node_ids,src);
@@ -82,9 +86,9 @@ namespace nmtools::network
                                 return src;
                             }
                         };
-                        if constexpr (meta::is_index_array_v<dst_t>) {
+                        if constexpr (is_index_array_v<dst_t>) {
                             auto m = len(src);
-                            if constexpr (meta::is_resizable_v<dst_t>) {
+                            if constexpr (is_resizable_v<dst_t>) {
                                 dst.resize(m);
                             }
                             for (nm_size_t j=0; j<(nm_size_t)m; j++) {

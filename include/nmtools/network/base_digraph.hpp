@@ -11,8 +11,10 @@
 #include "nmtools/network/cast.hpp"
 #include "nmtools/network/compose.hpp"
 #include "nmtools/network/contracted_edge.hpp"
+#include "nmtools/network/descendants.hpp"
 #include "nmtools/network/filter_nodes.hpp"
 #include "nmtools/network/filter_node_arity.hpp"
+#include "nmtools/network/in_edges.hpp"
 #include "nmtools/network/is_directed_acyclic_graph.hpp"
 #include "nmtools/network/number_of_edges.hpp"
 #include "nmtools/network/out_degree.hpp"
@@ -758,6 +760,32 @@ namespace nmtools::network
         }
 
         template <typename nbunch_t=none_t>
+        constexpr decltype(auto) in_edges(const nbunch_t& nbunch=nbunch_t{}) const noexcept
+        {
+            auto m_nbunch = [&](){
+                if constexpr (is_none_v<nbunch_t>) {
+                    return nbunch;
+                } else {
+                    return index::index_of(node_ids,nbunch);
+                }
+            }();
+            decltype(auto) m_adj_list = [&]() -> decltype(auto) {
+                if constexpr (is_constant_adjacency_list_v<adjacency_list_type>) {
+                    return to_value_v<adjacency_list_type>;
+                } else {
+                    return (adjacency_list);
+                }
+            }();
+            if constexpr (multi) {
+                // NOTE: map the ids inside, the trailing element is an edge key
+                return network::in_edges(m_adj_list,m_nbunch,multi,node_ids);
+            } else {
+                auto in_edges = network::in_edges(m_adj_list,m_nbunch,multi);
+                return network::map_ids(in_edges,node_ids);
+            }
+        }
+
+        template <typename nbunch_t=none_t>
         constexpr auto out_degree(const nbunch_t& nbunch=nbunch_t{}) const
         {
             // TODO: handle constant adjacency list
@@ -936,6 +964,36 @@ namespace nmtools::network
         auto m_ancestors    = network::ancestors(digraph.adjacency_list,source_indices);
         return network::map_ids(m_ancestors,digraph.node_ids);
     } // ancestors
+
+    template <typename adjacency_list_t
+        , typename node_ids_t
+        , typename node_attributes_t
+        , typename edge_attribute_t
+        , typename multi_t
+        , typename source_t>
+    constexpr auto descendants(
+        const base_digraph_t<adjacency_list_t,node_ids_t,node_attributes_t,edge_attribute_t,multi_t>& digraph
+        , source_t source)
+    {
+        auto source_indices = index::index_of(digraph.node_ids,source);
+        auto m_descendants  = network::descendants(digraph.adjacency_list,source_indices);
+        return network::map_ids(m_descendants,digraph.node_ids);
+    } // descendants
+
+    template <typename adjacency_list_t
+        , typename node_ids_t
+        , typename node_attributes_t
+        , typename edge_attribute_t
+        , typename multi_t
+        , typename source_t>
+    constexpr auto dfs_postorder_nodes(
+        const base_digraph_t<adjacency_list_t,node_ids_t,node_attributes_t,edge_attribute_t,multi_t>& digraph
+        , source_t source)
+    {
+        auto source_indices = index::index_of(digraph.node_ids,source);
+        auto m_nodes        = network::dfs_postorder_nodes(digraph.adjacency_list,source_indices);
+        return network::map_ids(m_nodes,digraph.node_ids);
+    } // dfs_postorder_nodes
 
     template <typename adjacency_list_t
         , typename node_ids_t

@@ -228,6 +228,66 @@ TEST_CASE("small_vector(case2)" * doctest::test_suite("utl"))
         }
     }
 
+    SUBCASE("pop_back")
+    {
+        {
+            // stays static while size stays within DIM
+            using array_t = utl::small_vector<int,4>;
+            auto array = array_t();
+            array.push_back(3);
+            array.push_back(4);
+            NMTOOLS_ASSERT_EQUAL( array.back(), 4 );
+            array.pop_back();
+            NMTOOLS_ASSERT_EQUAL( array.is_static(), 1 );
+            NMTOOLS_ASSERT_EQUAL( array.size(), 1 );
+            NMTOOLS_ASSERT_EQUAL( array.back(), 3 );
+            NMTOOLS_ASSERT_EQUAL( array[0], 3 );
+        }
+        {
+            // popping below DIM keeps the dynamic buffer, consistent with resize
+            using array_t = utl::small_vector<int,4>;
+            auto array = array_t(5);
+            array[0] = 1;
+            NMTOOLS_ASSERT_EQUAL( array.is_static(), 0 );
+            array.pop_back();
+            NMTOOLS_ASSERT_EQUAL( array.is_static(), 0 );
+            NMTOOLS_ASSERT_EQUAL( array.size(), 4 );
+            NMTOOLS_ASSERT_EQUAL( array[0], 1 );
+        }
+        {
+            // grow past DIM then pop back to DIM: still dynamic
+            using array_t = utl::small_vector<int,4>;
+            auto array = array_t();
+            array.push_back(1);
+            array.push_back(2);
+            array.push_back(3);
+            array.push_back(4);
+            NMTOOLS_ASSERT_EQUAL( array.is_static(), 1 );
+            array.push_back(5);
+            NMTOOLS_ASSERT_EQUAL( array.is_static(), 0 );
+            array.pop_back();
+            NMTOOLS_ASSERT_EQUAL( array.is_static(), 0 );
+            NMTOOLS_ASSERT_EQUAL( array.size(), 4 );
+            NMTOOLS_ASSERT_EQUAL( array[3], 4 );
+        }
+        {
+            // pop everything from the static buffer
+            using array_t = utl::small_vector<int,4>;
+            auto array = array_t();
+            array.push_back(1);
+            array.pop_back();
+            NMTOOLS_ASSERT_EQUAL( array.is_static(), 1 );
+            NMTOOLS_ASSERT_EQUAL( array.size(), 0 );
+        }
+        {
+            // popping an empty small_vector is a no-op
+            using array_t = utl::small_vector<int,4>;
+            auto array = array_t();
+            array.pop_back();
+            NMTOOLS_ASSERT_EQUAL( array.size(), 0 );
+        }
+    }
+
     SUBCASE("range-for")
     {
         {

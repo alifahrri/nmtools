@@ -61,6 +61,9 @@ namespace nmtools::network
                     const auto& neighbors = at(adj_list,I);
                     auto num_neighbors = len(neighbors);
                     if constexpr (meta::is_index_array_v<nbunch_t>) {
+                        // TODO: nbunch container order is ignored, nodes are
+                        // always visited in ascending order. networkx yields the
+                        // edges grouped by nbunch order (see in_edges)
                         auto node_idx = index::index_of(nbunch,node_id);
                         if (!has_value(node_idx)) {
                             return;
@@ -78,6 +81,9 @@ namespace nmtools::network
                         }
                     }();
                     if constexpr (!multi) {
+                        // TODO: every adjacency entry becomes an edge, so parallel
+                        // entries of a plain digraph are reported more than once.
+                        // networkx collapses them into a single edge (see in_edges)
                         for (nm_size_t j=0; j<(nm_size_t)num_neighbors; j++) {
                             auto to = [&](){
                                 if constexpr (is_none_v<node_ids_t>) {
