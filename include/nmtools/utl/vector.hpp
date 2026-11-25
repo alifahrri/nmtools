@@ -240,6 +240,28 @@ namespace nmtools::utl
             buffer_[size_-1] = t;
         }
 
+        void pop_back()
+        {
+            // TODO: assert
+            if (size_ == 0) {
+                return;
+            }
+            // keep the buffer as is, next push_back reuses it
+            size_ = size_ - 1;
+        }
+
+        reference back()
+        {
+            // TODO: assert
+            return buffer_[size_-1];
+        }
+
+        const_reference back() const
+        {
+            // TODO: assert
+            return buffer_[size_-1];
+        }
+
         // TODO: support emplace_back
 
         reference at(size_type i)
