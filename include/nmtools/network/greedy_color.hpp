@@ -55,6 +55,9 @@ namespace nmtools::network
 
                 auto m_deg = degree(adj);
 
+                // networkx silently produces a wrong coloring for directed
+                // input; refuse it instead. An undirected list cannot hold a
+                // dangling target, so no further bounds checks are needed.
                 auto valid = has_value(m_deg) && is_undirected(adj);
                 if (!valid) {
                     return return_t{meta::Nothing};
@@ -111,15 +114,6 @@ namespace nmtools::network
                     s = false;
                 }
 
-                // pick highest degree (most connection)
-                auto best = (nm_index_t)0;
-                for (nm_size_t i=0; i<(nm_size_t)num_nodes; i++) {
-                    auto d = deg[i];
-                    if (d > deg[best]) {
-                        best = i;
-                    }
-                }
-
                 auto remaining = (nm_index_t)num_nodes;
 
                 auto assign = [&](auto u) {
@@ -142,10 +136,18 @@ namespace nmtools::network
                 };
 
                 while (remaining > 0) {
-                    best = -1;
+                    // argmax of the (saturation, degree) tuple over uncolored
+                    // nodes, compared lexicographically like networkx max().
+                    // Scanning ascending means the lowest index wins ties. In
+                    // the first round every saturation is zero, so this also
+                    // covers the initial highest degree pick.
+                    auto best = (nm_index_t)-1;
                     for (nm_size_t i=0; i<(nm_size_t)num_nodes; i++) {
                         if ((color[i] == -1)
-                            && ((best < 0) || (sat[i] > sat[best]) || (deg[i] > deg[best]))
+                            && ((best < 0)
+                                || (sat[i] > sat[best])
+                                || ((sat[i] == sat[best]) && (deg[i] > deg[best]))
+                            )
                         ) {
                             best = i;
                         }
