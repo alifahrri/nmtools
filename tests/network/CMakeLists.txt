@@ -58,6 +58,7 @@ set(NETWORK_TEST_DIGRAPH_SOURCES
     src/has_path.cpp
     src/in_degree.cpp
     src/in_edges.cpp
+    src/interval_graph.cpp
     src/is_directed_acyclic_graph.cpp
     src/is_undirected.cpp
     src/out_degree.cpp
