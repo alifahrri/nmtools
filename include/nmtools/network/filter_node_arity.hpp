@@ -42,7 +42,8 @@ namespace nmtools::network
                 auto sorted = unwrap(m_sorted);
                 using sorted_t = decltype(sorted);
 
-                auto predecessors = network::predecessors(adjacency_list);
+                // TODO: propagate error
+                auto predecessors = unwrap(network::predecessors(adjacency_list));
 
                 auto inner_loop = [&](auto i){
                     auto node = at(sorted,i);

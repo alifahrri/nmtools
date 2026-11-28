@@ -107,6 +107,51 @@ TEST_CASE("vector" * doctest::test_suite("utl"))
         }
     }
 
+    SUBCASE("pop_back")
+    {
+        {
+            using array_t = utl::vector<int>;
+            auto array = array_t();
+            array.push_back(3);
+            array.push_back(4);
+            NMTOOLS_ASSERT_EQUAL( array.size(), 2 );
+            NMTOOLS_ASSERT_EQUAL( array.back(), 4 );
+            array.pop_back();
+            NMTOOLS_ASSERT_EQUAL( array.size(), 1 );
+            NMTOOLS_ASSERT_EQUAL( array.back(), 3 );
+            NMTOOLS_ASSERT_EQUAL( array[0], 3 );
+        }
+        {
+            // pop everything
+            using array_t = utl::vector<int>;
+            auto array = array_t();
+            array.push_back(1);
+            array.push_back(2);
+            array.pop_back();
+            array.pop_back();
+            NMTOOLS_ASSERT_EQUAL( array.size(), 0 );
+        }
+        {
+            // popping an empty vector is a no-op
+            using array_t = utl::vector<int>;
+            auto array = array_t();
+            array.pop_back();
+            NMTOOLS_ASSERT_EQUAL( array.size(), 0 );
+        }
+        {
+            // buffer is kept: push_back after pop_back reuses it
+            using array_t = utl::vector<int>;
+            auto array = array_t();
+            array.push_back(1);
+            array.push_back(2);
+            array.pop_back();
+            array.push_back(5);
+            NMTOOLS_ASSERT_EQUAL( array.size(), 2 );
+            NMTOOLS_ASSERT_EQUAL( array[0], 1 );
+            NMTOOLS_ASSERT_EQUAL( array[1], 5 );
+        }
+    }
+
     SUBCASE("return")
     {
         {

@@ -83,6 +83,23 @@ TEST_CASE("constexpr_static_vector" * doctest::test_suite("utl"))
         NMTOOLS_ASSERT_EQUAL( array.size(), 1 );
         NMTOOLS_ASSERT_EQUAL( array[0], 3 );
     }
+
+    {
+        constexpr auto f = [](auto value){
+            using array_t = utl::static_vector<int>;
+            auto array = array_t();
+            array.push_back(value);
+            array.push_back(value+1);
+            array.pop_back();
+            return array;
+        };
+
+        constexpr auto array = f(3);
+
+        NMTOOLS_STATIC_ASSERT_EQUAL( array.size(), 1 );
+        NMTOOLS_STATIC_ASSERT_EQUAL( array.back(), 3 );
+        NMTOOLS_STATIC_ASSERT_EQUAL( array[0], 3 );
+    }
 }
 
 TEST_CASE("maybe_static_vector" * doctest::test_suite("utl"))
@@ -325,6 +342,51 @@ TEST_CASE("static_vector" * doctest::test_suite("utl"))
             array.push_back(3);
             NMTOOLS_ASSERT_EQUAL( array.size(), 1 );
             NMTOOLS_ASSERT_EQUAL( array[0], 3 );
+        }
+    }
+
+    SUBCASE("pop_back")
+    {
+        {
+            using array_t = utl::static_vector<int>;
+            auto array = array_t();
+            array.push_back(3);
+            array.push_back(4);
+            NMTOOLS_ASSERT_EQUAL( array.size(), 2 );
+            NMTOOLS_ASSERT_EQUAL( array.back(), 4 );
+            array.pop_back();
+            NMTOOLS_ASSERT_EQUAL( array.size(), 1 );
+            NMTOOLS_ASSERT_EQUAL( array.back(), 3 );
+            NMTOOLS_ASSERT_EQUAL( array[0], 3 );
+        }
+        {
+            // pop everything
+            using array_t = utl::static_vector<int>;
+            auto array = array_t();
+            array.push_back(1);
+            array.push_back(2);
+            array.pop_back();
+            array.pop_back();
+            NMTOOLS_ASSERT_EQUAL( array.size(), 0 );
+        }
+        {
+            // popping an empty static_vector is a no-op
+            using array_t = utl::static_vector<int>;
+            auto array = array_t();
+            array.pop_back();
+            NMTOOLS_ASSERT_EQUAL( array.size(), 0 );
+        }
+        {
+            // capacity is not released: push_back after pop_back works
+            using array_t = utl::static_vector<int,2>;
+            auto array = array_t();
+            array.push_back(1);
+            array.push_back(2);
+            array.pop_back();
+            array.push_back(5);
+            NMTOOLS_ASSERT_EQUAL( array.size(), 2 );
+            NMTOOLS_ASSERT_EQUAL( array[0], 1 );
+            NMTOOLS_ASSERT_EQUAL( array[1], 5 );
         }
     }
 

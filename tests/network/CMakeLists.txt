@@ -49,17 +49,25 @@ set(NETWORK_TEST_DIGRAPH_SOURCES
     src/bfs_edges.cpp
     src/compose.cpp
     src/contracted_edge.cpp
+    src/degree.cpp
+    src/descendants.cpp
+    src/dfs_postorder_nodes.cpp
     src/filter_node_arity.cpp
     src/filter_nodes.cpp
+    src/greedy_color.cpp
     src/has_path.cpp
     src/in_degree.cpp
+    src/in_edges.cpp
+    src/interval_graph.cpp
     src/is_directed_acyclic_graph.cpp
+    src/is_undirected.cpp
     src/out_degree.cpp
     src/out_edges.cpp
     src/predecessors.cpp
     src/remove_edge.cpp
     src/remove_node.cpp
     src/subgraph.cpp
+    src/to_undirected.cpp
     src/topological_generations.cpp
     src/topological_sort.cpp
 

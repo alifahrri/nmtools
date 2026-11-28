@@ -123,6 +123,27 @@ namespace nmtools::utl
             buffer[index_type(size_-1)] = t;
         }
 
+        constexpr void pop_back()
+        {
+            // TODO: assert
+            if (size_ == 0) {
+                return;
+            }
+            resize(size_ - 1);
+        }
+
+        constexpr reference back()
+        {
+            // TODO: assert
+            return buffer[index_type(size_-1)];
+        }
+
+        constexpr const_reference back() const
+        {
+            // TODO: assert
+            return buffer[index_type(size_-1)];
+        }
+
         // can only be constexpr in c++20
         // even placement new can't be constexpr in c++17
         template <typename...args_t>

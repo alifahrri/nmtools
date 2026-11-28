@@ -114,6 +114,37 @@ namespace nmtools::utl
             }
         }
 
+        void pop_back()
+        {
+            auto old_size = size();
+            if (old_size == 0) {
+                return;
+            }
+            // NOTE: shrinking below DIM keeps the dynamic buffer,
+            // consistent with resize
+            resize(old_size - 1);
+        }
+
+        reference back()
+        {
+            if (auto static_ptr = buffer_.template get_if<static_vector_type>()) {
+                return static_ptr->back();
+            } else {
+                auto vector_ptr = buffer_.template get_if<vector_type>();
+                return vector_ptr->back();
+            }
+        }
+
+        const_reference back() const
+        {
+            if (auto static_ptr = buffer_.template get_if<static_vector_type>()) {
+                return static_ptr->back();
+            } else {
+                auto vector_ptr = buffer_.template get_if<vector_type>();
+                return vector_ptr->back();
+            }
+        }
+
         reference at(size_type i)
         {
             if (auto static_ptr = buffer_.template get_if<static_vector_type>()) {

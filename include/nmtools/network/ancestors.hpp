@@ -88,12 +88,14 @@ namespace nmtools::network
                         return preds;
                     }
                 }();
+                valid &= has_value(preds);
 
                 while (frontier.size() && valid) {
                     auto next = id_list_t {};
+                    auto m_preds = unwrap(preds);
 
                     for (const auto& u : frontier) {
-                        for (const auto& p : preds[u]) {
+                        for (const auto& p : m_preds[u]) {
                             if (!visited[p]) {
                                 visited[p] = true;
                                 next.push_back(p);
